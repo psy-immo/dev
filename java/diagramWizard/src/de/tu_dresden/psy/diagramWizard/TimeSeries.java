@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -38,24 +39,32 @@ public class TimeSeries {
 	/**
 	 * map the time of an event (X coordinate) to its accumulated count (Y coordinate)
 	 */
-	private  TreeMap<Double,Integer> timeXsum;
+	private  TreeMap<Double,Double> timeXsum;
 	
 	public static final String sniffyCharset = "UTF-16LE";
 	
 	public TimeSeries() {
-		this.timeXsum = new TreeMap<Double, Integer>();
+		this.timeXsum = new TreeMap<Double, Double>();
 	}
 	
 	/**
 	 * Makes the objects data consistent, i.e. calculates the sum part of timeXsum
 	 */
 	private void makeConsistent() {
-		int count = 1;
+		double count = 1;
 		for (Iterator<Double> i=timeXsum.keySet().iterator(); i.hasNext(); count++)
 		{
 			Double time = i.next();
 			timeXsum.put(time, count);
 		}
+	}
+	
+	/**
+	 * 
+	 * @return  a map that maps time points to their respective past events sum
+	 */
+	public final TreeMap<Double,Double> getPoints() {
+		return timeXsum;
 	}
 
 	/**
@@ -67,7 +76,7 @@ public class TimeSeries {
 	public void readCSV(InputStream input, String charset) throws IOException {
 		BufferedReader rd = new BufferedReader(new InputStreamReader(input, charset));
 		
-		this.timeXsum = new TreeMap<Double, Integer>();
+		this.timeXsum = new TreeMap<Double, Double>();
 		
 		String line;
 		
@@ -77,7 +86,7 @@ public class TimeSeries {
 			try {
 				Double time = Double.parseDouble(first_column);
 				
-				timeXsum.put(time, 0);
+				timeXsum.put(time, 0.);
 			} catch (NumberFormatException e) {
 				/* gently ignore this, may be header of the column */
 			}
