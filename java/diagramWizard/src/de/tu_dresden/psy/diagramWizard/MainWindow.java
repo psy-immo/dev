@@ -31,13 +31,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import javax.swing.JToolBar;
-import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class MainWindow {
 
-	private JFrame frmCummulativeDiagrams;
+	private JFrame frmCumulativeDiagrams;
 	
 	private File workingDirectory;
 	
@@ -55,7 +54,7 @@ public class MainWindow {
 					window.workingDirectory = new File(".");
 					
 					
-					window.frmCummulativeDiagrams.setVisible(true);
+					window.frmCumulativeDiagrams.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -75,19 +74,26 @@ public class MainWindow {
 	 */
 	private void initialize() {
 	
-		frmCummulativeDiagrams = new JFrame();
-		frmCummulativeDiagrams.setTitle("Cummulative Diagrams");
-		frmCummulativeDiagrams.setBounds(100, 100, 450, 300);
-		frmCummulativeDiagrams.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmCumulativeDiagrams = new JFrame();
+		frmCumulativeDiagrams.setTitle("Combined Cumulative Time Series");
+		frmCumulativeDiagrams.setBounds(100, 100, 450, 300);
+		frmCumulativeDiagrams.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
-		frmCummulativeDiagrams.getContentPane().add(toolBar, BorderLayout.NORTH);
+		frmCumulativeDiagrams.getContentPane().add(toolBar, BorderLayout.NORTH);
 		
-		JButton btnRefresh = new JButton("Refresh");
-		btnRefresh.addActionListener(new ActionListener() {
+		/**
+		 * Refresh the time series' found in the working directory
+		 */
+		
+		final ActionListener refreshDiagramSeries = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				diagramPanel.clearData();
+				
+				/**
+				 * scan for files ending in ".dat"
+				 */
 				
 				String[] files = workingDirectory.list(new FilenameFilter() 
 				 {
@@ -98,6 +104,10 @@ public class MainWindow {
 						return arg1.toUpperCase().endsWith(".DAT");
 					}
 				});
+				
+				/**
+				 * read the time series CSV and add them to the DiagramPanel
+				 */
 				
 				for (int i=0; i<files.length; ++i) {
 					TimeSeries ts = new TimeSeries();
@@ -117,24 +127,31 @@ public class MainWindow {
 				}
 				diagramPanel.repaint();
 			}
-		});
+		};
+		
+		JButton btnRefresh = new JButton("Refresh");
+		btnRefresh.addActionListener(refreshDiagramSeries);
 		toolBar.add(btnRefresh);
 		
 		JButton btnChooseWorkingDirectory = new JButton("Choose working directory...");
 		btnChooseWorkingDirectory.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent arg0) {
+				/**
+				 * choose new working directory, then invoke refresh action
+				 */
 				JFileChooser chooser = new JFileChooser(workingDirectory);
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				if (chooser.showOpenDialog(frmCummulativeDiagrams) == JFileChooser.APPROVE_OPTION) {
+				if (chooser.showOpenDialog(frmCumulativeDiagrams) == JFileChooser.APPROVE_OPTION) {
 					workingDirectory = chooser.getSelectedFile();
+					refreshDiagramSeries.actionPerformed(arg0);
 				}
 			}
 		});
 		toolBar.add(btnChooseWorkingDirectory);
 		
 		diagramPanel = new DiagramPanel();
-		frmCummulativeDiagrams.getContentPane().add(diagramPanel, BorderLayout.CENTER);
+		frmCumulativeDiagrams.getContentPane().add(diagramPanel, BorderLayout.CENTER);
 	}
 
 

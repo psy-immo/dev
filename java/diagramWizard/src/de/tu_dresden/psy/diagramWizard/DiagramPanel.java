@@ -20,13 +20,8 @@ package de.tu_dresden.psy.diagramWizard;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.image.SampleModel;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -38,6 +33,11 @@ import javax.swing.JPanel;
  */
 public class DiagramPanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6643798790015261225L;
+	
 	public static final Color colorBg = new Color(255,255,255);
 	public static final Color colorAxis = new Color(0,0,0);
 	public static final Color colorText = new Color(0,0,0);
@@ -161,7 +161,7 @@ public class DiagramPanel extends JPanel {
 				if (minX > x) minX = x;
 				if (maxX < x) maxX = x;
 				if (minY > y) minY = y;
-				if (minY < y) maxY = y;
+				if (maxY < y) maxY = y;
 			}
 		}
 		
