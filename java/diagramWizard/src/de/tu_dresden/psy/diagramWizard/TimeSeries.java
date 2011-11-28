@@ -61,7 +61,7 @@ public class TimeSeries {
 	/**
 	 * reads a CVS table containing time information in the first column
 	 * @param input   input stream containing the file
-	 * @param charset input charset string given to InputStreamReader
+	 * @param charset input char set string given to InputStreamReader
 	 * @throws IOException 
 	 */
 	public void readCSV(InputStream input, String charset) throws IOException {
