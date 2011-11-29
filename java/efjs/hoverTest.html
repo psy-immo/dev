@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Hover.js test file</title>
+</head>
+
+<body id="body" onmousemove="if ( document.all && myHover.flight != 0 ) myHover.MovePlane();" onclick="myHover.OnFlight()">
+<script type="text/javascript" src="hover.js"></script>
+<script type="text/javascript">
+myHover = new Hover();
+</script>
+
+<div id="frame" >
+
+Text Text Text
+<table>
+<tr><td onClick="myHover.TakeOff('OKAY',0)">
+KLICK
+</td>
+</tr>
+</table>
+
+</div>
+
+<layer name="lplane" top="4" left="4" visibility="hide" bgcolor="#DE6B00"></layer>
+<div id="plane" style="position:absolute; top: -220px; left:-220; padding:3px;background-color:#DE6B00;" onmousemove="if ( document.all ) myHover.MovePlane()"></div>
+<div id="plane1" style="position:absolute; top: -220px; left:-220; padding:0;" onmousemove="if ( document.all ) myHover.MovePlane()"><table style="padding:3px;background-color:#DE6B00;"><tr><td id="plane2">
+
+</body>
+</html>
