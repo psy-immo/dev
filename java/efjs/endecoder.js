@@ -20,15 +20,16 @@
  * this function encodes a string, such that it cannot be read by looking at sources :)
  */
 function encodeString(s){
-	var codes = [s.length];
-	var previous = 0;
+	var previous = Math.round(Math.random()*255);
+	var codes = [s.length, previous];
+	
 	for ( var int = 0; int < s.length; int++) {
 		var array_element = s.charCodeAt(int);
-		codes[int+1] = (array_element ^ 173)^previous;
+		codes[int+2] = (array_element ^ 173)^previous;
 		previous = array_element;
 	};
 	for (var int = s.length; int < 128; int++) {
-		codes[int+1] = ((Math.round(Math.random()*255)) ^ 173 ) ^previous;
+		codes[int+2] = ((Math.round(Math.random()*255)) ^ 173 ) ^previous;
 		previous = codes[int];
 	}
 	codes[0] = codes[128]^codes[0];
@@ -38,9 +39,9 @@ function encodeString(s){
 function decodeString(codes){
 	var len = codes[128]^codes[0];
 	var s = "";
-	var previous = 0;
+	var previous = codes[1];
 	for (var int = 0; int < len; int++){
-		var array_elt = (codes[int+1]^previous^173);
+		var array_elt = (codes[int+2]^previous^173);
 		s += String.fromCharCode(array_elt);
 		previous = array_elt;		
 	}

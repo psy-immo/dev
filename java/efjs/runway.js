@@ -32,9 +32,12 @@ function Runway(name, tags, token, accept, reject) {
 	this.height = "20";
 	this.colorEmpty = "#CCCCCC";
 	this.colorFilled = "#CCCCFF";
-	this.accept = null;
-	this.reject = null;
+	this.colorGood = "#CCFFCC";
+	this.accept = accept;
+	this.reject = reject;
 	this.doRespawn = null;
+	this.stayFilled = false;
+	
 	
 	/**
 	 * this function sets the bounding parameters
@@ -53,6 +56,15 @@ function Runway(name, tags, token, accept, reject) {
 	this.Respawn = function(content) {
 		this.doRespawn = this.token;
 		this.respawn = this;
+		return this;		
+	};
+	
+	/**
+	 * this function sets the run way to be of refilling type
+	 */
+	this.Refilling = function(content) {
+		this.stayFilled = true;
+
 		return this;		
 	};
 	
@@ -83,7 +95,7 @@ function Runway(name, tags, token, accept, reject) {
 	 * write the HTML code that will be used for displaying the run way
 	 */
 	this.WriteHtml = function() {
-		document.write("<TABLE><TR><TD id=\"runway" + this.id + "\" ");
+		document.write("<TABLE cellpadding=0 cellspacing=0><TR><TD id=\"runway" + this.id + "\" ");
 		if (this.width) {
 			document.write("width=\"" + this.width + "\" ");
 		}
@@ -121,6 +133,28 @@ function Runway(name, tags, token, accept, reject) {
 		}
 
 	};
+	
+	/**
+	 * this function marks the current run way green
+	 */
+	this.MarkAsGood = function() {
+		var html_object = document.getElementById("runway" + this.id);
+		html_object.style.backgroundColor = this.colorGood;
+	};
+	
+	/**
+	 * this function demarks the current run way
+	 */
+	this.MarkNeutral = function() {
+		var html_object = document.getElementById("runway" + this.id);
+		if (this.token) {
+			
+			html_object.style.backgroundColor = this.colorFilled;
+		} else {
+			
+			html_object.style.backgroundColor = this.colorEmpty;
+		}
+	};
 
 	/**
 	 * this function is called, when the run way object is clicked
@@ -130,6 +164,14 @@ function Runway(name, tags, token, accept, reject) {
 		 * Allow landing
 		 */
 		if (myHover.flight) {
+			
+			/**
+			 * if this run way stays filled, do not allow landing
+			 */
+			if (this.stayFilled) {
+				return;
+			}
+			
 			var log_data = "";
 			if (myHover.source.name) {
 				log_data += myHover.source.name;
@@ -210,7 +252,9 @@ function Runway(name, tags, token, accept, reject) {
 		 */
 		if (this.token) {
 			myHover.TakeOff(this.token, this, this.respawn);
-			this.SetToken(null);
+			if (this.stayFilled != true) {
+				this.SetToken(null);
+			}
 		}
 		
 	};
@@ -226,9 +270,13 @@ function Runway(name, tags, token, accept, reject) {
 	 * this function is called, when a token is taken away after a touch down
 	 */
 	this.TakeAway = function() {
+		if (this.stayFilled) {
+			return;
+		}
 		this.SetToken(null);
 		this.respawn = null;
 	};
 
 	runwayArray[this.id] = this;
+	myTags.Add(this, this.tags);
 }

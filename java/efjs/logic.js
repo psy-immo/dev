@@ -22,8 +22,8 @@
 function Exists(set, test) {
 	for (var int=0;int < set.length; ++int) {
 		if (test(set[int]) == true) {
-			return true;
+			return set[int];
 		}
 	}
-	return false;
+	return null;
 }
