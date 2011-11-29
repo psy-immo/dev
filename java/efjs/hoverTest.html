@@ -5,13 +5,16 @@
 <title>Hover.js test file</title>
 </head>
 
-<body id="body" onmousemove="if ( document.all && myHover.flight != 0 ) myHover.MovePlane();" onclick="myHover.OnFlight()">
+<body id="body" >
 <script type="text/javascript" src="hover.js"></script>
+<script type="text/javascript" src="runway.js"></script>
 <script type="text/javascript">
 myHover = new Hover();
+myRunway = new Runway();
+myOtherRunway = new Runway();
 </script>
 
-<div id="frame" >
+<div id="frame" onmousemove="if ( document.all && myHover.flight != 0 ) myHover.MovePlane();" onclick="myHover.OnFlight()">
 
 Text Text Text
 <table>
@@ -20,6 +23,12 @@ KLICK
 </td>
 </tr>
 </table>
+
+<br />
+<br />
+
+<script type="text/javascript"> myRunway.WriteHtml(); </script><br />
+<script type="text/javascript"> myOtherRunway.WriteHtml(); </script>
 
 </div>
 
