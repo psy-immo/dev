@@ -14,8 +14,6 @@
 
 myRunway = new Runway("1-1",["a"]);
 myOtherRunway = new Runway("source",["b","c"]);
-myRunway.accept = ["b"];
-myRunway.reject = ["c"];
 
 </script>
 
@@ -33,7 +31,10 @@ KLICK
 <br />
 
 <script type="text/javascript"> myRunway.WriteHtml(); </script><br />
-<script type="text/javascript"> new Runway("source",["b","c"],"Text A").WriteHtml(); </script>
+<script type="text/javascript"> new Runway().WriteHtml(); </script><br />
+<script type="text/javascript"> new Runway("source",["a","b"],"Text A").Size(400,40).Respawn().WriteHtml(); </script>
+<script type="text/javascript"> new Runway("source",["a","b"],"Text B").Size(400,40).Respawn().WriteHtml(); </script>
+<script type="text/javascript"> new Runway("source",["a","b"],"Text C").Size(400,40).Respawn().WriteHtml(); </script>
 
 </div>
 

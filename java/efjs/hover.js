@@ -25,8 +25,7 @@ function Hover() {
 	this.token = null;
 	this.source = null;
 	this.denyTakeOff = false;
-	this.consistencyCheck = function() {
-	};
+	this.respawn = null;
 	this.dontGiveBack = false;
 
 	this.isFive = (navigator.appVersion.indexOf("MSIE 4") == -1) ? 1 : 0;
@@ -34,11 +33,12 @@ function Hover() {
 	/**
 	 * @returns true, if token has been taken off
 	 */
-	this.TakeOff = function(token, source) {
+	this.TakeOff = function(token, source, respawn) {
 		if (this.denyTakeOff == true) {
 			return false;
 		}
 		this.token = token;
+		this.respawn = respawn;
 		this.source = source;
 		this.dontGiveBack = false;
 
@@ -140,7 +140,6 @@ function Hover() {
 			}
 		}
 
-		this.consistencyCheck();
 	};
 
 	/**

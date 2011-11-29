@@ -27,15 +27,60 @@ function Runway(name, tags, token, accept, reject) {
 	this.name = name;
 	this.tags = tags;
 	this.token = token;
+	this.respawn = null;
 	this.width = "200";
 	this.height = "20";
 	this.colorEmpty = "#CCCCCC";
 	this.colorFilled = "#CCCCFF";
 	this.accept = null;
 	this.reject = null;
+	this.doRespawn = null;
+	
+	/**
+	 * this function sets the bounding parameters
+	 * @returns this
+	 */
+	this.Size = function(width, height) {
+		this.width = width;
+		this.height = height;
+		
+		return this;
+	};
+	
+	/**
+	 * this function sets the run way to be of respawning type
+	 */
+	this.Respawn = function(content) {
+		this.doRespawn = this.token;
+		this.respawn = this;
+		return this;		
+	};
+	
+	/**
+	 * this function provides the respawning
+	 */
+	this.DoRespawn = function() {
+		if (this.respawn) {
+			this.respawn.DoRespawn();
+		}
+		this.SetToken(this.doRespawn);
+		this.respawn = this;
+	};
+	
+	
+	/**
+	 * this function sets the color parameters
+	 * @returns this
+	 */
+	this.Color = function(colorEmpty, colorFilled) {
+		this.colorEmpty = colorEmpty;
+		this.colorFilled = colorFilled;
+		
+		return this;
+	};
 
 	/**
-	 * write the HTML code that will be used for displaying the runway
+	 * write the HTML code that will be used for displaying the run way
 	 */
 	this.WriteHtml = function() {
 		document.write("<TABLE><TR><TD id=\"runway" + this.id + "\" ");
@@ -64,6 +109,7 @@ function Runway(name, tags, token, accept, reject) {
 	 * this function sets the objects token
 	 */
 	this.SetToken = function(token) {
+				
 		this.token = token;
 		var html_object = document.getElementById("runway" + this.id);
 		if (token) {
@@ -139,7 +185,22 @@ function Runway(name, tags, token, accept, reject) {
 			 * now update the run way
 			 */
 			this.SetToken(myHover.token);
+			
+			/**
+			 * respawn the old contents 
+			 */
+			
+			var respawn = this.respawn;
+			
+			this.respawn = myHover.respawn;
 
+			if (respawn) {
+				respawn.DoRespawn();
+			}
+						
+			
+			
+			
 			myLogger.Log(log_data);
 
 			return;
@@ -148,10 +209,10 @@ function Runway(name, tags, token, accept, reject) {
 		 * Allow take off
 		 */
 		if (this.token) {
-			myHover.TakeOff(this.token, this);
+			myHover.TakeOff(this.token, this, this.respawn);
 			this.SetToken(null);
 		}
-		;
+		
 	};
 
 	/**
@@ -166,6 +227,7 @@ function Runway(name, tags, token, accept, reject) {
 	 */
 	this.TakeAway = function() {
 		this.SetToken(null);
+		this.respawn = null;
 	};
 
 	runwayArray[this.id] = this;
