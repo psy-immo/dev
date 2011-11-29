@@ -6,12 +6,17 @@
 </head>
 
 <body id="body" >
+<script type="text/javascript" src="logger.js"></script>
 <script type="text/javascript" src="hover.js"></script>
+<script type="text/javascript" src="endecoder.js"></script>
 <script type="text/javascript" src="runway.js"></script>
 <script type="text/javascript">
-myHover = new Hover();
-myRunway = new Runway();
-myOtherRunway = new Runway();
+
+myRunway = new Runway("1-1",["a"]);
+myOtherRunway = new Runway("source",["b","c"]);
+myRunway.accept = ["b"];
+myRunway.reject = ["c"];
+
 </script>
 
 <div id="frame" onmousemove="if ( document.all && myHover.flight != 0 ) myHover.MovePlane();" onclick="myHover.OnFlight()">
@@ -28,7 +33,7 @@ KLICK
 <br />
 
 <script type="text/javascript"> myRunway.WriteHtml(); </script><br />
-<script type="text/javascript"> myOtherRunway.WriteHtml(); </script>
+<script type="text/javascript"> new Runway("source",["b","c"],"Text A").WriteHtml(); </script>
 
 </div>
 

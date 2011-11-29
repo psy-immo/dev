@@ -172,3 +172,8 @@ function Hover() {
 	};
 
 }
+
+/**
+ * generate the myHover object
+ */
+myHover = new Hover();

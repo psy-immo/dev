@@ -20,16 +20,19 @@ var runwayIdCounter = 0;
 var runwayArray = [];
 
 /**
- * creates a runway object, that may contain token data, one at a time
+ * creates a run way object, that may contain token data, one at a time
  */
-function Runway() {
+function Runway(name, tags, token, accept, reject) {
 	this.id = runwayIdCounter++;
-
-	this.token = null;
+	this.name = name;
+	this.tags = tags;
+	this.token = token;
 	this.width = "200";
 	this.height = "20";
 	this.colorEmpty = "#CCCCCC";
 	this.colorFilled = "#CCCCFF";
+	this.accept = null;
+	this.reject = null;
 
 	/**
 	 * write the HTML code that will be used for displaying the runway
@@ -54,6 +57,7 @@ function Runway() {
 			document.write(this.token);
 		}
 		document.write("</TD></TR></TABLE>");
+
 	};
 
 	/**
@@ -69,6 +73,7 @@ function Runway() {
 			html_object.innerHTML = "";
 			html_object.style.backgroundColor = this.colorEmpty;
 		}
+
 	};
 
 	/**
@@ -79,6 +84,45 @@ function Runway() {
 		 * Allow landing
 		 */
 		if (myHover.flight) {
+			var log_data = "";
+			if (myHover.source.name) {
+				log_data += myHover.source.name;
+			}
+			log_data += " -> " + this.name + ": " + myHover.token;
+
+			/**
+			 * check for acceptance tags
+			 */
+			if (this.accept) {
+				if (myHover.source.tags) {
+					for ( var i = 0; i < this.accept.length; i++) {
+						if (myHover.source.tags.indexOf(this.accept[i]) < 0) {
+							myLogger.Log(log_data + " rejected");
+							return;
+						}
+
+					}
+				} else
+				{
+					myLogger.Log(log_data + " rejected");
+					return;
+				}
+			}
+
+			/**
+			 * check for rejection tags
+			 */
+			if (this.reject) {
+				if (myHover.source.tags) {
+					for ( var i = 0; i < this.reject.length; i++) {
+						if (myHover.source.tags.indexOf(this.reject[i]) >= 0) {
+							myLogger.Log(log_data + " rejected");
+							return;
+						}
+					}
+				}
+			}
+
 			/**
 			 * the event handlers will be bubbling or capturing, depends on
 			 * browser, so handle it twice, this is the capturing part
@@ -95,6 +139,8 @@ function Runway() {
 			 * now update the run way
 			 */
 			this.SetToken(myHover.token);
+
+			myLogger.Log(log_data);
 
 			return;
 		}
