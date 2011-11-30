@@ -169,6 +169,13 @@ function Hover() {
 		}
 
 	};
+	
+	/**
+	 * denies further take-offs
+	 */
+	this.DenyTakeOff = function() {
+		this.denyTakeOff = true;
+	};
 
 }
 

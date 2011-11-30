@@ -40,6 +40,8 @@ function TestSolution() {
 		return true;
 	}) == null) {
 		fail = true;
+	} else {
+		myLogger.Log("Solved: part 1");
 	}
 	
 	if (Exists(rows, 
@@ -59,6 +61,8 @@ function TestSolution() {
 		return true;
 	}) == null) {
 		fail = true;
+	} else {
+		myLogger.Log("Solved: part 2");
 	}
 	
 	if (Exists(rows, 
@@ -78,6 +82,13 @@ function TestSolution() {
 		return true;
 	}) == null) {
 		fail = true;
+	} else {
+		myLogger.Log("Solved: part 3");
+	}
+	
+	if (!fail) {
+		myLogger.Log("Solved: all");
+		myHover.DenyTakeOff();
 	}
 	
 	return !fail;
