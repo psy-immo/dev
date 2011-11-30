@@ -17,9 +17,9 @@
  */
 
 /**
- * returns an object that provides the operation of a solution button
+ * returns an object that provides the operation of an answer button
  */
 
-function Solution() {
+function Answer() {
 	
 }
