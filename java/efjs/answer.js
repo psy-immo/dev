@@ -26,7 +26,8 @@ var answerArray = [];
 function Answer(testfn) {
 	this.id = answerIdCounter ++;
 	this.feedbackAllGood = "Correct!";
-	this.feedbackErrors = "Your solution still contains an error. Correct parts of your solution are lit green.";
+	this.errorCount = 0;
+	this.feedbackErrors = ["Your solution still contains an error. Correct parts of your solution are lit green."];
 	this.text = "Check your answer";
 	this.testfn = testfn;
 	
@@ -42,6 +43,25 @@ function Answer(testfn) {
 	};
 	
 	/**
+	 * this function sets the text of the component
+	 * @returns this
+	 */
+	this.Text = function(text) {
+		this.text = text;
+		return this;
+	};
+	
+	/**
+	 * this function sets the texts for the feedback
+	 * @returns this
+	 */
+	this.Feedback = function(good, bad_list) {
+		this.feedbackAllGood = good;
+		this.feedbackErrors = bad_list;
+		return this;
+	};
+	
+	/**
 	 * this function sets the contents of the hint area
 	 */
 	this.SetHint = function(contents) {
@@ -53,11 +73,17 @@ function Answer(testfn) {
 	 * this is called whenever the button is clicked
 	 */
 	this.OnClick = function() {
-		myLogger.Log("Check answer");
+		
 		if ( this.testfn() ) {
+						
 			this.SetHint(this.feedbackAllGood);
+			
+			myLogger.Log("Check answer: good ("+this.errorCount+")");
 		} else {
-			this.SetHint(this.feedbackErrors);
+			this.SetHint(this.feedbackErrors[Math.min(this.feedbackErrors.length-1, this.errorCount)]);
+			this.errorCount ++;	
+			
+			myLogger.Log("Check answer: errors ("+this.errorCount+")");			
 		}
 	};
 	

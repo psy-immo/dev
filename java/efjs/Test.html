@@ -19,10 +19,18 @@ function TestSolution() {
 	var fail = false;
 	var rows = ["r1","r2","r3"];
 	
+	/**
+	 * Decolorize previous solutions
+	 */
+	
 	Exists(myTags.AllTags([]), function(c) {
 		c.MarkNeutral();
 		return false;
 	});
+	
+	/**
+	 * Check for every line and mark the corresponding run ways
+	 */
 	
 	if (Exists(rows, 
 			function(r) {
@@ -103,17 +111,17 @@ function TestSolution() {
 <div style="width: 580px">
 <table><tr><td valign="middle">Eine Versuchsbedingung mit</td>
    <td><table cellpadding=0 cellspacing=1>
-      <tr><td><script type="text/javascript"> new Runway("1-1",["r1","c1"],null,["c1"]).Size(100,20).WriteHtml(); </script></td></tr>
-      <tr><td><script type="text/javascript"> new Runway("2-1",["r2","c1"],null,["c1"]).Size(100,20).WriteHtml(); </script></td></tr>
-      <tr><td><script type="text/javascript"> new Runway("3-1",["r3","c1"],null,["c1"]).Size(100,20).WriteHtml(); </script></td></tr>
+      <tr><td><script type="text/javascript"> new Runway("1-1",["r1","c1"]).Size(100,20).WriteHtml(); </script></td></tr>
+      <tr><td><script type="text/javascript"> new Runway("2-1",["r2","c1"]).Size(100,20).WriteHtml(); </script></td></tr>
+      <tr><td><script type="text/javascript"> new Runway("3-1",["r3","c1"]).Size(100,20).WriteHtml(); </script></td></tr>
    </table></td>
    <td>Intensität des CS führt im Gegen-</td>
    </tr>
    <tr><td></td><td>
    <table cellpadding=0 cellspacing=1>
-      <tr><td><script type="text/javascript"> new Runway("source",["c1","c2"],"geringer").Size(100,20).Refilling().Color("#CCCCCC", "#EEEEEE").WriteHtml(); </script></td></tr>
-      <tr><td><script type="text/javascript"> new Runway("source",["c1","c2"],"mittlerer").Size(100,20).Refilling().Color("#CCCCCC", "#EEEEEE").WriteHtml(); </script></td></tr>
-      <tr><td><script type="text/javascript"> new Runway("source",["c1","c2"],"hoher").Size(100,20).Refilling().Color("#CCCCCC", "#EEEEEE").WriteHtml(); </script></td></tr>
+      <tr><td><script type="text/javascript"> new Runway("source",[],"geringer").Size(100,20).Refilling().Color("#CCCCCC", "#EEEEEE").WriteHtml(); </script></td></tr>
+      <tr><td><script type="text/javascript"> new Runway("source",[],"mittlerer").Size(100,20).Refilling().Color("#CCCCCC", "#EEEEEE").WriteHtml(); </script></td></tr>
+      <tr><td><script type="text/javascript"> new Runway("source",[],"hoher").Size(100,20).Refilling().Color("#CCCCCC", "#EEEEEE").WriteHtml(); </script></td></tr>
    </table>
    </td><td></td></tr>
 </table>
@@ -123,17 +131,17 @@ function TestSolution() {
 <div style="width: 580px">
 <table><tr><td valign="middle">satz zu einer Versuchsbedingung mit</td>
    <td><table cellpadding=0 cellspacing=1>
-      <tr><td><script type="text/javascript"> new Runway("1-2",["r1","c2"],null,["c2"]).Size(100,20).WriteHtml(); </script></td></tr>
-      <tr><td><script type="text/javascript"> new Runway("2-2",["r2","c2"],null,["c2"]).Size(100,20).WriteHtml(); </script></td></tr>
-      <tr><td><script type="text/javascript"> new Runway("3-2",["r3","c2"],null,["c2"]).Size(100,20).WriteHtml(); </script></td></tr>
+      <tr><td><script type="text/javascript"> new Runway("1-2",["r1","c2"]).Size(100,20).WriteHtml(); </script></td></tr>
+      <tr><td><script type="text/javascript"> new Runway("2-2",["r2","c2"]).Size(100,20).WriteHtml(); </script></td></tr>
+      <tr><td><script type="text/javascript"> new Runway("3-2",["r3","c2"]).Size(100,20).WriteHtml(); </script></td></tr>
    </table></td>
    <td>Intensität des CS bei </td>
    </tr>
    <tr><td></td><td>
    <table cellpadding=0 cellspacing=1>
-      <tr><td><script type="text/javascript"> new Runway("source",["c1","c2"],"geringer").Size(100,20).Refilling().Color("#CCCCCC", "#EEEEEE").WriteHtml(); </script></td></tr>
-      <tr><td><script type="text/javascript"> new Runway("source",["c1","c2"],"mittlerer").Size(100,20).Refilling().Color("#CCCCCC", "#EEEEEE").WriteHtml(); </script></td></tr>
-      <tr><td><script type="text/javascript"> new Runway("source",["c1","c2"],"hoher").Size(100,20).Refilling().Color("#CCCCCC", "#EEEEEE").WriteHtml(); </script></td></tr>
+      <tr><td><script type="text/javascript"> new Runway("source",[],"geringer").Size(100,20).Refilling().Color("#CCCCCC", "#EEEEEE").WriteHtml(); </script></td></tr>
+      <tr><td><script type="text/javascript"> new Runway("source",[],"mittlerer").Size(100,20).Refilling().Color("#CCCCCC", "#EEEEEE").WriteHtml(); </script></td></tr>
+      <tr><td><script type="text/javascript"> new Runway("source",[],"hoher").Size(100,20).Refilling().Color("#CCCCCC", "#EEEEEE").WriteHtml(); </script></td></tr>
    </table>
    </td><td></td></tr>
 </table>
@@ -144,7 +152,7 @@ mittlerer Intensität des US schneller zu einer erhöhten Lernrate.
 
 <div style="width: 540px">
 <table><tr><td>
-<script type="text/javascript"> new Answer(TestSolution).WriteHtml(); </script>
+<script type="text/javascript"> new Answer(TestSolution).Text("Antwort prüfen").Feedback("Richtig!", [decodeString([169, 15, 230, 136, 191, 254, 228, 183, 170, 249, 225, 164, 161, 160, 172, 186, 255, 227, 172, 161, 166, 229, 227, 170, 167, 166, 177, 249, 255, 182, 167, 166, 177, 176, 163, 228, 163, 219, 158, 186, 172, 171, 187, 166, 160, 232, 232, 187, 254, 227, 172, 161, 166, 229, 232, 161, 170, 174, 161, 160, 224, 35, 212, 202, 236, 0, 117, 118, 234, 25, 223, 83, 22, 200, 144, 164, 35, 195, 166, 37, 153, 91, 6, 93, 245, 36, 215, 141, 213, 246, 131, 155, 40, 146, 24, 245, 143, 27, 185, 213, 7, 147, 200, 161, 226, 113, 202, 201, 229, 186, 221, 223, 131, 178, 232, 255, 72, 44, 161, 155, 230, 235, 221, 18, 69, 228, 106, 201, 146, 216]),decodeString([78, 238, 7, 136, 191, 254, 228, 183, 170, 249, 225, 164, 161, 160, 172, 186, 255, 227, 172, 161, 166, 229, 227, 170, 167, 166, 177, 249, 255, 182, 167, 166, 177, 176, 163, 228, 163, 193, 136, 161, 187, 254, 227, 172, 161, 166, 229, 232, 161, 170, 174, 161, 160, 225, 228, 170, 227, 233, 172, 166, 227, 193, 132, 186, 177, 183, 188, 176, 161, 188, 166, 227, 227, 162, 175, 166, 228, 4, 254, 39, 122, 168, 188, 230, 141, 171, 255, 251, 80, 210, 151, 181, 215, 21, 120, 77, 123, 111, 119, 182, 202, 93, 138, 129, 233, 30, 120, 53, 253, 80, 96, 197, 143, 6, 152, 200, 178, 92, 231, 3, 34, 204, 177, 200, 200, 240, 65, 185, 5, 199]),decodeString([14, 231, 14, 136, 191, 254, 228, 183, 170, 249, 225, 164, 161, 160, 172, 186, 255, 227, 172, 161, 166, 229, 227, 170, 167, 166, 177, 249, 255, 182, 167, 166, 177, 176, 163, 228, 163, 217, 144, 180, 173, 231, 183, 207, 138, 161, 169, 224, 230, 170, 160, 191, 173, 183, 183, 189, 166, 160, 166, 227, 198, 137, 172, 167, 160, 176, 176, 171, 172, 170, 161, 186, 186, 166, 227, 235, 162, 170, 167, 172, 188, 249, 204, 159, 173, 177, 184, 190, 165, 184, 176, 171, 172, 176, 178, 164, 186, 177, 166, 166, 227, 233, 168, 168, 188, 170, 188, 166, 229, 254, 170, 184, 184, 173, 245, 161, 233, 168, 191, 173, 254, 232, 161, 170, 227, 195, 176, 222, 224, 169, 176, 249, 232, 161, 170, 166, 165, 224, 216, 171, 222, 234, 175, 184, 188, 173, 190, 171, 249, 250, 179, 182, 187, 231, 163, 201, 140, 186, 255, 195, 176, 222, 250, 179, 182, 187, 233, 254, 177, 226, 247, 162, 248, 232, 161, 170, 166, 165, 224, 206, 189, 208, 163, 201, 136, 164, 160, 186, 255, 228, 183, 170, 249, 232, 187, 254, 227, 172, 182, 174, 191, 166, 167, 160, 163, 230, 161, 233, 168, 191, 173, 254, 233, 172, 186, 255, 206, 189, 222, 227, 170, 167, 166, 177, 249, 247, 162, 248, 254, 189, 166, 178, 187, 175, 166, 229, 228, 183, 170, 247])]).WriteHtml(); </script>
 </td></tr></table>
 </div>
 
@@ -157,9 +165,7 @@ mittlerer Intensität des US schneller zu einer erhöhten Lernrate.
 
 </div>
 
-<layer name="lplane" top="4" left="4" visibility="hide" bgcolor="#DE6B00"></layer>
-<div id="plane" style="position:absolute; top: -220px; left:-220; padding:3px;background-color:#DE6B00;" onmousemove="if ( document.all ) myHover.MovePlane()"></div>
-<div id="plane1" style="position:absolute; top: -220px; left:-220; padding:0;" onmousemove="if ( document.all ) myHover.MovePlane()"><table style="padding:3px;background-color:#DE6B00;"><tr><td id="plane2">
+<script type="text/javascript">myHover.WriteHtml();</script>
 
 </body>
 </html>
