@@ -37,37 +37,37 @@ function Runway(name, tags, token, accept, reject) {
 	this.reject = reject;
 	this.doRespawn = null;
 	this.stayFilled = false;
-	
-	
+
 	/**
 	 * this function sets the bounding parameters
+	 * 
 	 * @returns this
 	 */
 	this.Size = function(width, height) {
 		this.width = width;
 		this.height = height;
-		
+
 		return this;
 	};
-	
+
 	/**
 	 * this function sets the run way to be of respawning type
 	 */
 	this.Respawn = function(content) {
 		this.doRespawn = this.token;
 		this.respawn = this;
-		return this;		
+		return this;
 	};
-	
+
 	/**
 	 * this function sets the run way to be of refilling type
 	 */
 	this.Refilling = function(content) {
 		this.stayFilled = true;
 
-		return this;		
+		return this;
 	};
-	
+
 	/**
 	 * this function provides the respawning
 	 */
@@ -78,16 +78,16 @@ function Runway(name, tags, token, accept, reject) {
 		this.SetToken(this.doRespawn);
 		this.respawn = this;
 	};
-	
-	
+
 	/**
 	 * this function sets the color parameters
+	 * 
 	 * @returns this
 	 */
 	this.Color = function(colorEmpty, colorFilled) {
 		this.colorEmpty = colorEmpty;
 		this.colorFilled = colorFilled;
-		
+
 		return this;
 	};
 
@@ -95,7 +95,8 @@ function Runway(name, tags, token, accept, reject) {
 	 * write the HTML code that will be used for displaying the run way
 	 */
 	this.WriteHtml = function() {
-		document.write("<TABLE cellpadding=0 cellspacing=0><TR><TD id=\"runway" + this.id + "\" ");
+		document.write("<TABLE cellpadding=0 cellspacing=0><TR><TD id=\"runway"
+				+ this.id + "\" ");
 		if (this.width) {
 			document.write("width=\"" + this.width + "\" ");
 		}
@@ -121,7 +122,7 @@ function Runway(name, tags, token, accept, reject) {
 	 * this function sets the objects token
 	 */
 	this.SetToken = function(token) {
-				
+
 		this.token = token;
 		var html_object = document.getElementById("runway" + this.id);
 		if (token) {
@@ -133,7 +134,7 @@ function Runway(name, tags, token, accept, reject) {
 		}
 
 	};
-	
+
 	/**
 	 * this function marks the current run way green
 	 */
@@ -141,17 +142,17 @@ function Runway(name, tags, token, accept, reject) {
 		var html_object = document.getElementById("runway" + this.id);
 		html_object.style.backgroundColor = this.colorGood;
 	};
-	
+
 	/**
 	 * this function demarks the current run way
 	 */
 	this.MarkNeutral = function() {
 		var html_object = document.getElementById("runway" + this.id);
 		if (this.token) {
-			
+
 			html_object.style.backgroundColor = this.colorFilled;
 		} else {
-			
+
 			html_object.style.backgroundColor = this.colorEmpty;
 		}
 	};
@@ -164,14 +165,14 @@ function Runway(name, tags, token, accept, reject) {
 		 * Allow landing
 		 */
 		if (myHover.flight) {
-			
+
 			/**
 			 * if this run way stays filled, do not allow landing
 			 */
 			if (this.stayFilled) {
 				return;
 			}
-			
+
 			var log_data = "";
 			if (myHover.source.name) {
 				log_data += myHover.source.name;
@@ -190,8 +191,7 @@ function Runway(name, tags, token, accept, reject) {
 						}
 
 					}
-				} else
-				{
+				} else {
 					myLogger.Log(log_data + " rejected");
 					return;
 				}
@@ -227,22 +227,19 @@ function Runway(name, tags, token, accept, reject) {
 			 * now update the run way
 			 */
 			this.SetToken(myHover.token);
-			
+
 			/**
-			 * respawn the old contents 
+			 * respawn the old contents
 			 */
-			
+
 			var respawn = this.respawn;
-			
+
 			this.respawn = myHover.respawn;
 
 			if (respawn) {
 				respawn.DoRespawn();
 			}
-						
-			
-			
-			
+
 			myLogger.Log(log_data);
 
 			return;
@@ -251,12 +248,12 @@ function Runway(name, tags, token, accept, reject) {
 		 * Allow take off
 		 */
 		if (this.token) {
-			myHover.TakeOff(this.token, this, this.respawn);
-			if (this.stayFilled != true) {
-				this.SetToken(null);
-			}
+			if (myHover.TakeOff(this.token, this, this.respawn))
+				if (this.stayFilled != true) {
+					this.SetToken(null);
+				}
 		}
-		
+
 	};
 
 	/**
