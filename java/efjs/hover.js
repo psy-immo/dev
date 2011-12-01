@@ -16,6 +16,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** TODO: customize this to be able to use several hover objects in a single file 
+ *          & make it easier to attach to html objects */
+
 /**
  * creates a Hover object which provides functionality of letting objects fly
  * under the mouse cursor
@@ -181,6 +184,7 @@ function Hover() {
 	 * writes the HTML code that provides the layers used for flights
 	 */
 	this.WriteHtml = function() {
+		
 		document.write("<layer name=\"lplane\" top=\"4\" left=\"4\" visibility=\"hide\" bgcolor=\"#DE6B00\"></layer><div id=\"plane\" style=\"position:absolute; top: -220px; left:-220; padding:3px;background-color:#DE6B00;\" onmousemove=\"if ( document.all ) myHover.MovePlane()\"></div><div id=\"plane1\" style=\"position:absolute; top: -220px; left:-220; padding:0;\" onmousemove=\"if ( document.all ) myHover.MovePlane()\"><table style=\"padding:3px;background-color:#DE6B00;\"><tr><td id=\"plane2\">");		
 	};
 
