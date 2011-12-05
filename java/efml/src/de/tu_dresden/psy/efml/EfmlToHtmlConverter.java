@@ -19,11 +19,14 @@
 package de.tu_dresden.psy.efml;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.omg.CORBA.Any;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -57,6 +60,19 @@ public class EfmlToHtmlConverter {
 
 	public static void transformStream(InputStream input, OutputStream output)
 			throws ParserConfigurationException, SAXException, IOException {
+		
+		/**
+		 * This stores the tags of the head and body part of the html file
+		 */
+		
+		ArrayList<AnyHtmlTag> head = new ArrayList<AnyHtmlTag>();
+		ArrayList<AnyHtmlTag> body = new ArrayList<AnyHtmlTag>();
+		
+		/**
+		 * I/O handling in UTF-8
+		 */
+		
+		
 		Reader reader = new InputStreamReader(input, "UTF-8");
 		InputSource source = new InputSource(reader);
 
@@ -137,12 +153,58 @@ public class EfmlToHtmlConverter {
 			}
 
 		};
+		
+		/**
+		 * parse input
+		 */
+		
+		parser.parse(source, handler);
+		
+		/**
+		 * write output
+		 */
+		
 
 		HtmlTag html = new HtmlTag();
 		
 		html.Open(writer);
 		
-		parser.parse(source, handler);
+		/**
+		 * write head
+		 */
+		
+		HeadTag headTag = new HeadTag();
+		
+		headTag.Open(writer);
+		
+		
+		for (Iterator<AnyHtmlTag> i_tag = head.iterator(); i_tag.hasNext();) {
+			AnyHtmlTag tag = i_tag.next();
+			
+			tag.Open(writer);
+			tag.Close(writer);
+		}
+		
+		headTag.Close(writer);
+		
+		
+		/**
+		 * write body
+		 */
+		
+		BodyTag bodyTag = new BodyTag();
+		
+		bodyTag.Open(writer);
+		
+		for (Iterator<AnyHtmlTag> i_tag = body.iterator(); i_tag.hasNext();) {
+			AnyHtmlTag tag = i_tag.next();
+			
+			tag.Open(writer);
+			tag.Close(writer);
+		}
+		
+		bodyTag.Close(writer);
+		
 		
 		html.Close(writer);
 		
@@ -156,7 +218,7 @@ public class EfmlToHtmlConverter {
 
 			InputStream inputStream = new FileInputStream(file);
 
-			File out = new File("/tmp/output.xml");
+			File out = new File("/tmp/output.html");
 			OutputStream outputStream = new FileOutputStream(out);
 
 			transformStream(inputStream, outputStream);
