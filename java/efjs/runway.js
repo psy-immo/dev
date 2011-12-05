@@ -37,6 +37,7 @@ function Runway(name, tags, token, accept, reject) {
 	this.reject = reject;
 	this.doRespawn = null;
 	this.stayFilled = false;
+	this.noTakeOff = false;
 
 	/**
 	 * this function sets the bounding parameters
@@ -46,6 +47,17 @@ function Runway(name, tags, token, accept, reject) {
 	this.Size = function(width, height) {
 		this.width = width;
 		this.height = height;
+
+		return this;
+	};
+
+	/**
+	 * this function unsets/sets the flag that prevents take off from the runway
+	 * 
+	 * @returns this
+	 */
+	this.SetTakeOff = function(allowed) {
+		this.noTakeOff = !allowed;
 
 		return this;
 	};
@@ -248,10 +260,12 @@ function Runway(name, tags, token, accept, reject) {
 		 * Allow take off
 		 */
 		if (this.token) {
-			if (myHover.TakeOff(this.token, this, this.respawn))
-				if (this.stayFilled != true) {
-					this.SetToken(null);
-				}
+			if (true != this.noTakeOff) {
+				if (myHover.TakeOff(this.token, this, this.respawn))
+					if (this.stayFilled != true) {
+						this.SetToken(null);
+					}
+			}
 		}
 
 	};
