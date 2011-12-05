@@ -24,7 +24,21 @@ var runwayArray = [];
  */
 function Runway(name, tags, token, accept, reject) {
 	this.id = runwayIdCounter++;
-	this.name = name;
+
+	/**
+	 * Provide automatic name generation: use provided tags
+	 */
+
+	if ((name === undefined) || (name === "") || (name === false)) {
+		this.name = "";
+		for (var i = 0; i < tags.length; ++i) {
+			this.name += tags[i];
+		}
+	} else {
+
+		this.name = name;
+	}
+
 	this.tags = tags;
 	this.token = token;
 	this.respawn = null;
