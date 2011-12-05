@@ -146,6 +146,8 @@ public class EfmlToHtmlConverter {
 		
 		html.Close(writer);
 		
+		writer.close();
+		
 	};
 
 	public static void main(String[] args) {
