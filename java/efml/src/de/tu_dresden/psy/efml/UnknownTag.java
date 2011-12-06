@@ -53,7 +53,7 @@ public class UnknownTag implements AnyTag {
 			 * the tags attribute belongs to the EFML data structure layer and
 			 * is not going to show in the html
 			 */
-			if (attributeName != "tags") {
+			if ((attributeName != "tags")&&(attributeName != "atags")&&(attributeName != "rtags")) {
 				opening += " " + attributeName + "=\""
 						+ StringEscape.escapeToHtml(attribs.getValue(i)) + "\"";
 			}

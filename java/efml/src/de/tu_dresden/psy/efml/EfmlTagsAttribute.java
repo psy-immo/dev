@@ -40,6 +40,8 @@ public class EfmlTagsAttribute {
 	private EfmlTagsAttribute parent;
 
 	private Set<String> tags;
+	private Set<String> accept;
+	private Set<String> reject;
 
 	public EfmlTagsAttribute(String qName, Attributes attribs, EfmlTagsAttribute parent) {
 		this.name = qName;
@@ -48,8 +50,12 @@ public class EfmlTagsAttribute {
 
 		if (parent != null) {
 			this.tags = new HashSet<String>(parent.tags);
+			this.accept = new HashSet<String>(parent.accept);
+			this.reject = new HashSet<String>(parent.reject);
 		} else {
 			this.tags = new HashSet<String>();
+			this.accept = new HashSet<String>();
+			this.reject = new HashSet<String>();
 		}
 
 
@@ -59,6 +65,22 @@ public class EfmlTagsAttribute {
 				String[] tag_array = tagsValue.split(",");
 				for (int i = 0; i < tag_array.length; ++i) {
 					this.tags.add(tag_array[i].trim());
+				}
+			}
+			
+			String acceptValue = this.attribs.getValue("atags");
+			if (null != tagsValue) {
+				String[] tag_array = tagsValue.split(",");
+				for (int i = 0; i < tag_array.length; ++i) {
+					this.accept.add(tag_array[i].trim());
+				}
+			}
+			
+			String rejectValue = this.attribs.getValue("rtags");
+			if (null != tagsValue) {
+				String[] tag_array = tagsValue.split(",");
+				for (int i = 0; i < tag_array.length; ++i) {
+					this.reject.add(tag_array[i].trim());
 				}
 			}
 		}
@@ -73,6 +95,35 @@ public class EfmlTagsAttribute {
 	public String getTags() {
 		String array = "[";
 		for (Iterator<String> it=tags.iterator(); it.hasNext();) {
+			array += "\""+StringEscape.escapeToJavaScript(it.next())+"\"";
+			if (it.hasNext()) array += ",";
+		}
+		return array + "]";
+	}
+	
+	/**
+	 * 
+	 * @return the current accept tag set, as javascript-array
+	 */
+	
+	public String getAcceptTags() {
+		String array = "[";
+		for (Iterator<String> it=accept.iterator(); it.hasNext();) {
+			array += "\""+StringEscape.escapeToJavaScript(it.next())+"\"";
+			if (it.hasNext()) array += ",";
+		}
+		return array + "]";
+	}
+	
+
+	/**
+	 * 
+	 * @return the current reject tag set, as javascript-array
+	 */
+	
+	public String getRejectTags() {
+		String array = "[";
+		for (Iterator<String> it=reject.iterator(); it.hasNext();) {
 			array += "\""+StringEscape.escapeToJavaScript(it.next())+"\"";
 			if (it.hasNext()) array += ",";
 		}
