@@ -6,7 +6,7 @@ import java.io.Writer;
 public class HtmlTag implements AnyHtmlTag {
 
 	@Override
-	public void Open(Writer writer) throws IOException {
+	public void open(Writer writer) throws IOException {
 		writer.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n"
 				+ "<html>");
 		/**
@@ -23,7 +23,7 @@ public class HtmlTag implements AnyHtmlTag {
 	}
 
 	@Override
-	public void Close(Writer writer) throws IOException {
+	public void close(Writer writer) throws IOException {
 		writer.write("</html>");
 	}
 

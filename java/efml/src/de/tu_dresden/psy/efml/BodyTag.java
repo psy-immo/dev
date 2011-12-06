@@ -31,7 +31,7 @@ import java.io.Writer;
 public class BodyTag implements AnyHtmlTag {
 
 	@Override
-	public void Open(Writer writer) throws IOException {
+	public void open(Writer writer) throws IOException {
 		writer.write("<body id=\"body\">");
 
 		/**
@@ -44,7 +44,7 @@ public class BodyTag implements AnyHtmlTag {
 	}
 
 	@Override
-	public void Close(Writer writer) throws IOException {
+	public void close(Writer writer) throws IOException {
 		writer.write("</div>");
 
 		/**

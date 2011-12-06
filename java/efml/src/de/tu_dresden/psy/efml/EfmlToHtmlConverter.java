@@ -96,7 +96,7 @@ public class EfmlToHtmlConverter {
 
 		HtmlTag html = new HtmlTag();
 		
-		html.Open(writer);
+		html.open(writer);
 		
 		/**
 		 * write head
@@ -104,17 +104,17 @@ public class EfmlToHtmlConverter {
 		
 		HeadTag head = new HeadTag();
 		
-		head.Open(writer);
+		head.open(writer);
 		
 		
 		for (Iterator<AnyHtmlTag> i_tag = handler.headIterator(); i_tag.hasNext();) {
 			AnyHtmlTag tag = i_tag.next();
 			
-			tag.Open(writer);
-			tag.Close(writer);
+			tag.open(writer);
+			tag.close(writer);
 		}
 		
-		head.Close(writer);
+		head.close(writer);
 		
 		
 		/**
@@ -123,22 +123,22 @@ public class EfmlToHtmlConverter {
 		
 		BodyTag body = new BodyTag();
 		
-		body.Open(writer);
+		body.open(writer);
 		
 		for (Iterator<AnyHtmlTag> i_tag = handler.bodyIterator(); i_tag.hasNext();) {
 			AnyHtmlTag tag = i_tag.next();
 			
-			tag.Open(writer);
-			tag.Close(writer);
+			tag.open(writer);
+			tag.close(writer);
 		}
 		
-		body.Close(writer);
+		body.close(writer);
 		
 		/**
 		 * close main html tag and save file
 		 */
 		
-		html.Close(writer);
+		html.close(writer);
 		
 		writer.close();
 		

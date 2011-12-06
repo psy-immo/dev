@@ -1,6 +1,6 @@
 /**
- * HeadTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
- * Professur für die Psychologie des Lernen und Lehrens
+ * StringEscape.java, (c) 2011, Immanuel Albrecht; Dresden University of
+ * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -18,30 +18,19 @@
 
 package de.tu_dresden.psy.efml;
 
-import java.io.IOException;
-import java.io.Writer;
+public class StringEscape {
 
-/**
- * provides the head tag
- * @author immanuel
- *
- */
+	/**
+	 * use static only
+	 */
+	private StringEscape() {
 
-public class HeadTag implements AnyHtmlTag {
-
-	@Override
-	public void open(Writer writer) throws IOException {
-		writer.write("<head>");
-		/**
-		 * write UTF-8 meta data information
-		 */
-		
-		writer.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
 	}
 
-	@Override
-	public void close(Writer writer) throws IOException {
-		writer.write("</head>");
-	}
+	public static String escapeToJavaScript(String unescaped) {
 
+		return unescaped.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"")
+				.replaceAll("\\n", "\\\\n").replaceAll("\\t", "\\\\t")
+				.replaceAll("\\r", "\\\\r");
+	}
 }

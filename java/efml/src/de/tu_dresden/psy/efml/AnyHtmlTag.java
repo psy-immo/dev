@@ -33,13 +33,13 @@ public interface AnyHtmlTag {
 	 * @param writer   Output writer
 	 * @throws IOException
 	 */
-	public void Open(Writer writer) throws IOException;
+	public void open(Writer writer) throws IOException;
 	
 	/**
 	 * write the closing sequence of the tag
 	 * @param writer   Output writer
 	 * @throws IOException
 	 */
-	public void Close(Writer writer) throws IOException;
+	public void close(Writer writer) throws IOException;
 	
 }

@@ -19,7 +19,10 @@
 package de.tu_dresden.psy.efml;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.Stack;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -42,9 +45,95 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	private ArrayList<AnyHtmlTag> head;
 	private ArrayList<AnyHtmlTag> body;
 
+	/**
+	 * class that will store tag information
+	 * 
+	 * @author immanuel
+	 * 
+	 */
+
+	private class EfmlTag {
+		private String name;
+		private Attributes attribs;
+		private EfmlTag parent;
+
+		private Set<String> tags;
+		private StringBuffer characters;
+
+		public EfmlTag(String qName, Attributes attribs, EfmlTag parent) {
+			this.name = qName;
+			this.attribs = attribs;
+			this.parent = parent;
+
+			if (parent != null) {
+				this.tags = new HashSet<String>(parent.tags);
+			} else {
+				this.tags = new HashSet<String>();
+			}
+			this.characters = new StringBuffer();
+
+			if (null != attribs) {
+				String tagsValue = this.attribs.getValue("tags");
+				if (null != tagsValue) {
+					String[] tag_array = tagsValue.split(",");
+					for (int i = 0; i < tag_array.length; ++i) {
+						this.tags.add(tag_array[i].trim());
+					}
+				}
+			}
+		}
+
+		public String getCharacters() {
+			return characters.toString();
+		}
+
+		public void addCharacters(String s) {
+			characters.append(s);
+		}
+		
+		/**
+		 * 
+		 * @return the current tag set, as javascript-array
+		 */
+		
+		public String getTags() {
+			String array = "[";
+			for (Iterator<String> it=tags.iterator(); it.hasNext();) {
+				array += "\""+StringEscape.escapeToJavaScript(it.next())+"\"";
+				if (it.hasNext()) array += ",";
+			}
+			return array + "]";
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public Attributes getAttribs() {
+			return attribs;
+		}
+
+		public EfmlTag getParent() {
+			return parent;
+		}
+
+	};
+
+	EfmlTag root;
+
+	/**
+	 * keep track of currently opened tags
+	 */
+
+	private Stack<EfmlTag> openTags;
+
 	public EfmlToHtmlHandler() {
 		head = new ArrayList<AnyHtmlTag>();
 		body = new ArrayList<AnyHtmlTag>();
+		openTags = new Stack<EfmlTag>();
+		root = new EfmlTag("", null, null);
+
+		openTags.push(root);
 	}
 
 	/**
@@ -70,21 +159,24 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			Attributes attributes) throws SAXException {
 
 		System.out.println("Start Element :" + qName);
-		System.out.println("Attrubibutes :" + attributes.getLength());
+		System.out.println("Local name :" + localName);
+		System.out.println("Attributes :" + attributes.getLength());
 
+		openTags.push(new EfmlTag(qName, attributes, openTags.peek()));
 	}
 
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 
-		System.out.println("End Element :" + qName);
-
+		System.out.println("tags: " + openTags.peek().getTags());
+		openTags.pop();
 	}
 
 	public void characters(char ch[], int start, int length)
 			throws SAXException {
 
-		System.out.println(new String(ch, start, length));
+		System.out.println("Chars:" + new String(ch, start, length));
+		openTags.peek().addCharacters(new String(ch, start, length));
 
 	}
 
