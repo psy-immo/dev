@@ -33,17 +33,20 @@ public class BodyTag implements AnyHtmlTag {
 	@Override
 	public void Open(Writer writer) throws IOException {
 		writer.write("<body id=\"body\">");
+
 		/**
 		 * all content will be displayed in the main "frame"
 		 */
+
 		writer.write("<div id=\"frame\" \n"
 				+ "		onmousemove=\"if ( document.all && myHover.flight != 0 ) myHover.MovePlane();\"\n"
-				+ "		onclick=\"myHover.OnFlight()\">");
+				+ "		onclick=\"myHover.OnFlight();\">");
 	}
 
 	@Override
 	public void Close(Writer writer) throws IOException {
 		writer.write("</div>");
+
 		/**
 		 * add code for the hovering feature
 		 */

@@ -18,21 +18,24 @@
 
 package de.tu_dresden.psy.efml;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.Iterator;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.omg.CORBA.Any;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.Attributes;
 
 /**
  * provides an interface that generates HTML files for the browser from EFML
@@ -61,12 +64,7 @@ public class EfmlToHtmlConverter {
 	public static void transformStream(InputStream input, OutputStream output)
 			throws ParserConfigurationException, SAXException, IOException {
 		
-		/**
-		 * This stores the tags of the head and body part of the html file
-		 */
-		
-		ArrayList<AnyHtmlTag> head = new ArrayList<AnyHtmlTag>();
-		ArrayList<AnyHtmlTag> body = new ArrayList<AnyHtmlTag>();
+
 		
 		/**
 		 * I/O handling in UTF-8
@@ -83,76 +81,7 @@ public class EfmlToHtmlConverter {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser = factory.newSAXParser();
 
-		DefaultHandler handler = new DefaultHandler() {
-
-			boolean bfname = false;
-			boolean blname = false;
-			boolean bnname = false;
-			boolean bsalary = false;
-
-			public void startElement(String uri, String localName,
-					String qName, Attributes attributes) throws SAXException {
-
-				System.out.println("Start Element :" + qName);
-				System.out.println("Attrubibutes :" + attributes.getLength());
-
-				if (qName.equalsIgnoreCase("FIRSTNAME")) {
-					bfname = true;
-				}
-
-				if (qName.equalsIgnoreCase("LASTNAME")) {
-					blname = true;
-				}
-
-				if (qName.equalsIgnoreCase("NICKNAME")) {
-					bnname = true;
-				}
-
-				if (qName.equalsIgnoreCase("SALARY")) {
-					bsalary = true;
-				}
-
-			}
-
-			public void endElement(String uri, String localName, String qName)
-					throws SAXException {
-
-				System.out.println("End Element :" + qName);
-
-			}
-
-			public void characters(char ch[], int start, int length)
-					throws SAXException {
-
-				System.out.println(new String(ch, start, length));
-
-				if (bfname) {
-					System.out.println("First Name : "
-							+ new String(ch, start, length));
-					bfname = false;
-				}
-
-				if (blname) {
-					System.out.println("Last Name : "
-							+ new String(ch, start, length));
-					blname = false;
-				}
-
-				if (bnname) {
-					System.out.println("Nick Name : "
-							+ new String(ch, start, length));
-					bnname = false;
-				}
-
-				if (bsalary) {
-					System.out.println("Salary : "
-							+ new String(ch, start, length));
-					bsalary = false;
-				}
-
-			}
-
-		};
+		EfmlToHtmlHandler handler = new EfmlToHtmlHandler();
 		
 		/**
 		 * parse input
@@ -173,38 +102,41 @@ public class EfmlToHtmlConverter {
 		 * write head
 		 */
 		
-		HeadTag headTag = new HeadTag();
+		HeadTag head = new HeadTag();
 		
-		headTag.Open(writer);
+		head.Open(writer);
 		
 		
-		for (Iterator<AnyHtmlTag> i_tag = head.iterator(); i_tag.hasNext();) {
+		for (Iterator<AnyHtmlTag> i_tag = handler.headIterator(); i_tag.hasNext();) {
 			AnyHtmlTag tag = i_tag.next();
 			
 			tag.Open(writer);
 			tag.Close(writer);
 		}
 		
-		headTag.Close(writer);
+		head.Close(writer);
 		
 		
 		/**
 		 * write body
 		 */
 		
-		BodyTag bodyTag = new BodyTag();
+		BodyTag body = new BodyTag();
 		
-		bodyTag.Open(writer);
+		body.Open(writer);
 		
-		for (Iterator<AnyHtmlTag> i_tag = body.iterator(); i_tag.hasNext();) {
+		for (Iterator<AnyHtmlTag> i_tag = handler.bodyIterator(); i_tag.hasNext();) {
 			AnyHtmlTag tag = i_tag.next();
 			
 			tag.Open(writer);
 			tag.Close(writer);
 		}
 		
-		bodyTag.Close(writer);
+		body.Close(writer);
 		
+		/**
+		 * close main html tag and save file
+		 */
 		
 		html.Close(writer);
 		

@@ -30,14 +30,14 @@ import java.io.IOException;
 public interface AnyHtmlTag {
 	/**
 	 * write the opening sequence of the tag
-	 * @param output
+	 * @param writer   Output writer
 	 * @throws IOException
 	 */
 	public void Open(Writer writer) throws IOException;
 	
 	/**
 	 * write the closing sequence of the tag
-	 * @param output
+	 * @param writer   Output writer
 	 * @throws IOException
 	 */
 	public void Close(Writer writer) throws IOException;
