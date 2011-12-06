@@ -1,5 +1,5 @@
 /**
- * BodyTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
+ * RTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -20,68 +20,32 @@ package de.tu_dresden.psy.efml;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.naming.OperationNotSupportedException;
 
 /**
- * provides the body tag in the html file
- * 
+ * implementation of the <r/> tag (switches row within <T> tag)
  * @author immanuel
- * 
+ *
  */
 
-public class BodyTag implements AnyTag {
-	
-	private ArrayList<AnyTag> innerTags;
-	
-	public BodyTag() {
-		innerTags = new ArrayList<AnyTag>();
-	}
+public class RTag implements AnyTag {
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		writer.write("<body id=\"body\">");
-
-		/**
-		 * all content will be displayed in the main "frame"
-		 */
-
-		writer.write("<div id=\"frame\" \n"
-				+ "		onmousemove=\"if ( document.all && myHover.flight != 0 ) myHover.MovePlane();\"\n"
-				+ "		onclick=\"myHover.OnFlight();\">");
-		
-		/**
-		 * write inner tags
-		 */
-		
-		for (Iterator<AnyTag> it=innerTags.iterator();it.hasNext();)
-		{
-			AnyTag innerTag = it.next();
-			innerTag.open(writer);
-			innerTag.close(writer);
-		}
+		writer.write("&nbsp;</td></tr><tr><td>");
 	}
 
 	@Override
 	public void close(Writer writer) throws IOException {
-		writer.write("</div>");
 
-		/**
-		 * add code for the hovering feature
-		 */
 
-		writer.write("	<script type=\"text/javascript\">\n"
-				+ "		myHover.WriteHtml();\n" + "	</script>");
-
-		writer.write("</body>");
 	}
-	
+
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
-		innerTags.add(innerTag);
+		throw new OperationNotSupportedException("<r /> takes no contents.");
 	}
 
 }

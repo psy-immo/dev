@@ -1,6 +1,6 @@
 /**
- * TitleTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
- * Professur für die Psychologie des Lernen und Lehrens
+ * PlainContent.java, (c) 2011, Immanuel Albrecht; Dresden University of
+ * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -20,47 +20,33 @@ package de.tu_dresden.psy.efml;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.naming.OperationNotSupportedException;
 
-public class TitleTag implements AnyTag {	
-	private ArrayList<AnyTag> innerTags;
-	
-	
-	public TitleTag() {
-	
-		innerTags = new ArrayList<AnyTag>();
-	}
-	
+public class PlainContent implements AnyTag {
 
+	private String content;
+	
+	public PlainContent(String unescapedContents) {
+		this.content = StringEscape.escapeToHtml(unescapedContents);
+	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		writer.write("<title>");
-		
-		/**
-		 * write inner tags
-		 */
-		
-		for (Iterator<AnyTag> it=innerTags.iterator();it.hasNext();)
-		{
-			AnyTag innerTag = it.next();
-			innerTag.open(writer);
-			innerTag.close(writer);
-		}
+		writer.write(content);
 	}
 
 	@Override
 	public void close(Writer writer) throws IOException {
-		writer.write("</title>");
+
+
 	}
-	
+
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
-		innerTags.add(innerTag);
+		throw new OperationNotSupportedException("PlainContent ain't even a tag");
 	}
+
 
 }

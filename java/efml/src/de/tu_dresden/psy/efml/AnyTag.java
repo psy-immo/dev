@@ -1,5 +1,5 @@
 /**
- * TitleTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
+ * AnyTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -18,49 +18,38 @@
 
 package de.tu_dresden.psy.efml;
 
-import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.io.IOException;
 
 import javax.naming.OperationNotSupportedException;
 
-public class TitleTag implements AnyTag {	
-	private ArrayList<AnyTag> innerTags;
+
+/**
+ * interface providing opening and closing operation for tags
+ * @author immanuel
+ *
+ */
+public interface AnyTag {
+	/**
+	 * write the opening sequence of the tag
+	 * @param writer   Output writer
+	 * @throws IOException
+	 */
+	public void open(Writer writer) throws IOException;
 	
+	/**
+	 * write the closing sequence of the tag
+	 * @param writer   Output writer
+	 * @throws IOException
+	 */
+	public void close(Writer writer) throws IOException;
 	
-	public TitleTag() {
-	
-		innerTags = new ArrayList<AnyTag>();
-	}
+	/**
+	 * enclose a tag within this tag, if supported
+	 * @param innerTag   tag to enclose
+	 */
+	public void encloseTag(AnyTag innerTag) throws OperationNotSupportedException;
 	
 
-
-	@Override
-	public void open(Writer writer) throws IOException {
-		writer.write("<title>");
-		
-		/**
-		 * write inner tags
-		 */
-		
-		for (Iterator<AnyTag> it=innerTags.iterator();it.hasNext();)
-		{
-			AnyTag innerTag = it.next();
-			innerTag.open(writer);
-			innerTag.close(writer);
-		}
-	}
-
-	@Override
-	public void close(Writer writer) throws IOException {
-		writer.write("</title>");
-	}
 	
-	@Override
-	public void encloseTag(AnyTag innerTag)
-			throws OperationNotSupportedException {
-		innerTags.add(innerTag);
-	}
-
 }

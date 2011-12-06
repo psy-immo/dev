@@ -16,50 +16,101 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package de.tu_dresden.psy.efml;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.naming.OperationNotSupportedException;
 
 import org.xml.sax.Attributes;
 
 /**
- * this class represents an unknown tag which will just be reproduced as it was in the efml in the output html body
+ * this class represents an unknown tag which will just be reproduced as it was
+ * in the efml in the output html body
+ * 
  * @author immanuel
- *
+ * 
  */
-public class UnknownTag implements AnyHtmlTag {
-	
+public class UnknownTag implements AnyTag {
+
 	private String opening;
-	private String contents;
+	private String standalone;
 	private String closing;
 
-	public UnknownTag(EfmlTag reproduce) {
-		
-		opening = "<"+reproduce.getName();
-		
+	private ArrayList<AnyTag> innerTags;
+
+	public UnknownTag(EfmlTagsAttribute reproduce) {
+
+		opening = "<" + reproduce.getName();
+
 		final Attributes attribs = reproduce.getAttribs();
-		for (int i=0;i<attribs.getLength(); ++i) {
-			opening += " " + attribs.getQName(i) + "=\"" + StringEscape.escapeToHtml(attribs.getValue(i)) + "\"";
+		for (int i = 0; i < attribs.getLength(); ++i) {
+			String attributeName = attribs.getQName(i);
+			/**
+			 * the tags attribute belongs to the EFML data structure layer and
+			 * is not going to show in the html
+			 */
+			if (attributeName != "tags") {
+				opening += " " + attributeName + "=\""
+						+ StringEscape.escapeToHtml(attribs.getValue(i)) + "\"";
+			}
 		}
+
+		standalone = opening + " />";
+
 		opening += ">";
-		
-		contents = StringEscape.escapeToHtml(reproduce.getCharacters());
-		
-		closing = "</"+reproduce.getName()+">";
-		
+
+		innerTags = new ArrayList<AnyTag>();
+
+		closing = "</" + reproduce.getName() + ">";
+
 	}
-	
+
 	@Override
 	public void open(Writer writer) throws IOException {
+
+		if (innerTags.isEmpty()) {
+			/**
+			 * no inner contents, use <... /> variant
+			 */
+			writer.write(standalone);
+			return;
+		}
+
+		/**
+		 * with inner contents
+		 */
+
 		writer.write(opening);
-		writer.write(contents);
+
+		/**
+		 * write inner tags
+		 */
+
+		for (Iterator<AnyTag> it = innerTags.iterator(); it.hasNext();) {
+			AnyTag innerTag = it.next();
+			innerTag.open(writer);
+			innerTag.close(writer);
+		}
 	}
 
 	@Override
 	public void close(Writer writer) throws IOException {
-		writer.write(closing);
+		/**
+		 * no need to close standalone tag
+		 */
+		if (!innerTags.isEmpty()) {
+			writer.write(closing);
+		}
+	}
+
+	@Override
+	public void encloseTag(AnyTag innerTag)
+			throws OperationNotSupportedException {
+		innerTags.add(innerTag);
 	}
 
 }

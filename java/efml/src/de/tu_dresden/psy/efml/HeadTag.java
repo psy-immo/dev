@@ -20,6 +20,10 @@ package de.tu_dresden.psy.efml;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.naming.OperationNotSupportedException;
 
 /**
  * provides the head tag
@@ -27,7 +31,13 @@ import java.io.Writer;
  *
  */
 
-public class HeadTag implements AnyHtmlTag {
+public class HeadTag implements AnyTag {
+	
+	private ArrayList<AnyTag> innerTags;
+	
+	public HeadTag() {
+		innerTags = new ArrayList<AnyTag>();
+	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
@@ -37,11 +47,28 @@ public class HeadTag implements AnyHtmlTag {
 		 */
 		
 		writer.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
+		
+		/**
+		 * write inner tags
+		 */
+		
+		for (Iterator<AnyTag> it=innerTags.iterator();it.hasNext();)
+		{
+			AnyTag innerTag = it.next();
+			innerTag.open(writer);
+			innerTag.close(writer);
+		}
 	}
 
 	@Override
 	public void close(Writer writer) throws IOException {
 		writer.write("</head>");
+	}
+	
+	@Override
+	public void encloseTag(AnyTag innerTag)
+			throws OperationNotSupportedException {
+		innerTags.add(innerTag);
 	}
 
 }

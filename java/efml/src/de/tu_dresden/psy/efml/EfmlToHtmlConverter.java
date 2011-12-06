@@ -30,6 +30,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Iterator;
 
+import javax.naming.OperationNotSupportedException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -96,47 +97,37 @@ public class EfmlToHtmlConverter {
 
 		HtmlTag html = new HtmlTag();
 		
+		
+		/**
+		 * add head
+		 */
+		
+		HeadTag head = handler.getHead();
+		
+		try {
+			html.encloseTag(head);
+		} catch (OperationNotSupportedException e) {
+			/** unreachable*/
+		}
+		
+		
+		/**
+		 * add body
+		 */
+		
+		BodyTag body = handler.getBody();
+		
+		try {
+			html.encloseTag(body);
+		} catch (OperationNotSupportedException e) {
+			/** unreachable */
+		}
+		
+		/**
+		 * write main html tag and save file
+		 */
+		
 		html.open(writer);
-		
-		/**
-		 * write head
-		 */
-		
-		HeadTag head = new HeadTag();
-		
-		head.open(writer);
-		
-		
-		for (Iterator<AnyHtmlTag> i_tag = handler.headIterator(); i_tag.hasNext();) {
-			AnyHtmlTag tag = i_tag.next();
-			
-			tag.open(writer);
-			tag.close(writer);
-		}
-		
-		head.close(writer);
-		
-		
-		/**
-		 * write body
-		 */
-		
-		BodyTag body = new BodyTag();
-		
-		body.open(writer);
-		
-		for (Iterator<AnyHtmlTag> i_tag = handler.bodyIterator(); i_tag.hasNext();) {
-			AnyHtmlTag tag = i_tag.next();
-			
-			tag.open(writer);
-			tag.close(writer);
-		}
-		
-		body.close(writer);
-		
-		/**
-		 * close main html tag and save file
-		 */
 		
 		html.close(writer);
 		

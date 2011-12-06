@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
 
+import javax.naming.OperationNotSupportedException;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -41,21 +43,37 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	/**
 	 * This stores the tags of the head and body part of the html file
 	 */
-	public ArrayList<AnyHtmlTag> head;
-	public ArrayList<AnyHtmlTag> body;
-	public EfmlTag root;
+
+	private EfmlTagsAttribute root;
+
+	/**
+	 * stores the head
+	 */
+
+	private HeadTag head;
+
+	/**
+	 * stores the body
+	 */
+
+	private BodyTag body;
+
 	/**
 	 * keep track of currently opened tags
 	 */
-	public Stack<EfmlTag> openTags;
+	private Stack<EfmlTagsAttribute> currentTags;
+
+	private Stack<AnyTag> processingTags;
 
 	public EfmlToHtmlHandler() {
-		this.head = new ArrayList<AnyHtmlTag>();
-		this.body = new ArrayList<AnyHtmlTag>();
-		this.openTags = new Stack<EfmlTag>();
-		this.root = new EfmlTag("", null, null);
+		this.currentTags = new Stack<EfmlTagsAttribute>();
+		this.root = new EfmlTagsAttribute("", null, null);
+		this.head = new HeadTag();
+		this.body = new BodyTag();
+		this.processingTags = new Stack<AnyTag>();
 
-		this.openTags.push(this.root);
+		this.currentTags.push(this.root);
+		this.processingTags.push(body);
 	}
 
 	/**
@@ -64,8 +82,8 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	 *         html file
 	 */
 
-	public Iterator<AnyHtmlTag> headIterator() {
-		return this.head.iterator();
+	public HeadTag getHead() {
+		return head;
 	}
 
 	/**
@@ -73,8 +91,8 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	 * @return all Html tags that should be placed inside the body tag of the
 	 *         html file
 	 */
-	public Iterator<AnyHtmlTag> bodyIterator() {
-		return this.body.iterator();
+	public BodyTag getBody() {
+		return body;
 	}
 
 	/**
@@ -84,8 +102,28 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 
-		this.openTags
-				.push(new EfmlTag(qName, attributes, this.openTags.peek()));
+		this.currentTags.push(new EfmlTagsAttribute(qName, attributes,
+				this.currentTags.peek()));
+
+		if (qName == "title") {
+			this.processingTags.push(new TitleTag());
+		} else if ((qName == "tags") || (qName == "efml")) {
+			this.processingTags.push(new TagsTag());
+		} else if (qName == "t") {
+			this.processingTags.push(new TTag());
+		} else if (qName == "T") {
+			this.processingTags.push(new BigTTag());
+		} else if (qName == "r") {
+			this.processingTags.push(new RTag());
+		} else if (qName == "c") {
+			this.processingTags.push(new CTag());
+		} else {
+			/**
+			 * the tag is not recognized and thus we use the unknown tag handler
+			 */
+
+			this.processingTags.push(new UnknownTag(this.currentTags.peek()));
+		}
 	}
 
 	/**
@@ -94,20 +132,15 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
+		this.currentTags.pop();
+		AnyTag closing_tag = this.processingTags.pop();
 
-		EfmlTag xmlTag = this.openTags.pop();
+		try {
+			this.processingTags.peek().encloseTag(closing_tag);
+		} catch (OperationNotSupportedException e) {
 
-		if (xmlTag.getName() == "title") {
-			this.head.add(new TitleTag(xmlTag.getCharacters()));
-		} else {
-			/**
-			 * this tag is not recognized and thus will be treated as unknown
-			 * tag
-			 */
-
-			this.body.add(new UnknownTag(xmlTag));
+			e.printStackTrace();
 		}
-
 	}
 
 	/**
@@ -116,7 +149,13 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 
 	public void characters(char ch[], int start, int length)
 			throws SAXException {
-		this.openTags.peek().addCharacters(new String(ch, start, length));
+		try {
+			this.processingTags.peek().encloseTag(
+					new PlainContent(new String(ch, start, length)));
+		} catch (OperationNotSupportedException e) {
+
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -1,5 +1,5 @@
 /**
- * BodyTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
+ * TTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -26,31 +26,25 @@ import java.util.Iterator;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * provides the body tag in the html file
- * 
+ * implements the <t> tag, which is for tie-together, i.e. prevents any line wraps within
  * @author immanuel
- * 
+ *
  */
 
-public class BodyTag implements AnyTag {
+public class TTag implements AnyTag {
 	
 	private ArrayList<AnyTag> innerTags;
 	
-	public BodyTag() {
+	
+	public TTag() {
+	
 		innerTags = new ArrayList<AnyTag>();
 	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		writer.write("<body id=\"body\">");
-
-		/**
-		 * all content will be displayed in the main "frame"
-		 */
-
-		writer.write("<div id=\"frame\" \n"
-				+ "		onmousemove=\"if ( document.all && myHover.flight != 0 ) myHover.MovePlane();\"\n"
-				+ "		onclick=\"myHover.OnFlight();\">");
+		
+		writer.write("<span style=\"white-space:nowrap;\">");
 		
 		/**
 		 * write inner tags
@@ -66,18 +60,10 @@ public class BodyTag implements AnyTag {
 
 	@Override
 	public void close(Writer writer) throws IOException {
-		writer.write("</div>");
+		writer.write("</span>");
 
-		/**
-		 * add code for the hovering feature
-		 */
-
-		writer.write("	<script type=\"text/javascript\">\n"
-				+ "		myHover.WriteHtml();\n" + "	</script>");
-
-		writer.write("</body>");
 	}
-	
+
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {

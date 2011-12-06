@@ -1,5 +1,5 @@
 /**
- * HtmlTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
+ * RTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -18,28 +18,35 @@
 
 package de.tu_dresden.psy.efml;
 
-import java.io.Writer;
 import java.io.IOException;
+import java.io.Writer;
 
+import javax.naming.OperationNotSupportedException;
 
 /**
- * interface providing opening and closing operation for tags
+ * implementation of the <c/> tag (switches column within <T> tag)
  * @author immanuel
  *
  */
-public interface AnyHtmlTag {
-	/**
-	 * write the opening sequence of the tag
-	 * @param writer   Output writer
-	 * @throws IOException
-	 */
-	public void open(Writer writer) throws IOException;
-	
-	/**
-	 * write the closing sequence of the tag
-	 * @param writer   Output writer
-	 * @throws IOException
-	 */
-	public void close(Writer writer) throws IOException;
-	
+
+public class CTag implements AnyTag {
+
+	@Override
+	public void open(Writer writer) throws IOException {
+		writer.write("&nbsp;</td></tr></table>");
+		
+		writer.write("<table style=\"float:left; white-space:nowrap;\" cellpadding=0 cellspacing=0 border=0><tr><td>");
+	}
+
+	@Override
+	public void close(Writer writer) throws IOException {
+
+	}
+
+	@Override
+	public void encloseTag(AnyTag innerTag)
+			throws OperationNotSupportedException {
+		throw new OperationNotSupportedException("<c /> takes no contents.");
+	}
+
 }

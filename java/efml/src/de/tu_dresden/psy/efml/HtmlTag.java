@@ -2,8 +2,18 @@ package de.tu_dresden.psy.efml;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-public class HtmlTag implements AnyHtmlTag {
+import javax.naming.OperationNotSupportedException;
+
+public class HtmlTag implements AnyTag {
+	
+	private ArrayList<AnyTag> innerTags;
+	
+	public HtmlTag() {
+		innerTags = new ArrayList<AnyTag>();
+	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
@@ -20,11 +30,28 @@ public class HtmlTag implements AnyHtmlTag {
 				+ "	<script type=\"text/javascript\" src=\"endecoder.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"runway.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"answer.js\"></script>");
+		
+		/**
+		 * write inner tags
+		 */
+		
+		for (Iterator<AnyTag> it=innerTags.iterator();it.hasNext();)
+		{
+			AnyTag innerTag = it.next();
+			innerTag.open(writer);
+			innerTag.close(writer);
+		}
 	}
 
 	@Override
 	public void close(Writer writer) throws IOException {
 		writer.write("</html>");
+	}
+	
+	@Override
+	public void encloseTag(AnyTag innerTag)
+			throws OperationNotSupportedException {
+			innerTags.add(innerTag);
 	}
 
 }

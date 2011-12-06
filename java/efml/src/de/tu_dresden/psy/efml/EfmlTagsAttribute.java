@@ -34,15 +34,14 @@ import org.xml.sax.Attributes;
  * 
  */
 
-public class EfmlTag {
+public class EfmlTagsAttribute {
 	private String name;
 	private Attributes attribs;
-	private EfmlTag parent;
+	private EfmlTagsAttribute parent;
 
 	private Set<String> tags;
-	private StringBuffer characters;
 
-	public EfmlTag(String qName, Attributes attribs, EfmlTag parent) {
+	public EfmlTagsAttribute(String qName, Attributes attribs, EfmlTagsAttribute parent) {
 		this.name = qName;
 		this.attribs = attribs;
 		this.parent = parent;
@@ -52,7 +51,7 @@ public class EfmlTag {
 		} else {
 			this.tags = new HashSet<String>();
 		}
-		this.characters = new StringBuffer();
+
 
 		if (null != attribs) {
 			String tagsValue = this.attribs.getValue("tags");
@@ -65,13 +64,6 @@ public class EfmlTag {
 		}
 	}
 
-	public String getCharacters() {
-		return characters.toString();
-	}
-
-	public void addCharacters(String s) {
-		characters.append(s);
-	}
 	
 	/**
 	 * 
@@ -95,7 +87,7 @@ public class EfmlTag {
 		return attribs;
 	}
 
-	public final EfmlTag getParent() {
+	public final EfmlTagsAttribute getParent() {
 		return parent;
 	}
 
