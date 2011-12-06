@@ -41,99 +41,21 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	/**
 	 * This stores the tags of the head and body part of the html file
 	 */
-
-	private ArrayList<AnyHtmlTag> head;
-	private ArrayList<AnyHtmlTag> body;
-
-	/**
-	 * class that will store tag information
-	 * 
-	 * @author immanuel
-	 * 
-	 */
-
-	private class EfmlTag {
-		private String name;
-		private Attributes attribs;
-		private EfmlTag parent;
-
-		private Set<String> tags;
-		private StringBuffer characters;
-
-		public EfmlTag(String qName, Attributes attribs, EfmlTag parent) {
-			this.name = qName;
-			this.attribs = attribs;
-			this.parent = parent;
-
-			if (parent != null) {
-				this.tags = new HashSet<String>(parent.tags);
-			} else {
-				this.tags = new HashSet<String>();
-			}
-			this.characters = new StringBuffer();
-
-			if (null != attribs) {
-				String tagsValue = this.attribs.getValue("tags");
-				if (null != tagsValue) {
-					String[] tag_array = tagsValue.split(",");
-					for (int i = 0; i < tag_array.length; ++i) {
-						this.tags.add(tag_array[i].trim());
-					}
-				}
-			}
-		}
-
-		public String getCharacters() {
-			return characters.toString();
-		}
-
-		public void addCharacters(String s) {
-			characters.append(s);
-		}
-		
-		/**
-		 * 
-		 * @return the current tag set, as javascript-array
-		 */
-		
-		public String getTags() {
-			String array = "[";
-			for (Iterator<String> it=tags.iterator(); it.hasNext();) {
-				array += "\""+StringEscape.escapeToJavaScript(it.next())+"\"";
-				if (it.hasNext()) array += ",";
-			}
-			return array + "]";
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public Attributes getAttribs() {
-			return attribs;
-		}
-
-		public EfmlTag getParent() {
-			return parent;
-		}
-
-	};
-
-	EfmlTag root;
-
+	public ArrayList<AnyHtmlTag> head;
+	public ArrayList<AnyHtmlTag> body;
+	public EfmlTag root;
 	/**
 	 * keep track of currently opened tags
 	 */
-
-	private Stack<EfmlTag> openTags;
+	public Stack<EfmlTag> openTags;
 
 	public EfmlToHtmlHandler() {
-		head = new ArrayList<AnyHtmlTag>();
-		body = new ArrayList<AnyHtmlTag>();
-		openTags = new Stack<EfmlTag>();
-		root = new EfmlTag("", null, null);
+		this.head = new ArrayList<AnyHtmlTag>();
+		this.body = new ArrayList<AnyHtmlTag>();
+		this.openTags = new Stack<EfmlTag>();
+		this.root = new EfmlTag("", null, null);
 
-		openTags.push(root);
+		this.openTags.push(this.root);
 	}
 
 	/**
@@ -143,7 +65,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	 */
 
 	public Iterator<AnyHtmlTag> headIterator() {
-		return head.iterator();
+		return this.head.iterator();
 	}
 
 	/**
@@ -152,32 +74,49 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	 *         html file
 	 */
 	public Iterator<AnyHtmlTag> bodyIterator() {
-		return body.iterator();
+		return this.body.iterator();
 	}
+
+	/**
+	 * element starts, push it on the stack
+	 */
 
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 
-		System.out.println("Start Element :" + qName);
-		System.out.println("Local name :" + localName);
-		System.out.println("Attributes :" + attributes.getLength());
-
-		openTags.push(new EfmlTag(qName, attributes, openTags.peek()));
+		this.openTags
+				.push(new EfmlTag(qName, attributes, this.openTags.peek()));
 	}
+
+	/**
+	 * element ends, add tags to html output
+	 */
 
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 
-		System.out.println("tags: " + openTags.peek().getTags());
-		openTags.pop();
+		EfmlTag xmlTag = this.openTags.pop();
+
+		if (xmlTag.getName() == "title") {
+			this.head.add(new TitleTag(xmlTag.getCharacters()));
+		} else {
+			/**
+			 * this tag is not recognized and thus will be treated as unknown
+			 * tag
+			 */
+
+			this.body.add(new UnknownTag(xmlTag));
+		}
+
 	}
+
+	/**
+	 * receive data
+	 */
 
 	public void characters(char ch[], int start, int length)
 			throws SAXException {
-
-		System.out.println("Chars:" + new String(ch, start, length));
-		openTags.peek().addCharacters(new String(ch, start, length));
-
+		this.openTags.peek().addCharacters(new String(ch, start, length));
 	}
 
 }

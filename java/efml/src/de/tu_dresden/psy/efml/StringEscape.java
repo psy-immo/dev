@@ -18,6 +18,12 @@
 
 package de.tu_dresden.psy.efml;
 
+/**
+ * provides static functions that escape strings
+ * @author immanuel
+ *
+ */
+
 public class StringEscape {
 
 	/**
@@ -28,9 +34,28 @@ public class StringEscape {
 	}
 
 	public static String escapeToJavaScript(String unescaped) {
-
+		/**
+		 * translate         to
+		 *           \         \\
+		 *           newline   \n
+		 *           tab       \t
+		 *           return    \r
+		 *           "         \"
+		 */
 		return unescaped.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"")
 				.replaceAll("\\n", "\\\\n").replaceAll("\\t", "\\\\t")
 				.replaceAll("\\r", "\\\\r");
+	}
+	
+	public static String escapeToHtml(String unescaped) {
+		/**
+		 * translate         to
+		 *           <         &lt;
+		 *           >         &gt;
+		 *           &         &amp;
+		 *           "         &quot;
+		 */
+		return unescaped.replaceAll("\\&","\\&amp;").replaceAll("\\<", "\\&lt;").replaceAll("\\>", "\\&gt;").
+				replaceAll("\\\"","\\&quot;");
 	}
 }
