@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -46,16 +47,16 @@ public class UnknownTag implements AnyTag {
 
 		opening = "<" + reproduce.getName();
 
-		final Attributes attribs = reproduce.getAttribs();
-		for (int i = 0; i < attribs.getLength(); ++i) {
-			String attributeName = attribs.getQName(i);
+		Map<String,String> attribs = reproduce.getAttribs();
+		for (Iterator<String> it_attribs = attribs.keySet().iterator(); it_attribs.hasNext();) {
+			String attributeName = it_attribs.next();
 			/**
 			 * the tags attribute belongs to the EFML data structure layer and
 			 * is not going to show in the html
 			 */
 			if ((attributeName != "tags")&&(attributeName != "atags")&&(attributeName != "rtags")) {
 				opening += " " + attributeName + "=\""
-						+ StringEscape.escapeToHtml(attribs.getValue(i)) + "\"";
+						+ StringEscape.escapeToHtml(attribs.get(attributeName)) + "\"";
 			}
 		}
 

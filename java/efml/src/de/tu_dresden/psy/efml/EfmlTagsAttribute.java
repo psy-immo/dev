@@ -19,8 +19,10 @@
 package de.tu_dresden.psy.efml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
@@ -35,7 +37,7 @@ import org.xml.sax.Attributes;
 
 public class EfmlTagsAttribute {
 	private String name;
-	private Attributes attribs;
+	private Map<String,String> attribs;
 	private EfmlTagsAttribute parent;
 
 	private Set<String> tags;
@@ -45,7 +47,7 @@ public class EfmlTagsAttribute {
 	public EfmlTagsAttribute(String qName, Attributes attribs,
 			EfmlTagsAttribute parent) {
 		this.name = qName;
-		this.attribs = attribs;
+		this.attribs = new HashMap<String, String>();
 		this.parent = parent;
 
 		if (parent != null) {
@@ -58,8 +60,8 @@ public class EfmlTagsAttribute {
 			this.reject = new HashSet<String>();
 		}
 
-		if (null != attribs) {
-			String tagsValue = this.attribs.getValue("tags");
+		if (null != attribs) {			
+			String tagsValue = attribs.getValue("tags");
 			if (null != tagsValue) {
 				String[] tag_array = tagsValue.split(",");
 				for (int i = 0; i < tag_array.length; ++i) {
@@ -67,7 +69,7 @@ public class EfmlTagsAttribute {
 				}
 			}
 
-			String acceptValue = this.attribs.getValue("atags");
+			String acceptValue = attribs.getValue("atags");
 			if (null != acceptValue) {
 				String[] tag_array = acceptValue.split(",");
 				for (int i = 0; i < tag_array.length; ++i) {
@@ -75,12 +77,21 @@ public class EfmlTagsAttribute {
 				}
 			}
 
-			String rejectValue = this.attribs.getValue("rtags");
+			String rejectValue = attribs.getValue("rtags");
 			if (null != rejectValue) {
 				String[] tag_array = rejectValue.split(",");
 				for (int i = 0; i < tag_array.length; ++i) {
 					this.reject.add(tag_array[i].trim());
 				}
+			}
+			
+			/**
+			 * 
+			 * keep the attributes of the tag, storing the Attributes object doesn't work for later
+			 */
+			
+			for (int i=0;i<attribs.getLength();++i) {
+				this.attribs.put(attribs.getQName(i), attribs.getValue(i));
 			}
 		}
 	}
@@ -134,7 +145,7 @@ public class EfmlTagsAttribute {
 		return name;
 	}
 
-	public final Attributes getAttribs() {
+	public final Map<String, String> getAttribs() {
 		return attribs;
 	}
 
@@ -148,11 +159,11 @@ public class EfmlTagsAttribute {
 	 * @return value of the attribute or default
 	 */
 
-	public final String getValueOrDefault(String attributeName,
+	public  String getValueOrDefault(String attributeName,
 			String defaultValue) {
-		String val = attribs.getValue(attributeName);
-		if (null != val)
-			return val;
+		if (attribs.containsKey(attributeName))
+			return attribs.get(attributeName);
+		
 		return defaultValue;
 	}
 
