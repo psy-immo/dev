@@ -44,7 +44,7 @@ public class BigTTag implements AnyTag {
 	@Override
 	public void open(Writer writer) throws IOException {
 		
-		writer.write("<table style=\"float:left; white-space:nowrap;\" cellpadding=0 cellspacing=0 border=0><tr><td>");
+		writer.write("<table style=\"float:left; white-space:nowrap;\" cellpadding=0 cellspacing=0 border=0><tr><td>&nbsp;");
 		
 		/**
 		 * write inner tags
@@ -60,7 +60,7 @@ public class BigTTag implements AnyTag {
 
 	@Override
 	public void close(Writer writer) throws IOException {
-		writer.write("&nbsp;</td></tr></table>");
+		writer.write("</td></tr></table>");
 
 	}
 

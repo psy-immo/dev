@@ -117,6 +117,8 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new RTag());
 		} else if (qName == "c") {
 			this.processingTags.push(new CTag());
+		} else if (qName == "runway") {
+			this.processingTags.push(new RunwayTag(this.currentTags.peek()));
 		} else {
 			/**
 			 * the tag is not recognized and thus we use the unknown tag handler

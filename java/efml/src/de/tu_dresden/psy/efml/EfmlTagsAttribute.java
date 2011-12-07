@@ -26,7 +26,6 @@ import java.util.Stack;
 
 import org.xml.sax.Attributes;
 
-
 /**
  * class that will store tag information when parsing EFML files
  * 
@@ -43,7 +42,8 @@ public class EfmlTagsAttribute {
 	private Set<String> accept;
 	private Set<String> reject;
 
-	public EfmlTagsAttribute(String qName, Attributes attribs, EfmlTagsAttribute parent) {
+	public EfmlTagsAttribute(String qName, Attributes attribs,
+			EfmlTagsAttribute parent) {
 		this.name = qName;
 		this.attribs = attribs;
 		this.parent = parent;
@@ -58,7 +58,6 @@ public class EfmlTagsAttribute {
 			this.reject = new HashSet<String>();
 		}
 
-
 		if (null != attribs) {
 			String tagsValue = this.attribs.getValue("tags");
 			if (null != tagsValue) {
@@ -67,18 +66,18 @@ public class EfmlTagsAttribute {
 					this.tags.add(tag_array[i].trim());
 				}
 			}
-			
+
 			String acceptValue = this.attribs.getValue("atags");
-			if (null != tagsValue) {
-				String[] tag_array = tagsValue.split(",");
+			if (null != acceptValue) {
+				String[] tag_array = acceptValue.split(",");
 				for (int i = 0; i < tag_array.length; ++i) {
 					this.accept.add(tag_array[i].trim());
 				}
 			}
-			
+
 			String rejectValue = this.attribs.getValue("rtags");
-			if (null != tagsValue) {
-				String[] tag_array = tagsValue.split(",");
+			if (null != rejectValue) {
+				String[] tag_array = rejectValue.split(",");
 				for (int i = 0; i < tag_array.length; ++i) {
 					this.reject.add(tag_array[i].trim());
 				}
@@ -86,46 +85,47 @@ public class EfmlTagsAttribute {
 		}
 	}
 
-	
 	/**
 	 * 
 	 * @return the current tag set, as javascript-array
 	 */
-	
+
 	public String getTags() {
 		String array = "[";
-		for (Iterator<String> it=tags.iterator(); it.hasNext();) {
-			array += "\""+StringEscape.escapeToJavaScript(it.next())+"\"";
-			if (it.hasNext()) array += ",";
+		for (Iterator<String> it = tags.iterator(); it.hasNext();) {
+			array += "\"" + StringEscape.escapeToJavaScript(it.next()) + "\"";
+			if (it.hasNext())
+				array += ",";
 		}
 		return array + "]";
 	}
-	
+
 	/**
 	 * 
 	 * @return the current accept tag set, as javascript-array
 	 */
-	
+
 	public String getAcceptTags() {
 		String array = "[";
-		for (Iterator<String> it=accept.iterator(); it.hasNext();) {
-			array += "\""+StringEscape.escapeToJavaScript(it.next())+"\"";
-			if (it.hasNext()) array += ",";
+		for (Iterator<String> it = accept.iterator(); it.hasNext();) {
+			array += "\"" + StringEscape.escapeToJavaScript(it.next()) + "\"";
+			if (it.hasNext())
+				array += ",";
 		}
 		return array + "]";
 	}
-	
 
 	/**
 	 * 
 	 * @return the current reject tag set, as javascript-array
 	 */
-	
+
 	public String getRejectTags() {
 		String array = "[";
-		for (Iterator<String> it=reject.iterator(); it.hasNext();) {
-			array += "\""+StringEscape.escapeToJavaScript(it.next())+"\"";
-			if (it.hasNext()) array += ",";
+		for (Iterator<String> it = reject.iterator(); it.hasNext();) {
+			array += "\"" + StringEscape.escapeToJavaScript(it.next()) + "\"";
+			if (it.hasNext())
+				array += ",";
 		}
 		return array + "]";
 	}
@@ -136,6 +136,24 @@ public class EfmlTagsAttribute {
 
 	public final Attributes getAttribs() {
 		return attribs;
+	}
+
+	/**
+	 * checks the xml attributes
+	 * 
+	 * @param attributeName
+	 *            attribute to be checked
+	 * @param defaultValue
+	 *            value returned if attribute is not defined
+	 * @return value of the attribute or default
+	 */
+
+	public final String getValueOrDefault(String attributeName,
+			String defaultValue) {
+		String val = attribs.getValue(attributeName);
+		if (null != val)
+			return val;
+		return defaultValue;
 	}
 
 	public final EfmlTagsAttribute getParent() {

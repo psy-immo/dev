@@ -30,6 +30,10 @@ public class PlainContent implements AnyTag {
 	public PlainContent(String unescapedContents) {
 		this.content = StringEscape.escapeToHtml(unescapedContents);
 	}
+	
+	public final String getContent() {
+		return content;
+	}
 
 	@Override
 	public void open(Writer writer) throws IOException {

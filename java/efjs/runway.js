@@ -42,8 +42,8 @@ function Runway(name, tags, token, accept, reject) {
 	this.tags = tags;
 	this.token = token;
 	this.respawn = null;
-	this.width = "200";
-	this.height = "20";
+	this.width = "200px";
+	this.height = "20px";
 	this.colorEmpty = "#CCCCCC";
 	this.colorFilled = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
@@ -121,26 +121,30 @@ function Runway(name, tags, token, accept, reject) {
 	 * write the HTML code that will be used for displaying the run way
 	 */
 	this.WriteHtml = function() {
-		document.write("<TABLE cellpadding=0 cellspacing=0><TR><TD id=\"runway"
+		document.write("<span id=\"runway"
 				+ this.id + "\" ");
+		
+		document.write(" style=\" display: inline-block; ");
+		
+		if (this.token) {
+			document.write("background-color:" + this.colorFilled
+					+ "; ");
+		} else {
+			document.write("background-color:" + this.colorEmpty
+					+ "; ");
+		}
 		if (this.width) {
-			document.write("width=\"" + this.width + "\" ");
+			document.write("width:" + this.width + "; ");
 		}
 		if (this.height) {
-			document.write("height=\"" + this.height + "\" ");
+			document.write("height:" + this.height + "; ");
 		}
-		if (this.token) {
-			document.write("style=\"background-color:" + this.colorFilled
-					+ "\" ");
-		} else {
-			document.write("style=\"background-color:" + this.colorEmpty
-					+ "\" ");
-		}
+		document.write("\"");
 		document.write("onClick=\"runwayArray[" + this.id + "].OnClick()\">");
 		if (this.token) {
 			document.write(this.token);
 		}
-		document.write("</TD></TR></TABLE>");
+		document.write("</span>");
 
 	};
 
