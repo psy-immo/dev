@@ -48,8 +48,6 @@ import org.xml.sax.SAXException;
 
 public class EfmlToHtmlConverter {
 
-	
-
 	/**
 	 * Transform an EFML-File into an HTML-File
 	 * 
@@ -64,93 +62,109 @@ public class EfmlToHtmlConverter {
 
 	public static void transformStream(InputStream input, OutputStream output)
 			throws ParserConfigurationException, SAXException, IOException {
-		
 
-		
 		/**
 		 * I/O handling in UTF-8
 		 */
-		
-		
+
 		Reader reader = new InputStreamReader(input, "UTF-8");
 		InputSource source = new InputSource(reader);
 
 		source.setEncoding("UTF-8");
-		
+
 		Writer writer = new OutputStreamWriter(output, "UTF-8");
 
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser = factory.newSAXParser();
 
 		EfmlToHtmlHandler handler = new EfmlToHtmlHandler();
-		
+
 		/**
 		 * parse input
 		 */
-		
+
 		parser.parse(source, handler);
-		
+
 		/**
 		 * write output
 		 */
-		
 
 		HtmlTag html = new HtmlTag();
-		
-		
+
 		/**
 		 * add head
 		 */
-		
+
 		HeadTag head = handler.getHead();
-		
+
 		try {
 			html.encloseTag(head);
 		} catch (OperationNotSupportedException e) {
-			/** unreachable*/
+			/** unreachable */
 		}
-		
-		
+
 		/**
 		 * add body
 		 */
-		
+
 		BodyTag body = handler.getBody();
-		
+
 		try {
 			html.encloseTag(body);
 		} catch (OperationNotSupportedException e) {
 			/** unreachable */
 		}
-		
+
 		/**
 		 * write main html tag and save file
 		 */
-		
+
 		html.open(writer);
-		
+
 		html.close(writer);
-		
+
 		writer.close();
-		
+
 	};
 
+	/**
+	 * command line program
+	 * 
+	 * @param args
+	 */
+
 	public static void main(String[] args) {
+
 		try {
-			File file = new File("/tmp/input.xml");
 
-			InputStream inputStream = new FileInputStream(file);
+			InputStream inputStream = null;
+			OutputStream outputStream = System.out;
 
-			File out = new File("/tmp/output.html");
-			OutputStream outputStream = new FileOutputStream(out);
+			switch (args.length) {
+			case 2:
+				outputStream = new FileOutputStream(new File(args[1]));
+			case 1:
+				if (args[0].equals("-"))
+					inputStream = System.in;
+				else
+					inputStream = new FileInputStream(new File(args[0]));
 
-			transformStream(inputStream, outputStream);
+				transformStream(inputStream, outputStream);
 
+				break;
+
+			default:
+				System.out
+						.println("Usage: java -jar emfl2html.jar INPUT [OUTPUT]\n"
+								+ "   where INPUT is either a path to the input file or '-' for\n"
+								+ "   standard input.\n\n"
+								+ "   Output will be written to the optional parameter OUTPUT or\n"
+								+ "   in case of absence to the standard output.");
+			}
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
-		
 
 	}
 
