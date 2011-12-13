@@ -48,7 +48,7 @@ public class CheckTag implements AnyTag {
 		StringBuffer javascriptFunction = new StringBuffer();
 		javascriptFunction.append("function () {\n");
 		
-		javascriptFunction.append("return true; }");
+		javascriptFunction.append("return true;\n}");
 		
 		return javascriptFunction.toString();
 	}
