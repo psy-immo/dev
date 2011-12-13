@@ -37,7 +37,7 @@ import org.xml.sax.Attributes;
 
 public class EfmlTagsAttribute {
 	private String name;
-	private Map<String,String> attribs;
+	private Map<String, String> attribs;
 	private EfmlTagsAttribute parent;
 
 	private Set<String> tags;
@@ -60,7 +60,7 @@ public class EfmlTagsAttribute {
 			this.reject = new HashSet<String>();
 		}
 
-		if (null != attribs) {			
+		if (null != attribs) {
 			String tagsValue = attribs.getValue("tags");
 			if (null != tagsValue) {
 				String[] tag_array = tagsValue.split(",");
@@ -84,13 +84,14 @@ public class EfmlTagsAttribute {
 					this.reject.add(tag_array[i].trim());
 				}
 			}
-			
+
 			/**
 			 * 
-			 * keep the attributes of the tag, storing the Attributes object doesn't work for later
+			 * keep the attributes of the tag, storing the Attributes object
+			 * doesn't work for later
 			 */
-			
-			for (int i=0;i<attribs.getLength();++i) {
+
+			for (int i = 0; i < attribs.getLength(); ++i) {
 				this.attribs.put(attribs.getQName(i), attribs.getValue(i));
 			}
 		}
@@ -110,18 +111,18 @@ public class EfmlTagsAttribute {
 		}
 		return array + "]";
 	}
-	
+
 	/**
 	 * 
-	 * @return the current tag set, as javascript-array-part (without the [])
+	 * @return the current tag set, as javascript-array-part (without the []),
+	 *         ending in ',' or empty
 	 */
 
 	public String getTagsCommas() {
 		String array = "";
 		for (Iterator<String> it = tags.iterator(); it.hasNext();) {
 			array += "\"" + StringEscape.escapeToJavaScript(it.next()) + "\"";
-			if (it.hasNext())
-				array += ",";
+			array += ",";
 		}
 		return array;
 	}
@@ -140,18 +141,18 @@ public class EfmlTagsAttribute {
 		}
 		return array + "]";
 	}
-	
+
 	/**
 	 * 
-	 * @return the current accept tag set, javascript-array-part (without the [])
+	 * @return the current accept tag set, as javascript-array-part (without the
+	 *         []), ending in ',' or empty
 	 */
 
 	public String getAcceptTagsCommas() {
 		String array = "";
 		for (Iterator<String> it = accept.iterator(); it.hasNext();) {
 			array += "\"" + StringEscape.escapeToJavaScript(it.next()) + "\"";
-			if (it.hasNext())
-				array += ",";
+			array += ",";
 		}
 		return array;
 	}
@@ -173,15 +174,15 @@ public class EfmlTagsAttribute {
 
 	/**
 	 * 
-	 * @return the current reject tag set, as javascript-array-part (without the [])
+	 * @return the current reject tag set, as javascript-array-part (without the
+	 *         []), ending in ',' or empty
 	 */
 
 	public String getRejectTagsCommas() {
 		String array = "";
 		for (Iterator<String> it = reject.iterator(); it.hasNext();) {
 			array += "\"" + StringEscape.escapeToJavaScript(it.next()) + "\"";
-			if (it.hasNext())
-				array += ",";
+			array += ",";
 		}
 		return array;
 	}
@@ -204,11 +205,10 @@ public class EfmlTagsAttribute {
 	 * @return value of the attribute or default
 	 */
 
-	public  String getValueOrDefault(String attributeName,
-			String defaultValue) {
+	public String getValueOrDefault(String attributeName, String defaultValue) {
 		if (attribs.containsKey(attributeName))
 			return attribs.get(attributeName);
-		
+
 		return defaultValue;
 	}
 

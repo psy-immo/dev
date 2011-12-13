@@ -21,6 +21,7 @@ package de.tu_dresden.psy.efml;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -36,6 +37,7 @@ public class AnswerTag implements AnyTag {
 	private EfmlTagsAttribute attributes;
 	private String buttonText;
 	private ArrayList<HintTag> hints;
+	private ArrayList<CheckTag> checks;
 	private String goodText;
 
 	public AnswerTag(EfmlTagsAttribute attributes) {
@@ -43,6 +45,7 @@ public class AnswerTag implements AnyTag {
 		this.buttonText = "";
 		this.goodText = null;
 		this.hints = new ArrayList<HintTag>();
+		this.checks = new ArrayList<CheckTag>();
 	}
 
 	/**
@@ -52,9 +55,33 @@ public class AnswerTag implements AnyTag {
 	 */
 
 	private String generateTestSolutionCode() {
-		// TODO: code it
+		StringBuffer javascript = new StringBuffer();
 
-		return "function() { return true; }";
+		javascript.append("function() {\n");
+
+		/**
+		 * first, mark all parts neutral
+		 */
+
+		javascript.append("Exists(myTags.AllTagsBut("
+				+ attributes.getAcceptTags() + "," + attributes.getRejectTags()
+				+ "),");
+		javascript.append("function(c) { \n");
+		javascript.append("if ( c.MarkNeutral ) c.MarkNeutral();\n");
+		javascript.append("return false;\n});\n\n");
+
+		javascript.append("var good_count = 0;\n");
+		
+		for (Iterator<CheckTag> it=checks.iterator();it.hasNext();) {
+			CheckTag check = it.next();
+			
+			javascript.append("if ( ("+check.getJavaScriptTestFunction()+")() == true) good_count ++;");
+		}
+
+		javascript.append("return good_count == "+checks.size()+";");
+		javascript.append("\n}");
+
+		return javascript.toString();
 	}
 
 	@Override
@@ -77,28 +104,36 @@ public class AnswerTag implements AnyTag {
 			writer.write(".Text(\""
 					+ StringEscape.escapeToJavaScript(buttonText) + "\")");
 		}
-		
+
 		/**
 		 * write feedback texts
 		 */
-		
-		if ((this.goodText != null) || (this.hints.size()>0)) {
+
+		if ((this.goodText != null) || (this.hints.size() > 0)) {
 			writer.write(".Feedback(");
 			if (this.goodText != null)
-				writer.write(StringEscape.escapeToDecodeInJavaScript(this.goodText));
-			else writer.write("\"\"");
-			
+				writer.write(StringEscape
+						.escapeToDecodeInJavaScript(this.goodText));
+			else
+				writer.write("\"\"");
+
 			writer.write(",");
-			
+
 			if (this.hints.size() > 0) {
-				writer.write("["+StringEscape.escapeToDecodeInJavaScript(this.hints.get(0).getHint()));
-				for (int i=1;i<this.hints.size();++i) {
-					writer.write(","+StringEscape.escapeToDecodeInJavaScript(this.hints.get(i).getHint()));
+				writer.write("["
+						+ StringEscape.escapeToDecodeInJavaScript(this.hints
+								.get(0).getHint()));
+				for (int i = 1; i < this.hints.size(); ++i) {
+					writer.write(","
+							+ StringEscape
+									.escapeToDecodeInJavaScript(this.hints.get(
+											i).getHint()));
 				}
 				writer.write("]");
-				
-			} else writer.write("null");
-			
+
+			} else
+				writer.write("null");
+
 			writer.write(")");
 		}
 
@@ -124,8 +159,10 @@ public class AnswerTag implements AnyTag {
 			this.buttonText += ((PlainContent) innerTag).getContent();
 		} else if (innerTag.getClass() == HintTag.class) {
 			this.hints.add((HintTag) innerTag);
+		} else if (innerTag.getClass() == CheckTag.class) {
+			this.checks.add((CheckTag) innerTag);
 		} else if (innerTag.getClass() == CorrectTag.class) {
-			this.goodText = ((CorrectTag)innerTag).getFeedback();
+			this.goodText = ((CorrectTag) innerTag).getFeedback();
 		} else
 
 			throw new OperationNotSupportedException("<answer> cannot enclose "

@@ -159,7 +159,7 @@ function Runway(name, tags, token, accept, reject) {
 			html_object.innerHTML = token;
 			html_object.style.backgroundColor = this.colorFilled;
 		} else {
-			html_object.innerHTML = "";
+			html_object.innerHTML = "&nbsp;";
 			html_object.style.backgroundColor = this.colorEmpty;
 		}
 
