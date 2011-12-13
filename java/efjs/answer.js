@@ -24,68 +24,78 @@ var answerArray = [];
  */
 
 function Answer(testfn) {
-	this.id = answerIdCounter ++;
+	this.id = answerIdCounter++;
 	this.feedbackAllGood = "Correct!";
 	this.errorCount = 0;
-	this.feedbackErrors = ["Your solution still contains an error. Correct parts of your solution are lit green."];
+	this.feedbackErrors = [ "Your solution still contains an error. Correct parts of your solution are lit green." ];
 	this.text = "Check your answer";
 	this.testfn = testfn;
-	
+
 	/**
 	 * write the HTML code that will be used for displaying the answer button
 	 */
 	this.WriteHtml = function() {
-		var idstring = "\"AnswerButton"+this.id+"\"";		
+		var idstring = "\"AnswerButton" + this.id + "\"";
 		document.write("<form onsubmit=\"return false;\">");
-		document.write("<input type=\"button\" name="+idstring+" id="+idstring+" value=\""+this.text+"\" onclick=\"answerArray["+this.id+"].OnClick()\"/>");
-		document.write("<br /><table border=0 cellpadding=0 cellspacing=0><tr><td id=\"AnswerHint"+this.id+"\" style=\"height: 20; width: 100%\"></td></tr></table>");
+		document.write("<input type=\"button\" name=" + idstring + " id="
+				+ idstring + " value=\"" + this.text
+				+ "\" onclick=\"answerArray[" + this.id + "].OnClick()\"/>");
+		document
+				.write("<br /><table border=0 cellpadding=0 cellspacing=0><tr><td id=\"AnswerHint"
+						+ this.id
+						+ "\" style=\"height: 20; width: 100%\"></td></tr></table>");
 		document.write("</form>");
 	};
-	
+
 	/**
 	 * this function sets the text of the component
+	 * 
 	 * @returns this
 	 */
 	this.Text = function(text) {
 		this.text = text;
 		return this;
 	};
-	
+
 	/**
 	 * this function sets the texts for the feedback
+	 * 
 	 * @returns this
 	 */
 	this.Feedback = function(good, bad_list) {
-		this.feedbackAllGood = good;
-		this.feedbackErrors = bad_list;
+		if (good)
+			this.feedbackAllGood = good;
+		if (bad_list)
+			this.feedbackErrors = bad_list;
 		return this;
 	};
-	
+
 	/**
 	 * this function sets the contents of the hint area
 	 */
 	this.SetHint = function(contents) {
-		var td = document.getElementById("AnswerHint"+this.id);
+		var td = document.getElementById("AnswerHint" + this.id);
 		td.innerHTML = contents;
 	};
-	
+
 	/**
 	 * this is called whenever the button is clicked
 	 */
 	this.OnClick = function() {
-		
-		if ( this.testfn() ) {
-						
+
+		if (this.testfn()) {
+
 			this.SetHint(this.feedbackAllGood);
-			
-			myLogger.Log("Check answer: good ("+this.errorCount+")");
+
+			myLogger.Log("Check answer: good (" + this.errorCount + ")");
 		} else {
-			this.SetHint(this.feedbackErrors[Math.min(this.feedbackErrors.length-1, this.errorCount)]);
-			this.errorCount ++;	
-			
-			myLogger.Log("Check answer: errors ("+this.errorCount+")");			
+			this.SetHint(this.feedbackErrors[Math.min(
+					this.feedbackErrors.length - 1, this.errorCount)]);
+			this.errorCount++;
+
+			myLogger.Log("Check answer: errors (" + this.errorCount + ")");
 		}
 	};
-	
+
 	answerArray[this.id] = this;
 };

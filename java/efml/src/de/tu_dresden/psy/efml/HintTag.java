@@ -1,5 +1,5 @@
 /**
- * RTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
+ * HintTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -24,28 +24,45 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implementation of the <r/> tag (switches row within <T> tag)
+ * implements the <hint>...</hint> tag for answers
  * @author immanuel
  *
  */
 
-public class RTag implements AnyTag {
+public class HintTag implements AnyTag {
+	
+	private String token;
+	
+	public HintTag() {
+		this.token = "";
+	}
+	
+	public String getHint() {
+		return this.token;
+	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		writer.write("</td></tr><tr><td>&nbsp;");
+		/**
+		 * noop
+		 */
 	}
 
 	@Override
 	public void close(Writer writer) throws IOException {
-
-
+		/**
+		 * noop
+		 */
 	}
 
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
-		throw new OperationNotSupportedException("<r /> takes no contents.");
+		if (innerTag.getClass() == PlainContent.class) {
+			this.token += ((PlainContent) innerTag).getContent();
+		} else
+			throw new OperationNotSupportedException("<hint> cannot enclose "
+					+ innerTag.getClass().toString());
 	}
 
 }

@@ -45,7 +45,7 @@ public class HtmlTag implements AnyTag {
 
 	@Override
 	public void close(Writer writer) throws IOException {
-		writer.write("</html>");
+		writer.write("</html>\n");
 	}
 	
 	@Override
