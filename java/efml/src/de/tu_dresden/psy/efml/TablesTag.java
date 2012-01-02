@@ -26,7 +26,7 @@ import java.util.Iterator;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the <T> tag, which puts a left-floating table around its contents
+ * implements the &lt;tables> tag, which puts a left-floating table around its contents
  * @author immanuel
  *
  */

@@ -5,6 +5,14 @@ import java.io.Writer;
 
 import javax.naming.OperationNotSupportedException;
 
+/**
+ * implements the &lt;runway>-tag modelling an airfield that sends and takes
+ * "text" as planes via mouse interaction
+ * 
+ * @author immanuel
+ * 
+ */
+
 public class RunwayTag implements AnyTag {
 
 	private EfmlTagsAttribute attributes;
@@ -12,7 +20,7 @@ public class RunwayTag implements AnyTag {
 
 	public RunwayTag(EfmlTagsAttribute efmlAttributes) {
 		this.attributes = efmlAttributes;
-		this.token = "";		
+		this.token = "";
 	}
 
 	@Override
@@ -35,7 +43,6 @@ public class RunwayTag implements AnyTag {
 
 		writer.write(attributes.getAcceptTags() + ", ");
 		writer.write(attributes.getRejectTags() + ")");
-		
 
 		/**
 		 * content attribute will change behavior,
@@ -46,10 +53,9 @@ public class RunwayTag implements AnyTag {
 
 		String content = attributes.getValueOrDefault("content", "").trim();
 
-		
 		if (content.equalsIgnoreCase("RESPAWN")) {
 			writer.write(".Respawn()");
-			
+
 		} else if (content.equalsIgnoreCase("REFILLING")) {
 			writer.write(".Refilling()");
 		}

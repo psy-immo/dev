@@ -26,7 +26,7 @@ import java.util.Iterator;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * handles <answer>...</answer> tag, that can be used to create an answer button
+ * handles &lt;answer>...&lt;/answer> tag, that can be used to create an answer button
  * 
  * @author immanuel
  * 
@@ -51,7 +51,7 @@ public class AnswerTag implements AnyTag {
 	/**
 	 * 
 	 * @return java script code, that will test the solution according to the
-	 *         contents of the <answer>-tag
+	 *         contents of the &lt;answer>-tag
 	 */
 
 	private String generateTestSolutionCode() {

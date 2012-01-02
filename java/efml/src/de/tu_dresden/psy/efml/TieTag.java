@@ -26,7 +26,7 @@ import java.util.Iterator;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the <t> tag, which is for tie-together, i.e. prevents any line wraps within
+ * implements the &lt;tie> tag, which is for tie-together, i.e. prevents any line wraps within
  * @author immanuel
  *
  */

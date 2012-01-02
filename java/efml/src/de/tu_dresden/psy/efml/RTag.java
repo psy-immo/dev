@@ -24,7 +24,7 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implementation of the <r/> tag (switches row within <T> tag)
+ * implementation of the &lt;r/> tag (switches row within &lt;tables> tag)
  * @author immanuel
  *
  */

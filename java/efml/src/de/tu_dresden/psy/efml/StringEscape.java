@@ -52,7 +52,7 @@ public class StringEscape {
 	 * translate string to java script function call of DecodeString
 	 * 
 	 * @param unescaped
-	 * @return
+	 * @return escaped
 	 */
 
 	public static String escapeToDecodeInJavaScript(String unescaped) {

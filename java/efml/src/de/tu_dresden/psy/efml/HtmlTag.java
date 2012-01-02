@@ -7,6 +7,13 @@ import java.util.Iterator;
 
 import javax.naming.OperationNotSupportedException;
 
+/**
+ * implements the main html tag
+ * 
+ * @author immanuel
+ *
+ */
+
 public class HtmlTag implements AnyTag {
 	
 	private ArrayList<AnyTag> innerTags;

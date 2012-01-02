@@ -25,10 +25,18 @@ import java.util.Iterator;
 
 import javax.naming.OperationNotSupportedException;
 
+/**
+ * implements the &lt;tags>-tag, which can be used to propagate tags, atags and
+ * rtags attributes to child nodes without the need of another surrounding tag
+ * 
+ * @author immanuel
+ * 
+ */
+
 public class TagsTag implements AnyTag {
-	
+
 	private ArrayList<AnyTag> innerTags;
-	
+
 	public TagsTag() {
 		innerTags = new ArrayList<AnyTag>();
 	}
@@ -38,9 +46,8 @@ public class TagsTag implements AnyTag {
 		/**
 		 * write inner tags
 		 */
-		
-		for (Iterator<AnyTag> it=innerTags.iterator();it.hasNext();)
-		{
+
+		for (Iterator<AnyTag> it = innerTags.iterator(); it.hasNext();) {
 			AnyTag innerTag = it.next();
 			innerTag.open(writer);
 			innerTag.close(writer);
@@ -49,7 +56,8 @@ public class TagsTag implements AnyTag {
 	}
 
 	@Override
-	public void close(Writer writer) throws IOException {}
+	public void close(Writer writer) throws IOException {
+	}
 
 	@Override
 	public void encloseTag(AnyTag innerTag)

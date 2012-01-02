@@ -24,7 +24,7 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the <hint>...</hint> tag for answers
+ * implements the &lt;hint>...&lt;/hint> tag for answers
  * @author immanuel
  *
  */

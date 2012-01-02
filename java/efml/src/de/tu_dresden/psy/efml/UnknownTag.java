@@ -26,8 +26,6 @@ import java.util.Map;
 
 import javax.naming.OperationNotSupportedException;
 
-import org.xml.sax.Attributes;
-
 /**
  * this class represents an unknown tag which will just be reproduced as it was
  * in the efml in the output html body

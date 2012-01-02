@@ -24,7 +24,7 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implementation of the <c/> tag (switches column within <T> tag)
+ * implementation of the &lt;c/> tag (switches column within &lt;tables> tag)
  * @author immanuel
  *
  */

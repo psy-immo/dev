@@ -24,7 +24,7 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the <correct>...</correct> tag for answers
+ * implements the &lt;correct>...&lt;/correct> tag for answers
  * @author immanuel
  *
  */

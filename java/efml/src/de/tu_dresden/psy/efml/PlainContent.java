@@ -23,6 +23,12 @@ import java.io.Writer;
 
 import javax.naming.OperationNotSupportedException;
 
+/**
+ * implements character data as child "tag"
+ * @author immanuel
+ *
+ */
+
 public class PlainContent implements AnyTag {
 
 	private String content;
