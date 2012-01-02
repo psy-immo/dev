@@ -19,7 +19,10 @@
 package de.tu_dresden.psy.efml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * parses terms from &lt;answer>&lt;check>-tags
@@ -29,9 +32,47 @@ import java.util.Iterator;
  */
 public class AnswerCheckParser {
 
+	/**
+	 * tokenized version of the string
+	 */
+
 	private AnswerCheckTokenizer tokens;
+
+	/**
+	 * parenthesis level of each token
+	 */
+
 	private ArrayList<Integer> levels;
+
+	/**
+	 * original input data
+	 */
 	private String inputTerm;
+
+	/**
+	 * currently bound variable names
+	 */
+	private LinkedList<String> boundVariables;
+
+	/**
+	 * variable binding types
+	 */
+	private Map<String, Integer> variableType;
+
+	/**
+	 * tokens forbidden for variable names
+	 */
+
+	static final String[] forbiddenTokens = new String[] { "tag", "in",
+			"field", "with", "and", "or" };
+
+	/**
+	 * Variable types:
+	 * 
+	 */
+
+	private final int VAR_FIELD = 0;
+	private final int VAR_TAG = 1;
 
 	public AnswerCheckParser(String term) {
 
@@ -54,24 +95,42 @@ public class AnswerCheckParser {
 				.hasNext();) {
 			AnswerCheckTokenizer.Token token = it.next();
 			if (token.quoted == false) {
-				if (token.value.equalsIgnoreCase("(")
-						|| token.value.equalsIgnoreCase("[")
-						|| token.value.equalsIgnoreCase("{")) {
+				if (token.value.equalsIgnoreCase("(")) {
 					current_level += 1;
 				}
 			}
 
 			levels.add(current_level);
-			System.out.println(token.value + " " + current_level);
 
 			if (token.quoted == false) {
-				if (token.value.equalsIgnoreCase(")")
-						|| token.value.equalsIgnoreCase("]")
-						|| token.value.equalsIgnoreCase("}")) {
+				if (token.value.equalsIgnoreCase(")")) {
 					current_level -= 1;
 				}
 			}
 		}
+	}
+
+	/**
+	 * checks, whether a token may not be used as variable symbol
+	 * 
+	 * @param token
+	 * @return true, if the token cannot be used as variable symbol
+	 */
+
+	public boolean isForbidden(String token) {
+		for (int i = 0; i < forbiddenTokens.length; ++i)
+			if (token.equalsIgnoreCase(forbiddenTokens[i]) == true)
+				return true;
+		/**
+		 * test whether it is alphanumeric
+		 */
+
+		for (int c = 0; c < token.length(); ++c) {
+			if (Character.isLetterOrDigit(token.charAt(c)) == false)
+				return true;
+		}
+
+		return Character.isLetter(token.charAt(0)) != true;
 	}
 
 	/**
@@ -80,6 +139,8 @@ public class AnswerCheckParser {
 	 * @return null, if no syntax errors are found, otherwise error description
 	 */
 	public String checkSyntax() {
+		this.boundVariables = new LinkedList<String>();
+		this.variableType = new HashMap<String, Integer>();
 		return checkSyntaxTree(0, this.tokens.length());
 	}
 
@@ -124,7 +185,7 @@ public class AnswerCheckParser {
 		int start = first;
 		boolean rootlevel = levels.get(first) == local_depth;
 
-		for (int end = first; end < last; ++end) {
+		for (int end = first + 1; end < last; ++end) {
 			if ((levels.get(end) == local_depth) || (rootlevel)) {
 				subterm_start.add(start);
 				subterm_end.add(end);
@@ -175,7 +236,7 @@ public class AnswerCheckParser {
 			}
 
 			/**
-			 * check for alternating structure: (subterm token)+ subterm 
+			 * check for alternating structure: (subterm token)+ subterm
 			 */
 
 			if (operator_known) {
@@ -244,6 +305,8 @@ public class AnswerCheckParser {
 				/**
 				 * term begins with string literal
 				 */
+				error_description = "A term may not start with a string literal";
+				where = tokens.getEndIndex(first);
 
 			} else {
 				String first_token = tokens.getValue(first);
@@ -261,11 +324,468 @@ public class AnswerCheckParser {
 						where = tokens.getEndIndex(last - 1);
 
 					}
-				} else if ((first_token.equalsIgnoreCase("or") == true)||(first_token.equalsIgnoreCase("and") == true)) {
+				} else if ((first_token.equalsIgnoreCase("or") == true)
+						|| (first_token.equalsIgnoreCase("and") == true)) {
 					error_description = "Term connective without left hand term";
 					where = tokens.getEndIndex(first);
-					
-				} 
+
+				} else if (first_token.equalsIgnoreCase(")") == true) {
+					error_description = "Two terms in parenthesis without term connective";
+					where = tokens.getEndIndex(first);
+				} else if (first_token.equalsIgnoreCase("tag") == true) {
+					/**
+					 * tag VARNAME : RHS
+					 * 
+					 * or
+					 * 
+					 * tag VARNAME in ("tag"|TAGVARIABLE)(,("tag"|TAGVARIABLE)*)
+					 * : RHS
+					 */
+
+					if (subterm_rootlevel.size() < 2) {
+						error_description = "missing variable name after 'tag'";
+						where = tokens.getEndIndex(first);
+					} else {
+						if (subterm_rootlevel.get(1) == true) {
+							if (tokens.isQuoted(subterm_start.get(1)) == true) {
+								error_description = "String literals cannot be variable names";
+								where = tokens
+										.getEndIndex(subterm_start.get(1));
+							} else {
+								String variable = tokens.getValue(
+										subterm_start.get(1)).toLowerCase();
+								if (boundVariables.contains(variable) == true) {
+									error_description = "Variable symbol '"
+											+ variable + "' is already taken ";
+									where = tokens.getEndIndex(subterm_start
+											.get(1));
+								} else if (isForbidden(variable) == true) {
+									error_description = "'"
+											+ variable
+											+ "' connot be used as variable symbol";
+									where = tokens.getEndIndex(subterm_start
+											.get(1));
+								} else {
+									if (subterm_rootlevel.size() < 3) {
+										error_description = "':' or 'in' missing";
+										where = tokens
+												.getEndIndex(subterm_start
+														.get(1));
+									} else if (subterm_rootlevel.get(2) == true) {
+										String colon_or_in = tokens
+												.getValue(subterm_start.get(2));
+										if (tokens.isQuoted(subterm_start
+												.get(2)) == false) {
+											if (colon_or_in
+													.equalsIgnoreCase(":") == true) {
+												/**
+												 * tag VARNAME : RHS
+												 */
+												boundVariables.push(variable);
+												variableType.put(variable,
+														VAR_TAG);
+
+												/**
+												 * check RHS term
+												 */
+
+												String error = checkSyntaxTree(
+														subterm_start.get(2) + 1,
+														last);
+
+												boundVariables.pop();
+												variableType.remove(variable);
+
+												return error;
+											} else if (colon_or_in
+													.equalsIgnoreCase("in")) {
+												/**
+												 * check for colon
+												 */
+												int colon_term = 3;
+												boolean colon_found = false;
+												while (colon_found != true) {
+													if (subterm_rootlevel
+															.size() <= colon_term) {
+														error_description = "':' after 'tag "
+																+ variable
+																+ " in [...]' missing";
+														where = tokens
+																.getEndIndex(last - 1);
+														break;
+													}
+
+													if (subterm_rootlevel
+															.get(colon_term) != true) {
+														error_description = "Terms cannot be tags";
+														where = tokens
+																.getEndIndex(subterm_start
+																		.get(colon_term));
+														break;
+													}
+
+													String tag_token = tokens
+															.getValue(
+																	subterm_start
+																			.get(colon_term))
+															.toLowerCase();
+
+													if (tokens
+															.isQuoted(subterm_start
+																	.get(colon_term)) == true) {
+														/**
+														 * tag given by string
+														 * literal
+														 */
+													} else {
+														if (tag_token
+																.equalsIgnoreCase(":") == true) {
+															colon_found = true;
+															break;
+														}
+														if (boundVariables
+																.contains(tag_token)) {
+															if (variableType
+																	.get(tag_token) == VAR_TAG) {
+
+															} else {
+																error_description = "'"
+																		+ tag_token
+																		+ "' is a variable, but not a token variable";
+																where = tokens
+																		.getEndIndex(subterm_start
+																				.get(colon_term));
+																break;
+															}
+														} else {
+															error_description = "'"
+																	+ tag_token
+																	+ "' is neither a bound token variable nor a string literal";
+															where = tokens
+																	.getEndIndex(subterm_start
+																			.get(colon_term));
+															break;
+														}
+													}
+
+													colon_term++;
+												}
+
+												if (colon_found) {
+													boundVariables
+															.push(variable);
+													variableType.put(variable,
+															VAR_TAG);
+
+													/**
+													 * check RHS term
+													 */
+
+													String error = checkSyntaxTree(
+															subterm_start
+																	.get(colon_term) + 1,
+															last);
+
+													boundVariables.pop();
+													variableType
+															.remove(variable);
+
+													return error;
+												}
+
+											} else {
+												error_description = "':' or 'in' expected";
+												where = tokens
+														.getEndIndex(subterm_start
+																.get(2));
+											}
+										} else {
+											error_description = "':' or 'in' expected, quoted string found";
+											where = tokens
+													.getEndIndex(subterm_start
+															.get(2));
+										}
+									} else {
+										error_description = "':' or 'in' expected, term in parenthesis found";
+										where = tokens
+												.getEndIndex(subterm_start
+														.get(2));
+									}
+								}
+							}
+						} else {
+							error_description = "Terms cannot be variable names";
+							where = tokens.getEndIndex(subterm_start.get(1));
+						}
+					}
+
+				} else if (first_token.equalsIgnoreCase("field") == true) {
+					/**
+					 * field VARNAME : RHS
+					 * 
+					 * or
+					 * 
+					 * field VARNAME with
+					 * ("tag"|TAGVARIABLE)(,("tag"|TAGVARIABLE)*) : RHS
+					 */
+
+					if (subterm_rootlevel.size() < 2) {
+						error_description = "missing variable name after 'tag'";
+						where = tokens.getEndIndex(first);
+					} else {
+						if (subterm_rootlevel.get(1) == true) {
+							if (tokens.isQuoted(subterm_start.get(1)) == true) {
+								error_description = "String literals cannot be variable names";
+								where = tokens
+										.getEndIndex(subterm_start.get(1));
+							} else {
+								String variable = tokens.getValue(
+										subterm_start.get(1)).toLowerCase();
+								if (boundVariables.contains(variable) == true) {
+									error_description = "Variable symbol '"
+											+ variable + "' is already taken ";
+									where = tokens.getEndIndex(subterm_start
+											.get(1));
+								} else if (isForbidden(variable) == true) {
+									error_description = "'"
+											+ variable
+											+ "' connot be used as variable symbol";
+									where = tokens.getEndIndex(subterm_start
+											.get(1));
+								} else {
+									if (subterm_rootlevel.size() < 3) {
+										error_description = "':' or 'with' missing";
+										where = tokens
+												.getEndIndex(subterm_start
+														.get(1));
+									} else if (subterm_rootlevel.get(2) == true) {
+										String colon_or_in = tokens
+												.getValue(subterm_start.get(2));
+										if (tokens.isQuoted(subterm_start
+												.get(2)) == false) {
+											if (colon_or_in
+													.equalsIgnoreCase(":") == true) {
+												/**
+												 * field VARNAME : RHS
+												 */
+												boundVariables.push(variable);
+												variableType.put(variable,
+														VAR_FIELD);
+
+												/**
+												 * check RHS term
+												 */
+
+												String error = checkSyntaxTree(
+														subterm_start.get(2) + 1,
+														last);
+
+												boundVariables.pop();
+												variableType.remove(variable);
+
+												return error;
+											} else if (colon_or_in
+													.equalsIgnoreCase("with")) {
+												/**
+												 * check for colon
+												 */
+												int colon_term = 3;
+												boolean colon_found = false;
+												while (colon_found != true) {
+													if (subterm_rootlevel
+															.size() <= colon_term) {
+														error_description = "':' after 'field "
+																+ variable
+																+ " with [...]' missing";
+														where = tokens
+																.getEndIndex(last - 1);
+														break;
+													}
+
+													if (subterm_rootlevel
+															.get(colon_term) != true) {
+														error_description = "Terms cannot be tags";
+														where = tokens
+																.getEndIndex(subterm_start
+																		.get(colon_term));
+														break;
+													}
+
+													String tag_token = tokens
+															.getValue(
+																	subterm_start
+																			.get(colon_term))
+															.toLowerCase();
+
+													if (tokens
+															.isQuoted(subterm_start
+																	.get(colon_term)) == true) {
+														/**
+														 * tag given by string
+														 * literal
+														 */
+													} else {
+														if (tag_token
+																.equalsIgnoreCase(":") == true) {
+															colon_found = true;
+															break;
+														}
+														if (boundVariables
+																.contains(tag_token)) {
+															if (variableType
+																	.get(tag_token) == VAR_TAG) {
+
+															} else {
+																error_description = "'"
+																		+ tag_token
+																		+ "' is a variable, but not a token variable";
+																where = tokens
+																		.getEndIndex(subterm_start
+																				.get(colon_term));
+																break;
+															}
+														} else {
+															error_description = "'"
+																	+ tag_token
+																	+ "' is neither a bound token variable nor a string literal";
+															where = tokens
+																	.getEndIndex(subterm_start
+																			.get(colon_term));
+															break;
+														}
+													}
+
+													colon_term++;
+												}
+
+												if (colon_found) {
+													boundVariables
+															.push(variable);
+													variableType.put(variable,
+															VAR_FIELD);
+
+													/**
+													 * check RHS term
+													 */
+
+													String error = checkSyntaxTree(
+															subterm_start
+																	.get(colon_term) + 1,
+															last);
+
+													boundVariables.pop();
+													variableType
+															.remove(variable);
+
+													return error;
+												}
+
+											} else {
+												error_description = "':' or 'with' expected";
+												where = tokens
+														.getEndIndex(subterm_start
+																.get(2));
+											}
+										} else {
+											error_description = "':' or 'with' expected, quoted string found";
+											where = tokens
+													.getEndIndex(subterm_start
+															.get(2));
+										}
+									} else {
+										error_description = "':' or 'with' expected, term in parenthesis found";
+										where = tokens
+												.getEndIndex(subterm_start
+														.get(2));
+									}
+								}
+							}
+						} else {
+							error_description = "Terms cannot be variable names";
+							where = tokens.getEndIndex(subterm_start.get(1));
+						}
+					}
+
+				} else if (boundVariables.contains(first_token.toLowerCase())) {
+					/**
+					 * term starts with a variable symbol
+					 */
+					String variable = first_token.toLowerCase();
+					if (variableType.get(variable) == VAR_FIELD) {
+
+						if (subterm_rootlevel.size() != 3) {
+							error_description = "Field comparision must be of the form FIELD = FIELD or FIELD = \"STRING\"";
+							where = tokens.getEndIndex(first);
+						} else {
+							if (subterm_rootlevel.get(1) != true) {
+								error_description = "'=' expected, term in parenthesis found";
+								where = tokens
+										.getEndIndex(subterm_start.get(1));
+							} else {
+								if (tokens.isQuoted(subterm_start.get(1)) == true) {
+									error_description = "'=' expected, string literal found";
+									where = tokens.getEndIndex(subterm_start
+											.get(1));
+								} else if (tokens
+										.getValue(subterm_start.get(1)).equals(
+												"=")) {
+									if (subterm_rootlevel.get(2) != true) {
+										error_description = "String literal or field variable needed";
+										where = tokens
+												.getEndIndex(subterm_start
+														.get(2));
+									} else {
+										if (tokens.isQuoted(subterm_start
+												.get(2)) == true) {
+											/**
+											 * FIELD = "STRING"
+											 */
+
+											return null;
+										} else {
+											String comparison_variable = tokens
+													.getValue(
+															subterm_start
+																	.get(2))
+													.toLowerCase();
+											if (boundVariables
+													.contains(comparison_variable) == true) {
+												if (variableType
+														.get(comparison_variable) == VAR_FIELD) {
+													/**
+													 * FIELD = FIELD
+													 */
+													return null;
+												} else {
+													error_description = "'"
+															+ comparison_variable
+															+ "' is variable, but not a field variable";
+													where = tokens
+															.getEndIndex(subterm_start
+																	.get(2));
+												}
+											} else {
+												error_description = "Field variable or string literal needed";
+												where = tokens
+														.getEndIndex(subterm_start
+																.get(2));
+											}
+										}
+									}
+								} else {
+									error_description = "'=' expected";
+									where = tokens.getEndIndex(subterm_start
+											.get(1));
+								}
+							}
+						}
+
+					} else {
+						error_description = "'" + first_token
+								+ "' is a variable, but not a field variable";
+						where = tokens.getEndIndex(first);
+					}
+				}
 			}
 		}
 
@@ -303,7 +823,7 @@ public class AnswerCheckParser {
 
 	public static void main(String[] args) {
 		AnswerCheckParser parsed = new AnswerCheckParser(
-				"() or () or () or ( () and ( and ) )");
+				"(tag a1 in \"a\" \"(b c)\" \"d\" \"e\": field b with a1 \"c\" \"d\" : field c with a1: b = cd )");
 		System.out.println(parsed.checkSyntax());
 	}
 
