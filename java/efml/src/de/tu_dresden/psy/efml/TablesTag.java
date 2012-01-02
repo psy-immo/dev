@@ -31,12 +31,12 @@ import javax.naming.OperationNotSupportedException;
  *
  */
 
-public class BigTTag implements AnyTag {
+public class TablesTag implements AnyTag {
 	
 	private ArrayList<AnyTag> innerTags;
 	
 	
-	public BigTTag() {
+	public TablesTag() {
 	
 		innerTags = new ArrayList<AnyTag>();
 	}

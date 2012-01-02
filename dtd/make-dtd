@@ -1,0 +1,57 @@
+#!/usr/bin/python
+
+dtd = open("efml.0.0.1.0.dtd","w")
+
+html_elements = "i|b|br"
+efml_elements = "tags|tie|runway|answer"
+efml_extra = "tables"
+
+universal_attributes = r"""
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+"""
+
+
+dtd.write("\n<!ELEMENT efml (#PCDATA|title|"+efml_elements+"|"+efml_extra+"|"+html_elements+")* >\n")
+
+dtd.write("\n<!ELEMENT br EMPTY >\n")
+dtd.write("\n<!ELEMENT i (#PCDATA|"+html_elements+")* >\n")
+dtd.write("\n<!ELEMENT b (#PCDATA|"+html_elements+")* >\n")
+
+dtd.write("\n<!ELEMENT tags (#PCDATA|"+efml_elements+"|"+efml_extra+"|"+html_elements+")* >\n")
+
+dtd.write("\n<!ATTLIST tags "+universal_attributes+" >\n")
+
+dtd.write("\n<!ELEMENT tables (#PCDATA|r|c|"+efml_elements+"|"+html_elements+")* >\n")
+
+dtd.write("\n<!ATTLIST tables "+universal_attributes+" >\n")
+
+dtd.write("\n<!ELEMENT r EMPTY >\n")
+dtd.write("\n<!ELEMENT c EMPTY >\n")
+
+dtd.write("\n<!ELEMENT tie (#PCDATA|"+html_elements+"|"+efml_elements+")* >\n")
+
+dtd.write("\n<!ATTLIST tie "+universal_attributes+" >\n")
+
+dtd.write("\n<!ELEMENT runway (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST runway "+universal_attributes+"""
+	name	CDATA			#IMPLIED
+	content	(respawn|refilling)	#IMPLIED
+	color	CDATA			#IMPLIED
+	filled	CDATA			#IMPLIED
+	width	CDATA			#IMPLIED
+	height	CDATA			#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT answer (#PCDATA|hint|correct|check)* >\n")
+dtd.write("\n<!ATTLIST answer "+universal_attributes+" >\n")
+
+dtd.write("\n<!ELEMENT hint (#PCDATA|"+html_elements+")* >\n")
+dtd.write("\n<!ELEMENT correct (#PCDATA|"+html_elements+")* >\n")
+dtd.write("\n<!ELEMENT check (#PCDATA)* >\n")
+
+
+
+

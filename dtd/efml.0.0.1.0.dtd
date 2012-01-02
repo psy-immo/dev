@@ -1,0 +1,65 @@
+
+<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|tables|i|b|br)* >
+
+<!ELEMENT br EMPTY >
+
+<!ELEMENT i (#PCDATA|i|b|br)* >
+
+<!ELEMENT b (#PCDATA|i|b|br)* >
+
+<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|tables|i|b|br)* >
+
+<!ATTLIST tags 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+ >
+
+<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|i|b|br)* >
+
+<!ATTLIST tables 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+ >
+
+<!ELEMENT r EMPTY >
+
+<!ELEMENT c EMPTY >
+
+<!ELEMENT tie (#PCDATA|i|b|br|tags|tie|runway|answer)* >
+
+<!ATTLIST tie 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+ >
+
+<!ELEMENT runway (#PCDATA)* >
+
+<!ATTLIST runway 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+
+	name	CDATA			#IMPLIED
+	content	(respawn|refilling)	#IMPLIED
+	color	CDATA			#IMPLIED
+	filled	CDATA			#IMPLIED
+	width	CDATA			#IMPLIED
+	height	CDATA			#IMPLIED
+ >
+
+<!ELEMENT answer (#PCDATA|hint|correct|check)* >
+
+<!ATTLIST answer 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+ >
+
+<!ELEMENT hint (#PCDATA|i|b|br)* >
+
+<!ELEMENT correct (#PCDATA|i|b|br)* >
+
+<!ELEMENT check (#PCDATA)* >

@@ -43,6 +43,14 @@ public class EfmlTagsAttribute {
 	private Set<String> tags;
 	private Set<String> accept;
 	private Set<String> reject;
+	
+	/**
+	 * create EfmlTagsAttribute for new tag
+	 * 
+	 * @param qName    name of the tag
+	 * @param attribs  xml parser attributes object
+	 * @param parent   the EfmlTagsAttributes object of the parent node
+	 */
 
 	public EfmlTagsAttribute(String qName, Attributes attribs,
 			EfmlTagsAttribute parent) {
@@ -186,10 +194,20 @@ public class EfmlTagsAttribute {
 		}
 		return array;
 	}
+	
+	/**
+	 * 
+	 * @return name of tag corresponding to this attributes
+	 */
 
 	public final String getName() {
 		return name;
 	}
+	
+	/**
+	 * 
+	 * @return the objects attributes map
+	 */
 
 	public final Map<String, String> getAttribs() {
 		return attribs;
@@ -211,6 +229,11 @@ public class EfmlTagsAttribute {
 
 		return defaultValue;
 	}
+	
+	/**
+	 * 
+	 * @return attributes object of the parent node
+	 */
 
 	public final EfmlTagsAttribute getParent() {
 		return parent;

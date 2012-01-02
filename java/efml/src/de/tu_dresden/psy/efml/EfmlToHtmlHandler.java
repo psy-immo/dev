@@ -109,10 +109,10 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new TitleTag());
 		} else if ((qName == "tags") || (qName == "efml")) {
 			this.processingTags.push(new TagsTag());
-		} else if (qName == "t") {
-			this.processingTags.push(new TTag());
-		} else if (qName == "T") {
-			this.processingTags.push(new BigTTag());
+		} else if (qName == "tie") {
+			this.processingTags.push(new TieTag());
+		} else if (qName == "tables") {
+			this.processingTags.push(new TablesTag());
 		} else if (qName == "r") {
 			this.processingTags.push(new RTag());
 		} else if (qName == "c") {
