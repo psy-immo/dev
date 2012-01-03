@@ -1019,6 +1019,19 @@ public class AnswerCheckParser {
 													/**
 													 * FIELD = FIELD
 													 */
+													
+													jsCode += " if (fVar"
+															+ variable
+															+ ".token) {\n"
+															+ "\nif (fVar"
+															+ variable
+															+ ".token == "
+															+ "fVar" + comparison_variable + ".token"
+															+ ") {\n goodParts.push(fVar"
+															+ variable
+															+ ");\n return true; } else {\n return false;\n}"
+															+ "\n} else {\n return false;\n }";
+													
 													return null;
 												} else {
 													error_description = "'"
