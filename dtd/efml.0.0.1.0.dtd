@@ -1,13 +1,17 @@
 
-<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|tables|i|b|br)* >
+<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|tables|i|b|br|p|div)* >
 
 <!ELEMENT br EMPTY >
 
-<!ELEMENT i (#PCDATA|i|b|br)* >
+<!ELEMENT i (#PCDATA|i|b|br|p|div)* >
 
-<!ELEMENT b (#PCDATA|i|b|br)* >
+<!ELEMENT b (#PCDATA|i|b|br|p|div)* >
 
-<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|tables|i|b|br)* >
+<!ELEMENT p (#PCDATA|i|b|br|p|div)* >
+
+<!ELEMENT div (#PCDATA|i|b|br|p|div)* >
+
+<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|tables|i|b|br|p|div)* >
 
 <!ATTLIST tags 
 	tags	CDATA	#IMPLIED
@@ -15,19 +19,21 @@
 	rtags	CDATA	#IMPLIED
  >
 
-<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|i|b|br)* >
+<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|i|b|br|p|div)* >
 
 <!ATTLIST tables 
 	tags	CDATA	#IMPLIED
 	atags	CDATA	#IMPLIED
 	rtags	CDATA	#IMPLIED
+
+	height	CDATA	#IMPLIED
  >
 
 <!ELEMENT r EMPTY >
 
 <!ELEMENT c EMPTY >
 
-<!ELEMENT tie (#PCDATA|i|b|br|tags|tie|runway|answer)* >
+<!ELEMENT tie (#PCDATA|i|b|br|p|div|tags|tie|runway|answer)* >
 
 <!ATTLIST tie 
 	tags	CDATA	#IMPLIED
@@ -58,8 +64,8 @@
 	rtags	CDATA	#IMPLIED
  >
 
-<!ELEMENT hint (#PCDATA|i|b|br)* >
+<!ELEMENT hint (#PCDATA|i|b|br|p|div)* >
 
-<!ELEMENT correct (#PCDATA|i|b|br)* >
+<!ELEMENT correct (#PCDATA|i|b|br|p|div)* >
 
 <!ELEMENT check (#PCDATA)* >

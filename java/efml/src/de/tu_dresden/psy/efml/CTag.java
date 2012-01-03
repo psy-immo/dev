@@ -30,12 +30,20 @@ import javax.naming.OperationNotSupportedException;
  */
 
 public class CTag implements AnyTag {
+	
+	private TablesTag parent;
+	
+	public CTag(AnyTag parent) {
+		if (parent.getClass() != TablesTag.class)
+			throw new RuntimeException("<c/>-tag must be direct child of <tables>-tag!");
+		this.parent = (TablesTag) parent;
+	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
 		writer.write("</td></tr></table>");
 		
-		writer.write("<table style=\"float:left; white-space:nowrap;\" cellpadding=0 cellspacing=0 border=0><tr><td>&nbsp;");
+		parent.writeTable(writer);
 	}
 
 	@Override

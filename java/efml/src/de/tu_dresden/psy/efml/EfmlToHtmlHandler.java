@@ -108,11 +108,11 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		} else if (qName == "tie") {
 			this.processingTags.push(new TieTag());
 		} else if (qName == "tables") {
-			this.processingTags.push(new TablesTag());
+			this.processingTags.push(new TablesTag(this.currentTags.peek()));
 		} else if (qName == "r") {
 			this.processingTags.push(new RTag());
 		} else if (qName == "c") {
-			this.processingTags.push(new CTag());
+			this.processingTags.push(new CTag(this.processingTags.peek()));
 		} else if (qName == "runway") {
 			this.processingTags.push(new RunwayTag(this.currentTags.peek()));
 		} else if (qName == "answer") {

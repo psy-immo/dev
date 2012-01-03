@@ -2,7 +2,7 @@
 
 dtd = open("efml.0.0.1.0.dtd","w")
 
-html_elements = "i|b|br"
+html_elements = "i|b|br|p|div"
 efml_elements = "tags|tie|runway|answer"
 efml_extra = "tables"
 
@@ -19,13 +19,19 @@ dtd.write("\n<!ELEMENT br EMPTY >\n")
 dtd.write("\n<!ELEMENT i (#PCDATA|"+html_elements+")* >\n")
 dtd.write("\n<!ELEMENT b (#PCDATA|"+html_elements+")* >\n")
 
+dtd.write("\n<!ELEMENT p (#PCDATA|"+html_elements+")* >\n")
+dtd.write("\n<!ELEMENT div (#PCDATA|"+html_elements+")* >\n")
+
 dtd.write("\n<!ELEMENT tags (#PCDATA|"+efml_elements+"|"+efml_extra+"|"+html_elements+")* >\n")
 
 dtd.write("\n<!ATTLIST tags "+universal_attributes+" >\n")
 
 dtd.write("\n<!ELEMENT tables (#PCDATA|r|c|"+efml_elements+"|"+html_elements+")* >\n")
 
-dtd.write("\n<!ATTLIST tables "+universal_attributes+" >\n")
+dtd.write("\n<!ATTLIST tables "+universal_attributes+"""
+	height	CDATA	#IMPLIED
+ >
+""")
 
 dtd.write("\n<!ELEMENT r EMPTY >\n")
 dtd.write("\n<!ELEMENT c EMPTY >\n")

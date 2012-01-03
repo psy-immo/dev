@@ -156,7 +156,7 @@ public class AnswerTag implements AnyTag {
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
-			this.buttonText += ((PlainContent) innerTag).getContent();
+			this.buttonText += ((PlainContent) innerTag).getPlainContent();
 		} else if (innerTag.getClass() == HintTag.class) {
 			this.hints.add((HintTag) innerTag);
 		} else if (innerTag.getClass() == CheckTag.class) {

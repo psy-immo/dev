@@ -34,17 +34,29 @@ import javax.naming.OperationNotSupportedException;
 public class TablesTag implements AnyTag {
 	
 	private ArrayList<AnyTag> innerTags;
+	private EfmlTagsAttribute attributes;
 	
-	
-	public TablesTag() {
+	public TablesTag(EfmlTagsAttribute attributes) {
 	
 		innerTags = new ArrayList<AnyTag>();
+		this.attributes = attributes;
+	}
+	
+	/**
+	 * writes the opening &lt;table ..> tag
+	 * @param writer
+	 */
+	
+	public void writeTable(Writer writer) throws IOException {
+		writer.write("<table style=\"float:left; white-space:nowrap;");
+		writer.write("height: "+attributes.getValueOrDefault("height", "50px")+";");
+		writer.write("\" cellpadding=0 cellspacing=0 border=0><tr><td>&nbsp;");		
 	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		
-		writer.write("<table style=\"float:left; white-space:nowrap;\" cellpadding=0 cellspacing=0 border=0><tr><td>&nbsp;");
+		writeTable(writer);
+
 		
 		/**
 		 * write inner tags
