@@ -1,0 +1,30 @@
+
+Term           = { White } ( | CheckValue | And | Or | Subterm | 
+                                ExistsTag | ExistsField ) { White };
+
+Any            = ? any UTF-8 character code point ?;
+White          = ? any UTF-8 whitespace character code point ?;
+AlNum          = ? any UTF-8 letter or digit character code point ?;
+Alpha          = ? any UTF-8 letter character code point ?;
+
+Whites         = White { White };
+
+String         = '"' { ( Any - '"' - '\' | '\' Any ) } '"';
+Variable       = Alpha { AlNum };
+
+List           = { { White } ( String | Variable ) };
+
+ExistsTag      = ( 'tag' Whites Variable { White } ':' Term |
+                   'tag' Whites Variable Whites 'in' White List ':' Term );
+ExistsField    = ( 'field' Whites Variable { White } ':' Term |
+                   'field' Whites Variable Whites 'with' White List ':' Term );
+Subterm        = { White } '(' Term ')' { White };
+And            = Subterm 'and' Subterm { 'and' Subterm };
+Or             = Subterm 'or' Subterm { 'or' Subterm };
+CheckValue     = { White } Variable { White } '=' {White} ( String | Variable )
+                 { White };
+
+
+
+
+
