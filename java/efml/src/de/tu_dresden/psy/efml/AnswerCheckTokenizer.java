@@ -59,8 +59,10 @@ public class AnswerCheckTokenizer {
 	}
 
 	private ArrayList<Token> tokens;
+	
 
 	public AnswerCheckTokenizer(String term) {
+		
 
 		tokens = new ArrayList<Token>();
 

@@ -32,13 +32,19 @@ import javax.naming.OperationNotSupportedException;
 public class PlainContent implements AnyTag {
 
 	private String content;
+	private String unescaped;
 	
 	public PlainContent(String unescapedContents) {
 		this.content = StringEscape.escapeToHtml(unescapedContents);
+		this.unescaped = unescapedContents;
 	}
 	
 	public final String getContent() {
 		return content;
+	}
+	
+	public final String getPlainContent() {
+		return unescaped;
 	}
 
 	@Override

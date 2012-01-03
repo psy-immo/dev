@@ -59,41 +59,41 @@ public class StringEscape {
 		/**
 		 * the corresponding java script function looks like this:
 		 */
-		
-//		function encodeString(s){
-//			var previous = Math.round(Math.random()*255);
-//			var codes = [s.length, previous];
-//			
-//			for ( var int = 0; int < s.length; int++) {
-//				var array_element = s.charCodeAt(int);
-//				codes[int+2] = (array_element ^ 173)^previous;
-//				previous = array_element;
-//			};
-//			for (var int = s.length; int < 128; int++) {
-//				codes[int+2] = ((Math.round(Math.random()*255)) ^ 173 ) ^previous;
-//				previous = codes[int];
-//			}
-//			codes[0] = codes[128]^codes[0];
-//			return codes;
-//		};
-		
+
+		// function encodeString(s){
+		// var previous = Math.round(Math.random()*255);
+		// var codes = [s.length, previous];
+		//
+		// for ( var int = 0; int < s.length; int++) {
+		// var array_element = s.charCodeAt(int);
+		// codes[int+2] = (array_element ^ 173)^previous;
+		// previous = array_element;
+		// };
+		// for (var int = s.length; int < 128; int++) {
+		// codes[int+2] = ((Math.round(Math.random()*255)) ^ 173 ) ^previous;
+		// previous = codes[int];
+		// }
+		// codes[0] = codes[128]^codes[0];
+		// return codes;
+		// };
+
 		int[] code = new int[2 + Math.max(unescaped.length(), 128)];
-		
+
 		code[0] = unescaped.length();
-		code[1] = (int) Math.round(Math.random()*255.);
+		code[1] = (int) Math.round(Math.random() * 255.);
 		int previous = code[1];
-		
+
 		for (int i = 0; i < unescaped.length(); ++i) {
 			int array_element = unescaped.charAt(i);
-			code[i+2] = (array_element ^ 173) ^ previous;
+			code[i + 2] = (array_element ^ 173) ^ previous;
 			previous = array_element;
 		}
-		for (int i=unescaped.length(); i < 128; ++i) {
-			int array_element = (int)Math.round(Math.random()*255.);
-			code[i+2] = (array_element ^ 173) ^ previous;
+		for (int i = unescaped.length(); i < 128; ++i) {
+			int array_element = (int) Math.round(Math.random() * 255.);
+			code[i + 2] = (array_element ^ 173) ^ previous;
 			previous = array_element;
 		}
-		
+
 		code[0] = code[128] ^ code[0];
 
 		String jsCode = "decodeString([" + code[0];
@@ -115,4 +115,19 @@ public class StringEscape {
 				.replaceAll("\\<", "\\&lt;").replaceAll("\\>", "\\&gt;")
 				.replaceAll("\\\"", "\\&quot;");
 	}
+
+	/**
+	 * translate &lt; to <, &gt; to >, &amp; to &, &quot; to "
+	 * 
+	 * @param escaped
+	 * @return unescaped
+	 */
+	public static String unescapeFromHtml(String escaped) {
+		return escaped.replaceAll("\\&quot;", "\\\"")
+				.replaceAll("\\&lt;", "\\<").replaceAll("\\&gt;", "\\>")
+				.replaceAll("\\&amp;", "\\&");
+
+	}
+	
+	
 }

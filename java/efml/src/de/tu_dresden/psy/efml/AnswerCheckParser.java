@@ -60,6 +60,12 @@ public class AnswerCheckParser {
 	private Map<String, Integer> variableType;
 
 	/**
+	 * variable bound values
+	 */
+
+	private Map<String, String> variableValue;
+
+	/**
 	 * tokens forbidden for variable names
 	 */
 
@@ -74,7 +80,21 @@ public class AnswerCheckParser {
 	private final int VAR_FIELD = 0;
 	private final int VAR_TAG = 1;
 
-	public AnswerCheckParser(String term) {
+	private boolean checked;
+	private String error;
+
+	/**
+	 * contains generated javaScript code
+	 */
+	private String jsCode;
+
+	private EfmlTagsAttribute attributes;
+
+	public AnswerCheckParser(String term, EfmlTagsAttribute attributes) {
+
+		this.attributes = attributes;
+
+		this.checked = false;
 
 		this.inputTerm = term;
 
@@ -134,14 +154,153 @@ public class AnswerCheckParser {
 	}
 
 	/**
+	 * 
+	 * @return corresponing javascript code
+	 */
+	public String getJsCode() {
+		if (checked == false) {
+			checkSyntaxAndParse();
+		}
+		if (error != null) {
+			/**
+			 * disable this check...
+			 */
+			return "function(){\nreturn true;\n}";
+		} else {
+			return "function(){\n var goodParts = [];\n var result = (function(){\n"
+					+ this.jsCode
+					+ "\n})();"
+					+ "if (result) {\n"
+					+ " for (var i=0;i<goodParts.length;++i) {\n"
+					+ " if (goodParts[i].MarkAsGood) {\n"
+					+ "goodParts[i].MarkAsGood();\n}\n"
+					+ " }\n}\nreturn result;}";
+		}
+	}
+
+	/**
 	 * checks the syntax
 	 * 
 	 * @return null, if no syntax errors are found, otherwise error description
 	 */
-	public String checkSyntax() {
+	public String checkSyntaxAndParse() {
+		if (this.checked == true) {
+			return this.error;
+		}
+
 		this.boundVariables = new LinkedList<String>();
 		this.variableType = new HashMap<String, Integer>();
-		return checkSyntaxTree(0, this.tokens.length());
+		this.variableValue = new HashMap<String, String>();
+		this.jsCode = "\n";
+		this.error = checkSyntaxTree(0, this.tokens.length());
+		this.checked = true;
+
+		return error;
+	}
+
+	/**
+	 * generate javaScript code
+	 * 
+	 * @param variable
+	 */
+	private void openTagVariable(String variable) {
+		if (variableValue.get(variable).isEmpty() == true) {
+			jsCode += "return Exists(myTags.tags, function(tVar" + variable
+					+ "){\n";
+		} else {
+			jsCode += "return Exists([" + variableValue.get(variable)
+					+ "], function(tVar" + variable + "){\n";
+		}
+	}
+
+	/**
+	 * generate javaScript code
+	 * 
+	 * @param variable
+	 */
+	private void closeTagVariable(String variable) {
+		jsCode += "});";
+	}
+
+	/**
+	 * generate javaScript code
+	 * 
+	 * @param variable
+	 */
+	private void openFieldVariable(String variable) {
+
+		jsCode += "return Exists(myTags.AllTagsBut(["
+				+ variableValue.get(variable) + "],"
+				+ attributes.getRejectTags() + "), function(fVar" + variable
+				+ "){\n";
+	}
+
+	/**
+	 * generate javaScript code
+	 * 
+	 * @param variable
+	 */
+	private void closeFieldVariable(String variable) {
+		jsCode += "});";
+	}
+
+	/**
+	 * generate javaScript code
+	 */
+
+	private void startAndSequence() {
+		jsCode += "var previous_good_count = goodParts.length;\n"
+				+ "var failed = false;";
+		jsCode += "if ((function(){\n";
+	}
+
+	/**
+	 * generate javaScript code
+	 */
+
+	private void betweenAndSequence() {
+		jsCode += "})()) {\n" + "} else {\n" + " failed = true;\n" + "}\n";
+		jsCode += "if ((function(){\n";
+	}
+
+	/**
+	 * generate javaScript code
+	 */
+
+	private void endAndSequence() {
+		jsCode += "})()) {\n" + "} else {\n" + " failed = true;\n" + "}\n";
+
+		jsCode += " if (failed) {\n"
+				+ "  while (goodParts.length > previous_good_count) goodParts.pop();\n"
+				+ "  return null;\n" + "} else {\n" + "  return true;\n" + "}";
+	}
+	
+	/**
+	 * generate javaScript code
+	 */
+
+	private void startOrSequence() {
+		jsCode += "var previous_good_count = goodParts.length;\n"
+				+ "var succeeded = false;";
+		jsCode += "if ((function(){\n";
+	}
+
+	/**
+	 * generate javaScript code
+	 */
+
+	private void betweenOrSequence() {
+		jsCode += "})()) {\n succeeded=true;" + "}\n";
+		jsCode += "if ((function(){\n";
+	}
+
+	/**
+	 * generate javaScript code
+	 */
+
+	private void endOrSequence() {
+		jsCode += "})()) {\n succeeded=true;" + "}\n";
+		jsCode += " return succeeded;";
 	}
 
 	/**
@@ -158,8 +317,12 @@ public class AnswerCheckParser {
 		/**
 		 * the empty string is a valid term
 		 */
-		if (first >= last)
+		if (first >= last) {
+
+			jsCode += "return true;";
+
 			return null;
+		}
 
 		String error_description = "token utterly unrecognized";
 		int where = tokens.getEndIndex(first);
@@ -282,13 +445,35 @@ public class AnswerCheckParser {
 					 * and/or n-ary term well-formed, if subterms are
 					 * well-formed
 					 */
+					if (middle_token.equalsIgnoreCase("and") == true) {
+						startAndSequence();
+
+					} else if (middle_token.equalsIgnoreCase("or") == true) {
+						startOrSequence();
+						
+					}
 
 					for (int i = 0; i < subterm_rootlevel.size(); i += 2) {
+						if (i>0) {
+							if (middle_token.equalsIgnoreCase("and") == true) {
+								betweenAndSequence();
+
+							} else if (middle_token.equalsIgnoreCase("or") == true) {
+								betweenOrSequence();
+							}		
+						}
+						
 						String error = checkSyntaxTree(subterm_start.get(i),
 								subterm_end.get(i));
 						if (error != null)
 							return error;
 					}
+					if (middle_token.equalsIgnoreCase("and") == true) {
+						endAndSequence();
+
+					} else if (middle_token.equalsIgnoreCase("or") == true) {
+						endOrSequence();
+					}					
 
 					return null;
 				}
@@ -385,6 +570,10 @@ public class AnswerCheckParser {
 												variableType.put(variable,
 														VAR_TAG);
 
+												variableValue.put(variable, "");
+
+												openTagVariable(variable);
+
 												/**
 												 * check RHS term
 												 */
@@ -393,8 +582,11 @@ public class AnswerCheckParser {
 														subterm_start.get(2) + 1,
 														last);
 
+												closeTagVariable(variable);
+
 												boundVariables.pop();
 												variableType.remove(variable);
+												variableValue.remove(variable);
 
 												return error;
 											} else if (colon_or_in
@@ -404,6 +596,9 @@ public class AnswerCheckParser {
 												 */
 												int colon_term = 3;
 												boolean colon_found = false;
+
+												String value = "";
+
 												while (colon_found != true) {
 													if (subterm_rootlevel
 															.size() <= colon_term) {
@@ -437,6 +632,14 @@ public class AnswerCheckParser {
 														 * tag given by string
 														 * literal
 														 */
+
+														if (value.isEmpty() == false) {
+															value += ", ";
+														}
+														value += "\""
+																+ StringEscape
+																		.escapeToJavaScript(tag_token)
+																+ "\"";
 													} else {
 														if (tag_token
 																.equalsIgnoreCase(":") == true) {
@@ -447,7 +650,12 @@ public class AnswerCheckParser {
 																.contains(tag_token)) {
 															if (variableType
 																	.get(tag_token) == VAR_TAG) {
-
+																if (value
+																		.isEmpty() == false) {
+																	value += ", ";
+																}
+																value += "tVar"
+																		+ tag_token;
 															} else {
 																error_description = "'"
 																		+ tag_token
@@ -476,6 +684,10 @@ public class AnswerCheckParser {
 															.push(variable);
 													variableType.put(variable,
 															VAR_TAG);
+													variableValue.put(variable,
+															value);
+
+													openTagVariable(variable);
 
 													/**
 													 * check RHS term
@@ -486,8 +698,12 @@ public class AnswerCheckParser {
 																	.get(colon_term) + 1,
 															last);
 
+													closeTagVariable(variable);
+
 													boundVariables.pop();
 													variableType
+															.remove(variable);
+													variableValue
 															.remove(variable);
 
 													return error;
@@ -571,6 +787,12 @@ public class AnswerCheckParser {
 												boundVariables.push(variable);
 												variableType.put(variable,
 														VAR_FIELD);
+												variableValue
+														.put(variable,
+																attributes
+																		.getAcceptTagsCommas());
+
+												openFieldVariable(variable);
 
 												/**
 												 * check RHS term
@@ -580,8 +802,11 @@ public class AnswerCheckParser {
 														subterm_start.get(2) + 1,
 														last);
 
+												closeFieldVariable(variable);
+
 												boundVariables.pop();
 												variableType.remove(variable);
+												variableValue.remove(variable);
 
 												return error;
 											} else if (colon_or_in
@@ -591,6 +816,10 @@ public class AnswerCheckParser {
 												 */
 												int colon_term = 3;
 												boolean colon_found = false;
+
+												String value = attributes
+														.getAcceptTagsCommas();
+
 												while (colon_found != true) {
 													if (subterm_rootlevel
 															.size() <= colon_term) {
@@ -624,6 +853,13 @@ public class AnswerCheckParser {
 														 * tag given by string
 														 * literal
 														 */
+														if (value.isEmpty() == false) {
+															value += ", ";
+														}
+														value += "\""
+																+ StringEscape
+																		.escapeToJavaScript(tag_token)
+																+ "\"";
 													} else {
 														if (tag_token
 																.equalsIgnoreCase(":") == true) {
@@ -634,7 +870,12 @@ public class AnswerCheckParser {
 																.contains(tag_token)) {
 															if (variableType
 																	.get(tag_token) == VAR_TAG) {
-
+																if (value
+																		.isEmpty() == false) {
+																	value += ", ";
+																}
+																value += "tVar"
+																		+ tag_token;
 															} else {
 																error_description = "'"
 																		+ tag_token
@@ -663,6 +904,10 @@ public class AnswerCheckParser {
 															.push(variable);
 													variableType.put(variable,
 															VAR_FIELD);
+													variableValue.put(variable,
+															value);
+
+													openFieldVariable(variable);
 
 													/**
 													 * check RHS term
@@ -673,8 +918,12 @@ public class AnswerCheckParser {
 																	.get(colon_term) + 1,
 															last);
 
+													closeFieldVariable(variable);
+
 													boundVariables.pop();
 													variableType
+															.remove(variable);
+													variableValue
 															.remove(variable);
 
 													return error;
@@ -740,6 +989,21 @@ public class AnswerCheckParser {
 											/**
 											 * FIELD = "STRING"
 											 */
+
+											jsCode += " if (fVar"
+													+ variable
+													+ ".token) {\n"
+													+ "\nif (fVar"
+													+ variable
+													+ ".token == "
+													+ StringEscape
+															.escapeToDecodeInJavaScript(tokens
+																	.getValue(subterm_start
+																			.get(2)))
+													+ ") {\n goodParts.push(fVar"
+													+ variable
+													+ ");\n return true; } else {\n return false;\n}"
+													+ "\n} else {\n return false;\n }";
 
 											return null;
 										} else {
@@ -819,12 +1083,6 @@ public class AnswerCheckParser {
 				message += " " + inputTerm.substring(end_index + 1);
 		}
 		return message;
-	}
-
-	public static void main(String[] args) {
-		AnswerCheckParser parsed = new AnswerCheckParser(
-				"(tag a1 in \"a\" \"(b c)\" \"d\" \"e\": field b with a1 \"c\" \"d\" : field c with a1: b = cd )");
-		System.out.println(parsed.checkSyntax());
 	}
 
 }

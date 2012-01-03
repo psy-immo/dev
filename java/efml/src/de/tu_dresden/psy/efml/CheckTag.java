@@ -24,7 +24,7 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the &lt;correct>...&lt;/correct> tag for answers
+ * implements the &lt;check>...&lt;/check> tag for answers
  * @author immanuel
  *
  */
@@ -33,6 +33,7 @@ public class CheckTag implements AnyTag {
 	
 	private String testExpression;
 	private EfmlTagsAttribute attributes;
+	
 	
 	public CheckTag(EfmlTagsAttribute attributes) {
 		this.testExpression = "";
@@ -45,12 +46,13 @@ public class CheckTag implements AnyTag {
 	 */
 	
 	public String getJavaScriptTestFunction() {
-		StringBuffer javascriptFunction = new StringBuffer();
-		javascriptFunction.append("function () {\n");
+		AnswerCheckParser parser = new AnswerCheckParser(testExpression, attributes);
+		String error = parser.checkSyntaxAndParse();
 		
-		javascriptFunction.append("return true;\n}");
-		
-		return javascriptFunction.toString();
+		if (error == null)
+			return parser.getJsCode();
+		else
+			throw new RuntimeException("<check>-expression contains errors: "+error);
 	}
 
 	@Override
@@ -71,9 +73,10 @@ public class CheckTag implements AnyTag {
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
-			this.testExpression += ((PlainContent) innerTag).getContent();
+			
+			this.testExpression += ((PlainContent) innerTag).getPlainContent();
 		} else
-			throw new OperationNotSupportedException("<correct> cannot enclose "
+			throw new OperationNotSupportedException("<check> cannot enclose "
 					+ innerTag.getClass().toString());
 	}
 

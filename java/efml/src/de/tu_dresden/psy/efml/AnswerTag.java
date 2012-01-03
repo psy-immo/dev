@@ -75,7 +75,7 @@ public class AnswerTag implements AnyTag {
 		for (Iterator<CheckTag> it=checks.iterator();it.hasNext();) {
 			CheckTag check = it.next();
 			
-			javascript.append("if ( ("+check.getJavaScriptTestFunction()+")() == true) good_count ++;\n");
+			javascript.append("if ( ("+check.getJavaScriptTestFunction()+")()) good_count ++;\n");
 		}
 
 		javascript.append("return good_count == "+checks.size()+";");

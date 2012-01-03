@@ -17,11 +17,11 @@
  */
 
 /**
- * checks, whether in set is a value v, that gives test(v) == true
+ * checks, whether in set is a value v, that gives test(v) implicit true
  */
 function Exists(set, test) {
 	for (var int=0;int < set.length; ++int) {
-		if (test(set[int]) == true) {
+		if (test(set[int])) {
 			return set[int];
 		}
 	}
