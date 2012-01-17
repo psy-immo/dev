@@ -94,5 +94,11 @@ public class Assertion implements AssertionInterface {
 			return false;
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+	
+		return s.toString() + " " + p.toString() + " " + o.toString();
+	}
 
 }
