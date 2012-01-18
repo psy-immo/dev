@@ -28,16 +28,56 @@ public class Assertion implements AssertionInterface {
 
 	private Object s, o, p;
 
+	/**
+	 * create assertion from subject, predicate and object
+	 * 
+	 * @param subject
+	 * @param predicate
+	 * @param object
+	 */
+
 	public Assertion(Object subject, Object predicate, Object object) {
 		s = subject;
 		p = predicate;
 		o = object;
 	}
 
+	/**
+	 * create assertion from subject and predicate with default object
+	 * <b>null</b>
+	 * 
+	 * @param subject
+	 * @param predicate
+	 */
+
 	public Assertion(Object subject, Object predicate) {
 		o = null;
 		s = subject;
 		p = predicate;
+	}
+
+	/**
+	 * create assertion from string, of the form subject+"·"+predicate or
+	 * subject+"·"+predicate+"·"+object
+	 * 
+	 * @param fromString
+	 */
+
+	public Assertion(String fromString) {
+		String[] parts = fromString.split("·");
+
+		if (parts.length == 2) {
+			o = null;
+			s = parts[0];
+			p = parts[1];
+		} else if (parts.length == 3) {
+			o = parts[2];
+			s = parts[0];
+			p = parts[1];
+		} else
+
+		throw new RuntimeException(
+				"Assertion must be either SUBJECT·PREDICATE or SUBJECT·PREDICATE·OBJECT: "+fromString);
 	}
 
 	@Override
@@ -94,11 +134,11 @@ public class Assertion implements AssertionInterface {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
-	
-		return s.toString() + " " + p.toString() + " " + o.toString();
+
+		return s.toString() + "·" + p.toString() + "·" + o.toString();
 	}
 
 }

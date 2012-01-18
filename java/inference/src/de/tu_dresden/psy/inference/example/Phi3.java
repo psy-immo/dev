@@ -25,6 +25,13 @@ import java.util.Map;
 import java.util.Set;
 import de.tu_dresden.psy.inference.*;
 
+/**
+ * implements inference map phi_3
+ * 
+ * @author immanuel
+ *
+ */
+
 public class Phi3 implements InferenceMap {
 
 	@Override
@@ -103,7 +110,8 @@ public class Phi3 implements InferenceMap {
 
 						boolean monotone_xy = (x.startsWith("a smaller") == y1
 								.startsWith("a smaller"));
-						boolean monotone_yz = (y1.startsWith("a smaller") == z
+						
+						boolean monotone_yz = (y2.startsWith("a smaller") == z
 								.startsWith("a smaller"));
 						
 						boolean monotone_xz = monotone_xy == monotone_yz;
@@ -130,6 +138,7 @@ public class Phi3 implements InferenceMap {
 
 		return inferred;
 	}
+	
 	
 	public static void main(String[] args) {
 		Phi3 phi3 = new Phi3();
