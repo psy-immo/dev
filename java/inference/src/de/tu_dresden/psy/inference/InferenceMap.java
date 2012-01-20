@@ -38,4 +38,9 @@ public interface InferenceMap {
 	 */
 	public Set<AssertionInterface> inferNew(Set<AssertionInterface> validPremises);
 
+	/**
+	 * 
+	 * @return name of the inference rule
+	 */
+	public String ruleName();
 }

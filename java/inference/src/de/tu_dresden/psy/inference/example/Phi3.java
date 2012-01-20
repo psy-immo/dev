@@ -33,6 +33,11 @@ import de.tu_dresden.psy.inference.*;
  */
 
 public class Phi3 implements InferenceMap {
+	
+	@Override
+	public String ruleName() {
+		return "3+→3";
+	}
 
 	@Override
 	public Set<AssertionInterface> inferNew(
@@ -125,11 +130,11 @@ public class Phi3 implements InferenceMap {
 						} else z = z.substring(9); //x.startsWith("a bigger")
 						
 						if (monotone_xz == true) {
-							inferred.add(new Assertion("a smaller "+x, "means", "a smaller "+z));
-							inferred.add(new Assertion("a bigger "+x, "means", "a bigger "+z));
+							inferred.add(new InferredAssertion(this,new Assertion("a smaller "+x, "means", "a smaller "+z),xy,yz));
+							inferred.add(new InferredAssertion(this,new Assertion("a bigger "+x, "means", "a bigger "+z),xy,yz));
 						} else {
-							inferred.add(new Assertion("a bigger "+x, "means", "a smaller "+z));
-							inferred.add(new Assertion("a smaller "+x, "means", "a bigger "+z));
+							inferred.add(new InferredAssertion(this,new Assertion("a bigger "+x, "means", "a smaller "+z),xy,yz));
+							inferred.add(new InferredAssertion(this,new Assertion("a smaller "+x, "means", "a bigger "+z),xy,yz));
 						}
 					}
 				}

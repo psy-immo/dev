@@ -27,6 +27,7 @@ import java.util.Set;
 import de.tu_dresden.psy.inference.Assertion;
 import de.tu_dresden.psy.inference.AssertionInterface;
 import de.tu_dresden.psy.inference.InferenceMap;
+import de.tu_dresden.psy.inference.InferredAssertion;
 
 /**
  * implements the inference map phi_2,3->2
@@ -170,26 +171,26 @@ public class Phi2_3to2 implements InferenceMap {
 							/**
 							 * monotone case
 							 */
-							inferred.add(new Assertion(new_prefix + " "
+							inferred.add(new InferredAssertion(this,new Assertion(new_prefix + " "
 									+ subject_a, a.getPredicate(), new_prefix
-									+ " " + object_a));
+									+ " " + object_a),a,b));
 						} else {
 							/**
 							 * antitone case
 							 */
 							if (a.getPredicate().equals("is smaller than")) {
-								inferred.add(new Assertion(new_prefix + " "
+								inferred.add(new InferredAssertion(this,new Assertion(new_prefix + " "
 										+ subject_a, "is bigger than",
-										new_prefix + " " + object_a));
+										new_prefix + " " + object_a),a,b));
 							} else if (a.getPredicate()
 									.equals("is bigger than")) {
-								inferred.add(new Assertion(new_prefix + " "
+								inferred.add(new InferredAssertion(this,new Assertion(new_prefix + " "
 										+ subject_a, "is smaller than",
-										new_prefix + " " + object_a));
+										new_prefix + " " + object_a),a,b));
 							} else
-								inferred.add(new Assertion(new_prefix + " "
+								inferred.add(new InferredAssertion(this,new Assertion(new_prefix + " "
 										+ subject_a, a.getPredicate(),
-										new_prefix + " " + object_a));
+										new_prefix + " " + object_a),a,b));
 
 						}
 
@@ -201,4 +202,51 @@ public class Phi2_3to2 implements InferenceMap {
 		return inferred;
 	}
 
+	@Override
+	public String ruleName() {
+		return "2,3→2";
+	}
+
+	public static void main(String[] args) {
+		Phi2_3to2 phi2_3to_2 = new Phi2_3to2();
+
+		Set<AssertionInterface> premises = new HashSet<AssertionInterface>();
+
+		premises.add(new Assertion("a smaller resistance", "means",
+				"a bigger current"));
+		premises.add(new Assertion("a bigger current", "means",
+				"a bigger voltage"));
+		premises.add(new Assertion("the resistance of A", "is smaller than",
+				"the resistance of B"));
+		premises.add(new Assertion("the current through C", "is bigger than",
+				"the current through D"));
+
+		Set<AssertionInterface> level1 = phi2_3to_2.inferNew(premises);
+
+		System.out.println("first degree: ");
+
+		for (Iterator<AssertionInterface> it = level1.iterator(); it.hasNext();) {
+			System.out.println(it.next());
+		}
+
+		level1.addAll(premises);
+
+		Set<AssertionInterface> level2 = phi2_3to_2.inferNew(level1);
+
+		System.out.println("first+second degree: ");
+
+		for (Iterator<AssertionInterface> it = level2.iterator(); it.hasNext();) {
+			System.out.println(it.next());
+		}
+
+		level1.addAll(level2);
+
+		level2 = phi2_3to_2.inferNew(level1);
+
+		System.out.println("first+second+third degree: ");
+
+		for (Iterator<AssertionInterface> it = level2.iterator(); it.hasNext();) {
+			System.out.println(it.next());
+		}
+	}
 }

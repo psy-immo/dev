@@ -43,5 +43,17 @@ public interface AssertionInterface {
 	 * @return the predicate of the sentence
 	 */
 	public Object getPredicate();
+	
+	/**
+	 * @param assertion
+	 * @return true, if <b>this</b> equals assertion
+	 */
+	public boolean isEqualTo(AssertionInterface assertion);
+	
+	/**
+	 * @param assertion
+	 * @return true, if <b>this</b> has been inferred by using assertion as premise
+	 */
+	public boolean isPremise(AssertionInterface assertion);
 
 }

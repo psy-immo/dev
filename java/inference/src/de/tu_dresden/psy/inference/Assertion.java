@@ -141,4 +141,35 @@ public class Assertion implements AssertionInterface {
 		return s.toString() + "·" + p.toString() + "·" + o.toString();
 	}
 
+	@Override
+	public boolean isEqualTo(AssertionInterface assertion) {
+		if (this == assertion)
+			return true;
+		if (assertion == null)
+			return false;
+		
+		
+		if (o == null) {
+			if (assertion.getObject() != null)
+				return false;
+		} else if (!o.equals(assertion.getObject()))
+			return false;
+		if (p == null) {
+			if (assertion.getPredicate() != null)
+				return false;
+		} else if (!p.equals(assertion.getPredicate()))
+			return false;
+		if (s == null) {
+			if (assertion.getSubject() != null)
+				return false;
+		} else if (!s.equals(assertion.getSubject()))
+			return false;
+		return true;		
+	}
+
+	@Override
+	public boolean isPremise(AssertionInterface assertion) {
+		return false;
+	}
+
 }

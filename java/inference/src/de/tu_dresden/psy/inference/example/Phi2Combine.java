@@ -27,6 +27,7 @@ import java.util.Set;
 import de.tu_dresden.psy.inference.Assertion;
 import de.tu_dresden.psy.inference.AssertionInterface;
 import de.tu_dresden.psy.inference.InferenceMap;
+import de.tu_dresden.psy.inference.InferredAssertion;
 
 /**
  * 
@@ -37,6 +38,11 @@ import de.tu_dresden.psy.inference.InferenceMap;
  */
 
 public class Phi2Combine implements InferenceMap {
+	
+	@Override
+	public String ruleName() {
+		return "2,2→2";
+	}
 
 	@Override
 	public Set<AssertionInterface> inferNew(
@@ -100,8 +106,8 @@ public class Phi2Combine implements InferenceMap {
 							 * 
 							 * x ~ y & y ~ z => x ~ z
 							 */
-							inferred.add(new Assertion(xy.getSubject(), xy
-									.getPredicate(), yz.getObject()));
+							inferred.add(new InferredAssertion(this,new Assertion(xy.getSubject(), xy
+									.getPredicate(), yz.getObject()),xy,yz));
 						} else if (pred_xy + pred_yz != 0) {
 							/**
 							 * pred_xy + pred_yz == 0 if x < y & y > z or x > y
@@ -111,9 +117,9 @@ public class Phi2Combine implements InferenceMap {
 							 * y & y > z => x > z x > y & y = z => x > z *
 							 */
 
-							inferred.add(new Assertion(xy.getSubject(),
+							inferred.add(new InferredAssertion(this,new Assertion(xy.getSubject(),
 									(pred_xy + pred_yz < 0 ? "is smaller than"
-											: "is bigger than"), yz.getObject()));
+											: "is bigger than"), yz.getObject()),xy,yz));
 						}
 
 					}

@@ -25,6 +25,7 @@ import java.util.Set;
 import de.tu_dresden.psy.inference.Assertion;
 import de.tu_dresden.psy.inference.AssertionInterface;
 import de.tu_dresden.psy.inference.InferenceMap;
+import de.tu_dresden.psy.inference.InferredAssertion;
 
 /**
  * implements the inference map phi_2->1
@@ -34,6 +35,11 @@ import de.tu_dresden.psy.inference.InferenceMap;
  */
 
 public class Phi1to2 implements InferenceMap {
+	
+	@Override
+	public String ruleName() {
+		return "1→2";
+	}
 
 	@Override
 	public Set<AssertionInterface> inferNew(
@@ -52,19 +58,19 @@ public class Phi1to2 implements InferenceMap {
 					String object = (String) a.getObject();
 
 					if (a.getPredicate().equals("is serial connected with") == true) {
-						inferred.add(new Assertion("the current through "
+						inferred.add(new InferredAssertion(this,new Assertion("the current through "
 								+ subject, "is as big as",
-								"the current through " + object));
-						inferred.add(new Assertion("the current through "
+								"the current through " + object),a));
+						inferred.add(new InferredAssertion(this,new Assertion("the current through "
 								+ object, "is as big as",
-								"the current through " + subject));
+								"the current through " + subject),a));
 					} else if (a.getPredicate().equals("is connected in parallel with")) {
-						inferred.add(new Assertion("the voltage of "
+						inferred.add(new InferredAssertion(this,new Assertion("the voltage of "
 								+ subject, "is as big as",
-								"the voltage of " + object));
-						inferred.add(new Assertion("the voltage of "
+								"the voltage of " + object),a));
+						inferred.add(new InferredAssertion(this,new Assertion("the voltage of "
 								+ object, "is as big as",
-								"the voltage of " + subject));
+								"the voltage of " + subject),a));
 					}
 				}
 			}
