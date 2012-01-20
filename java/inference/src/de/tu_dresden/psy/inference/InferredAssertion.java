@@ -42,7 +42,8 @@ public class InferredAssertion implements AssertionInterface {
 	 * @param newAssertion
 	 * @param usedPremises
 	 */
-	private void initialize(InferenceMap usedRule, AssertionInterface newAssertion,
+	private void initialize(InferenceMap usedRule,
+			AssertionInterface newAssertion,
 			Set<AssertionInterface> usedPremises) {
 		this.assertion = newAssertion;
 		this.rule = usedRule;
@@ -56,9 +57,10 @@ public class InferredAssertion implements AssertionInterface {
 	 * @param newAssertion
 	 * @param usedPremises
 	 */
-	public InferredAssertion(InferenceMap usedRule,AssertionInterface newAssertion,
+	public InferredAssertion(InferenceMap usedRule,
+			AssertionInterface newAssertion,
 			Set<AssertionInterface> usedPremises) {
-		initialize(usedRule,newAssertion, usedPremises);
+		initialize(usedRule, newAssertion, usedPremises);
 	}
 
 	/**
@@ -67,11 +69,11 @@ public class InferredAssertion implements AssertionInterface {
 	 * @param newAssertion
 	 * @param singlePremise
 	 */
-	public InferredAssertion(InferenceMap usedRule,AssertionInterface newAssertion,
-			AssertionInterface singlePremise) {
+	public InferredAssertion(InferenceMap usedRule,
+			AssertionInterface newAssertion, AssertionInterface singlePremise) {
 		HashSet<AssertionInterface> premises = new HashSet<AssertionInterface>();
 		premises.add(singlePremise);
-		initialize(usedRule,newAssertion, premises);
+		initialize(usedRule, newAssertion, premises);
 	}
 
 	/**
@@ -81,12 +83,13 @@ public class InferredAssertion implements AssertionInterface {
 	 * @param firstPremise
 	 * @param secondPremise
 	 */
-	public InferredAssertion(InferenceMap usedRule,AssertionInterface newAssertion,
-			AssertionInterface firstPremise, AssertionInterface secondPremise) {
+	public InferredAssertion(InferenceMap usedRule,
+			AssertionInterface newAssertion, AssertionInterface firstPremise,
+			AssertionInterface secondPremise) {
 		HashSet<AssertionInterface> premises = new HashSet<AssertionInterface>();
 		premises.add(firstPremise);
 		premises.add(secondPremise);
-		initialize(usedRule,newAssertion, premises);
+		initialize(usedRule, newAssertion, premises);
 	}
 
 	/**
@@ -97,14 +100,22 @@ public class InferredAssertion implements AssertionInterface {
 	 * @param secondPremise
 	 * @param thirdPremise
 	 */
-	public InferredAssertion(InferenceMap usedRule,AssertionInterface newAssertion,
-			AssertionInterface firstPremise, AssertionInterface secondPremise,
-			AssertionInterface thirdPremise) {
+	public InferredAssertion(InferenceMap usedRule,
+			AssertionInterface newAssertion, AssertionInterface firstPremise,
+			AssertionInterface secondPremise, AssertionInterface thirdPremise) {
 		HashSet<AssertionInterface> premises = new HashSet<AssertionInterface>();
 		premises.add(firstPremise);
 		premises.add(secondPremise);
 		premises.add(thirdPremise);
-		initialize(usedRule,newAssertion, premises);
+		initialize(usedRule, newAssertion, premises);
+	}
+	
+	/**
+	 * 
+	 * @return true, if the inferred assertion is already within the premises
+	 */
+	public boolean isTrivial() {
+		return this.isPremise(this.assertion);
 	}
 
 	@Override
@@ -131,36 +142,38 @@ public class InferredAssertion implements AssertionInterface {
 
 	@Override
 	public boolean isPremise(AssertionInterface assertion) {
-		for (Iterator<AssertionInterface> itpremises = this.premises.iterator(); itpremises.hasNext();) {
-			AssertionInterface premise =  itpremises.next();
+		for (Iterator<AssertionInterface> itpremises = this.premises.iterator(); itpremises
+				.hasNext();) {
+			AssertionInterface premise = itpremises.next();
 			if (premise.isEqualTo(assertion))
 				return true;
 		}
-		for (Iterator<AssertionInterface> itpremises = this.premises.iterator(); itpremises.hasNext();) {
-			AssertionInterface premise =  itpremises.next();
+		for (Iterator<AssertionInterface> itpremises = this.premises.iterator(); itpremises
+				.hasNext();) {
+			AssertionInterface premise = itpremises.next();
 			if (premise.isPremise(assertion))
 				return true;
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
-		String s="";
-		for (Iterator<AssertionInterface> itpremises = this.premises.iterator(); itpremises.hasNext();) {
-			if (s.isEmpty()==false) {
+		String s = "";
+		for (Iterator<AssertionInterface> itpremises = this.premises.iterator(); itpremises
+				.hasNext();) {
+			if (s.isEmpty() == false) {
 				s += " & ";
 			}
-			AssertionInterface premise =  itpremises.next();
+			AssertionInterface premise = itpremises.next();
 			if (premise instanceof InferredAssertion) {
 				InferredAssertion inferred_premise = (InferredAssertion) premise;
 				s += inferred_premise.assertion.toString();
 			} else
-			s += premise.toString();
+				s += premise.toString();
 		}
-		s += " =[" + rule.ruleName()
-				+ "]=> " + assertion.toString();
-		return s;
+		
+		return assertion.toString() + " <=[" + rule.ruleName() + "]= " + s;
 	}
 
 	@Override
@@ -201,6 +214,26 @@ public class InferredAssertion implements AssertionInterface {
 			return false;
 		return true;
 	}
-	
-	
+
+	/**
+	 * return a subset of assertions that are either not InferredAssertions or non-trivial InferredAssertions
+	 * @param assertions
+	 * @return non trivial assertions
+	 */
+	static public Set<AssertionInterface> nonTrivial(Set<AssertionInterface> assertions) {
+		Set<AssertionInterface> non_trivial = new HashSet<AssertionInterface>();
+		
+		Iterator<AssertionInterface> it;
+		for (it=assertions.iterator();it.hasNext();){
+			AssertionInterface a = it.next();
+			
+			if (a instanceof InferredAssertion) {
+				InferredAssertion inferred = (InferredAssertion) a;
+				if (inferred.isTrivial() == false)
+					non_trivial.add(inferred);
+			} else non_trivial.add(a);
+		}
+		
+		return non_trivial;
+	}
 }
