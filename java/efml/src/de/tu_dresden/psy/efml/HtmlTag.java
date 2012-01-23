@@ -21,6 +21,22 @@ public class HtmlTag implements AnyTag {
 	public HtmlTag() {
 		innerTags = new ArrayList<AnyTag>();
 	}
+	
+	/**
+	 * write the code needed to include the js containing general code
+	 * 
+	 * @param writer
+	 * @throws IOException
+	 */
+	static public void writeAllIncludes(Writer writer) throws IOException {
+		writer.write("	<script type=\"text/javascript\" src=\"logger.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"tags.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"logic.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"hover.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"endecoder.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"runway.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"answer.js\"></script>");
+	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
@@ -30,13 +46,7 @@ public class HtmlTag implements AnyTag {
 		 * include all scripts
 		 */
 
-		writer.write("	<script type=\"text/javascript\" src=\"logger.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"tags.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"logic.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"hover.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"endecoder.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"runway.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"answer.js\"></script>");
+		writeAllIncludes(writer);
 		
 		/**
 		 * write inner tags

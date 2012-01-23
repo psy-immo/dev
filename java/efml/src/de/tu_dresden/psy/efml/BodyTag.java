@@ -52,10 +52,22 @@ public class BodyTag implements AnyTag {
 				+ "		onmousemove=\"if ( document.all && myHover.flight != 0 ) myHover.MovePlane();\"\n"
 				+ "		onclick=\"myHover.OnFlight();\">");
 		
+		
+		writeInnerTags(writer);
+	
+	}
+	
+	/**
+	 * writes the inner tags of the body tag only
+	 * 
+	 * @param write
+	 * @throws IOException
+	 */
+	public void writeInnerTags(Writer writer) throws IOException {
+		
 		/**
 		 * write inner tags
 		 */
-		
 		for (Iterator<AnyTag> it=innerTags.iterator();it.hasNext();)
 		{
 			AnyTag innerTag = it.next();

@@ -101,28 +101,30 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		this.currentTags.push(new EfmlTagsAttribute(qName, attributes,
 				this.currentTags.peek()));
 
-		if (qName == "title") {
+		if (qName.equals("title")) {
 			this.processingTags.push(new TitleTag());
-		} else if ((qName == "tags") || (qName == "efml")) {
+		} else if ((qName.equals("tags")) || (qName.equals("efml"))) {
 			this.processingTags.push(new TagsTag());
-		} else if (qName == "tie") {
+		} else if (qName.equals("tie")) {
 			this.processingTags.push(new TieTag());
-		} else if (qName == "tables") {
+		} else if (qName.equals("tables")) {
 			this.processingTags.push(new TablesTag(this.currentTags.peek()));
-		} else if (qName == "r") {
+		} else if (qName.equals("r")) {
 			this.processingTags.push(new RTag());
-		} else if (qName == "c") {
+		} else if (qName.equals("c")) {
 			this.processingTags.push(new CTag(this.processingTags.peek()));
-		} else if (qName == "runway") {
+		} else if (qName.equals("runway")) {
 			this.processingTags.push(new RunwayTag(this.currentTags.peek()));
-		} else if (qName == "answer") {
+		} else if (qName.equals("answer")) {
 			this.processingTags.push(new AnswerTag(this.currentTags.peek()));
-		} else if (qName == "hint") {
+		} else if (qName.equals("hint")) {
 			this.processingTags.push(new HintTag());
-		} else if (qName == "correct") {
+		} else if (qName.equals("correct")) {
 			this.processingTags.push(new CorrectTag());
-		} else if (qName == "check") {
+		} else if (qName.equals("check")) {
 			this.processingTags.push(new CheckTag(this.currentTags.peek()));
+		} else if (qName.equals("includepreamble")) {
+			this.processingTags.push(new IncludePreambleTag());
 		} else {
 			/**
 			 * the tag is not recognized and thus we use the unknown tag handler

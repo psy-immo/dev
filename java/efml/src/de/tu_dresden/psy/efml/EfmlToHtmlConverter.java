@@ -173,6 +173,7 @@ public class EfmlToHtmlConverter {
 						give_help = true;
 						break;
 					}
+					relax = true;
 				}
 
 				if (relax == false) {
@@ -199,13 +200,15 @@ public class EfmlToHtmlConverter {
 							+ "   Output will be written to the optional parameter OUTPUT or\n"
 							+ "   in case of absence to the standard output.\n"
 							+ "   The optional parameter --relax will force efml2html to ignore\n"
-							+ "   encountered errors as far as possible.\n\n");
+							+ "   encountered errors as far as possible and ignore all data not\n"
+							+ "   enclosed within <efml>..</efml> tags (which may not nest)\n\n");
 		}
 
 	}
 
 	/**
-	 * Transform an EFML-File into an HTML-File
+	 * Transform an EFML-fused (HTML) file into an HTML-File (h4><0round for old
+	 * ef editor output files)
 	 * 
 	 * @param input
 	 *            Stream that reads the EFML file (UTF-8)
@@ -229,56 +232,72 @@ public class EfmlToHtmlConverter {
 
 		source.setEncoding("UTF-8");
 
+		StringBuffer all_input = new StringBuffer();
+
+		char[] c_buf = new char[1024];
+		int amount = 0;
+
+		while (amount >= 0) {
+			amount = source.getCharacterStream().read(c_buf);
+			if (amount >= 0) {
+				all_input.append(c_buf, 0, amount);
+			}
+		}
+
+		String contents = all_input.toString();
+
 		Writer writer = new OutputStreamWriter(output, "UTF-8");
 
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		SAXParser parser = factory.newSAXParser();
 
-		EfmlToHtmlHandler handler = new EfmlToHtmlHandler();
-
 		/**
-		 * parse input
+		 * chop up the file
 		 */
 
-		parser.parse(source, handler);
+		int current_index = 0;
+		int efml_index = contents.indexOf("<efml>", current_index);
 
-		/**
-		 * write output
-		 */
+		while (efml_index >= 0) {
+			/**
+			 * copy the current non-efml part
+			 */
 
-		HtmlTag html = new HtmlTag();
+			writer.write(contents.substring(current_index+"<efml>".length(), efml_index));
 
-		/**
-		 * add head
-		 */
+			int end_index = contents.indexOf("</efml>", efml_index)
+					+ "</efml>".length();
 
-		HeadTag head = handler.getHead();
+			if (end_index < "</efml>".length())
+				end_index = contents.length() + "</efml>".length();
 
-		try {
-			html.encloseTag(head);
-		} catch (OperationNotSupportedException e) {
-			/** unreachable */
+			String efml_part = contents.substring(efml_index, end_index
+					- "</efml>".length());
+			
+			/**
+			 *  process the EFML code
+			 */
+			
+			EfmlToHtmlHandler handler = new EfmlToHtmlHandler();
+			
+			parser.parse(efml_part, handler);
+			
+			
+			
+
+			current_index = end_index;
+			efml_index = contents.indexOf("<efml>", current_index);
 		}
 
 		/**
-		 * add body
+		 * copy the last part of the file
 		 */
 
-		BodyTag body = handler.getBody();
-
-		try {
-			html.encloseTag(body);
-		} catch (OperationNotSupportedException e) {
-			/** unreachable */
-		}
+		writer.write(contents.substring(current_index));
 
 		/**
-		 * write main html tag and save file
+		 * close file
 		 */
-
-		html.open(writer);
-
-		html.close(writer);
 
 		writer.close();
 
