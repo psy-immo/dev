@@ -18,6 +18,7 @@
 
 package de.tu_dresden.psy.efml;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -263,7 +264,7 @@ public class EfmlToHtmlConverter {
 			 * copy the current non-efml part
 			 */
 
-			writer.write(contents.substring(current_index+"<efml>".length(), efml_index));
+			writer.write(contents.substring(current_index, efml_index));
 
 			int end_index = contents.indexOf("</efml>", efml_index)
 					+ "</efml>".length();
@@ -271,19 +272,25 @@ public class EfmlToHtmlConverter {
 			if (end_index < "</efml>".length())
 				end_index = contents.length() + "</efml>".length();
 
-			String efml_part = contents.substring(efml_index, end_index
-					- "</efml>".length());
-			
+			String efml_part = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+					+ "<efml>"
+					+ contents.substring(efml_index + "<efml>".length(),
+							end_index - "</efml>".length()) + "</efml>";
+
 			/**
-			 *  process the EFML code
+			 * process the EFML code
 			 */
-			
+
 			EfmlToHtmlHandler handler = new EfmlToHtmlHandler();
-			
-			parser.parse(efml_part, handler);
-			
-			
-			
+
+			parser.parse(new ByteArrayInputStream(efml_part.getBytes("UTF-8")),
+					handler);
+
+			handler.getBody().writeInnerTags(writer);
+
+			/**
+			 * continue after EFML part
+			 */
 
 			current_index = end_index;
 			efml_index = contents.indexOf("<efml>", current_index);
