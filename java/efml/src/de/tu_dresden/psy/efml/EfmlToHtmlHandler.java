@@ -125,6 +125,8 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new CheckTag(this.currentTags.peek()));
 		} else if (qName.equals("includepreamble")) {
 			this.processingTags.push(new IncludePreambleTag());
+		} else if (qName.equals("includehover")) {
+			this.processingTags.push(new IncludeHoverTag());
 		} else {
 			/**
 			 * the tag is not recognized and thus we use the unknown tag handler

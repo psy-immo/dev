@@ -52,20 +52,20 @@ function Hover() {
 		var formatted_token = '<FONT face="Arial" size="3" color="#FFD600"><I><B>'
 				+ token + '</B></I></FONT>';
 		if (document.layers) {
-			var doc = document.lplane.document;
+			var doc = document.myhoverlplane.document;
 			doc.open();
 			doc.clear();
 			doc.write('<TABLE border=0 cellpadding=3><TR><TD>'
 					+ formatted_token + '</TD></TR></TABLE>');
 			doc.close();
-			document.lplane.visibility = "show";
+			document.myhoverlplane.visibility = "show";
 			window.captureEvents(Event.MOUSEMOVE);
 			window.onmousemove = this.lMovePlane;
 			window.captureEvents(Event.MOUSEDOWN);
 			window.onmousedown = this.OnFlight;
 		} else if (document.all) {
-			document.all.plane1.style.zIndex = 3;
-			document.all.plane2.innerHTML = formatted_token;
+			document.all.myhoverplane1.style.zIndex = 3;
+			document.all.myhoverplane2.innerHTML = formatted_token;
 
 			if (source.style) {
 				this.sourceColor = source.style.backgroundColor;
@@ -75,7 +75,7 @@ function Hover() {
 			document.all.frame.style.cursor = "crosshair";
 		} else // DOM
 		{
-			var pl = document.getElementById("plane");
+			var pl = document.getElementById("myhoverplane");
 			pl.style.zIndex = 3;
 			pl.innerHTML = formatted_token;
 
@@ -95,7 +95,7 @@ function Hover() {
 	 * legacy code
 	 */
 	this.MovePlane = function() {
-		var pl = document.all.plane1.style;
+		var pl = document.all.myhoverplane1.style;
 		if (!document.all) {
 			pl.left = window.event.clientX;
 			pl.top = window.event.clientY;
@@ -113,8 +113,8 @@ function Hover() {
 	 */
 	this.lMovePlane = function(ev) {
 
-		var pl = document.layers ? document.lplane : document
-				.getElementById("plane").style;
+		var pl = document.layers ? document.myhoverlplane : document
+				.getElementById("myhoverplane").style;
 
 		pl.left = (ev.pageX + 1) + "px";
 		pl.top = (ev.pageY + 1) + "px";
@@ -151,14 +151,14 @@ function Hover() {
 	this.LegacyCrashDown = function() {
 		this.flight = 0;
 		if (document.layers) {
-			document.lplane.visibility = "hide";
+			document.myhoverlplane.visibility = "hide";
 			window.onmousemove = 0;
 			window.releaseEvents(Event.MOUSEMOVE);
 			window.onmousedown = 0;
 			window.releaseEvents(Event.MOUSEDOWN);
 		} else {
-			var pl = document.all ? document.all.plane1 : document
-					.getElementById("plane");
+			var pl = document.all ? document.all.myhoverplane1 : document
+					.getElementById("myhoverplane");
 			pl.style.left = -220 + "px";
 			pl.style.top = -220 + "px";
 			if (this.source.style)
@@ -185,7 +185,7 @@ function Hover() {
 	 */
 	this.WriteHtml = function() {
 		
-		document.write("<layer name=\"lplane\" top=\"4\" left=\"4\" visibility=\"hide\" bgcolor=\"#DE6B00\"></layer><div id=\"plane\" style=\"position:absolute; top: -220px; left:-220; padding:3px;background-color:#DE6B00;\" onmousemove=\"if ( document.all ) myHover.MovePlane()\"></div><div id=\"plane1\" style=\"position:absolute; top: -220px; left:-220; padding:0;\" onmousemove=\"if ( document.all ) myHover.MovePlane()\"><table style=\"padding:3px;background-color:#DE6B00;\"><tr><td id=\"plane2\">");		
+		document.write("<layer name=\"myhoverlplane\" top=\"4\" left=\"4\" visibility=\"hide\" bgcolor=\"#DE6B00\"></layer><div id=\"myhoverplane\" style=\"position:absolute; top: -220px; left:-220; padding:3px;background-color:#DE6B00;\" onmousemove=\"if ( document.all ) myHover.MovePlane()\"></div><div id=\"myhoverplane1\" style=\"position:absolute; top: -220px; left:-220; padding:0;\" onmousemove=\"if ( document.all ) myHover.MovePlane()\"><table style=\"padding:3px;background-color:#DE6B00;\"><tr><td id=\"myhoverplane2\">");		
 	};
 
 }

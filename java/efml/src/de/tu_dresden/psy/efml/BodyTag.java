@@ -83,11 +83,21 @@ public class BodyTag implements AnyTag {
 		/**
 		 * add code for the hovering feature
 		 */
-
+		includeHover(writer);
+		
+		writer.write("</body>");
+	}
+	
+	/**
+	 * add code for hovering feature
+	 * @param writer
+	 * @throws IOException
+	 */
+	static public void includeHover(Writer writer) throws IOException {
 		writer.write("	<script type=\"text/javascript\">\n"
 				+ "		myHover.WriteHtml();\n" + "	</script>");
 
-		writer.write("</body>");
+		
 	}
 	
 	@Override
