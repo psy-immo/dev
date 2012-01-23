@@ -133,39 +133,154 @@ public class EfmlToHtmlConverter {
 	 */
 
 	public static void main(String[] args) {
-		
-		
-		
+
+		boolean give_help = false;
+
+		boolean relax = false;
+
 		try {
 
 			InputStream inputStream = null;
 			OutputStream outputStream = System.out;
 
 			switch (args.length) {
-			case 2:
-				outputStream = new FileOutputStream(new File(args[1]));
-			case 1:
-				if (args[0].equals("-"))
-					inputStream = System.in;
-				else
-					inputStream = new FileInputStream(new File(args[0]));
+			case 3:
+				if (args[0].startsWith("--") == false) {
+					give_help = true;
+					break;
+				} else {
+					outputStream = new FileOutputStream(new File(args[2]));
+				}
 
-				transformStream(inputStream, outputStream);
+			case 2:
+				if (args[0].startsWith("--") == false)
+					outputStream = new FileOutputStream(new File(args[1]));
+				else {
+					if (args[1].equals("-"))
+						inputStream = System.in;
+					else
+						inputStream = new FileInputStream(new File(args[1]));
+				}
+
+			case 1:
+				if (args[0].startsWith("--") == false) {
+					if (args[0].equals("-"))
+						inputStream = System.in;
+					else
+						inputStream = new FileInputStream(new File(args[0]));
+				} else {
+					if (args[0].equalsIgnoreCase("--relax") == false) {
+						give_help = true;
+						break;
+					}
+				}
+
+				if (relax == false) {
+					transformStream(inputStream, outputStream);
+				} else {
+					relaxedTransformStream(inputStream, outputStream);
+				}
 
 				break;
 
 			default:
-				System.out
-						.println("Usage: java -jar emfl2html.jar INPUT [OUTPUT]\n"
-								+ "   where INPUT is either a path to the input file or '-' for\n"
-								+ "   standard input.\n\n"
-								+ "   Output will be written to the optional parameter OUTPUT or\n"
-								+ "   in case of absence to the standard output.");
+				give_help = true;
 			}
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
+
+		if (give_help == true) {
+			System.out
+					.println("Usage: java -jar emfl2html.jar [--relax] INPUT [OUTPUT]\n"
+							+ "   where INPUT is either a path to the input file or '-' for\n"
+							+ "   standard input.\n\n"
+							+ "   Output will be written to the optional parameter OUTPUT or\n"
+							+ "   in case of absence to the standard output.\n"
+							+ "   The optional parameter --relax will force efml2html to ignore\n"
+							+ "   encountered errors as far as possible.\n\n");
+		}
+
+	}
+
+	/**
+	 * Transform an EFML-File into an HTML-File
+	 * 
+	 * @param input
+	 *            Stream that reads the EFML file (UTF-8)
+	 * @param output
+	 *            Stream that takes the HTML file (UTF-8)
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 */
+
+	public static void relaxedTransformStream(InputStream input,
+			OutputStream output) throws ParserConfigurationException,
+			SAXException, IOException {
+
+		/**
+		 * I/O handling in UTF-8
+		 */
+
+		Reader reader = new InputStreamReader(input, "UTF-8");
+		InputSource source = new InputSource(reader);
+
+		source.setEncoding("UTF-8");
+
+		Writer writer = new OutputStreamWriter(output, "UTF-8");
+
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		SAXParser parser = factory.newSAXParser();
+
+		EfmlToHtmlHandler handler = new EfmlToHtmlHandler();
+
+		/**
+		 * parse input
+		 */
+
+		parser.parse(source, handler);
+
+		/**
+		 * write output
+		 */
+
+		HtmlTag html = new HtmlTag();
+
+		/**
+		 * add head
+		 */
+
+		HeadTag head = handler.getHead();
+
+		try {
+			html.encloseTag(head);
+		} catch (OperationNotSupportedException e) {
+			/** unreachable */
+		}
+
+		/**
+		 * add body
+		 */
+
+		BodyTag body = handler.getBody();
+
+		try {
+			html.encloseTag(body);
+		} catch (OperationNotSupportedException e) {
+			/** unreachable */
+		}
+
+		/**
+		 * write main html tag and save file
+		 */
+
+		html.open(writer);
+
+		html.close(writer);
+
+		writer.close();
 
 	}
 
