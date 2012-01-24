@@ -23,9 +23,45 @@ function Logger() {
 	this.t0 = new Date().getTime();
 	this.events = [];
 	
+	/**
+	 * Log arbitrary item as string with timestamp relative to page load
+	 */
+	
 	this.Log = function(item) {
-		this.events[this.events.length] = [new Date().getTime() - this.t0, item];
+		var logstring = ("" + item).replace("\n","<br/>");
+		var timestamp = new Date().getTime();
+		this.events[this.events.length] = timestamp + " "+(timestamp - this.t0) + ": "+ logstring;
 	};
+	
+	/**
+	 * return all log data as string
+	 */
+	
+	this.GetValue = function() {
+		var concat = "";
+		for ( var int = 0; int < this.events.length; int++) {
+			if (int > 0) {
+				concat += "\n";
+			}
+			concat += this.events[int];
+		}
+		return concat;
+	};
+	
+	/**
+	 * add previously logged events
+	 */
+	
+	this.SetValue = function(events) {
+		var splitted = ("" + events).split("\n");
+		
+		this.events = splitted;
+		
+		this.Log("Site reloaded.");
+	};
+	
+	
+	myStorage.RegisterField(this,"Logger");
 }
 
 /**

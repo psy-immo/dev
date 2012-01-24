@@ -36,6 +36,8 @@ public class StringEscape {
 
 	/**
 	 * translate \ to \\, newline to \n, tab to \t, return to \r, " to \"
+	 * <br/><br/>
+	 * <b>No java script string delimiters are added!</b><br/>
 	 * 
 	 * @param unescaped
 	 * @return escaped

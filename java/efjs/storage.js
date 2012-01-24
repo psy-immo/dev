@@ -113,6 +113,26 @@ function Storage() {
 			
 		}
 	};	
+	
+	/**
+	 * set up automatic storage and restoring of contents
+	 */
+	this.SetupAutoRestore = function(storage, name) {
+		myStorageLocation = storage;
+		myStorageName = name;
+		
+		myStorageAncientUnloader = window.onunload;
+		
+		window.onunload = function() {
+			myStorage.StoreIn(myStorageLocation, myStorageName);
+			
+			if (myStorageAncientUnloader) {
+				myStorageAncientUnloader();
+			}
+		};
+		
+		myStorage.RestoreFrom(myStorageLocation, myStorageName);		
+	};
 }
 
 myStorage = new Storage();

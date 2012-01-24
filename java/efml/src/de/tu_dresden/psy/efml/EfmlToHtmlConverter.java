@@ -261,6 +261,7 @@ public class EfmlToHtmlConverter {
 				contents = contents.substring(0, idx)
 						+ "<efml><includehover/></efml>"
 						+ contents.substring(idx);
+				lowercase_contents = contents.toLowerCase();
 			}
 		}
 		
@@ -273,6 +274,20 @@ public class EfmlToHtmlConverter {
 				contents = contents.substring(0, idx+6)
 						+ "<efml><includepreamble/></efml>"
 						+ contents.substring(idx+6);
+				lowercase_contents = contents.toLowerCase();
+			}
+		}
+		
+		if (contents.indexOf("<includeaddendum") < 0) {
+			/**
+			 * add <includehover/> just before </body>
+			 */
+			int idx = lowercase_contents.indexOf("</body");
+			if (idx >= 0) {
+				contents = contents.substring(0, idx)
+						+ "<efml><includeaddendum/></efml>"
+						+ contents.substring(idx);
+				lowercase_contents = contents.toLowerCase();
 			}
 		}
 
