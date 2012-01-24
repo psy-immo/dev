@@ -45,10 +45,10 @@ public class BodyTag implements AnyTag {
 		writer.write("<body id=\"body\">");
 
 		/**
-		 * all content will be displayed in the main "frame"
+		 * all content will be displayed in the main "myhoverframe"
 		 */
 
-		writer.write("<div id=\"frame\" \n"
+		writer.write("<div id=\"myhoverframe\" \n"
 				+ "		onmousemove=\"if ( document.all && myHover.flight != 0 ) myHover.MovePlane();\"\n"
 				+ "		onclick=\"myHover.OnFlight();\">");
 		

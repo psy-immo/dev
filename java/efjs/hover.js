@@ -72,7 +72,7 @@ function Hover() {
 				source.style.backgroundColor = "#FFD600";
 			}
 
-			document.all.frame.style.cursor = "crosshair";
+			document.all.myhoverframe.style.cursor = "crosshair";
 		} else // DOM
 		{
 			var pl = document.getElementById("myhoverplane");
@@ -135,11 +135,15 @@ function Hover() {
 	 * function that handles CrashDown by clicking somewhere
 	 */
 	this.CrashDown = function() {
-		this.LegacyCrashDown();
-		if (this.dontGiveBack == false) {
+		if (this.flight > 0) {
+			this.LegacyCrashDown();
+		}
 
-			if (this.source.GiveBackToken) {
-				this.source.GiveBackToken(this.token);
+		if (this.dontGiveBack == false) {
+			if (this.source) {
+				if (this.source.GiveBackToken) {
+					this.source.GiveBackToken(this.token);
+				}
 			}
 		}
 
@@ -164,7 +168,7 @@ function Hover() {
 			if (this.source.style)
 				this.source.style.backgroundColor = this.sourceColor;
 			if (document.all)
-				document.all.frame.style.cursor = "";
+				document.all.myhoverframe.style.cursor = "";
 			else {
 				document.getElementById("body").style.cursor = "";
 				window.onmousemove = 0;
@@ -172,20 +176,50 @@ function Hover() {
 		}
 
 	};
-	
+
 	/**
 	 * denies further take-offs
 	 */
 	this.DenyTakeOff = function() {
 		this.denyTakeOff = true;
 	};
-	
+
 	/**
 	 * writes the HTML code that provides the layers used for flights
 	 */
 	this.WriteHtml = function() {
-		
-		document.write("<layer name=\"myhoverlplane\" top=\"4\" left=\"4\" visibility=\"hide\" bgcolor=\"#DE6B00\"></layer><div id=\"myhoverplane\" style=\"position:absolute; top: -220px; left:-220; padding:3px;background-color:#DE6B00;\" onmousemove=\"if ( document.all ) myHover.MovePlane()\"></div><div id=\"myhoverplane1\" style=\"position:absolute; top: -220px; left:-220; padding:0;\" onmousemove=\"if ( document.all ) myHover.MovePlane()\"><table style=\"padding:3px;background-color:#DE6B00;\"><tr><td id=\"myhoverplane2\">");		
+
+		document
+				.write("<layer name=\"myhoverlplane\" top=\"4\" left=\"4\" "
+						+ "visibility=\"hide\" bgcolor=\"#DE6B00\"></layer>"
+						+ "<div id=\"myhoverplane\" style=\"position:absolute;"
+						+ " top: -220px; left:-220; padding:3px;background-color:#DE6B00;\""
+						+ " onmousemove=\"if ( document.all ) myHover.MovePlane()\"></div>"
+						+ "<div id=\"myhoverplane1\" style=\"position:absolute; top: -220px;"
+						+ " left:-220; padding:0;\" onmousemove=\"if ( document.all ) myHover.MovePlane()\">"
+						+ "<table style=\"padding:3px;background-color:#DE6B00;\"><tr>"
+						+ "<td id=\"myhoverplane2\">"
+						+ "</td></tr></table></div>");
+	};
+
+	/**
+	 * code for interoperability with ef editor output files
+	 */
+	this.EfInterOp = function() {
+		if (typeof MovePlane == "function") {
+			ancientMovePlane = MovePlane;
+			MovePlane = function() {
+				myHover.MovePlane();
+				ancientMovePlane();
+			};
+		}
+		if (typeof OnFlight == "function") {
+			ancientOnFlight = OnFlight;
+			OnFlight = function() {
+				myHover.OnFlight();
+				ancientOnFlight();
+			};
+		}
 	};
 
 }

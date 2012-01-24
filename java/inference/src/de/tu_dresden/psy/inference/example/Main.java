@@ -58,7 +58,7 @@ public class Main {
 		int step=0;
 		int size=0;
 		
-		while (step < 8) {
+		while (step < 4) {
 			size = valid.size();
 			
 			System.out.println("  ++++ Step "+step+" ++++\n\n");

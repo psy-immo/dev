@@ -35,6 +35,14 @@ public class IncludeHoverTag implements AnyTag {
 	@Override
 	public void open(Writer writer) throws IOException {
 		BodyTag.includeHover(writer);
+		
+		/**
+		 * insert special interop code
+		 */
+		
+		writer.write("	<script type=\"text/javascript\">\n"
+				+ "		myHover.EfInterOp();\n" + "	</script>");
+
 	}
 
 	@Override

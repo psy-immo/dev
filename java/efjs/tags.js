@@ -38,9 +38,8 @@ function Tags() {
 				this.taglists[tag] = [ obj ];
 				this.tags.push(tag);
 			}
-			;
+
 		}
-		;
 
 		this.objs.push(obj);
 	};
@@ -63,10 +62,10 @@ function Tags() {
 		}
 		return objs;
 	};
-	
+
 	/**
-	 * this return all objects bearing all of the tags,
-	 * not having any of the reject tags
+	 * this return all objects bearing all of the tags, not having any of the
+	 * reject tags
 	 */
 	this.AllTagsBut = function(tags, rejects) {
 		var objs = this.objs;
@@ -81,7 +80,7 @@ function Tags() {
 				return [];
 			}
 		}
-		for (var int = 0; int < rejects.length; int ++) {
+		for ( var int = 0; int < rejects.length; int++) {
 			var tag = rejects[int];
 			if (tag in this.taglists) {
 				var taglist = this.taglists[tag];

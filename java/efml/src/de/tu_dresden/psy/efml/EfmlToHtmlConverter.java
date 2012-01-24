@@ -246,6 +246,35 @@ public class EfmlToHtmlConverter {
 		}
 
 		String contents = all_input.toString();
+		String lowercase_contents = contents.toLowerCase();
+
+		/**
+		 * do some nasty fixing for ef editor files
+		 */
+
+		if (contents.indexOf("<includehover") < 0) {
+			/**
+			 * add <includehover/> just before </body>
+			 */
+			int idx = lowercase_contents.indexOf("</body");
+			if (idx >= 0) {
+				contents = contents.substring(0, idx)
+						+ "<efml><includehover/></efml>"
+						+ contents.substring(idx);
+			}
+		}
+		
+		if (contents.indexOf("<includepreamble")<0) {
+			/**
+			 * add <includepreamble/> just after <html>..
+			 */
+			int idx = lowercase_contents.indexOf("<html>");
+			if (idx >= 0) {
+				contents = contents.substring(0, idx+6)
+						+ "<efml><includepreamble/></efml>"
+						+ contents.substring(idx+6);
+			}
+		}
 
 		Writer writer = new OutputStreamWriter(output, "UTF-8");
 

@@ -305,7 +305,27 @@ function Runway(name, tags, token, accept, reject) {
 		this.SetToken(null);
 		this.respawn = null;
 	};
+	
+	/**
+	 * return the current contents of the run way as string
+	 */
+	this.GetValue = function() {
+		if (this.token) {
+			return this.token;
+		}
+		return "";
+	};
+	
+	/**
+	 * restore the run way state from string
+	 */
+	
+	this.SetValue = function(contents) {
+		this.SetToken(contents);
+	};
 
 	runwayArray[this.id] = this;
 	myTags.Add(this, this.tags);
+	
+	myStorage.RegisterField(this,"runwayArray["+this.id+"]");
 }
