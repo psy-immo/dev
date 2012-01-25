@@ -1,3 +1,4 @@
+package de.tu_dresden.psy.util;
 import java.applet.Applet;
 
 import javax.swing.JFrame;
