@@ -6,9 +6,16 @@
 </head>
 <body>
 
-Button: <applet id="launchSniffy" name="Sniffy" archive="jar/launcherApplet.jar" code="de.tu_dresden.psy.util.LauncherApplet" MAYSCRIPT width="60" height="40"></applet>
+<script type="text/javascript">
+fnSniffyButton = function () {
+	document.getElementById("launchSniffy").launchSniffy();
+};
+</script>"
 
+<form onsubmit="return false;">
+<input type="button" id="sniffy button" value="Launch Sniffy" onclick="fnSniffyButton()"/>
+</form>
 
-
+<applet id="launchSniffy" name="Sniffy" archive="jar/launcherApplet.jar" code="de.tu_dresden.psy.util.LauncherApplet" MAYSCRIPT width="60" height="40"></applet>
 </body>
 </html>
