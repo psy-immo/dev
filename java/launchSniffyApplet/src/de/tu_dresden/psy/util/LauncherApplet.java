@@ -1,60 +1,92 @@
 package de.tu_dresden.psy.util;
-import java.applet.Applet;
 
-import javax.swing.JFrame;
-import javax.swing.JButton;
-import javax.swing.AbstractAction;
-import java.awt.event.ActionEvent;
+import java.applet.Applet;
 import java.io.IOException;
 
-import javax.swing.Action;
-
+import javax.swing.JFrame;
 
 public class LauncherApplet extends Applet {
-	private final Action launchSniffy = new SniffyAction();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3207510022957247010L;
 	
-	static final String sniffyPath ="Z:\\win32\\Sniffy\\Sniffy Pro 6.exe";
 	
+	
+	private boolean launched;
+	static final String sniffyPath = "Z:\\win32\\Sniffy\\Sniffy Pro 6.exe";
+
 	/**
 	 * applet main entry point
 	 */
-	
+
 	public LauncherApplet() {
-		
-		JButton btnSniffy = new JButton("Sniffy");
-		btnSniffy.setAction(launchSniffy);
-		add(btnSniffy);
-		
+		launched = false;
+
+		// JButton btnSniffy = new JButton("Sniffy");
+		// btnSniffy.setAction(launchSniffy);
+		// add(btnSniffy);
+
 	}
-	
+
 	/**
 	 * launch applet in a frame
+	 * 
 	 * @param args
 	 */
-	
+
 	public static void main(String[] args) {
 		LauncherApplet applet = new LauncherApplet();
-		
+
 		JFrame frame = new JFrame("LauncherApplet frame");
 		frame.getContentPane().add(applet);
-		
+
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
 	}
 
-	private class SniffyAction extends AbstractAction {
-		public SniffyAction() {
-			putValue(NAME, "Sniffy");
-			putValue(SHORT_DESCRIPTION, "Launch Sniffy the virtual rat Pro.");
-		}
-		public void actionPerformed(ActionEvent e) {
-			try {
-				Runtime.getRuntime().exec(sniffyPath);
-			} catch (IOException e1) {
-
-				e1.printStackTrace();
-			}
-		}
+	
+	/**
+	 * a little test routine, call it from within JavaScript like this:
+	 * 
+	 * document.getElementById("applet_id").testJavaScriptJavaInteraction("test"
+	 * )
+	 * 
+	 * -> "received test"
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public String testJavaScriptJavaInteraction(String input) {
+		return "received " + input;
 	}
+
+	/**
+	 * call this routine from within JavaScript in order to launch the sniffy
+	 * application
+	 * 
+	 * @return true, if sniffy was launched
+	 */
+	public boolean launchSniffy() {
+		try {
+			Runtime.getRuntime().exec(sniffyPath);
+			launched = true;
+
+		} catch (IOException e1) {
+
+		}
+
+		return launched;
+	}
+
+	/**
+	 * 
+	 * @return true, if sniffy was launched
+	 */
+	public boolean hasLaunchedSniffy() {
+		return launched;
+	}
+	
+	
 }
