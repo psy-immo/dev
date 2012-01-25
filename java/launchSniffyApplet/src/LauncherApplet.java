@@ -12,7 +12,7 @@ import javax.swing.Action;
 public class LauncherApplet extends Applet {
 	private final Action launchSniffy = new SniffyAction();
 	
-	static final String sniffyPath ="";
+	static final String sniffyPath ="Z:\\win32\\Sniffy\\Sniffy Pro 6.exe";
 	
 	/**
 	 * applet main entry point
