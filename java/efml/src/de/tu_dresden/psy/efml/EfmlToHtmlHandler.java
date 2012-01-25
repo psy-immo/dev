@@ -129,7 +129,14 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new IncludeHoverTag());
 		} else if (qName.equals("includeaddendum")) {
 			this.processingTags.push(new IncludeAddendumTag());
-		} else {
+		} else if (qName.equals("label")) {
+			this.processingTags.push(new LabelTag());
+		} else if (qName.equals("unread")) {
+			this.processingTags.push(new UnreadTag());
+		} else if (qName.equals("instructions")) {
+			this.processingTags.push(new InstructionsTag());
+		} 
+		else {
 			/**
 			 * the tag is not recognized and thus we use the unknown tag handler
 			 */
