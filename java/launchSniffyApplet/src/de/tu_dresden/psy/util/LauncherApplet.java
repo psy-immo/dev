@@ -1,6 +1,8 @@
 package de.tu_dresden.psy.util;
 
 import java.applet.Applet;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 
 import javax.swing.JFrame;
@@ -66,9 +68,10 @@ public class LauncherApplet extends Applet {
 	 * call this routine from within JavaScript in order to launch the sniffy
 	 * application
 	 * 
-	 * @return true, if sniffy was launched
+	 * @return error message or empty string (no errors then)
 	 */
-	public String doLaunchSniffy() {
+	private String launchSniffy() {
+	
 		try {
 			Runtime.getRuntime().exec(sniffyPath);
 			launched = true;
@@ -76,6 +79,23 @@ public class LauncherApplet extends Applet {
 		} catch (Exception e) {
 			return e.getMessage();
 		}
+	}
+	/**
+	 * call this routine from within JavaScript in order to launch the sniffy
+	 * application
+	 * 
+	 * @return error message or empty string (no errors then)
+	 */
+	public String doLaunchSniffy() {
+		/**
+		 * we need this to escape from the JavaScript security context denying file permissions!
+		 */
+		return AccessController.doPrivileged(new PrivilegedAction<String>() {
+			@Override
+			public String run() {
+				return launchSniffy();
+			}
+		});		
 	}
 	
 	
