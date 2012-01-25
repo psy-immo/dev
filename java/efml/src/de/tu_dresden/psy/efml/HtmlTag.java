@@ -36,7 +36,8 @@ public class HtmlTag implements AnyTag {
 				+ "	<script type=\"text/javascript\" src=\"hover.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"endecoder.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"runway.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"answer.js\"></script>");
+				+ "	<script type=\"text/javascript\" src=\"answer.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"sniffybutton.js\"></script>");
 	}
 
 	/**
