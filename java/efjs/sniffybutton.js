@@ -93,13 +93,18 @@ function InstructionsButton(url, text, inform) {
 /**
  * generate a launch sniffy button
  * @param text
+ * @param inform
  * @returns
  */
 
-function SniffyButton(text) {
+function SniffyButton(text, inform) {
 
 	if (text === undefined) {
 		text = "Launch Sniffy";
+	}
+	
+	if (inform === undefined) {
+		inform = "Please use Sniffy first!";
 	}
 
 	this.WriteHtml = function() {
@@ -116,6 +121,8 @@ function SniffyButton(text) {
 				+ "\" onclick=\"mySniffyButtonAction()\"/>");
 		document.write("</form>");
 	};
+	
+	this.inform = inform;
 
 	return this;
 };

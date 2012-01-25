@@ -24,20 +24,20 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements class for &lt;instructions> for adding an instructions button
+ * implements class for &lt;sniffy> for adding the sniffy button
  * @author immanuel
  *
  */
-public class InstructionsTag implements AnyTag {
+public class SniffyTag implements AnyTag {
 	
 	
-	private String url;
+	
 	private String text;
 	private String inform;
 	
-	public InstructionsTag() {
+	public SniffyTag() {
 		
-		this.url = "";
+	
 		this.text="";
 		this.inform="";
 	}
@@ -45,15 +45,15 @@ public class InstructionsTag implements AnyTag {
 	@Override
 	public void open(Writer writer) throws IOException {
 		writer.write("<script type=\"text/javascript\">");
-		writer.write("new InstructionsButton(\""+StringEscape.escapeToJavaScript(this.url)+"\"");
+		writer.write("new SniffyButton(");
 		
 		if (this.text.isEmpty() && this.inform.isEmpty()) {
 			writer.write(");");
 		} else {
 			if (this.text.isEmpty()==false) {
-				writer.write(",\""+StringEscape.escapeToJavaScript(this.text)+"\"");
+				writer.write("\""+StringEscape.escapeToJavaScript(this.text)+"\"");
 			} else {
-				writer.write(",undefined");
+				writer.write("undefined");
 			}
 			if (this.inform.isEmpty()==false){
 				writer.write(",\""+StringEscape.escapeToJavaScript(this.inform)+"\"");
@@ -76,14 +76,14 @@ public class InstructionsTag implements AnyTag {
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
-			this.url += ((PlainContent) innerTag).getPlainContent();
-		} else if (innerTag.getClass() == UnreadTag.class) {
-			this.inform += ((UnreadTag) innerTag).getPlainContent();
+		
+		} else if (innerTag.getClass() == UnusedTag.class) {
+			this.inform += ((UnusedTag) innerTag).getPlainContent();
 		} else if (innerTag.getClass() == LabelTag.class) {
 			this.text += ((LabelTag) innerTag).getPlainContent();
 		} 
 		else
-			throw new OperationNotSupportedException("<instructions> cannot enclose "
+			throw new OperationNotSupportedException("<sniffy> cannot enclose "
 					+ innerTag.getClass().toString());
 
 	}

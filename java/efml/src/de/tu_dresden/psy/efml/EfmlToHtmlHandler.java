@@ -133,8 +133,12 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new LabelTag());
 		} else if (qName.equals("unread")) {
 			this.processingTags.push(new UnreadTag());
+		} else if (qName.equals("unused")) {
+			this.processingTags.push(new UnusedTag());
 		} else if (qName.equals("instructions")) {
 			this.processingTags.push(new InstructionsTag());
+		} else if (qName.equals("sniffy")) {
+			this.processingTags.push(new SniffyTag());			
 		} 
 		else {
 			/**
