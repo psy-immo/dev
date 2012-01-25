@@ -1,20 +1,20 @@
 package de.tu_dresden.psy.util;
 
 import java.applet.Applet;
-import java.io.IOException;
+
 
 import javax.swing.JFrame;
 
 public class LauncherApplet extends Applet {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3207510022957247010L;
+
+	
+	private static final long serialVersionUID = -2572712616439336285L;
+
 	
 	
 	
 	private boolean launched;
-	static final String sniffyPath = "Z:\\win32\\Sniffy\\Sniffy Pro 6.exe";
+	static final String sniffyPath = "Z:\\win32\\Sniffy\\Sniffy.exe";
 
 	/**
 	 * applet main entry point
@@ -68,17 +68,17 @@ public class LauncherApplet extends Applet {
 	 * 
 	 * @return true, if sniffy was launched
 	 */
-	public boolean launchSniffy() {
+	public String doLaunchSniffy() {
 		try {
 			Runtime.getRuntime().exec(sniffyPath);
 			launched = true;
-
-		} catch (IOException e1) {
-
+			return "";
+		} catch (Exception e) {
+			return e.getMessage();
 		}
-
-		return launched;
 	}
+	
+	
 
 	/**
 	 * 

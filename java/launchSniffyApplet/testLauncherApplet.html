@@ -8,14 +8,16 @@
 
 <script type="text/javascript">
 fnSniffyButton = function () {
-	document.getElementById("launchSniffy").launchSniffy();
+	document.getElementById("error").innerText = document.getElementById("launchSniffy").doLaunchSniffy();
 };
-</script>"
+</script>
 
 <form onsubmit="return false;">
 <input type="button" id="sniffy button" value="Launch Sniffy" onclick="fnSniffyButton()"/>
 </form>
 
 <applet id="launchSniffy" name="Sniffy" archive="jar/launcherApplet.jar" code="de.tu_dresden.psy.util.LauncherApplet" MAYSCRIPT width="60" height="40"></applet>
+
+<span id="error"></span>
 </body>
 </html>
