@@ -1,5 +1,5 @@
 /**
- * CorrectTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
+ * UnusedTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -24,7 +24,7 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the &lt;unused>...&lt;/unused> tag for answers
+ * implements the &lt;unused>...&lt;/unused> tag for sniffy
  * @author immanuel
  *
  */

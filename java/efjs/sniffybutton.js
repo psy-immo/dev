@@ -18,14 +18,20 @@
 
 mySniffyButtonIncludeApplet = true;
 
-mySniffyButtonAction = function() {
-	
-
+myWaitForInstructions = function() {
 	for ( var int = 0; int < myInstructionsButtons.length; int++) {
 		if (myInstructionsButtons[int].read == false) {
 			alert(myInstructionsButtons[int].inform);
-			return;
+			return false;
 		}
+	}
+	return true;
+};
+
+mySniffyButtonAction = function() {
+	
+	if (myWaitForInstructions() != true) {
+		return;
 	}
 	
 	var applet = document.getElementById("launchSniffy");
@@ -44,13 +50,20 @@ myInstructionsButtonAction = function(id) {
 	myLogger.Log("Viewing instructions: "+myInstructionsButtons[id].url);
 };
 
-mySniffyHasLaunched = function() {
+myWaitForSniffy = function() {
 	
 	var applet = document.getElementById("launchSniffy");
 	if (applet) {
-		return applet.doLaunchSniffy();
+		if (applet.hasLaunchedSniffy()) {
+			return true;
+		} else {
+			if (mySniffyButton) {
+				alert(mySniffyButton.inform);
+			}
+			return false;
+		}
 	} else {
-		return false;
+		myLogger.Log("ERROR! sniffyLauncher applet not found!");
 	}
 };
 
@@ -123,6 +136,8 @@ function SniffyButton(text, inform) {
 	};
 	
 	this.inform = inform;
+	
+	mySniffyButton = this;
 
 	return this;
 };

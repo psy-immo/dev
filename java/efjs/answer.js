@@ -30,6 +30,7 @@ function Answer(testfn) {
 	this.feedbackErrors = [ "Your solution still contains an error. Correct parts of your solution are lit green." ];
 	this.text = "Check your answer";
 	this.testfn = testfn;
+	this.waitfor = [];
 
 	/**
 	 * write the HTML code that will be used for displaying the answer button
@@ -58,6 +59,21 @@ function Answer(testfn) {
 	};
 
 	/**
+	 * this function adds a waitfor-function of the component, which is called
+	 * whenever the answer button is clicked, and which has to return true in
+	 * order to check the answer. The given function is responsible to alert the
+	 * user that the answer will not be checked.
+	 * 
+	 * @returns this
+	 */
+	
+	this.WaitFor = function(waitforfn) {
+		this.waitfor[this.waitfor.length] = waitforfn;
+		
+		return this;
+	};
+
+	/**
 	 * this function sets the texts for the feedback
 	 * 
 	 * @returns this
@@ -82,6 +98,16 @@ function Answer(testfn) {
 	 * this is called whenever the button is clicked
 	 */
 	this.OnClick = function() {
+
+		/**
+		 * check, whether giving a solution is allowed
+		 */
+		for ( var int = 0; int < this.waitfor.length; int++) {
+			if (this.waitfor[int]()!=true) {
+				myLogger.Log("Check answer: check refused by "+int+".");
+				return;
+			}
+		}
 
 		if (this.testfn()) {
 

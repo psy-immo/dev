@@ -38,6 +38,7 @@ public class AnswerTag implements AnyTag {
 	private String buttonText;
 	private ArrayList<HintTag> hints;
 	private ArrayList<CheckTag> checks;
+	private ArrayList<WaitForTag> waitfors;
 	private String goodText;
 
 	public AnswerTag(EfmlTagsAttribute attributes) {
@@ -46,6 +47,7 @@ public class AnswerTag implements AnyTag {
 		this.goodText = null;
 		this.hints = new ArrayList<HintTag>();
 		this.checks = new ArrayList<CheckTag>();
+		this.waitfors = new ArrayList<WaitForTag>();
 	}
 
 	/**
@@ -136,6 +138,17 @@ public class AnswerTag implements AnyTag {
 
 			writer.write(")");
 		}
+		
+		/**
+		 * add waitfor-checks
+		 */
+		
+		Iterator<WaitForTag> it_waitfor;
+		for (it_waitfor = this.waitfors.iterator(); it_waitfor.hasNext();) {
+			WaitForTag waitfor = it_waitfor.next();
+			
+			writer.write(".WaitFor("+waitfor.getJavaScriptFunction()+")");
+		}
 
 		/**
 		 * let java script create the html contents
@@ -161,6 +174,8 @@ public class AnswerTag implements AnyTag {
 			this.hints.add((HintTag) innerTag);
 		} else if (innerTag.getClass() == CheckTag.class) {
 			this.checks.add((CheckTag) innerTag);
+		} else if (innerTag.getClass() == WaitForTag.class) {
+			this.waitfors.add((WaitForTag) innerTag);
 		} else if (innerTag.getClass() == CorrectTag.class) {
 			this.goodText = ((CorrectTag) innerTag).getFeedback();
 		} else

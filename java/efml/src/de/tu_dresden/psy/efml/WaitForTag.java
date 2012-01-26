@@ -1,5 +1,5 @@
 /**
- * UnreadTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
+ * WaitForTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -24,20 +24,36 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the &lt;unread>...&lt;/unread> tag for instructions
+ * implements the &lt;waitfor>...&lt;/waitfor> tag for answers
+ * 
  * @author immanuel
- *
+ * 
  */
 
-public class UnreadTag implements AnyTag {
-	
+public class WaitForTag implements AnyTag {
+
 	private String token;
-	
-	public UnreadTag() {
+
+	public WaitForTag() {
 		this.token = "";
 	}
-	
-	public String getPlainContent() {
+
+	public String getJavaScriptFunction() {
+		String check = this.token.trim().toLowerCase();
+		if (check.equals("sniffy")) {
+			return "myWaitForSniffy";
+		} else if (check.equals("instructions")) {
+			return "myWaitForInstructions";
+		}
+
+		/**
+		 * this is neither <waitfor>sniffy</waitfor> nor
+		 * <waitfor>instructions</waitfor>, thus might be java script
+		 */
+
+		System.err.println("Warning: <waitfor>" + this.token
+				+ "</waitfor> not recognized, java script content assumed.");
+
 		return this.token;
 	}
 
@@ -61,8 +77,9 @@ public class UnreadTag implements AnyTag {
 		if (innerTag.getClass() == PlainContent.class) {
 			this.token += ((PlainContent) innerTag).getPlainContent();
 		} else
-			throw new OperationNotSupportedException("<unread> cannot enclose "
-					+ innerTag.getClass().toString());
+			throw new OperationNotSupportedException(
+					"<waitfor> cannot enclose "
+							+ innerTag.getClass().toString());
 	}
 
 }

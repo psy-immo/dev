@@ -139,6 +139,8 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new InstructionsTag());
 		} else if (qName.equals("sniffy")) {
 			this.processingTags.push(new SniffyTag());			
+		} else if (qName.equals("waitfor")) {
+			this.processingTags.push(new WaitForTag());			
 		} 
 		else {
 			/**
