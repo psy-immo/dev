@@ -20,7 +20,7 @@
  * create a logger object that can be used to log all input events
  */
 function Logger() {
-	this.t0 = new Date().getTime();
+	this.t0 = new Date();
 	this.events = [];
 	
 	/**
@@ -29,8 +29,8 @@ function Logger() {
 	
 	this.Log = function(item) {
 		var logstring = ("" + item).replace("\n","<br/>");
-		var timestamp = new Date().getTime();
-		this.events[this.events.length] = timestamp + " "+(timestamp - this.t0) + ": "+ logstring;
+		var timestamp = new Date();
+		this.events[this.events.length] = timestamp + " = t0 + "+(timestamp - this.t0) + "ms: "+ logstring;
 	};
 	
 	/**
