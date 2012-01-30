@@ -1,17 +1,59 @@
 
-<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|sniffy|instructions|tables|i|b|br|p|div)* >
+<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|sniffy|instructions|tables|i|b|br|p|div|span)* >
 
 <!ELEMENT br EMPTY >
 
-<!ELEMENT i (#PCDATA|i|b|br|p|div)* >
+<!ELEMENT i (#PCDATA|i|b|br|p|div|span)* >
 
-<!ELEMENT b (#PCDATA|i|b|br|p|div)* >
+<!ELEMENT b (#PCDATA|i|b|br|p|div|span)* >
 
-<!ELEMENT p (#PCDATA|i|b|br|p|div)* >
+<!ELEMENT p (#PCDATA|i|b|br|p|div|span)* >
 
-<!ELEMENT div (#PCDATA|i|b|br|p|div)* >
+<!ELEMENT div (#PCDATA|i|b|br|p|div|span)* >
 
-<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|sniffy|instructions|tables|i|b|br|p|div)* >
+<!ELEMENT span (#PCDATA|i|b|br|p|div|span)* >
+
+<!ATTLIST i 
+	style	CDATA	#IMPLIED
+
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+ >
+
+<!ATTLIST b 
+	style	CDATA	#IMPLIED
+
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+ >
+
+<!ATTLIST p 
+	style	CDATA	#IMPLIED
+
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+ >
+
+<!ATTLIST div 
+	style	CDATA	#IMPLIED
+
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+ >
+
+<!ATTLIST span 
+	style	CDATA	#IMPLIED
+
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+ >
+
+<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|sniffy|instructions|tables|i|b|br|p|div|span)* >
 
 <!ATTLIST tags 
 	tags	CDATA	#IMPLIED
@@ -19,7 +61,7 @@
 	rtags	CDATA	#IMPLIED
  >
 
-<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|sniffy|instructions|i|b|br|p|div)* >
+<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|sniffy|instructions|i|b|br|p|div|span)* >
 
 <!ATTLIST tables 
 	tags	CDATA	#IMPLIED
@@ -33,7 +75,7 @@
 
 <!ELEMENT c EMPTY >
 
-<!ELEMENT tie (#PCDATA|i|b|br|p|div|tags|tie|runway|answer|sniffy|instructions)* >
+<!ELEMENT tie (#PCDATA|i|b|br|p|div|span|tags|tie|runway|answer|sniffy|instructions)* >
 
 <!ATTLIST tie 
 	tags	CDATA	#IMPLIED
@@ -64,9 +106,9 @@
 	rtags	CDATA	#IMPLIED
  >
 
-<!ELEMENT hint (#PCDATA|i|b|br|p|div)* >
+<!ELEMENT hint (#PCDATA|i|b|br|p|div|span)* >
 
-<!ELEMENT correct (#PCDATA|i|b|br|p|div)* >
+<!ELEMENT correct (#PCDATA|i|b|br|p|div|span)* >
 
 <!ELEMENT check (#PCDATA)* >
 

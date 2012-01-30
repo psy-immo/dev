@@ -48,7 +48,7 @@ public class SniffyTag implements AnyTag {
 		writer.write("new SniffyButton(");
 		
 		if (this.text.isEmpty() && this.inform.isEmpty()) {
-			writer.write(");");
+			writer.write(").WriteHtml();");
 		} else {
 			if (this.text.isEmpty()==false) {
 				writer.write("\""+StringEscape.escapeToJavaScript(this.text)+"\"");
@@ -58,7 +58,7 @@ public class SniffyTag implements AnyTag {
 			if (this.inform.isEmpty()==false){
 				writer.write(",\""+StringEscape.escapeToJavaScript(this.inform)+"\"");
 			}
-			writer.write(");");
+			writer.write(").WriteHtml();");
 		}
 		
 		writer.write("</script>");

@@ -48,7 +48,20 @@ public class HtmlTag implements AnyTag {
 	 */
 	static public void writeAllInitializations(Writer writer)
 			throws IOException {
-		String id_token = java.util.UUID.randomUUID().toString()
+		
+		/**
+		 * run runway bugfix
+		 */
+		
+		writer.write("	<script type=\"text/javascript\">\n"
+				+ "  RunwayDisplayBugfix();"
+				+ "  </script>\n");
+		
+		/**
+		 * initialize session storage handler
+		 */
+		
+		String id_token = java.util.UUID.randomUUID().toString()+"--"
 				+ java.util.UUID.randomUUID().toString();
 		writer.write("	<script type=\"text/javascript\">\n"
 				+ "  myStorage.SetupAutoRestore(sessionStorage,\""

@@ -329,3 +329,15 @@ function Runway(name, tags, token, accept, reject) {
 	
 	myStorage.RegisterField(this,"runwayArray["+this.id+"]");
 }
+
+/**
+ *  this function fixes the bug where runways are moving down when filled the first time
+ */
+function RunwayDisplayBugfix() {
+	for ( var int = 0; int < runwayArray.length; int++) {
+		var runway = runwayArray[int];
+		var value = runway.GetValue();
+		runway.SetValue("gxl");
+		runway.SetValue(value);
+	}
+}
