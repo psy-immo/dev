@@ -1,5 +1,5 @@
 
-<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|tables|i|b|br|p|div)* >
+<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|sniffy|instructions|tables|i|b|br|p|div)* >
 
 <!ELEMENT br EMPTY >
 
@@ -11,7 +11,7 @@
 
 <!ELEMENT div (#PCDATA|i|b|br|p|div)* >
 
-<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|tables|i|b|br|p|div)* >
+<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|sniffy|instructions|tables|i|b|br|p|div)* >
 
 <!ATTLIST tags 
 	tags	CDATA	#IMPLIED
@@ -19,7 +19,7 @@
 	rtags	CDATA	#IMPLIED
  >
 
-<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|i|b|br|p|div)* >
+<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|sniffy|instructions|i|b|br|p|div)* >
 
 <!ATTLIST tables 
 	tags	CDATA	#IMPLIED
@@ -33,7 +33,7 @@
 
 <!ELEMENT c EMPTY >
 
-<!ELEMENT tie (#PCDATA|i|b|br|p|div|tags|tie|runway|answer)* >
+<!ELEMENT tie (#PCDATA|i|b|br|p|div|tags|tie|runway|answer|sniffy|instructions)* >
 
 <!ATTLIST tie 
 	tags	CDATA	#IMPLIED
@@ -69,3 +69,25 @@
 <!ELEMENT correct (#PCDATA|i|b|br|p|div)* >
 
 <!ELEMENT check (#PCDATA)* >
+
+<!ELEMENT sniffy (#PCDATA|unused|label)* >
+
+<!ATTLIST sniffy 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+ >
+
+<!ELEMENT unused (#PCDATA)* >
+
+<!ELEMENT label (#PCDATA)* >
+
+<!ELEMENT instructions (#PCDATA|unread|label)* >
+
+<!ATTLIST instructions 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+ >
+
+<!ELEMENT unread (#PCDATA)* >
