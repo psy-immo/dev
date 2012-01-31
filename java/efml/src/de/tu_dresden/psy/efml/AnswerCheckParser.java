@@ -812,7 +812,10 @@ public class AnswerCheckParser {
 			}
 		}
 
-		return term.getErrorMessage(); /* SHOULD BE NEVER REACHED, STOP JAVA COMPLAINTS */
+		return term.getErrorMessage(); /*
+										 * SHOULD BE NEVER REACHED, STOP JAVA
+										 * COMPLAINTS
+										 */
 	}
 
 	private String enterExistsField(SubtermStructure term) {
@@ -821,60 +824,46 @@ public class AnswerCheckParser {
 		 * 
 		 * or
 		 * 
-		 * field VARNAME with
-		 * ("tag"|TAGVARIABLE)(,("tag"|TAGVARIABLE)*) : RHS
+		 * field VARNAME with ("tag"|TAGVARIABLE)(,("tag"|TAGVARIABLE)*) : RHS
 		 */
 
 		if (term.subterm_rootlevel.size() < 2) {
-			term.error_description = "missing variable name after 'tag'";
-			term.where = tokens.getEndIndex(term.first);
+			return term.errorFound("missing variable name after 'tag'",
+					tokens.getEndIndex(term.first));
 		} else {
 			if (term.subterm_rootlevel.get(1) == true) {
 				if (tokens.isQuoted(term.subterm_start.get(1)) == true) {
-					term.error_description = "String literals cannot be variable names";
-					term.where = tokens
-							.getEndIndex(term.subterm_start.get(1));
+					return term.errorFound(
+							"String literals cannot be variable names",
+							tokens.getEndIndex(term.subterm_start.get(1)));
 				} else {
-					String variable = tokens.getValue(
-							term.subterm_start.get(1))
-							.toLowerCase();
+					String variable = tokens
+							.getValue(term.subterm_start.get(1)).toLowerCase();
 					if (boundVariables.contains(variable) == true) {
-						term.error_description = "Variable symbol '"
-								+ variable + "' is already taken ";
-						term.where = tokens
-								.getEndIndex(term.subterm_start
-										.get(1));
+						return term.errorFound("Variable symbol '" + variable
+								+ "' is already taken ",
+								tokens.getEndIndex(term.subterm_start.get(1)));
 					} else if (isForbidden(variable) == true) {
-						term.error_description = "'"
-								+ variable
-								+ "' connot be used as variable symbol";
-						term.where = tokens
-								.getEndIndex(term.subterm_start
-										.get(1));
+						return term.errorFound("'" + variable
+								+ "' connot be used as variable symbol",
+								tokens.getEndIndex(term.subterm_start.get(1)));
 					} else {
 						if (term.subterm_rootlevel.size() < 3) {
-							term.error_description = "':' or 'with' missing";
-							term.where = tokens
-									.getEndIndex(term.subterm_start
-											.get(1));
+							return term.errorFound("':' or 'with' missing",
+									tokens.getEndIndex(term.subterm_start
+											.get(1)));
 						} else if (term.subterm_rootlevel.get(2) == true) {
 							String colon_or_in = tokens
-									.getValue(term.subterm_start
-											.get(2));
-							if (tokens.isQuoted(term.subterm_start
-									.get(2)) == false) {
-								if (colon_or_in
-										.equalsIgnoreCase(":") == true) {
+									.getValue(term.subterm_start.get(2));
+							if (tokens.isQuoted(term.subterm_start.get(2)) == false) {
+								if (colon_or_in.equalsIgnoreCase(":") == true) {
 									/**
 									 * field VARNAME : RHS
 									 */
 									boundVariables.push(variable);
-									variableType.put(variable,
-											VAR_FIELD);
-									variableValue
-											.put(variable,
-													attributes
-															.getAcceptTagsCommas());
+									variableType.put(variable, VAR_FIELD);
+									variableValue.put(variable,
+											attributes.getAcceptTagsCommas());
 
 									openFieldVariable(variable);
 
@@ -883,8 +872,7 @@ public class AnswerCheckParser {
 									 */
 
 									String error = enterTerm(
-											term.subterm_start
-													.get(2) + 1,
+											term.subterm_start.get(2) + 1,
 											term.last);
 
 									closeFieldVariable(variable);
@@ -894,8 +882,7 @@ public class AnswerCheckParser {
 									variableValue.remove(variable);
 
 									return error;
-								} else if (colon_or_in
-										.equalsIgnoreCase("with")) {
+								} else if (colon_or_in.equalsIgnoreCase("with")) {
 									/**
 									 * check for colon
 									 */
@@ -906,37 +893,36 @@ public class AnswerCheckParser {
 											.getAcceptTagsCommas();
 
 									while (colon_found != true) {
-										if (term.subterm_rootlevel
-												.size() <= colon_term) {
-											term.error_description = "':' after 'field "
-													+ variable
-													+ " with [...]' missing";
-											term.where = tokens
-													.getEndIndex(term.last - 1);
-											break;
+										if (term.subterm_rootlevel.size() <= colon_term) {
+											return term
+													.errorFound(
+															"':' after 'field "
+																	+ variable
+																	+ " with [...]' missing",
+															tokens.getEndIndex(term.last - 1));
+
 										}
 
 										if (term.subterm_rootlevel
 												.get(colon_term) != true) {
-											term.error_description = "Terms cannot be tags";
-											term.where = tokens
-													.getEndIndex(term.subterm_start
-															.get(colon_term));
-											break;
+
+											return term
+													.errorFound(
+															"Terms cannot be tags",
+															tokens.getEndIndex(term.subterm_start
+																	.get(colon_term)));
+
 										}
 
-										String tag_token = tokens
-												.getValue(
-														term.subterm_start
-																.get(colon_term))
+										String tag_token = tokens.getValue(
+												term.subterm_start
+														.get(colon_term))
 												.toLowerCase();
 
-										if (tokens
-												.isQuoted(term.subterm_start
-														.get(colon_term)) == true) {
+										if (tokens.isQuoted(term.subterm_start
+												.get(colon_term)) == true) {
 											/**
-											 * tag given by string
-											 * literal
+											 * tag given by string literal
 											 */
 											if (value.isEmpty() == false) {
 												value += ", ";
@@ -946,38 +932,37 @@ public class AnswerCheckParser {
 															.escapeToJavaScript(tag_token)
 													+ "\"";
 										} else {
-											if (tag_token
-													.equalsIgnoreCase(":") == true) {
+											if (tag_token.equalsIgnoreCase(":") == true) {
 												colon_found = true;
 												break;
 											}
 											if (boundVariables
 													.contains(tag_token)) {
-												if (variableType
-														.get(tag_token) == VAR_TAG) {
-													if (value
-															.isEmpty() == false) {
+												if (variableType.get(tag_token) == VAR_TAG) {
+													if (value.isEmpty() == false) {
 														value += ", ";
 													}
-													value += "tVar"
-															+ tag_token;
+													value += "tVar" + tag_token;
 												} else {
-													term.error_description = "'"
-															+ tag_token
-															+ "' is a variable, but not a token variable";
-													term.where = tokens
-															.getEndIndex(term.subterm_start
-																	.get(colon_term));
-													break;
+													return term
+															.errorFound(
+																	"'"
+																			+ tag_token
+																			+ "' is a variable, but not a token variable",
+																	tokens.getEndIndex(term.subterm_start
+																			.get(colon_term)));
+
 												}
 											} else {
-												term.error_description = "'"
-														+ tag_token
-														+ "' is neither a bound token variable nor a string literal";
-												term.where = tokens
-														.getEndIndex(term.subterm_start
-																.get(colon_term));
-												break;
+
+												return term
+														.errorFound(
+																"'"
+																		+ tag_token
+																		+ "' is neither a bound token variable nor a string literal",
+																tokens.getEndIndex(term.subterm_start
+																		.get(colon_term)));
+
 											}
 										}
 
@@ -985,12 +970,9 @@ public class AnswerCheckParser {
 									}
 
 									if (colon_found) {
-										boundVariables
-												.push(variable);
-										variableType.put(variable,
-												VAR_FIELD);
-										variableValue.put(variable,
-												value);
+										boundVariables.push(variable);
+										variableType.put(variable, VAR_FIELD);
+										variableValue.put(variable, value);
 
 										openFieldVariable(variable);
 
@@ -1006,42 +988,45 @@ public class AnswerCheckParser {
 										closeFieldVariable(variable);
 
 										boundVariables.pop();
-										variableType
-												.remove(variable);
-										variableValue
-												.remove(variable);
+										variableType.remove(variable);
+										variableValue.remove(variable);
 
 										return error;
 									}
 
 								} else {
-									term.error_description = "':' or 'with' expected";
-									term.where = tokens
-											.getEndIndex(term.subterm_start
-													.get(2));
+									return term
+											.errorFound(
+													"':' or 'with' expected",
+													tokens.getEndIndex(term.subterm_start
+															.get(2)));
 								}
 							} else {
-								term.error_description = "':' or 'with' expected, quoted string found";
-								term.where = tokens
-										.getEndIndex(term.subterm_start
-												.get(2));
+								return term
+										.errorFound(
+												"':' or 'with' expected, quoted string found",
+												tokens.getEndIndex(term.subterm_start
+														.get(2)));
 							}
 						} else {
-							term.error_description = "':' or 'with' expected, term in parenthesis found";
-							term.where = tokens
-									.getEndIndex(term.subterm_start
-											.get(2));
+							return term
+									.errorFound(
+											"':' or 'with' expected, term in parenthesis found",
+											tokens.getEndIndex(term.subterm_start
+													.get(2)));
 						}
 					}
 				}
 			} else {
-				term.error_description = "Terms cannot be variable names";
-				term.where = tokens.getEndIndex(term.subterm_start
-						.get(1));
+				return term.errorFound("Terms cannot be variable names",
+						tokens.getEndIndex(term.subterm_start.get(1)));
 			}
 		}
 
-		return term.getErrorMessage(); /* SHOULD BE NEVER REACHED, STOP JAVA COMPLAINTS */
+		return term.getErrorMessage(); /*
+										 * SHOULD BE NEVER REACHED, STOP JAVA
+										 * COMPLAINTS
+										 */
 	}
 
 	/**
