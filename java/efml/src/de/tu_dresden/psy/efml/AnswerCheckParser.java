@@ -333,15 +333,15 @@ public class AnswerCheckParser {
 		/**
 		 * construct the subterm structure
 		 * 
-		 * @param first
+		 * @param termFirst
 		 *            first element of subterm
-		 * @param last
+		 * @param termLast
 		 *            element after the last element of the subterm
 		 */
 
-		public SubtermStructure(int first, int last) {
-			this.first = first;
-			this.last = last;
+		public SubtermStructure(int termFirst, int termLast) {
+			this.first = termFirst;
+			this.last = termLast;
 
 			error_description = "token utterly unrecognized";
 			where = tokens.getEndIndex(first);
@@ -360,9 +360,9 @@ public class AnswerCheckParser {
 			 * create intermediate sub term structure
 			 */
 
-			ArrayList<Integer> subterm_start = new ArrayList<Integer>();
-			ArrayList<Integer> subterm_end = new ArrayList<Integer>();
-			ArrayList<Boolean> subterm_rootlevel = new ArrayList<Boolean>();
+			subterm_start = new ArrayList<Integer>();
+			subterm_end = new ArrayList<Integer>();
+			subterm_rootlevel = new ArrayList<Boolean>();
 
 			int start = first;
 			boolean rootlevel = levels.get(first) == local_depth;
@@ -597,23 +597,25 @@ public class AnswerCheckParser {
 	 *            element after the last element of the part that is to check
 	 * @return null, if no syntax errors are found, otherwise error description
 	 */
-	private String enterTerm(int first, int last) {
+	private String enterTerm(int term_first, int term_last) {
 
 		/**
 		 * the empty string is a valid term
 		 */
-		if (first >= last) {
+		if (term_first >= term_last) {
 
 			jsCode += "return true;";
 
 			return null;
 		}
 
+		
+
 		/**
 		 * compute the subterm structure
 		 */
 
-		SubtermStructure term = new SubtermStructure(first, last);
+		SubtermStructure term = new SubtermStructure(term_first, term_last);
 
 		/**
 		 * check the subterm/token structure
@@ -626,7 +628,6 @@ public class AnswerCheckParser {
 			 */
 
 			String middle_token = tokens.getValue(term.subterm_start.get(1));
-			
 
 			if (middle_token.equalsIgnoreCase("and") == true) {
 				/**
@@ -641,44 +642,47 @@ public class AnswerCheckParser {
 				 */
 
 				return enterOr(term);
-			} else return term.errorFound("Term connective unknown",tokens.getEndIndex(term.subterm_start.get(1)));
+			} else
+				return term.errorFound("Term connective unknown",
+						tokens.getEndIndex(term.subterm_start.get(1)));
 
-			
 		} else {
 			/**
 			 * term begins with a token
 			 */
-			if (tokens.isQuoted(first) == true) {
+			if (tokens.isQuoted(term.first) == true) {
 				/**
 				 * term begins with string literal
 				 */
-				term.error_description = "A term may not start with a string literal";
-				term.where = tokens.getEndIndex(first);
+				return term.errorFound(
+						"A term may not start with a string literal",
+						tokens.getEndIndex(term.first));
 
 			} else {
-				String first_token = tokens.getValue(first);
+				String first_token = tokens.getValue(term.first);
 
 				if (first_token.equalsIgnoreCase("(") == true) {
-					if ((tokens.isQuoted(last - 1) == false)
-							&& (tokens.getValue(last - 1).equalsIgnoreCase(")"))) {
+					if ((tokens.isQuoted(term.last - 1) == false)
+							&& (tokens.getValue(term.last - 1)
+									.equalsIgnoreCase(")"))) {
 						/**
 						 * term in parenthesis is valid, if the enclosed subterm
 						 * is valid
 						 */
-						return enterTerm(first + 1, last - 1);
+						return enterTerm(term.first + 1, term.last - 1);
 					} else {
 						term.error_description = "Closing parenthesis is missing";
-						term.where = tokens.getEndIndex(last - 1);
+						term.where = tokens.getEndIndex(term.last - 1);
 
 					}
 				} else if ((first_token.equalsIgnoreCase("or") == true)
 						|| (first_token.equalsIgnoreCase("and") == true)) {
 					term.error_description = "Term connective without left hand term";
-					term.where = tokens.getEndIndex(first);
+					term.where = tokens.getEndIndex(term.first);
 
 				} else if (first_token.equalsIgnoreCase(")") == true) {
 					term.error_description = "Two terms in parenthesis without term connective";
-					term.where = tokens.getEndIndex(first);
+					term.where = tokens.getEndIndex(term.first);
 				} else if (first_token.equalsIgnoreCase("tag") == true) {
 					/**
 					 * tag VARNAME : RHS
@@ -691,7 +695,7 @@ public class AnswerCheckParser {
 
 					if (term.subterm_rootlevel.size() < 2) {
 						term.error_description = "missing variable name after 'tag'";
-						term.where = tokens.getEndIndex(first);
+						term.where = tokens.getEndIndex(term.first);
 					} else {
 						if (term.subterm_rootlevel.get(1) == true) {
 							if (tokens.isQuoted(term.subterm_start.get(1)) == true) {
@@ -747,7 +751,7 @@ public class AnswerCheckParser {
 												String error = enterTerm(
 														term.subterm_start
 																.get(2) + 1,
-														last);
+														term.last);
 
 												closeTagVariable(variable);
 
@@ -773,7 +777,7 @@ public class AnswerCheckParser {
 																+ variable
 																+ " in [...]' missing";
 														term.where = tokens
-																.getEndIndex(last - 1);
+																.getEndIndex(term.last - 1);
 														break;
 													}
 
@@ -863,7 +867,7 @@ public class AnswerCheckParser {
 													String error = enterTerm(
 															term.subterm_start
 																	.get(colon_term) + 1,
-															last);
+															term.last);
 
 													closeTagVariable(variable);
 
@@ -915,7 +919,7 @@ public class AnswerCheckParser {
 
 					if (term.subterm_rootlevel.size() < 2) {
 						term.error_description = "missing variable name after 'tag'";
-						term.where = tokens.getEndIndex(first);
+						term.where = tokens.getEndIndex(term.first);
 					} else {
 						if (term.subterm_rootlevel.get(1) == true) {
 							if (tokens.isQuoted(term.subterm_start.get(1)) == true) {
@@ -973,7 +977,7 @@ public class AnswerCheckParser {
 												String error = enterTerm(
 														term.subterm_start
 																.get(2) + 1,
-														last);
+														term.last);
 
 												closeFieldVariable(variable);
 
@@ -1000,7 +1004,7 @@ public class AnswerCheckParser {
 																+ variable
 																+ " with [...]' missing";
 														term.where = tokens
-																.getEndIndex(last - 1);
+																.getEndIndex(term.last - 1);
 														break;
 													}
 
@@ -1089,7 +1093,7 @@ public class AnswerCheckParser {
 													String error = enterTerm(
 															term.subterm_start
 																	.get(colon_term) + 1,
-															last);
+															term.last);
 
 													closeFieldVariable(variable);
 
@@ -1138,7 +1142,7 @@ public class AnswerCheckParser {
 
 						if (term.subterm_rootlevel.size() != 3) {
 							term.error_description = "Field comparision must be of the form FIELD = FIELD or FIELD = \"STRING\"";
-							term.where = tokens.getEndIndex(first);
+							term.where = tokens.getEndIndex(term.first);
 						} else {
 							if (term.subterm_rootlevel.get(1) != true) {
 								term.error_description = "'=' expected, term in parenthesis found";
@@ -1237,7 +1241,7 @@ public class AnswerCheckParser {
 					} else {
 						term.error_description = "'" + first_token
 								+ "' is a variable, but not a field variable";
-						term.where = tokens.getEndIndex(first);
+						term.where = tokens.getEndIndex(term.first);
 					}
 				}
 			}
