@@ -192,7 +192,7 @@ public class AnswerCheckParser {
 		this.variableType = new HashMap<String, Integer>();
 		this.variableValue = new HashMap<String, String>();
 		this.jsCode = "\n";
-		this.error = checkSyntaxTree(0, this.tokens.length());
+		this.error = enterTerm(0, this.tokens.length());
 		this.checked = true;
 
 		return error;
@@ -274,7 +274,7 @@ public class AnswerCheckParser {
 				+ "  while (goodParts.length > previous_good_count) goodParts.pop();\n"
 				+ "  return null;\n" + "} else {\n" + "  return true;\n" + "}";
 	}
-	
+
 	/**
 	 * generate javaScript code
 	 */
@@ -304,6 +304,291 @@ public class AnswerCheckParser {
 	}
 
 	/**
+	 * implements shared structures for parsing terms
+	 * 
+	 * @author albrecht
+	 * 
+	 */
+	private class SubtermStructure {
+		/**
+		 * current error description
+		 */
+		public String error_description;
+		/**
+		 * current error position
+		 */
+		public int where;
+
+		/**
+		 * local term depth
+		 */
+		public int local_depth;
+
+		public ArrayList<Integer> subterm_start;
+		public ArrayList<Integer> subterm_end;
+		public ArrayList<Boolean> subterm_rootlevel;
+
+		public int first, last;
+
+		/**
+		 * construct the subterm structure
+		 * 
+		 * @param first
+		 *            first element of subterm
+		 * @param last
+		 *            element after the last element of the subterm
+		 */
+
+		public SubtermStructure(int first, int last) {
+			this.first = first;
+			this.last = last;
+
+			error_description = "token utterly unrecognized";
+			where = tokens.getEndIndex(first);
+
+			/**
+			 * get the local depth of the term
+			 */
+			local_depth = levels.get(first);
+			for (int c = first; c < last; ++c) {
+				if (levels.get(c) < local_depth) {
+					local_depth = levels.get(c);
+				}
+			}
+
+			/**
+			 * create intermediate sub term structure
+			 */
+
+			ArrayList<Integer> subterm_start = new ArrayList<Integer>();
+			ArrayList<Integer> subterm_end = new ArrayList<Integer>();
+			ArrayList<Boolean> subterm_rootlevel = new ArrayList<Boolean>();
+
+			int start = first;
+			boolean rootlevel = levels.get(first) == local_depth;
+
+			for (int end = first + 1; end < last; ++end) {
+				if ((levels.get(end) == local_depth) || (rootlevel)) {
+					subterm_start.add(start);
+					subterm_end.add(end);
+					subterm_rootlevel.add(rootlevel);
+
+					rootlevel = levels.get(end) == local_depth;
+					start = end;
+				}
+			}
+
+			subterm_start.add(start);
+			subterm_end.add(last);
+			subterm_rootlevel.add(rootlevel);
+
+			for (int c = 0; c < subterm_rootlevel.size(); ++c) {
+				if (subterm_rootlevel.get(c) == true) {
+					where = tokens.getEndIndex(subterm_start.get(c));
+					break;
+				}
+			}
+		}
+
+		public String getErrorMessage() {
+			/**
+			 * format error message
+			 */
+
+			String message = "Syntax-Error: " + error_description
+					+ " just before the " + (2 + where) + "th character: ";
+
+			int end_index = where;
+
+			if (where > 16) {
+				message += "[...]";
+			} else
+				where = 16;
+
+			int start_index = where - 16;
+
+			message += inputTerm.substring(start_index, end_index + 1);
+
+			message += " <--HERE--|";
+
+			if (end_index + 1 < inputTerm.length()) {
+
+				if (inputTerm.length() - end_index - 1 > 16) {
+					message += " "
+							+ inputTerm
+									.substring(end_index + 1, end_index + 17)
+							+ "[...]";
+				} else
+					message += " " + inputTerm.substring(end_index + 1);
+			}
+			return message;
+		}
+
+		/**
+		 * convenient way to return error message
+		 * 
+		 * @param error
+		 *            error description
+		 * @param where
+		 *            position
+		 * @return this.getErrorMessage()
+		 */
+		public String errorFound(String error, int where) {
+			this.error_description = error;
+			this.where = where;
+
+			return getErrorMessage();
+		}
+	};
+
+	/**
+	 * 
+	 * @param term
+	 *            subterm of n-ary and structure
+	 * @return error message or null
+	 */
+	private String enterAnd(SubtermStructure term) {
+		for (int i = 0; i < term.subterm_rootlevel.size(); ++i) {
+			if (i % 2 == 0) {
+				if (term.subterm_rootlevel.get(i) != false) {
+
+					return term.errorFound("Token should be in parenthesis",
+							tokens.getEndIndex(term.subterm_start.get(i)));
+				}
+			} else {
+
+				if (term.subterm_rootlevel.get(i) != true) {
+					/**
+					 * this code will never be reached according to the upper
+					 * subterm by level algorithm,
+					 * 
+					 * we will keep it anyway
+					 */
+					return term.errorFound(
+							"Two terms without connecting token",
+							tokens.getEndIndex(term.subterm_start.get(i)));
+
+				} else if ("and".equalsIgnoreCase(tokens
+						.getValue(term.subterm_start.get(i))) != true) {
+					return term
+							.errorFound(
+									"Connective '"
+											+ "and"
+											+ "' may not be mixed with '"
+											+ tokens.getValue(term.subterm_start
+													.get(i)) + "'", tokens
+											.getEndIndex(term.subterm_start
+													.get(i)));
+
+				}
+			}
+		}
+
+		if (term.subterm_rootlevel.size() % 2 == 0) {
+			return term.errorFound("Term connective without right hand term",
+					tokens.getEndIndex(term.subterm_start
+							.get(term.subterm_start.size() - 1)));
+
+		} else {
+			/**
+			 * and/or n-ary term well-formed, if subterms are well-formed
+			 */
+			startAndSequence();
+
+			for (int i = 0; i < term.subterm_rootlevel.size(); i += 2) {
+				if (i > 0) {
+
+					betweenAndSequence();
+
+				}
+
+				String error = enterTerm(term.subterm_start.get(i),
+						term.subterm_end.get(i));
+
+				if (error != null)
+					return error;
+			}
+
+			endAndSequence();
+
+			return null;
+		}
+	}
+
+	/**
+	 * 
+	 * @param term
+	 *            subterm of n-ary and structure
+	 * @return error message or null
+	 */
+	private String enterOr(SubtermStructure term) {
+		for (int i = 0; i < term.subterm_rootlevel.size(); ++i) {
+			if (i % 2 == 0) {
+				if (term.subterm_rootlevel.get(i) != false) {
+					return term.errorFound("Token should be in parenthesis",
+							tokens.getEndIndex(term.subterm_start.get(i)));
+
+				}
+			} else {
+
+				if (term.subterm_rootlevel.get(i) != true) {
+					/**
+					 * this code will never be reached according to the upper
+					 * subterm by level algorithm,
+					 * 
+					 * we will keep it anyway
+					 */
+					return term.errorFound(
+							"Two terms without connecting token",
+							tokens.getEndIndex(term.subterm_start.get(i)));
+				} else if ("or".equalsIgnoreCase(tokens
+						.getValue(term.subterm_start.get(i))) != true) {
+					return term
+							.errorFound(
+									"Connective '"
+											+ "or"
+											+ "' may not be mixed with '"
+											+ tokens.getValue(term.subterm_start
+													.get(i)) + "'", tokens
+											.getEndIndex(term.subterm_start
+													.get(i)));
+
+				}
+			}
+		}
+
+		if (term.subterm_rootlevel.size() % 2 == 0) {
+			return term.errorFound("Term connective without right hand term",
+					tokens.getEndIndex(term.subterm_start
+							.get(term.subterm_start.size() - 1)));
+
+		} else {
+			/**
+			 * and/or n-ary term well-formed, if subterms are well-formed
+			 */
+
+			startOrSequence();
+
+			for (int i = 0; i < term.subterm_rootlevel.size(); i += 2) {
+				if (i > 0) {
+
+					betweenOrSequence();
+
+				}
+
+				String error = enterTerm(term.subterm_start.get(i),
+						term.subterm_end.get(i));
+				if (error != null)
+					return error;
+			}
+
+			endOrSequence();
+
+			return null;
+		}
+	}
+
+	/**
 	 * checks the syntax of a part, for internal usage only!
 	 * 
 	 * @param first
@@ -312,7 +597,7 @@ public class AnswerCheckParser {
 	 *            element after the last element of the part that is to check
 	 * @return null, if no syntax errors are found, otherwise error description
 	 */
-	private String checkSyntaxTree(int first, int last) {
+	private String enterTerm(int first, int last) {
 
 		/**
 		 * the empty string is a valid term
@@ -324,164 +609,41 @@ public class AnswerCheckParser {
 			return null;
 		}
 
-		String error_description = "token utterly unrecognized";
-		int where = tokens.getEndIndex(first);
-
 		/**
-		 * get the local depth of the term
-		 */
-		int local_depth = levels.get(first);
-		for (int c = first; c < last; ++c) {
-			if (levels.get(c) < local_depth) {
-				local_depth = levels.get(c);
-			}
-		}
-
-		/**
-		 * create intermediate sub term structure
+		 * compute the subterm structure
 		 */
 
-		ArrayList<Integer> subterm_start = new ArrayList<Integer>();
-		ArrayList<Integer> subterm_end = new ArrayList<Integer>();
-		ArrayList<Boolean> subterm_rootlevel = new ArrayList<Boolean>();
-
-		int start = first;
-		boolean rootlevel = levels.get(first) == local_depth;
-
-		for (int end = first + 1; end < last; ++end) {
-			if ((levels.get(end) == local_depth) || (rootlevel)) {
-				subterm_start.add(start);
-				subterm_end.add(end);
-				subterm_rootlevel.add(rootlevel);
-
-				rootlevel = levels.get(end) == local_depth;
-				start = end;
-			}
-		}
-
-		subterm_start.add(start);
-		subterm_end.add(last);
-		subterm_rootlevel.add(rootlevel);
-
-		for (int c = 0; c < subterm_rootlevel.size(); ++c) {
-			if (subterm_rootlevel.get(c) == true) {
-				where = tokens.getEndIndex(subterm_start.get(c));
-				break;
-			}
-		}
+		SubtermStructure term = new SubtermStructure(first, last);
 
 		/**
 		 * check the subterm/token structure
 		 */
 
-		if (subterm_rootlevel.get(0) == false) {
+		if (term.subterm_rootlevel.get(0) == false) {
 			/**
 			 * term begins with subterm, could be n-ary "and", or n-ary "or"
 			 * term
 			 */
 
-			String middle_token = tokens.getValue(subterm_start.get(1));
-			boolean operator_known = false;
+			String middle_token = tokens.getValue(term.subterm_start.get(1));
+			
 
 			if (middle_token.equalsIgnoreCase("and") == true) {
 				/**
 				 * n-ary "and" operator
 				 */
 
-				operator_known = true;
+				return enterAnd(term);
 
 			} else if (middle_token.equalsIgnoreCase("or") == true) {
 				/**
 				 * n-ary "or" operator
 				 */
 
-				operator_known = true;
-			}
+				return enterOr(term);
+			} else return term.errorFound("Term connective unknown",tokens.getEndIndex(term.subterm_start.get(1)));
 
-			/**
-			 * check for alternating structure: (subterm token)+ subterm
-			 */
-
-			if (operator_known) {
-
-				for (int i = 0; i < subterm_rootlevel.size(); ++i) {
-					if (i % 2 == 0) {
-						if (subterm_rootlevel.get(i) != false) {
-							error_description = "Token should be in parenthesis";
-							where = tokens.getEndIndex(subterm_start.get(i));
-							break;
-						}
-					} else {
-
-						if (subterm_rootlevel.get(i) != true) {
-							/**
-							 * this code will never be reached according to the
-							 * upper subterm by level algorithm,
-							 * 
-							 * we will keep it anyway
-							 */
-							error_description = "Two terms without connecting token";
-							where = tokens.getEndIndex(subterm_start.get(i));
-							break;
-						} else if (middle_token.equalsIgnoreCase(tokens
-								.getValue(subterm_start.get(i))) != true) {
-							error_description = "Connective '" + middle_token
-									+ "' may not be mixed with '"
-									+ tokens.getValue(subterm_start.get(i))
-									+ "'";
-							where = tokens.getEndIndex(subterm_start.get(i));
-							break;
-						}
-					}
-				}
-
-				if (subterm_rootlevel.size() % 2 == 0) {
-					error_description = "Term connective without right hand term";
-					where = tokens.getEndIndex(subterm_start.get(subterm_start
-							.size() - 1));
-
-				} else {
-					/**
-					 * and/or n-ary term well-formed, if subterms are
-					 * well-formed
-					 */
-					if (middle_token.equalsIgnoreCase("and") == true) {
-						startAndSequence();
-
-					} else if (middle_token.equalsIgnoreCase("or") == true) {
-						startOrSequence();
-						
-					}
-
-					for (int i = 0; i < subterm_rootlevel.size(); i += 2) {
-						if (i>0) {
-							if (middle_token.equalsIgnoreCase("and") == true) {
-								betweenAndSequence();
-
-							} else if (middle_token.equalsIgnoreCase("or") == true) {
-								betweenOrSequence();
-							}		
-						}
-						
-						String error = checkSyntaxTree(subterm_start.get(i),
-								subterm_end.get(i));
-						if (error != null)
-							return error;
-					}
-					if (middle_token.equalsIgnoreCase("and") == true) {
-						endAndSequence();
-
-					} else if (middle_token.equalsIgnoreCase("or") == true) {
-						endOrSequence();
-					}					
-
-					return null;
-				}
-			} else {
-				error_description = "Term connective unknown";
-				where = tokens.getEndIndex(subterm_start.get(1));
-			}
-
+			
 		} else {
 			/**
 			 * term begins with a token
@@ -490,8 +652,8 @@ public class AnswerCheckParser {
 				/**
 				 * term begins with string literal
 				 */
-				error_description = "A term may not start with a string literal";
-				where = tokens.getEndIndex(first);
+				term.error_description = "A term may not start with a string literal";
+				term.where = tokens.getEndIndex(first);
 
 			} else {
 				String first_token = tokens.getValue(first);
@@ -503,20 +665,20 @@ public class AnswerCheckParser {
 						 * term in parenthesis is valid, if the enclosed subterm
 						 * is valid
 						 */
-						return checkSyntaxTree(first + 1, last - 1);
+						return enterTerm(first + 1, last - 1);
 					} else {
-						error_description = "Closing parenthesis is missing";
-						where = tokens.getEndIndex(last - 1);
+						term.error_description = "Closing parenthesis is missing";
+						term.where = tokens.getEndIndex(last - 1);
 
 					}
 				} else if ((first_token.equalsIgnoreCase("or") == true)
 						|| (first_token.equalsIgnoreCase("and") == true)) {
-					error_description = "Term connective without left hand term";
-					where = tokens.getEndIndex(first);
+					term.error_description = "Term connective without left hand term";
+					term.where = tokens.getEndIndex(first);
 
 				} else if (first_token.equalsIgnoreCase(")") == true) {
-					error_description = "Two terms in parenthesis without term connective";
-					where = tokens.getEndIndex(first);
+					term.error_description = "Two terms in parenthesis without term connective";
+					term.where = tokens.getEndIndex(first);
 				} else if (first_token.equalsIgnoreCase("tag") == true) {
 					/**
 					 * tag VARNAME : RHS
@@ -527,39 +689,43 @@ public class AnswerCheckParser {
 					 * : RHS
 					 */
 
-					if (subterm_rootlevel.size() < 2) {
-						error_description = "missing variable name after 'tag'";
-						where = tokens.getEndIndex(first);
+					if (term.subterm_rootlevel.size() < 2) {
+						term.error_description = "missing variable name after 'tag'";
+						term.where = tokens.getEndIndex(first);
 					} else {
-						if (subterm_rootlevel.get(1) == true) {
-							if (tokens.isQuoted(subterm_start.get(1)) == true) {
-								error_description = "String literals cannot be variable names";
-								where = tokens
-										.getEndIndex(subterm_start.get(1));
+						if (term.subterm_rootlevel.get(1) == true) {
+							if (tokens.isQuoted(term.subterm_start.get(1)) == true) {
+								term.error_description = "String literals cannot be variable names";
+								term.where = tokens
+										.getEndIndex(term.subterm_start.get(1));
 							} else {
 								String variable = tokens.getValue(
-										subterm_start.get(1)).toLowerCase();
+										term.subterm_start.get(1))
+										.toLowerCase();
 								if (boundVariables.contains(variable) == true) {
-									error_description = "Variable symbol '"
+									term.error_description = "Variable symbol '"
 											+ variable + "' is already taken ";
-									where = tokens.getEndIndex(subterm_start
-											.get(1));
+									term.where = tokens
+											.getEndIndex(term.subterm_start
+													.get(1));
 								} else if (isForbidden(variable) == true) {
-									error_description = "'"
+									term.error_description = "'"
 											+ variable
 											+ "' connot be used as variable symbol";
-									where = tokens.getEndIndex(subterm_start
-											.get(1));
+									term.where = tokens
+											.getEndIndex(term.subterm_start
+													.get(1));
 								} else {
-									if (subterm_rootlevel.size() < 3) {
-										error_description = "':' or 'in' missing";
-										where = tokens
-												.getEndIndex(subterm_start
+									if (term.subterm_rootlevel.size() < 3) {
+										term.error_description = "':' or 'in' missing";
+										term.where = tokens
+												.getEndIndex(term.subterm_start
 														.get(1));
-									} else if (subterm_rootlevel.get(2) == true) {
+									} else if (term.subterm_rootlevel.get(2) == true) {
 										String colon_or_in = tokens
-												.getValue(subterm_start.get(2));
-										if (tokens.isQuoted(subterm_start
+												.getValue(term.subterm_start
+														.get(2));
+										if (tokens.isQuoted(term.subterm_start
 												.get(2)) == false) {
 											if (colon_or_in
 													.equalsIgnoreCase(":") == true) {
@@ -578,8 +744,9 @@ public class AnswerCheckParser {
 												 * check RHS term
 												 */
 
-												String error = checkSyntaxTree(
-														subterm_start.get(2) + 1,
+												String error = enterTerm(
+														term.subterm_start
+																.get(2) + 1,
 														last);
 
 												closeTagVariable(variable);
@@ -600,33 +767,33 @@ public class AnswerCheckParser {
 												String value = "";
 
 												while (colon_found != true) {
-													if (subterm_rootlevel
+													if (term.subterm_rootlevel
 															.size() <= colon_term) {
-														error_description = "':' after 'tag "
+														term.error_description = "':' after 'tag "
 																+ variable
 																+ " in [...]' missing";
-														where = tokens
+														term.where = tokens
 																.getEndIndex(last - 1);
 														break;
 													}
 
-													if (subterm_rootlevel
+													if (term.subterm_rootlevel
 															.get(colon_term) != true) {
-														error_description = "Terms cannot be tags";
-														where = tokens
-																.getEndIndex(subterm_start
+														term.error_description = "Terms cannot be tags";
+														term.where = tokens
+																.getEndIndex(term.subterm_start
 																		.get(colon_term));
 														break;
 													}
 
 													String tag_token = tokens
 															.getValue(
-																	subterm_start
+																	term.subterm_start
 																			.get(colon_term))
 															.toLowerCase();
 
 													if (tokens
-															.isQuoted(subterm_start
+															.isQuoted(term.subterm_start
 																	.get(colon_term)) == true) {
 														/**
 														 * tag given by string
@@ -657,20 +824,20 @@ public class AnswerCheckParser {
 																value += "tVar"
 																		+ tag_token;
 															} else {
-																error_description = "'"
+																term.error_description = "'"
 																		+ tag_token
 																		+ "' is a variable, but not a token variable";
-																where = tokens
-																		.getEndIndex(subterm_start
+																term.where = tokens
+																		.getEndIndex(term.subterm_start
 																				.get(colon_term));
 																break;
 															}
 														} else {
-															error_description = "'"
+															term.error_description = "'"
 																	+ tag_token
 																	+ "' is neither a bound token variable nor a string literal";
-															where = tokens
-																	.getEndIndex(subterm_start
+															term.where = tokens
+																	.getEndIndex(term.subterm_start
 																			.get(colon_term));
 															break;
 														}
@@ -693,8 +860,8 @@ public class AnswerCheckParser {
 													 * check RHS term
 													 */
 
-													String error = checkSyntaxTree(
-															subterm_start
+													String error = enterTerm(
+															term.subterm_start
 																	.get(colon_term) + 1,
 															last);
 
@@ -710,28 +877,29 @@ public class AnswerCheckParser {
 												}
 
 											} else {
-												error_description = "':' or 'in' expected";
-												where = tokens
-														.getEndIndex(subterm_start
+												term.error_description = "':' or 'in' expected";
+												term.where = tokens
+														.getEndIndex(term.subterm_start
 																.get(2));
 											}
 										} else {
-											error_description = "':' or 'in' expected, quoted string found";
-											where = tokens
-													.getEndIndex(subterm_start
+											term.error_description = "':' or 'in' expected, quoted string found";
+											term.where = tokens
+													.getEndIndex(term.subterm_start
 															.get(2));
 										}
 									} else {
-										error_description = "':' or 'in' expected, term in parenthesis found";
-										where = tokens
-												.getEndIndex(subterm_start
+										term.error_description = "':' or 'in' expected, term in parenthesis found";
+										term.where = tokens
+												.getEndIndex(term.subterm_start
 														.get(2));
 									}
 								}
 							}
 						} else {
-							error_description = "Terms cannot be variable names";
-							where = tokens.getEndIndex(subterm_start.get(1));
+							term.error_description = "Terms cannot be variable names";
+							term.where = tokens.getEndIndex(term.subterm_start
+									.get(1));
 						}
 					}
 
@@ -745,39 +913,43 @@ public class AnswerCheckParser {
 					 * ("tag"|TAGVARIABLE)(,("tag"|TAGVARIABLE)*) : RHS
 					 */
 
-					if (subterm_rootlevel.size() < 2) {
-						error_description = "missing variable name after 'tag'";
-						where = tokens.getEndIndex(first);
+					if (term.subterm_rootlevel.size() < 2) {
+						term.error_description = "missing variable name after 'tag'";
+						term.where = tokens.getEndIndex(first);
 					} else {
-						if (subterm_rootlevel.get(1) == true) {
-							if (tokens.isQuoted(subterm_start.get(1)) == true) {
-								error_description = "String literals cannot be variable names";
-								where = tokens
-										.getEndIndex(subterm_start.get(1));
+						if (term.subterm_rootlevel.get(1) == true) {
+							if (tokens.isQuoted(term.subterm_start.get(1)) == true) {
+								term.error_description = "String literals cannot be variable names";
+								term.where = tokens
+										.getEndIndex(term.subterm_start.get(1));
 							} else {
 								String variable = tokens.getValue(
-										subterm_start.get(1)).toLowerCase();
+										term.subterm_start.get(1))
+										.toLowerCase();
 								if (boundVariables.contains(variable) == true) {
-									error_description = "Variable symbol '"
+									term.error_description = "Variable symbol '"
 											+ variable + "' is already taken ";
-									where = tokens.getEndIndex(subterm_start
-											.get(1));
+									term.where = tokens
+											.getEndIndex(term.subterm_start
+													.get(1));
 								} else if (isForbidden(variable) == true) {
-									error_description = "'"
+									term.error_description = "'"
 											+ variable
 											+ "' connot be used as variable symbol";
-									where = tokens.getEndIndex(subterm_start
-											.get(1));
+									term.where = tokens
+											.getEndIndex(term.subterm_start
+													.get(1));
 								} else {
-									if (subterm_rootlevel.size() < 3) {
-										error_description = "':' or 'with' missing";
-										where = tokens
-												.getEndIndex(subterm_start
+									if (term.subterm_rootlevel.size() < 3) {
+										term.error_description = "':' or 'with' missing";
+										term.where = tokens
+												.getEndIndex(term.subterm_start
 														.get(1));
-									} else if (subterm_rootlevel.get(2) == true) {
+									} else if (term.subterm_rootlevel.get(2) == true) {
 										String colon_or_in = tokens
-												.getValue(subterm_start.get(2));
-										if (tokens.isQuoted(subterm_start
+												.getValue(term.subterm_start
+														.get(2));
+										if (tokens.isQuoted(term.subterm_start
 												.get(2)) == false) {
 											if (colon_or_in
 													.equalsIgnoreCase(":") == true) {
@@ -798,8 +970,9 @@ public class AnswerCheckParser {
 												 * check RHS term
 												 */
 
-												String error = checkSyntaxTree(
-														subterm_start.get(2) + 1,
+												String error = enterTerm(
+														term.subterm_start
+																.get(2) + 1,
 														last);
 
 												closeFieldVariable(variable);
@@ -821,33 +994,33 @@ public class AnswerCheckParser {
 														.getAcceptTagsCommas();
 
 												while (colon_found != true) {
-													if (subterm_rootlevel
+													if (term.subterm_rootlevel
 															.size() <= colon_term) {
-														error_description = "':' after 'field "
+														term.error_description = "':' after 'field "
 																+ variable
 																+ " with [...]' missing";
-														where = tokens
+														term.where = tokens
 																.getEndIndex(last - 1);
 														break;
 													}
 
-													if (subterm_rootlevel
+													if (term.subterm_rootlevel
 															.get(colon_term) != true) {
-														error_description = "Terms cannot be tags";
-														where = tokens
-																.getEndIndex(subterm_start
+														term.error_description = "Terms cannot be tags";
+														term.where = tokens
+																.getEndIndex(term.subterm_start
 																		.get(colon_term));
 														break;
 													}
 
 													String tag_token = tokens
 															.getValue(
-																	subterm_start
+																	term.subterm_start
 																			.get(colon_term))
 															.toLowerCase();
 
 													if (tokens
-															.isQuoted(subterm_start
+															.isQuoted(term.subterm_start
 																	.get(colon_term)) == true) {
 														/**
 														 * tag given by string
@@ -877,20 +1050,20 @@ public class AnswerCheckParser {
 																value += "tVar"
 																		+ tag_token;
 															} else {
-																error_description = "'"
+																term.error_description = "'"
 																		+ tag_token
 																		+ "' is a variable, but not a token variable";
-																where = tokens
-																		.getEndIndex(subterm_start
+																term.where = tokens
+																		.getEndIndex(term.subterm_start
 																				.get(colon_term));
 																break;
 															}
 														} else {
-															error_description = "'"
+															term.error_description = "'"
 																	+ tag_token
 																	+ "' is neither a bound token variable nor a string literal";
-															where = tokens
-																	.getEndIndex(subterm_start
+															term.where = tokens
+																	.getEndIndex(term.subterm_start
 																			.get(colon_term));
 															break;
 														}
@@ -913,8 +1086,8 @@ public class AnswerCheckParser {
 													 * check RHS term
 													 */
 
-													String error = checkSyntaxTree(
-															subterm_start
+													String error = enterTerm(
+															term.subterm_start
 																	.get(colon_term) + 1,
 															last);
 
@@ -930,28 +1103,29 @@ public class AnswerCheckParser {
 												}
 
 											} else {
-												error_description = "':' or 'with' expected";
-												where = tokens
-														.getEndIndex(subterm_start
+												term.error_description = "':' or 'with' expected";
+												term.where = tokens
+														.getEndIndex(term.subterm_start
 																.get(2));
 											}
 										} else {
-											error_description = "':' or 'with' expected, quoted string found";
-											where = tokens
-													.getEndIndex(subterm_start
+											term.error_description = "':' or 'with' expected, quoted string found";
+											term.where = tokens
+													.getEndIndex(term.subterm_start
 															.get(2));
 										}
 									} else {
-										error_description = "':' or 'with' expected, term in parenthesis found";
-										where = tokens
-												.getEndIndex(subterm_start
+										term.error_description = "':' or 'with' expected, term in parenthesis found";
+										term.where = tokens
+												.getEndIndex(term.subterm_start
 														.get(2));
 									}
 								}
 							}
 						} else {
-							error_description = "Terms cannot be variable names";
-							where = tokens.getEndIndex(subterm_start.get(1));
+							term.error_description = "Terms cannot be variable names";
+							term.where = tokens.getEndIndex(term.subterm_start
+									.get(1));
 						}
 					}
 
@@ -962,29 +1136,29 @@ public class AnswerCheckParser {
 					String variable = first_token.toLowerCase();
 					if (variableType.get(variable) == VAR_FIELD) {
 
-						if (subterm_rootlevel.size() != 3) {
-							error_description = "Field comparision must be of the form FIELD = FIELD or FIELD = \"STRING\"";
-							where = tokens.getEndIndex(first);
+						if (term.subterm_rootlevel.size() != 3) {
+							term.error_description = "Field comparision must be of the form FIELD = FIELD or FIELD = \"STRING\"";
+							term.where = tokens.getEndIndex(first);
 						} else {
-							if (subterm_rootlevel.get(1) != true) {
-								error_description = "'=' expected, term in parenthesis found";
-								where = tokens
-										.getEndIndex(subterm_start.get(1));
+							if (term.subterm_rootlevel.get(1) != true) {
+								term.error_description = "'=' expected, term in parenthesis found";
+								term.where = tokens
+										.getEndIndex(term.subterm_start.get(1));
 							} else {
-								if (tokens.isQuoted(subterm_start.get(1)) == true) {
-									error_description = "'=' expected, string literal found";
-									where = tokens.getEndIndex(subterm_start
-											.get(1));
-								} else if (tokens
-										.getValue(subterm_start.get(1)).equals(
-												"=")) {
-									if (subterm_rootlevel.get(2) != true) {
-										error_description = "String literal or field variable needed";
-										where = tokens
-												.getEndIndex(subterm_start
+								if (tokens.isQuoted(term.subterm_start.get(1)) == true) {
+									term.error_description = "'=' expected, string literal found";
+									term.where = tokens
+											.getEndIndex(term.subterm_start
+													.get(1));
+								} else if (tokens.getValue(
+										term.subterm_start.get(1)).equals("=")) {
+									if (term.subterm_rootlevel.get(2) != true) {
+										term.error_description = "String literal or field variable needed";
+										term.where = tokens
+												.getEndIndex(term.subterm_start
 														.get(2));
 									} else {
-										if (tokens.isQuoted(subterm_start
+										if (tokens.isQuoted(term.subterm_start
 												.get(2)) == true) {
 											/**
 											 * FIELD = "STRING"
@@ -998,7 +1172,7 @@ public class AnswerCheckParser {
 													+ ".token == "
 													+ StringEscape
 															.escapeToDecodeInJavaScript(tokens
-																	.getValue(subterm_start
+																	.getValue(term.subterm_start
 																			.get(2)))
 													+ ") {\n goodParts.push(fVar"
 													+ variable
@@ -1009,7 +1183,7 @@ public class AnswerCheckParser {
 										} else {
 											String comparison_variable = tokens
 													.getValue(
-															subterm_start
+															term.subterm_start
 																	.get(2))
 													.toLowerCase();
 											if (boundVariables
@@ -1019,83 +1193,57 @@ public class AnswerCheckParser {
 													/**
 													 * FIELD = FIELD
 													 */
-													
+
 													jsCode += " if (fVar"
 															+ variable
 															+ ".token) {\n"
 															+ "\nif (fVar"
 															+ variable
 															+ ".token == "
-															+ "fVar" + comparison_variable + ".token"
+															+ "fVar"
+															+ comparison_variable
+															+ ".token"
 															+ ") {\n goodParts.push(fVar"
 															+ variable
 															+ ");\n return true; } else {\n return false;\n}"
 															+ "\n} else {\n return false;\n }";
-													
+
 													return null;
 												} else {
-													error_description = "'"
+													term.error_description = "'"
 															+ comparison_variable
 															+ "' is variable, but not a field variable";
-													where = tokens
-															.getEndIndex(subterm_start
+													term.where = tokens
+															.getEndIndex(term.subterm_start
 																	.get(2));
 												}
 											} else {
-												error_description = "Field variable or string literal needed";
-												where = tokens
-														.getEndIndex(subterm_start
+												term.error_description = "Field variable or string literal needed";
+												term.where = tokens
+														.getEndIndex(term.subterm_start
 																.get(2));
 											}
 										}
 									}
 								} else {
-									error_description = "'=' expected";
-									where = tokens.getEndIndex(subterm_start
-											.get(1));
+									term.error_description = "'=' expected";
+									term.where = tokens
+											.getEndIndex(term.subterm_start
+													.get(1));
 								}
 							}
 						}
 
 					} else {
-						error_description = "'" + first_token
+						term.error_description = "'" + first_token
 								+ "' is a variable, but not a field variable";
-						where = tokens.getEndIndex(first);
+						term.where = tokens.getEndIndex(first);
 					}
 				}
 			}
 		}
 
-		/**
-		 * format error message
-		 */
-
-		String message = "Syntax-Error: " + error_description
-				+ " just before the " + (2 + where) + "th character: ";
-
-		int end_index = where;
-
-		if (where > 16) {
-			message += "[...]";
-		} else
-			where = 16;
-
-		int start_index = where - 16;
-
-		message += inputTerm.substring(start_index, end_index + 1);
-
-		message += " <--HERE--|";
-
-		if (end_index + 1 < inputTerm.length()) {
-
-			if (inputTerm.length() - end_index - 1 > 16) {
-				message += " "
-						+ inputTerm.substring(end_index + 1, end_index + 17)
-						+ "[...]";
-			} else
-				message += " " + inputTerm.substring(end_index + 1);
-		}
-		return message;
+		return term.getErrorMessage();
 	}
 
 }
