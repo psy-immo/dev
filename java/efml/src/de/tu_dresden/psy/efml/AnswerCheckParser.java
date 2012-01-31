@@ -1030,6 +1030,126 @@ public class AnswerCheckParser {
 	}
 
 	/**
+	 * 
+	 * @param term
+	 *            subterm of VARIABLE = ... style
+	 * @return error message or null
+	 */
+	private String enterCheckValue(SubtermStructure term) {
+
+		String first_token = tokens.getValue(term.first);
+
+		/**
+		 * term starts with a variable symbol
+		 */
+		String variable = first_token.toLowerCase();
+		if (variableType.get(variable) == VAR_FIELD) {
+
+			if (term.subterm_rootlevel.size() != 3) {
+				return term
+						.errorFound(
+								"Field comparision must be of the form FIELD = FIELD or FIELD = \"STRING\"",
+								tokens.getEndIndex(term.first));
+			} else {
+				if (term.subterm_rootlevel.get(1) != true) {
+					return term.errorFound(
+							"'=' expected, term in parenthesis found",
+							tokens.getEndIndex(term.subterm_start.get(1)));
+				} else {
+					if (tokens.isQuoted(term.subterm_start.get(1)) == true) {
+						return term.errorFound(
+								"'=' expected, string literal found",
+								tokens.getEndIndex(term.subterm_start.get(1)));
+					} else if (tokens.getValue(term.subterm_start.get(1))
+							.equals("=")) {
+						if (term.subterm_rootlevel.get(2) != true) {
+							return term.errorFound(
+									"String literal or field variable needed",
+									tokens.getEndIndex(term.subterm_start
+											.get(2)));
+						} else {
+							if (tokens.isQuoted(term.subterm_start.get(2)) == true) {
+								/**
+								 * FIELD = "STRING"
+								 */
+
+								jsCode += " if (fVar"
+										+ variable
+										+ ".token) {\n"
+										+ "\nif (fVar"
+										+ variable
+										+ ".token == "
+										+ StringEscape
+												.escapeToDecodeInJavaScript(tokens
+														.getValue(term.subterm_start
+																.get(2)))
+										+ ") {\n goodParts.push(fVar"
+										+ variable
+										+ ");\n return true; } else {\n return false;\n}"
+										+ "\n} else {\n return false;\n }";
+
+								return null;
+							} else {
+								String comparison_variable = tokens.getValue(
+										term.subterm_start.get(2))
+										.toLowerCase();
+								if (boundVariables
+										.contains(comparison_variable) == true) {
+									if (variableType.get(comparison_variable) == VAR_FIELD) {
+										/**
+										 * FIELD = FIELD
+										 */
+
+										jsCode += " if (fVar"
+												+ variable
+												+ ".token) {\n"
+												+ "\nif (fVar"
+												+ variable
+												+ ".token == "
+												+ "fVar"
+												+ comparison_variable
+												+ ".token"
+												+ ") {\n goodParts.push(fVar"
+												+ variable
+												+ ");\n return true; } else {\n return false;\n}"
+												+ "\n} else {\n return false;\n }";
+
+										return null;
+									} else {
+										return term
+												.errorFound(
+														"'"
+																+ comparison_variable
+																+ "' is variable, but not a field variable",
+														tokens.getEndIndex(term.subterm_start
+																.get(2)));
+									}
+								} else {
+									return term
+											.errorFound(
+													"Field variable or string literal needed",
+													tokens.getEndIndex(term.subterm_start
+															.get(2)));
+								}
+							}
+						}
+					} else {
+						return term.errorFound("'=' expected",
+								tokens.getEndIndex(term.subterm_start.get(1)));
+					}
+				}
+			}
+
+		} else {
+			return term.errorFound("'" + first_token
+					+ "' is a variable, but not a field variable",
+					tokens.getEndIndex(term.first));
+		}
+
+		
+	}
+
+	/**
 	 * checks the syntax of a part, for internal usage only!
 	 * 
 	 * @param first
@@ -1117,115 +1237,7 @@ public class AnswerCheckParser {
 				} else if (first_token.equalsIgnoreCase("field") == true) {
 					return enterExistsField(term);
 				} else if (boundVariables.contains(first_token.toLowerCase())) {
-					/**
-					 * term starts with a variable symbol
-					 */
-					String variable = first_token.toLowerCase();
-					if (variableType.get(variable) == VAR_FIELD) {
-
-						if (term.subterm_rootlevel.size() != 3) {
-							term.error_description = "Field comparision must be of the form FIELD = FIELD or FIELD = \"STRING\"";
-							term.where = tokens.getEndIndex(term.first);
-						} else {
-							if (term.subterm_rootlevel.get(1) != true) {
-								term.error_description = "'=' expected, term in parenthesis found";
-								term.where = tokens
-										.getEndIndex(term.subterm_start.get(1));
-							} else {
-								if (tokens.isQuoted(term.subterm_start.get(1)) == true) {
-									term.error_description = "'=' expected, string literal found";
-									term.where = tokens
-											.getEndIndex(term.subterm_start
-													.get(1));
-								} else if (tokens.getValue(
-										term.subterm_start.get(1)).equals("=")) {
-									if (term.subterm_rootlevel.get(2) != true) {
-										term.error_description = "String literal or field variable needed";
-										term.where = tokens
-												.getEndIndex(term.subterm_start
-														.get(2));
-									} else {
-										if (tokens.isQuoted(term.subterm_start
-												.get(2)) == true) {
-											/**
-											 * FIELD = "STRING"
-											 */
-
-											jsCode += " if (fVar"
-													+ variable
-													+ ".token) {\n"
-													+ "\nif (fVar"
-													+ variable
-													+ ".token == "
-													+ StringEscape
-															.escapeToDecodeInJavaScript(tokens
-																	.getValue(term.subterm_start
-																			.get(2)))
-													+ ") {\n goodParts.push(fVar"
-													+ variable
-													+ ");\n return true; } else {\n return false;\n}"
-													+ "\n} else {\n return false;\n }";
-
-											return null;
-										} else {
-											String comparison_variable = tokens
-													.getValue(
-															term.subterm_start
-																	.get(2))
-													.toLowerCase();
-											if (boundVariables
-													.contains(comparison_variable) == true) {
-												if (variableType
-														.get(comparison_variable) == VAR_FIELD) {
-													/**
-													 * FIELD = FIELD
-													 */
-
-													jsCode += " if (fVar"
-															+ variable
-															+ ".token) {\n"
-															+ "\nif (fVar"
-															+ variable
-															+ ".token == "
-															+ "fVar"
-															+ comparison_variable
-															+ ".token"
-															+ ") {\n goodParts.push(fVar"
-															+ variable
-															+ ");\n return true; } else {\n return false;\n}"
-															+ "\n} else {\n return false;\n }";
-
-													return null;
-												} else {
-													term.error_description = "'"
-															+ comparison_variable
-															+ "' is variable, but not a field variable";
-													term.where = tokens
-															.getEndIndex(term.subterm_start
-																	.get(2));
-												}
-											} else {
-												term.error_description = "Field variable or string literal needed";
-												term.where = tokens
-														.getEndIndex(term.subterm_start
-																.get(2));
-											}
-										}
-									}
-								} else {
-									term.error_description = "'=' expected";
-									term.where = tokens
-											.getEndIndex(term.subterm_start
-													.get(1));
-								}
-							}
-						}
-
-					} else {
-						return term.errorFound("'" + first_token
-								+ "' is a variable, but not a field variable",
-								tokens.getEndIndex(term.first));
-					}
+					return enterCheckValue(term);
 				}
 			}
 		}
