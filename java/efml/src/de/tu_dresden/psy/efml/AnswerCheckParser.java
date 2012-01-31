@@ -589,6 +589,28 @@ public class AnswerCheckParser {
 	}
 
 	/**
+	 * 
+	 * 
+	 * @param term
+	 *            subterm starting with '('
+	 * @return error message or null
+	 */
+
+	private String enterSubterm(SubtermStructure term) {
+		if ((tokens.isQuoted(term.last - 1) == false)
+				&& (tokens.getValue(term.last - 1).equalsIgnoreCase(")"))) {
+			/**
+			 * term in parenthesis is valid, if the enclosed subterm is valid
+			 */
+			return enterTerm(term.first + 1, term.last - 1);
+		} else {
+			return term.errorFound("Closing parenthesis is missing",
+					tokens.getEndIndex(term.last - 1));
+
+		}
+	}
+
+	/**
 	 * checks the syntax of a part, for internal usage only!
 	 * 
 	 * @param first
@@ -608,8 +630,6 @@ public class AnswerCheckParser {
 
 			return null;
 		}
-
-		
 
 		/**
 		 * compute the subterm structure
@@ -662,27 +682,17 @@ public class AnswerCheckParser {
 				String first_token = tokens.getValue(term.first);
 
 				if (first_token.equalsIgnoreCase("(") == true) {
-					if ((tokens.isQuoted(term.last - 1) == false)
-							&& (tokens.getValue(term.last - 1)
-									.equalsIgnoreCase(")"))) {
-						/**
-						 * term in parenthesis is valid, if the enclosed subterm
-						 * is valid
-						 */
-						return enterTerm(term.first + 1, term.last - 1);
-					} else {
-						term.error_description = "Closing parenthesis is missing";
-						term.where = tokens.getEndIndex(term.last - 1);
-
-					}
+					return enterSubterm(term);
 				} else if ((first_token.equalsIgnoreCase("or") == true)
 						|| (first_token.equalsIgnoreCase("and") == true)) {
-					term.error_description = "Term connective without left hand term";
-					term.where = tokens.getEndIndex(term.first);
+					return term.errorFound(
+							"Term connective without left hand term",
+							tokens.getEndIndex(term.first));
 
 				} else if (first_token.equalsIgnoreCase(")") == true) {
-					term.error_description = "Two terms in parenthesis without term connective";
-					term.where = tokens.getEndIndex(term.first);
+					return term.errorFound(
+							"Two terms in parenthesis without term connective",
+							tokens.getEndIndex(term.first));
 				} else if (first_token.equalsIgnoreCase("tag") == true) {
 					/**
 					 * tag VARNAME : RHS
@@ -1239,9 +1249,9 @@ public class AnswerCheckParser {
 						}
 
 					} else {
-						term.error_description = "'" + first_token
-								+ "' is a variable, but not a field variable";
-						term.where = tokens.getEndIndex(term.first);
+						return term.errorFound("'" + first_token
+								+ "' is a variable, but not a field variable",
+								tokens.getEndIndex(term.first));
 					}
 				}
 			}
