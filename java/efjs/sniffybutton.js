@@ -37,6 +37,10 @@ mySniffyButtonAction = function() {
 	var applet = document.getElementById("launchSniffy");
 	if (applet) {
 		myLogger.Log("Launching Sniffy: " + applet.doLaunchSniffy());
+
+		if (mySniffyButton) {
+			mySniffyButton.launched = true;
+		}
 	} else {
 		myLogger.Log("ERROR! sniffyLauncher applet not found!");
 	}
@@ -51,6 +55,12 @@ myInstructionsButtonAction = function(id) {
 };
 
 myWaitForSniffy = function() {
+
+	if (mySniffyButton) {
+		if (mySniffyButton.launched == true) {
+			return true;
+		}
+	}
 	
 	var applet = document.getElementById("launchSniffy");
 	if (applet) {
@@ -136,8 +146,34 @@ function SniffyButton(text, inform) {
 	};
 	
 	this.inform = inform;
+
+	this.launched = false;
+
+	/**
+	 * return the current sniffy state
+	 */
+	this.GetValue = function() {
+		if (this.launched) {
+			return "launched";
+		} else {
+			return "";
+		}
+	};
+
+	/**
+	 * restore the current sniffy state
+	 */
+	this.SetValue = function(contents) {
+		if (contents == "launched") {
+			this.launched = true;
+		} else {
+			this.launched = false;
+		}
+	};
 	
 	mySniffyButton = this;
+
+	myStorage.RegisterField(this,"mySniffyButton");
 
 	return this;
 };
