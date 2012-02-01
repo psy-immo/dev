@@ -108,7 +108,31 @@ function InstructionsButton(url, text, inform) {
 		document.write("</form>");
 	};
 
+	/**
+	 * return the current read state
+	 */
+	this.GetValue = function() {
+		if (this.read) {
+			return "read";
+		} else {
+			return "";
+		}
+	};
+
+	/**
+	 * restore the current read state
+	 */
+	this.SetValue = function(contents) {
+		if (contents == "read") {
+			this.read = true;
+		} else {
+			this.read = false;
+		}
+	};
+
 	myInstructionsButtons[this.id] = this;
+
+	myStorage.RegisterField(this,"myInstructionsButtons["+this.id+"]");
 
 	return this;
 };
