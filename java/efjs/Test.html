@@ -9,6 +9,7 @@
 	<script type="text/javascript" src="runway.js"></script>
 	<script type="text/javascript" src="answer.js"></script>
 	<script type="text/javascript" src="sniffybutton.js"></script>
+	<script type="text/javascript" src="dropdown.js"></script>
 	
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -16,6 +17,16 @@
 </head>
 
 <body id="body">
+
+<script type="text/javascript">
+
+	new Dropdown("", [ "r1",
+					"c1" ]).Size(100,
+					20).Option("Option A").Option("Option B").WriteHtml();
+</script>
+
+<br />
+<br />
 
 <script type="text/javascript">
 	new InstructionsButton("http://www.google.com/").WriteHtml();

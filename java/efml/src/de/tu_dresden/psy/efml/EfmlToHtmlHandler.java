@@ -141,7 +141,11 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new SniffyTag());			
 		} else if (qName.equals("waitfor")) {
 			this.processingTags.push(new WaitForTag());			
-		} 
+		}  else if (qName.equals("dropdown")) {
+			this.processingTags.push(new DropdownTag(this.currentTags.peek()));
+		}else if (qName.equals("option")) {
+			this.processingTags.push(new OptionTag(this.currentTags.peek()));
+		}
 		else {
 			/**
 			 * the tag is not recognized and thus we use the unknown tag handler
