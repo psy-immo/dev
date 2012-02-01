@@ -3,7 +3,7 @@
 dtd = open("efml.0.0.1.0.dtd","w")
 
 html_elements = "i|b|br|p|div|span"
-efml_elements = "tags|tie|runway|answer|sniffy|instructions"
+efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown"
 efml_extra = "tables"
 
 
@@ -81,4 +81,22 @@ dtd.write("\n<!ELEMENT instructions (#PCDATA|unread|label)* >\n")
 dtd.write("\n<!ATTLIST instructions "+universal_attributes+" >\n")
 
 dtd.write("\n<!ELEMENT unread (#PCDATA)* >\n")
+
+dtd.write("\n<!ELEMENT dropdown (#PCDATA|option)* >\n")
+dtd.write("\n<!ATTLIST dropdown "+universal_attributes+"""
+	name	CDATA			#IMPLIED
+	value	CDATA			#IMPLIED
+	color	CDATA			#IMPLIED
+	filled	CDATA			#IMPLIED
+	width	CDATA			#IMPLIED
+	height	CDATA			#IMPLIED
+ >
+""")
+
+
+dtd.write("\n<!ELEMENT option (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST option "+"""
+	value	CDATA			#IMPLIED
+ >
+""")
 
