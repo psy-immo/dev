@@ -44,6 +44,18 @@ public class SniffyTag implements AnyTag {
 
 	@Override
 	public void open(Writer writer) throws IOException {
+		
+		/**
+		 * trim the label and the inform texts
+		 */
+		
+		this.text = this.text.trim();
+		this.inform = this.inform.trim();
+		
+		/**
+		 * write script
+		 */
+		
 		writer.write("<script type=\"text/javascript\">");
 		writer.write("new SniffyButton(");
 		

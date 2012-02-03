@@ -88,6 +88,15 @@ public class AnswerTag implements AnyTag {
 
 	@Override
 	public void open(Writer writer) throws IOException {
+		
+		/**
+		 * trim the button label
+		 */
+		this.buttonText = this.buttonText.trim();
+		
+		/**
+		 * write script code
+		 */
 
 		writer.write("<script type=\"text/javascript\">");
 

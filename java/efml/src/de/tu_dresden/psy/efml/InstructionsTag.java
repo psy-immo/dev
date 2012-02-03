@@ -44,6 +44,18 @@ public class InstructionsTag implements AnyTag {
 
 	@Override
 	public void open(Writer writer) throws IOException {
+		
+		/**
+		 * trim label, url and inform text
+		 */
+		
+		this.url = this.url.trim();
+		this.text = this.text.trim();
+		this.inform = this.inform.trim();
+		
+		/**
+		 * write script
+		 */
 		writer.write("<script type=\"text/javascript\">");
 		writer.write("new InstructionsButton(\""+StringEscape.escapeToJavaScript(this.url)+"\"");
 		
