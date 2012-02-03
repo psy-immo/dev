@@ -42,7 +42,7 @@ public class OptionTag implements AnyTag {
 
 	public String getJsContent() {
 		String javaScript = ".Option(\""
-				+ StringEscape.escapeToJavaScript(this.token) + "\"";
+				+ StringEscape.escapeToJavaScript(this.token.trim()) + "\"";
 		if (attributes.getValueOrDefault("value", null) != null) {
 			javaScript += ",\""
 					+ StringEscape.escapeToJavaScript(attributes
