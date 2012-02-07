@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 
  */
 
-public class KRegExp {
+public class KRegExp implements StringSplitter {
 
 	private Pattern[] patterns;
 
@@ -187,7 +187,7 @@ public class KRegExp {
 
 	}
 
-	private class intPair {
+	private static class intPair {
 		int a, b;
 
 		public intPair(int a, int b) {
@@ -199,7 +199,6 @@ public class KRegExp {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + getOuterType().hashCode();
 			result = prime * result + a;
 			result = prime * result + b;
 			return result;
@@ -214,8 +213,6 @@ public class KRegExp {
 			if (getClass() != obj.getClass())
 				return false;
 			intPair other = (intPair) obj;
-			if (!getOuterType().equals(other.getOuterType()))
-				return false;
 			if (a != other.a)
 				return false;
 			if (b != other.b)
@@ -223,9 +220,7 @@ public class KRegExp {
 			return true;
 		}
 
-		private KRegExp getOuterType() {
-			return KRegExp.this;
-		}
+		
 
 	}
 
@@ -237,7 +232,7 @@ public class KRegExp {
 	 *            candidate to match
 	 * @return set of arrays with start indices for a valid chain match
 	 */
-	public Set<int[]> matchChain(String chain) {
+	public Set<int[]> match(String chain) {
 
 		int chain_length = chain.length();
 
@@ -357,6 +352,34 @@ public class KRegExp {
 	}
 
 	/**
+	 * use chain pattern match to split given String into its matched parts
+	 * 
+	 * @param chain   candidate to split
+	 * @return  possible splittings
+	 */
+	public Set<String[]> split(String chain) {
+		Set<int[]> boundaries = match(chain);
+		
+		Set<String[]> results = new HashSet<String[]>();
+		
+		for (Iterator<int[]> it = boundaries.iterator(); it.hasNext();) {
+			int[] bounds =  it.next();
+			
+			String[] parts = new String[bounds.length];
+			for (int i=0;i<bounds.length-1;++i) {
+				parts[i] = chain.substring(bounds[i],bounds[i+1]);
+			}
+			if (bounds.length > 0) {
+				parts[bounds.length-1] = chain.substring(bounds[bounds.length-1]);
+			}
+			
+			results.add(parts);
+		}
+		
+		return results;
+	}
+	
+	/**
 	 * testing routine
 	 * 
 	 * @param args
@@ -364,7 +387,7 @@ public class KRegExp {
 	public static void main(String[] args) {
 		KRegExp kregexp = new KRegExp(new String[] { "ab*", "b+c*b*", "c*" });
 		Set<int[]> matches = kregexp
-				.matchChain("abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc");
+				.match("abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc");
 //		Iterator<int[]> it = matches.iterator();
 //		while (it.hasNext()) {
 //			int[] bounds = it.next();

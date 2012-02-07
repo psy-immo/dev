@@ -67,14 +67,14 @@ public class SubjectPredicateObjectMatcher {
 		String trimmed = assertion.trim();
 		Set<Assertion> results = new HashSet<Assertion>();
 		
-		Set<int[]> boundaries = matcher.matchChain(trimmed);
+		Set<String[]> splits = matcher.split(trimmed);
 		
-		for (Iterator<int[]> it = boundaries.iterator(); it.hasNext();) {
-			int[] bounds = it.next();
+		for (Iterator<String[]> it = splits.iterator(); it.hasNext();) {
+			String[] parts = it.next();
 			
-			String subject = trimmed.substring(0,bounds[1]);
-			String predicate = trimmed.substring(bounds[2],bounds[3]);
-			String object = trimmed.substring(bounds[4]);
+			String subject = parts[0];
+			String predicate = parts[2];
+			String object = parts[4];
 			
 			results.add(new Assertion(subject, predicate, object));
 		}
