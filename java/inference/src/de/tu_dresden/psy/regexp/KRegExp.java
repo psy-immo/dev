@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -111,7 +110,6 @@ public class KRegExp {
 			boundaries.get(patterns.length).set(0, stringSize);
 		}
 
-		
 	}
 
 	/**
@@ -240,7 +238,7 @@ public class KRegExp {
 	 * @return set of arrays with start indices for a valid chain match
 	 */
 	public Set<int[]> matchChain(String chain) {
-		
+
 		int chain_length = chain.length();
 
 		resetBoundariesAndBounds(chain_length);
@@ -272,7 +270,7 @@ public class KRegExp {
 				/**
 				 * no match
 				 */
-				
+
 				return results;
 			}
 		}
@@ -286,7 +284,6 @@ public class KRegExp {
 			 * no possible chopping
 			 */
 
-			
 			return results;
 		}
 
@@ -321,8 +318,10 @@ public class KRegExp {
 					map_cache[i].put(
 							p,
 							patterns[i].matcher(
-									chain.substring(boundaries.get(i).get(bounds[i]), boundaries.get(i+1).get(bounds[i + 1])))
-									.matches());
+									chain.substring(
+											boundaries.get(i).get(bounds[i]),
+											boundaries.get(i + 1).get(
+													bounds[i + 1]))).matches());
 				}
 			}
 		}
@@ -342,10 +341,10 @@ public class KRegExp {
 			}
 			if (good) {
 				int[] result = new int[patterns.length];
-				for (int i=0;i<patterns.length;++i) {
+				for (int i = 0; i < patterns.length; ++i) {
 					result[i] = boundaries.get(i).get(bounds[i]);
 				}
-				
+
 				results.add(result);
 			}
 		}
@@ -356,25 +355,26 @@ public class KRegExp {
 
 		return results;
 	}
-	
+
 	/**
 	 * testing routine
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		KRegExp kregexp = new KRegExp(new String[]{"ab*","b+c*b*","c*"});
-		Set<int[]> matches = kregexp.matchChain("abbbbbcccc");
-		Iterator<int[]> it = matches.iterator();
-		while (it.hasNext()) {
-			int [] bounds = it.next();
-			System.out.print("[");
-			for (int i=0;i<bounds.length;++i)
-				System.out.print(bounds[i]+",");
-			System.out.println("]");
-			
-		}
-		
+		KRegExp kregexp = new KRegExp(new String[] { "ab*", "b+c*b*", "c*" });
+		Set<int[]> matches = kregexp
+				.matchChain("abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc");
+//		Iterator<int[]> it = matches.iterator();
+//		while (it.hasNext()) {
+//			int[] bounds = it.next();
+//			System.out.print("[");
+//			for (int i = 0; i < bounds.length; ++i)
+//				System.out.print(bounds[i] + ",");
+//			System.out.println("]");
+//		}
+		System.out.println("Total: " + matches.size());
+
 	}
 
 }
