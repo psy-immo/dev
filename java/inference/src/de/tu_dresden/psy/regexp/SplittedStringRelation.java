@@ -18,7 +18,6 @@
 
 package de.tu_dresden.psy.regexp;
 
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
@@ -111,7 +110,8 @@ public class SplittedStringRelation {
 		 * @param part
 		 *            splittings index of the projection
 		 */
-		public SplittedStringProjectionMap(int part, SplittedStringRelation relativeMap) {
+		public SplittedStringProjectionMap(int part,
+				SplittedStringRelation relativeMap) {
 			this.part = part;
 			this.empty = new HashSet<String>();
 			this.relative_map = relativeMap;
@@ -129,9 +129,52 @@ public class SplittedStringRelation {
 
 	private Set<Vector<MapSplitting>> maps;
 
+	/**
+	 * default constructor with empty inputs & outputs
+	 */
 	public SplittedStringRelation() {
 		this.splitters = new HashSet<StringSplitter>();
 		this.maps = new HashSet<Vector<MapSplitting>>();
+	}
+
+	/**
+	 * takes a rule of the form [Input ·-delimited k-RegExp]→[Output Function]
+	 * 
+	 * @param delimitedRule
+	 */
+	public SplittedStringRelation(String delimitedRule) {
+		this.splitters = new HashSet<StringSplitter>();
+		this.maps = new HashSet<Vector<MapSplitting>>();
+		String[] left_right = delimitedRule.split("→");
+		String left = left_right[0];
+		String right = left_right[1];
+
+		this.splitters.add(new KRegExp(left));
+		this.maps.add(getOutputFunction(right));
+	}
+
+	/**
+	 * takes a · delimited string where every part is constant but parts of the
+	 * form »[NUMBER] where NUMBER determines the n-th split part
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public static Vector<MapSplitting> getOutputFunction(String code) {
+		String[] parts = code.split("·");
+
+		Vector<MapSplitting> result = new Vector<SplittedStringRelation.MapSplitting>();
+
+		for (String part : parts) {
+			if (part.startsWith("»")) {
+				result.add(new ProjectionMap(
+						Integer.parseInt(part.substring(1)) - 1));
+			} else {
+				result.add(new ConstantMap(part));
+			}
+		}
+
+		return result;
 	}
 
 	public void addInput(StringSplitter splitter) {
@@ -176,17 +219,18 @@ public class SplittedStringRelation {
 
 		return result;
 	}
-	
+
 	/**
 	 * testing routine
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		SplittedStringRelation rel = new SplittedStringRelation();
-		
-		rel.addInput(new KRegExp(new String[]{"AB","CD","EF"}));
-		rel.addInput(new KRegExp(new String[]{"ABC","D","EF"}));
-		rel.addInput(new KRegExp(new String[]{"A","BC","DEF"}));
+
+		rel.addInput(new KRegExp(new String[] { "AB", "CD", "EF" }));
+		rel.addInput(new KRegExp(new String[] { "ABC", "D", "EF" }));
+		rel.addInput(new KRegExp(new String[] { "A", "BC", "DEF" }));
 		Vector<SplittedStringRelation.MapSplitting> map = new Vector<SplittedStringRelation.MapSplitting>();
 		map.add(new SplittedStringRelation.ConstantMap("2="));
 		map.add(new SplittedStringRelation.ProjectionMap(2));
@@ -195,16 +239,19 @@ public class SplittedStringRelation {
 		map.add(new SplittedStringRelation.ConstantMap(" 0="));
 		map.add(new SplittedStringRelation.ProjectionMap(0));
 		rel.addOutput(map);
-		
+
 		SplittedStringRelation rel2 = new SplittedStringRelation();
-		rel2.addInput(new KRegExp(new String[]{"ABCDEF","ABCDEF"}));
+		rel2.addInput(new KRegExp(new String[] { "ABCDEF", "ABCDEF" }));
 		Vector<SplittedStringRelation.MapSplitting> map2 = new Vector<SplittedStringRelation.MapSplitting>();
 		map2.add(new SplittedStringProjectionMap(0, rel));
 		map2.add(new SplittedStringProjectionMap(1, rel));
 		rel2.addOutput(map2);
-		
-		
+
 		System.out.println(rel2.allMaps("ABCDEFABCDEF").size());
+		
+		SplittedStringRelation fromStr = new SplittedStringRelation("A*B*·(AB)*·A*B*→middle part: ·»2");
+		
+		System.out.println(fromStr.allMaps("ABABABABAB"));
 	}
 
 }

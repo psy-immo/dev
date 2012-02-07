@@ -63,6 +63,13 @@ public class KRegExp implements StringSplitter {
 	public KRegExp(String[] regexps) {
 		this.setPattern(regexps);
 	}
+	/**
+	 * construct a chain matcher
+	 * @param delimitedRegexps  series of regular expressions delimited by '·'
+	 */
+	public KRegExp(String delimitedRegexps) {
+		this.setPattern(delimitedRegexps.split("·"));		
+	}
 
 	/**
 	 * 

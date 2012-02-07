@@ -25,6 +25,20 @@ package de.tu_dresden.psy.inference;
  */
 
 public class Assertion implements AssertionInterface {
+	
+	public static enum AssertionPart {
+		subject, predicate, object;
+	}
+	
+	public static Object getAssertionPart(AssertionInterface assertion, AssertionPart part) {
+		if (part == AssertionPart.subject)
+			return assertion.getSubject();
+		
+		if (part == AssertionPart.predicate)
+			return assertion.getPredicate();
+		
+		return assertion.getObject();
+	}
 
 	private Object s, o, p;
 
