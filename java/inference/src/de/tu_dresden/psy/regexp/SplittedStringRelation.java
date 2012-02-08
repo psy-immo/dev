@@ -29,7 +29,7 @@ import java.util.Vector;
  * @author albrecht
  * 
  */
-public class SplittedStringRelation {
+public class SplittedStringRelation implements StringRelationInterface {
 
 	public interface MapSplitting {
 
@@ -192,6 +192,7 @@ public class SplittedStringRelation {
 	 *            input String
 	 * @return all possible result values
 	 */
+	@Override
 	public Set<String> allMaps(String s) {
 		Set<String> result = new HashSet<String>();
 		Set<String[]> splittings = new HashSet<String[]>();

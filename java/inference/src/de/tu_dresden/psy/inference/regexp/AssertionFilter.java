@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import de.tu_dresden.psy.inference.Assertion;
+import de.tu_dresden.psy.inference.AssertionInterface;
 
 public class AssertionFilter {
 
@@ -51,9 +51,9 @@ public class AssertionFilter {
 	 * @return all assertions from the set that match the regular expressions of this filter
 	 */
 
-	public Set<Assertion> filter(Set<Assertion> assertions) {
-		Set<Assertion> result = new HashSet<Assertion>();
-		for (Assertion assertion : assertions) {
+	public Set<AssertionInterface> filter(Set<AssertionInterface> assertions) {
+		Set<AssertionInterface> result = new HashSet<AssertionInterface>();
+		for (AssertionInterface assertion : assertions) {
 			if (assertion.getSubject() instanceof String) {
 				String subject = (String) assertion.getSubject();
 

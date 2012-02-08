@@ -18,9 +18,11 @@
 
 package de.tu_dresden.psy.inference;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
 
 /**
  * implements an assertion interface that provides information about the
@@ -44,12 +46,14 @@ public class InferredAssertion implements AssertionInterface {
 	 */
 	private void initialize(InferenceMap usedRule,
 			AssertionInterface newAssertion,
-			Set<AssertionInterface> usedPremises) {
+			Collection<? extends AssertionInterface> usedPremises) {
 		this.assertion = newAssertion;
 		this.rule = usedRule;
 		this.premises = new HashSet<AssertionInterface>();
 		this.premises.addAll(usedPremises);
 	}
+	
+
 
 	/**
 	 * inferred assertion from a set of premises
@@ -59,7 +63,7 @@ public class InferredAssertion implements AssertionInterface {
 	 */
 	public InferredAssertion(InferenceMap usedRule,
 			AssertionInterface newAssertion,
-			Set<AssertionInterface> usedPremises) {
+			Collection<? extends AssertionInterface> usedPremises) {
 		initialize(usedRule, newAssertion, usedPremises);
 	}
 
