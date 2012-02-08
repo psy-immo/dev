@@ -205,7 +205,7 @@ public class RegExpInferenceMap implements InferenceMap {
 			private boolean nextIndex() {
 				for (int index = factorCount - 1; index >= 0; --index) {
 					int new_value = currentIndices.get(index) + 1;
-					if (new_value >= factors.size()) {
+					if (new_value >= factors.get(index).size()) {
 						currentIndices.set(index, 0);
 					} else {
 						currentIndices.set(index, new_value);
@@ -264,6 +264,7 @@ public class RegExpInferenceMap implements InferenceMap {
 				Vector<AssertionInterface> swap = this.currentElement;
 				this.currentElement = this.nextElement;
 				this.nextElement = swap;
+				
 
 				return swap;
 			}

@@ -24,16 +24,19 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import de.tu_dresden.psy.inference.*;
+import de.tu_dresden.psy.inference.Assertion.AssertionPart;
+import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
+import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher;
 
 /**
  * main method for this example
  * 
  * @author immanuel
- *
+ * 
  */
 public class Main {
-	
-	public static void main(String[] args) {
+
+	private static void hardcodedExample() {
 		Set<InferenceMap> mapset = new HashSet<InferenceMap>();
 		mapset.add(new Phi1to2());
 		mapset.add(new Phi2_3to2());
@@ -41,47 +44,169 @@ public class Main {
 		mapset.add(new Phi2Neg());
 		mapset.add(new Phi3());
 		InferenceMaps maps = new InferenceMaps(mapset);
-		
-		
-		String[] premises = {"bulb A·is connected in parallel with·bulbchain BC",
+
+		String[] premises = {
+				"bulb A·is connected in parallel with·bulbchain BC",
 				"bulb B·is serial connected with·bulb C",
 				"the voltage of bulbchain BC·is bigger than·the voltage of bulb B",
 				"a bigger voltage·means·a bigger current",
 				"a bigger voltage·means·a bigger luminosity",
-				"the current through bulb A·is bigger than·the current through bulbchain BC"};
-		
+				"the current through bulb A·is bigger than·the current through bulbchain BC" };
+
 		Set<AssertionInterface> valid = new HashSet<AssertionInterface>();
-		for (int i=0;i<premises.length;++i) {
+		for (int i = 0; i < premises.length; ++i) {
 			valid.add(new Assertion(premises[i]));
 		}
-		
-		int step=0;
-		int size=0;
-		
+
+		int step = 0;
+		int size = 0;
+
 		while (step < 4) {
 			size = valid.size();
-			
-			System.out.println("  ++++ Step "+step+" ++++\n\n");
+
+			System.out.println("  ++++ Step " + step + " ++++\n\n");
 			if (step > 0)
 				valid.addAll(InferredAssertion.nonTrivial(maps.inferNew(valid)));
-			
+
 			TreeSet<String> ordered = new TreeSet<String>();
-			for (Iterator<AssertionInterface> it = valid.iterator();it.hasNext();){
+			for (Iterator<AssertionInterface> it = valid.iterator(); it
+					.hasNext();) {
 				AssertionInterface a = it.next();
-				
+
 				ordered.add(a.toString());
 			}
-			
-			for (Iterator<String> it=ordered.iterator();it.hasNext();) {
+
+			for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
 				String s = it.next();
 				System.out.println(s);
 			}
-			
+
 			step++;
-			System.out.println("\n   +++ premise assertions "+size+" -> "+valid.size());
+			System.out.println("\n   +++ premise assertions " + size + " -> "
+					+ valid.size());
+		}
+	}
+
+	private static void regexpExample() {
+		Set<InferenceMap> mapset = new HashSet<InferenceMap>();
+
+		/**
+		 * fill the map set
+		 */
+
+		RegExpInferenceMap phi3 = new RegExpInferenceMap("trans");
+		phi3.addPremiseForm(".*", "means", ".*");
+		phi3.addPremiseForm(".*", "means", ".*");
+		phi3.addPremiseConstraint(0, AssertionPart.object, 1, AssertionPart.subject);
+		phi3.addConclusion(0, AssertionPart.subject, 0, AssertionPart.predicate, 1, AssertionPart.object);
+		
+		mapset.add(phi3);
+		
+		RegExpInferenceMap phi2neg = new RegExpInferenceMap("neg");
+		phi2neg.addPremiseForm(".*", "is (as.*as|(bigger|smaller) than)", ".*");
+		phi2neg.addConclusion(0, AssertionPart.object, ".*→»1", 0,
+				AssertionPart.predicate,
+				"is b.*→is smaller than¶is s.*→is bigger than¶is as.*as→»1", 0,
+				AssertionPart.subject, ".*→»1");
+
+		mapset.add(phi2neg);
+
+		RegExpInferenceMap phi2monotone = new RegExpInferenceMap("monotone");
+		phi2monotone.addPremiseForm(".*",
+				"is ((bigger|smaller) than|as big as)", ".*");
+		phi2monotone.addPremiseForm(".*",
+				"is ((bigger|smaller) than|as big as)", ".*");
+
+		phi2monotone.addPremiseConstraint(0, AssertionPart.predicate, 1,
+				AssertionPart.predicate, "is (b|s).*→»1¶.*→is as big as");
+
+		phi2monotone.addPremiseConstraint(0, AssertionPart.object, 1,
+				AssertionPart.subject);
+
+		phi2monotone.addConclusion(0, AssertionPart.subject, 0,
+				AssertionPart.predicate, 1, AssertionPart.object);
+
+		mapset.add(phi2monotone);
+		
+		InferenceMaps maps = new InferenceMaps(mapset);
+
+		/**
+		 * initial premises
+		 */
+
+		String[] premises = {
+				"bulb A is connected in parallel with bulbchain BC",
+				"bulb B is serial connected with bulb C",
+				"the voltage of bulbchain BC is bigger than the voltage of bulb B",
+				"a bigger voltage means a bigger current",
+				"a bigger voltage means a bigger luminosity",
+				"the current through bulb A is bigger than the current through bulbchain BC",
+				"my left leg is as crooked as my right leg",
+				"X is as big as Y", "Y is smaller than Z", "V is bigger than X",
+				"X is as big as X2",
+				"Q means Q2", "Q2 means Q3","Q4 means Q3"};
+
+		/**
+		 * chop into subject·predicate·object
+		 */
+
+		SubjectPredicateObjectMatcher matchStrings = new SubjectPredicateObjectMatcher(
+		// subject starts with non-whitespace
+				"\\S.*",
+				// predicate is of either form: is ... with, is ... than, is as
+				// ... as, means
+				"(means|is(\\s.*\\swith|\\s.*\\sthan|\\s+as.*\\sas))",
+				// object starts with non-whitespace
+				"\\S.*"
+
+		);
+
+		Set<AssertionInterface> valid = new HashSet<AssertionInterface>();
+		for (int i = 0; i < premises.length; ++i) {
+			valid.addAll(matchStrings.match((premises[i])));
 		}
 		
 		
+
+		/**
+		 * do some inference
+		 */
+
+		int step = 0;
+		int size = 0;
+
+		while (step <= 100) {
+			size = valid.size();
+
+			System.out.println("  ++++ Step " + step + " ++++\n\n");
+			if (step > 0)
+				valid.addAll(InferredAssertion.nonTrivial(maps.inferNew(valid)));
+
+			TreeSet<String> ordered = new TreeSet<String>();
+			for (Iterator<AssertionInterface> it = valid.iterator(); it
+					.hasNext();) {
+				AssertionInterface a = it.next();
+
+				ordered.add(a.toString());
+			}
+
+			for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
+				String s = it.next();
+				System.out.println(s);
+			}
+
+			step++;
+			System.out.println("\n   +++ premise assertions " + size + " -> "
+					+ valid.size());
+			
+			if ((size == valid.size())&&(step > 1))
+				break; //nothing new
+		}
+	}
+
+	public static void main(String[] args) {
+		// hardcodedExample();
+		regexpExample();
 	}
 
 }
