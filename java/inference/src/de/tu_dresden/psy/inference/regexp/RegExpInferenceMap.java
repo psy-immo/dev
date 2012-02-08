@@ -317,6 +317,8 @@ public class RegExpInferenceMap implements InferenceMap {
 	@Override
 	public Set<AssertionInterface> inferNew(
 			Set<AssertionInterface> validPremises) {
+		
+		
 		Set<AssertionInterface> inferred = new HashSet<AssertionInterface>();
 		Vector<Vector<AssertionInterface>> premises = new Vector<Vector<AssertionInterface>>();
 

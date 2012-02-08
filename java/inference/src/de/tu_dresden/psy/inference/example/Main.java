@@ -97,11 +97,13 @@ public class Main {
 		RegExpInferenceMap phi3 = new RegExpInferenceMap("trans");
 		phi3.addPremiseForm(".*", "means", ".*");
 		phi3.addPremiseForm(".*", "means", ".*");
-		phi3.addPremiseConstraint(0, AssertionPart.object, 1, AssertionPart.subject);
-		phi3.addConclusion(0, AssertionPart.subject, 0, AssertionPart.predicate, 1, AssertionPart.object);
-		
+		phi3.addPremiseConstraint(0, AssertionPart.object, 1,
+				AssertionPart.subject);
+		phi3.addConclusion(0, AssertionPart.subject, 0,
+				AssertionPart.predicate, 1, AssertionPart.object);
+
 		mapset.add(phi3);
-		
+
 		RegExpInferenceMap phi2neg = new RegExpInferenceMap("neg");
 		phi2neg.addPremiseForm(".*", "is (as.*as|(bigger|smaller) than)", ".*");
 		phi2neg.addConclusion(0, AssertionPart.object, ".*→»1", 0,
@@ -127,8 +129,34 @@ public class Main {
 				AssertionPart.predicate, 1, AssertionPart.object);
 
 		mapset.add(phi2monotone);
+
+
+		RegExpInferenceMap phi1to2s = new RegExpInferenceMap("serial");
+		phi1to2s.addPremiseForm(".*", "is serial connected with", ".*");
+		phi1to2s.addConclusion(0, AssertionPart.subject,
+				".*→the current through ·»1", 0, AssertionPart.predicate,
+				".*→is as big as", 0, AssertionPart.object,
+				".*→the current through ·»1");
 		
-		InferenceMaps maps = new InferenceMaps(mapset);
+		mapset.add(phi1to2s);
+		
+		RegExpInferenceMap phi1to2p = new RegExpInferenceMap("parallel");
+		phi1to2p.addPremiseForm(".*", "is connected in parallel with", ".*");
+		phi1to2p.addConclusion(0, AssertionPart.subject,
+				".*→the voltage of ·»1", 0, AssertionPart.predicate,
+				".*→is as big as", 0, AssertionPart.object,
+				".*→the voltage of ·»1");
+		
+		mapset.add(phi1to2p);
+		
+		
+		RegExpInferenceMap phi2_3to3m1 = new RegExpInferenceMap("combine-monotone");
+		phi2_3to3m1.addPremiseForm("the.*(of|through)","is (as big as|(small|bigg)er than)", "the.*(of|through)");
+		phi2_3to3m1.addPremiseForm("a smaller .*","means", "a smaller .*");
+		
+		//TODO.. :)
+		
+		mapset.add(phi2_3to3m1);
 
 		/**
 		 * initial premises
@@ -142,9 +170,9 @@ public class Main {
 				"a bigger voltage means a bigger luminosity",
 				"the current through bulb A is bigger than the current through bulbchain BC",
 				"my left leg is as crooked as my right leg",
-				"X is as big as Y", "Y is smaller than Z", "V is bigger than X",
-				"X is as big as X2",
-				"Q means Q2", "Q2 means Q3","Q4 means Q3"};
+				"X is as big as Y", "Y is smaller than Z",
+				"V is bigger than X", "X is as big as X2", "Q means Q2",
+				"Q2 means Q3", "Q4 means Q3" };
 
 		/**
 		 * chop into subject·predicate·object
@@ -165,12 +193,13 @@ public class Main {
 		for (int i = 0; i < premises.length; ++i) {
 			valid.addAll(matchStrings.match((premises[i])));
 		}
-		
-		
 
+		
 		/**
 		 * do some inference
 		 */
+		
+		InferenceMaps maps = new InferenceMaps(mapset);
 
 		int step = 0;
 		int size = 0;
@@ -198,9 +227,9 @@ public class Main {
 			step++;
 			System.out.println("\n   +++ premise assertions " + size + " -> "
 					+ valid.size());
-			
-			if ((size == valid.size())&&(step > 1))
-				break; //nothing new
+
+			if ((size == valid.size()) && (step > 1))
+				break; // nothing new
 		}
 	}
 
