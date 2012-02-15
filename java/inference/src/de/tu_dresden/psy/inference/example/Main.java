@@ -22,12 +22,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Vector;
 
 import de.tu_dresden.psy.inference.*;
 import de.tu_dresden.psy.inference.Assertion.AssertionPart;
 import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
 import de.tu_dresden.psy.regexp.SplittedStringRelation;
 import de.tu_dresden.psy.regexp.StringRelationInterface;
+import de.tu_dresden.psy.regexp.StringRelationJoin;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher;
 
 /**
@@ -149,19 +151,42 @@ public class Main {
 				".*→the voltage of ·»1");
 
 		mapset.add(phi1to2p);
+		
+		/**
+		 * monotone relation
+		 */
 
 		RegExpInferenceMap phi2_3to3m1 = new RegExpInferenceMap(
 				"combine-monotone");
 		phi2_3to3m1.addPremiseForm("the.*(of|through).*",
 				"is (as big as|(small|bigg)er than)", "the.*(of|through).*");
-		phi2_3to3m1.addPremiseForm("a smaller .*", "means", "a smaller .*");
+		phi2_3to3m1.addPremiseForm(".*", "means", ".*");
 
 		/**
-		 * there is a constraint that cannot be represented by
+		 * there are constraints that cannot be represented by
 		 * addPremiseConstraint
 		 */
 
-		// TODO add parts of s/p/o to constraint matching
+		phi2_3to3m1
+				.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+						0, AssertionPart.subject, new SplittedStringRelation(
+								"the ·.*· (of|through).*→»2"), 0,
+						AssertionPart.object, new SplittedStringRelation(
+								"the ·.*· (of|through).*→»2")));
+		
+		phi2_3to3m1
+		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+				0, AssertionPart.subject, new SplittedStringRelation(
+						"the ·.*· (of|through).*→»2"), 1,
+				AssertionPart.subject, new SplittedStringRelation(
+						"a (bigg|small)er ·.*→»2")));
+		
+		phi2_3to3m1
+		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+				1, AssertionPart.subject, new SplittedStringRelation(
+						"a (bigg|small)er ·.*→»1"), 1,
+				AssertionPart.object, new SplittedStringRelation(
+						"a (bigg|small)er ·.*→»1")) );
 
 		/**
 		 * this rule cannot be represented with addConclusion -> need to do it
@@ -173,24 +198,97 @@ public class Main {
 
 		conclusion
 				.addSubjectPart(
-						new SplittedStringRelation(
-								"a smaller current→the current through ¶a smaller ·[^c].*→the ·»2· of "),
+						new StringRelationJoin(
+								"a (bigg|small)er current→the current through ¶a (bigg|small)er ·[^c].*→the ·»2· of "),
 						1, AssertionPart.object);
 		conclusion
 				.addObjectPart(
-						new SplittedStringRelation(
-								"a smaller current→the current through ¶a smaller ·[^c].*→the ·»2· of "),
+						new StringRelationJoin(
+								"a (bigg|small)er current→the current through ¶a (bigg|small)er ·[^c].*→the ·»2· of "),
 						1, AssertionPart.object);
-		
-		conclusion.addSubjectPart(new SplittedStringRelation("the.*(of|through) ·.*→»2"), 0, AssertionPart.subject);
-		conclusion.addObjectPart(new SplittedStringRelation("the.*(of|through) ·.*→»2"), 0, AssertionPart.object);
-		
-		conclusion.addPredicatePart(new SplittedStringRelation(".*→»1"), 0, AssertionPart.predicate);
+
+		conclusion.addSubjectPart(new SplittedStringRelation(
+				"the.*(of|through) ·.*→»2"), 0, AssertionPart.subject);
+		conclusion.addObjectPart(new SplittedStringRelation(
+				"the.*(of|through) ·.*→»2"), 0, AssertionPart.object);
+
+		conclusion.addPredicatePart(new SplittedStringRelation(".*→»1"), 0,
+				AssertionPart.predicate);
 
 		phi2_3to3m1.addPremiseCombinator(conclusion);
 
 		mapset.add(phi2_3to3m1);
 
+		
+		/**
+		 * antitone relation
+		 */
+
+		RegExpInferenceMap phi2_3to3a1 = new RegExpInferenceMap(
+				"combine-antitone");
+		phi2_3to3a1.addPremiseForm("the.*(of|through).*",
+				"is (as big as|(small|bigg)er than)", "the.*(of|through).*");
+		phi2_3to3a1.addPremiseForm(".*", "means", ".*");
+
+		/**
+		 * there are constraints that cannot be represented by
+		 * addPremiseConstraint
+		 */
+
+		phi2_3to3a1
+				.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+						0, AssertionPart.subject, new SplittedStringRelation(
+								"the ·.*· (of|through).*→»2"), 0,
+						AssertionPart.object, new SplittedStringRelation(
+								"the ·.*· (of|through).*→»2")));
+		
+		phi2_3to3a1
+		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+				0, AssertionPart.subject, new SplittedStringRelation(
+						"the ·.*· (of|through).*→»2"), 1,
+				AssertionPart.subject, new SplittedStringRelation(
+						"a (bigg|small)er ·.*→»2")));
+		
+		phi2_3to3a1
+		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+				1, AssertionPart.subject, new StringRelationJoin(
+						"a bigger.*→big¶a smaller.*→small"), 1,
+				AssertionPart.object, new StringRelationJoin(
+						"a bigger.*→small¶a smaller.*→big")) );
+
+		/**
+		 * this rule cannot be represented with addConclusion -> need to do it
+		 * manually
+		 */
+
+		RegExpInferenceMap.AdvancedPremiseCombinator conclusion2 = new RegExpInferenceMap.AdvancedPremiseCombinator(
+				phi2_3to3a1);
+
+		conclusion2
+				.addSubjectPart(
+						new StringRelationJoin(
+								"a (bigg|small)er current→the current through ¶a (bigg|small)er ·[^c].*→the ·»2· of "),
+						1, AssertionPart.object);
+		conclusion2
+				.addObjectPart(
+						new StringRelationJoin(
+								"a (bigg|small)er current→the current through ¶a (bigg|small)er ·[^c].*→the ·»2· of "),
+						1, AssertionPart.object);
+
+		conclusion2.addSubjectPart(new SplittedStringRelation(
+				"the.*(of|through) ·.*→»2"), 0, AssertionPart.subject);
+		conclusion2.addObjectPart(new SplittedStringRelation(
+				"the.*(of|through) ·.*→»2"), 0, AssertionPart.object);
+
+		conclusion2.addPredicatePart(new StringRelationJoin("is bigger than→is smaller than¶is smaller than→is bigger than"), 0,
+				AssertionPart.predicate);
+
+		phi2_3to3a1.addPremiseCombinator(conclusion2);
+
+		mapset.add(phi2_3to3a1);
+		
+		
+		
 		/**
 		 * initial premises
 		 */
@@ -199,7 +297,7 @@ public class Main {
 				"bulb A is connected in parallel with bulbchain BC",
 				"bulb B is serial connected with bulb C",
 				"the voltage of bulbchain BC is bigger than the voltage of bulb B",
-				"a bigger voltage means a bigger current",
+				"a bigger voltage means a smaller current",
 				"a bigger voltage means a bigger luminosity",
 				"the current through bulb A is bigger than the current through bulbchain BC",
 				"my left leg is as crooked as my right leg",
