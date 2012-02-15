@@ -26,6 +26,8 @@ import java.util.TreeSet;
 import de.tu_dresden.psy.inference.*;
 import de.tu_dresden.psy.inference.Assertion.AssertionPart;
 import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
+import de.tu_dresden.psy.regexp.SplittedStringRelation;
+import de.tu_dresden.psy.regexp.StringRelationInterface;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher;
 
 /**
@@ -130,32 +132,63 @@ public class Main {
 
 		mapset.add(phi2monotone);
 
-
 		RegExpInferenceMap phi1to2s = new RegExpInferenceMap("serial");
 		phi1to2s.addPremiseForm(".*", "is serial connected with", ".*");
 		phi1to2s.addConclusion(0, AssertionPart.subject,
 				".*→the current through ·»1", 0, AssertionPart.predicate,
 				".*→is as big as", 0, AssertionPart.object,
 				".*→the current through ·»1");
-		
+
 		mapset.add(phi1to2s);
-		
+
 		RegExpInferenceMap phi1to2p = new RegExpInferenceMap("parallel");
 		phi1to2p.addPremiseForm(".*", "is connected in parallel with", ".*");
 		phi1to2p.addConclusion(0, AssertionPart.subject,
 				".*→the voltage of ·»1", 0, AssertionPart.predicate,
 				".*→is as big as", 0, AssertionPart.object,
 				".*→the voltage of ·»1");
-		
+
 		mapset.add(phi1to2p);
+
+		RegExpInferenceMap phi2_3to3m1 = new RegExpInferenceMap(
+				"combine-monotone");
+		phi2_3to3m1.addPremiseForm("the.*(of|through).*",
+				"is (as big as|(small|bigg)er than)", "the.*(of|through).*");
+		phi2_3to3m1.addPremiseForm("a smaller .*", "means", "a smaller .*");
+
+		/**
+		 * there is a constraint that cannot be represented by
+		 * addPremiseConstraint
+		 */
+
+		// TODO add parts of s/p/o to constraint matching
+
+		/**
+		 * this rule cannot be represented with addConclusion -> need to do it
+		 * manually
+		 */
+
+		RegExpInferenceMap.AdvancedPremiseCombinator conclusion = new RegExpInferenceMap.AdvancedPremiseCombinator(
+				phi2_3to3m1);
+
+		conclusion
+				.addSubjectPart(
+						new SplittedStringRelation(
+								"a smaller current→the current through ¶a smaller ·[^c].*→the ·»2· of "),
+						1, AssertionPart.object);
+		conclusion
+				.addObjectPart(
+						new SplittedStringRelation(
+								"a smaller current→the current through ¶a smaller ·[^c].*→the ·»2· of "),
+						1, AssertionPart.object);
 		
+		conclusion.addSubjectPart(new SplittedStringRelation("the.*(of|through) ·.*→»2"), 0, AssertionPart.subject);
+		conclusion.addObjectPart(new SplittedStringRelation("the.*(of|through) ·.*→»2"), 0, AssertionPart.object);
 		
-		RegExpInferenceMap phi2_3to3m1 = new RegExpInferenceMap("combine-monotone");
-		phi2_3to3m1.addPremiseForm("the.*(of|through)","is (as big as|(small|bigg)er than)", "the.*(of|through)");
-		phi2_3to3m1.addPremiseForm("a smaller .*","means", "a smaller .*");
-		
-		//TODO.. :)
-		
+		conclusion.addPredicatePart(new SplittedStringRelation(".*→»1"), 0, AssertionPart.predicate);
+
+		phi2_3to3m1.addPremiseCombinator(conclusion);
+
 		mapset.add(phi2_3to3m1);
 
 		/**
@@ -194,11 +227,10 @@ public class Main {
 			valid.addAll(matchStrings.match((premises[i])));
 		}
 
-		
 		/**
 		 * do some inference
 		 */
-		
+
 		InferenceMaps maps = new InferenceMaps(mapset);
 
 		int step = 0;

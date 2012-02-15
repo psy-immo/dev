@@ -101,6 +101,47 @@ public class RegExpInferenceMap implements InferenceMap {
 	}
 
 	private Set<IsCompatibleChecker> checkPremises;
+	
+	private static class Morpher {
+		StringRelationInterface phi;
+		int index;
+		Assertion.AssertionPart part;
+		
+		
+
+		public Morpher(StringRelationInterface phi, int index,
+				AssertionPart part) {
+			super();
+			this.phi = phi;
+			this.index = index;
+			this.part = part;
+		}
+
+
+
+		Set<String> getMorphed(Vector<AssertionInterface> premises) {
+			String input = (String) Assertion.getAssertionPart(
+					premises.get(index), part);
+			if (phi != null)
+				return phi.allMaps(input);
+			else {
+				Set<String> result = new HashSet<String>();
+				result.add(input);
+				return result;
+			}
+		}
+	}
+	
+	public static interface PremiseCombinatorInterface {
+		/**
+		 * take a vector of given premises and recombine them
+		 * 
+		 * @param premises
+		 * @return recombined premises
+		 */
+		public Set<AssertionInterface> combine(
+				Vector<AssertionInterface> premises) ;
+	}
 
 	/**
 	 * implements the recombination of valid and checked premises into new
@@ -109,51 +150,33 @@ public class RegExpInferenceMap implements InferenceMap {
 	 * @author albrecht
 	 * 
 	 */
-	public static class PremiseCombinator {
+	public static class PremiseCombinator implements PremiseCombinatorInterface {
 
-		private static class Morpher {
-			StringRelationInterface phi;
-			int index;
-			Assertion.AssertionPart part;
-
-			Set<String> getMorphed(Vector<AssertionInterface> premises) {
-				String input = (String) Assertion.getAssertionPart(
-						premises.get(index), part);
-				if (phi != null)
-					return phi.allMaps(input);
-				else {
-					Set<String> result = new HashSet<String>();
-					result.add(input);
-					return result;
-				}
-			}
-		}
+		
 
 		private Morpher subject, predicate, object;
 
 		private InferenceMap parentRule;
+		
+		
+		protected PremiseCombinator() {	
+		}
 
 		public PremiseCombinator(InferenceMap parentRule, int idxS,
 				AssertionPart partS, StringRelationInterface phiS, int idxP,
 				AssertionPart partP, StringRelationInterface phiP, int idxO,
 				AssertionPart partO, StringRelationInterface phiO) {
 			this.parentRule = parentRule;
-			this.subject = new Morpher();
-			this.subject.index = idxS;
-			this.subject.part = partS;
-			this.subject.phi = phiS;
+			this.subject = new Morpher(phiS, idxS, partS);
+			
 
-			this.predicate = new Morpher();
-			this.predicate.index = idxP;
-			this.predicate.part = partP;
-			this.predicate.phi = phiP;
-
-			this.object = new Morpher();
-			this.object.index = idxO;
-			this.object.part = partO;
-			this.object.phi = phiO;
+			this.predicate = new Morpher(phiP, idxP, partP);
+			
+			this.object = new Morpher(phiO, idxO, partO);
+			
 		}
 
+		@Override
 		public Set<AssertionInterface> combine(
 				Vector<AssertionInterface> premises) {
 			Set<AssertionInterface> results = new HashSet<AssertionInterface>();
@@ -175,6 +198,112 @@ public class RegExpInferenceMap implements InferenceMap {
 		}
 	}
 
+	/**
+	 * 
+	 * implements an advanced recombination method
+	 * 
+	 * @author albrecht
+	 *
+	 */
+	
+	public static class AdvancedPremiseCombinator implements PremiseCombinatorInterface {
+		
+		private Vector<Morpher> subject;
+		private Vector<Morpher> predicate;
+		private Vector<Morpher> object;
+		
+		private InferenceMap parentRule;
+		
+		public AdvancedPremiseCombinator(InferenceMap parent) {
+			parentRule = parent;
+			subject = new Vector<RegExpInferenceMap.Morpher>();
+			predicate = new Vector<RegExpInferenceMap.Morpher>();
+			object = new Vector<RegExpInferenceMap.Morpher>();
+			
+		}
+		
+		public void addSubjectPart(StringRelationInterface phi, int idx, AssertionPart part) {
+			subject.add(new Morpher(phi, idx, part));
+		}
+		
+		public void addObjectPart(StringRelationInterface phi, int idx, AssertionPart part) {
+			object.add(new Morpher(phi, idx, part));
+		}
+		
+		public void addPredicatePart(StringRelationInterface phi, int idx, AssertionPart part) {
+			predicate.add(new Morpher(phi, idx, part));
+		}
+		
+		
+		
+		@Override
+		public Set<AssertionInterface> combine(
+				Vector<AssertionInterface> premises) {
+			Set<AssertionInterface> results = new HashSet<AssertionInterface>();
+
+			Set<String> subjects = new HashSet<String>();
+			Set<String> predicates = new HashSet<String>();
+			Set<String> objects = new HashSet<String>();
+			Set<String> concats = new HashSet<String>();
+
+			
+			subjects.add("");
+			objects.add("");
+			predicates.add("");
+			
+			for (int i = 0; i < subject.size(); i++) {
+				concats.clear();
+				
+				for (String s1 : subjects) {
+					for (String s2 : subject.get(i).getMorphed(premises)) {
+						concats.add(s1+s2);
+					}
+				}
+				
+				subjects.clear();
+				subjects.addAll(concats);
+			}
+			
+			for (int i = 0; i < object.size(); i++) {
+				concats.clear();
+				
+				for (String s1 : objects) {
+					for (String s2 : object.get(i).getMorphed(premises)) {
+						concats.add(s1+s2);
+					}
+				}
+				
+				objects.clear();
+				objects.addAll(concats);
+			}
+			
+			for (int i = 0; i < predicate.size(); i++) {
+				concats.clear();
+				
+				for (String s1 : predicates) {
+					for (String s2 : predicate.get(i).getMorphed(premises)) {
+						concats.add(s1+s2);
+					}
+				}
+				
+				predicates.clear();
+				predicates.addAll(concats);
+			}
+
+			for (String s : subjects) {
+				for (String p : predicates) {
+					for (String o : objects) {
+						results.add(new InferredAssertion(parentRule,
+								new Assertion(s, p, o), premises));
+					}
+				}
+			}
+
+			return results;
+		}
+		
+	}
+	
 	/**
 	 * implements cross-product recombination of premise forms
 	 * 
@@ -310,7 +439,7 @@ public class RegExpInferenceMap implements InferenceMap {
 		}
 	};
 
-	private Set<PremiseCombinator> conclusions;
+	private Set<PremiseCombinatorInterface> conclusions;
 
 	private RecombinatorInterface mergePremises;
 
@@ -337,7 +466,7 @@ public class RegExpInferenceMap implements InferenceMap {
 				}
 			}
 			if (passed) {
-				for (PremiseCombinator combine : conclusions) {
+				for (PremiseCombinatorInterface combine : conclusions) {
 					inferred.addAll(combine.combine(premiseVector));
 				}
 			}
@@ -361,7 +490,7 @@ public class RegExpInferenceMap implements InferenceMap {
 	public RegExpInferenceMap(String name) {
 		this.mergePremises = new CrossProduct();
 		this.name = name;
-		this.conclusions = new HashSet<RegExpInferenceMap.PremiseCombinator>();
+		this.conclusions = new HashSet<RegExpInferenceMap.PremiseCombinatorInterface>();
 		this.premiseForms = new Vector<AssertionFilter>();
 		this.checkPremises = new HashSet<RegExpInferenceMap.IsCompatibleChecker>();
 	}
@@ -446,6 +575,16 @@ public class RegExpInferenceMap implements InferenceMap {
 			AssertionPart partP, int idxO, AssertionPart partO) {
 		conclusions.add(new PremiseCombinator(this, idxS, partS, null, idxP,
 				partP, null, idxO, partO, null));
+	}
+	
+	/**
+	 * adds a new conclusion
+	 * 
+	 * @param combinator
+	 */
+	
+	public void addPremiseCombinator(PremiseCombinatorInterface combinator) {
+		conclusions.add(combinator);
 	}
 
 }
