@@ -65,7 +65,7 @@ public class Main {
 		int step = 0;
 		int size = 0;
 
-		while (step < 4) {
+		while (step <= 100) {
 			size = valid.size();
 
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
@@ -88,6 +88,9 @@ public class Main {
 			step++;
 			System.out.println("\n   +++ premise assertions " + size + " -> "
 					+ valid.size());
+
+			if ((size == valid.size()) && (step > 1))
+				break; // nothing new
 		}
 	}
 
@@ -294,6 +297,15 @@ public class Main {
 		 */
 
 		String[] premises = {
+				
+				"bulb A·is connected in parallel with·bulbchain BC",
+				"bulb B·is serial connected with·bulb C",
+				"the voltage of bulbchain BC·is bigger than·the voltage of bulb B",
+				"a bigger voltage·means·a bigger current",
+				"a bigger voltage·means·a bigger luminosity",
+				"the current through bulb A·is bigger than·the current through bulbchain BC"
+				
+				/*
 				"bulb A is connected in parallel with bulbchain BC",
 				"bulb B is serial connected with bulb C",
 				"the voltage of bulbchain BC is bigger than the voltage of bulb B",
@@ -303,7 +315,9 @@ public class Main {
 				"my left leg is as crooked as my right leg",
 				"X is as big as Y", "Y is smaller than Z",
 				"V is bigger than X", "X is as big as X2", "Q means Q2",
-				"Q2 means Q3", "Q4 means Q3" };
+				"Q2 means Q3", "Q4 means Q3" */ 
+				
+				};
 
 		/**
 		 * chop into subject·predicate·object
@@ -364,7 +378,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		// hardcodedExample();
+		//hardcodedExample();
 		regexpExample();
 	}
 
