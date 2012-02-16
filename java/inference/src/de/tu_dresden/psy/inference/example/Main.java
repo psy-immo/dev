@@ -22,13 +22,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Vector;
+
 
 import de.tu_dresden.psy.inference.*;
 import de.tu_dresden.psy.inference.Assertion.AssertionPart;
 import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
 import de.tu_dresden.psy.regexp.SplittedStringRelation;
-import de.tu_dresden.psy.regexp.StringRelationInterface;
 import de.tu_dresden.psy.regexp.StringRelationJoin;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher;
 

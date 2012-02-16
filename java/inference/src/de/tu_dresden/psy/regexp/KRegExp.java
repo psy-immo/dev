@@ -71,6 +71,14 @@ public class KRegExp implements StringSplitter {
 		this.setPattern(delimitedRegexps.split("·"));		
 	}
 
+	public KRegExp(Vector<String> input_regexps) {
+		String[] pattern = new String[input_regexps.size()];
+		for (int i=0;i<pattern.length;++i) {
+			pattern[i] = input_regexps.get(i);
+		}
+		setPattern(pattern);
+	}
+
 	/**
 	 * 
 	 * compile patterns given
