@@ -62,18 +62,31 @@ public class Main {
 			valid.add(new Assertion(premises[i]));
 		}
 
+		/**
+		 * use equivalence classes to speed up the process
+		 */
+		
+		Set<AssertionInterface> valid_equivalence_classes = new HashSet<AssertionInterface>();
+		
+		EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes, valid);
+
+		/**
+		 * do some inference
+		 */
+
+
 		int step = 0;
 		int size = 0;
 
 		while (step <= 100) {
-			size = valid.size();
+			size = valid_equivalence_classes.size();
 
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
 			if (step > 0)
-				valid.addAll(InferredAssertion.nonTrivial(maps.inferNew(valid)));
+				EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes, InferredAssertion.nonTrivial(maps.inferNew(valid_equivalence_classes)));
 
 			TreeSet<String> ordered = new TreeSet<String>();
-			for (Iterator<AssertionInterface> it = valid.iterator(); it
+			for (Iterator<AssertionInterface> it = valid_equivalence_classes.iterator(); it
 					.hasNext();) {
 				AssertionInterface a = it.next();
 
@@ -87,9 +100,9 @@ public class Main {
 
 			step++;
 			System.out.println("\n   +++ premise assertions " + size + " -> "
-					+ valid.size());
+					+ valid_equivalence_classes.size());
 
-			if ((size == valid.size()) && (step > 1))
+			if ((size == valid_equivalence_classes.size()) && (step > 1))
 				break; // nothing new
 		}
 	}
@@ -338,6 +351,14 @@ public class Main {
 		for (int i = 0; i < premises.length; ++i) {
 			valid.addAll(matchStrings.match((premises[i])));
 		}
+		
+		/**
+		 * use equivalence classes to speed up the process
+		 */
+		
+		Set<AssertionInterface> valid_equivalence_classes = new HashSet<AssertionInterface>();
+		
+		EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes, valid);
 
 		/**
 		 * do some inference
@@ -349,14 +370,14 @@ public class Main {
 		int size = 0;
 
 		while (step <= 100) {
-			size = valid.size();
+			size = valid_equivalence_classes.size();
 
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
 			if (step > 0)
-				valid.addAll(InferredAssertion.nonTrivial(maps.inferNew(valid)));
+				EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes, InferredAssertion.nonTrivial(maps.inferNew(valid_equivalence_classes)));
 
 			TreeSet<String> ordered = new TreeSet<String>();
-			for (Iterator<AssertionInterface> it = valid.iterator(); it
+			for (Iterator<AssertionInterface> it = valid_equivalence_classes.iterator(); it
 					.hasNext();) {
 				AssertionInterface a = it.next();
 
@@ -370,15 +391,17 @@ public class Main {
 
 			step++;
 			System.out.println("\n   +++ premise assertions " + size + " -> "
-					+ valid.size());
+					+ valid_equivalence_classes.size());
 
-			if ((size == valid.size()) && (step > 1))
+			if ((size == valid_equivalence_classes.size()) && (step > 1))
 				break; // nothing new
 		}
 	}
 
 	public static void main(String[] args) {
-		//hardcodedExample();
+		System.out.println("Java-Coded: \n");
+		hardcodedExample();
+		System.out.println("\n\n\n\nRegExp-Coded: \n");
 		regexpExample();
 	}
 
