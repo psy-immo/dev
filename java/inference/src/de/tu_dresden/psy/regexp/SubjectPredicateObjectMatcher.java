@@ -56,6 +56,12 @@ public class SubjectPredicateObjectMatcher {
 		this.matcher = new KRegExp(new String[] { subjectPattern, delimiterPattern,
 				predicatePattern, delimiterPattern, objectPattern });
 	}
+	
+	/**
+	 * override constructor
+	 */
+	protected SubjectPredicateObjectMatcher() {
+	}
 
 	/**
 	 * make Assertion objects from String 

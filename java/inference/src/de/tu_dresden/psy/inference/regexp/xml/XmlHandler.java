@@ -23,16 +23,24 @@ public class XmlHandler extends DefaultHandler {
 
 	private XmlRootTag root;
 
+	private boolean isRoot;
+
 	public XmlHandler() {
 		root = new XmlRootTag();
 
 		stack = new Stack<XmlTag>();
-		stack.push(root);
+
 	}
 
 	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
+
+		if (isRoot == true) {
+			isRoot = false;
+
+			return;
+		}
 
 		XmlTag tag = new XmlTag(qName, attributes);
 
@@ -43,7 +51,8 @@ public class XmlHandler extends DefaultHandler {
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 		XmlTag top = stack.pop();
-		stack.peek().addChild(top);
+		if (stack.isEmpty() == false)
+			stack.peek().addChild(top);
 	}
 
 	@Override
@@ -63,6 +72,11 @@ public class XmlHandler extends DefaultHandler {
 
 	public void readStream(InputStream input)
 			throws ParserConfigurationException, SAXException, IOException {
+
+		stack.clear();
+		stack.push(root);
+		isRoot = true;
+
 		/**
 		 * I/O handling in UTF-8
 		 */
@@ -93,7 +107,8 @@ public class XmlHandler extends DefaultHandler {
 	 */
 	public void readString(String xmlData) throws UnsupportedEncodingException,
 			ParserConfigurationException, SAXException, IOException {
-		readStream(new ByteArrayInputStream(xmlData.getBytes("UTF-8")));
+		String allData = "<root>" + xmlData + "</root>";
+		readStream(new ByteArrayInputStream(allData.getBytes("UTF-8")));
 	}
 
 	/**
@@ -106,7 +121,7 @@ public class XmlHandler extends DefaultHandler {
 		XmlHandler handler = new XmlHandler();
 		try {
 
-			handler.readString("<rule></rule>");
+			handler.readString("<rule></rule><parse><subject>a+</subject><subject>a+</subject><predicate>a+</predicate><object>a+</object></parse><assert>aaa aaaa aa</assert>");
 
 		} catch (UnsupportedEncodingException e) {
 
@@ -121,8 +136,9 @@ public class XmlHandler extends DefaultHandler {
 
 			e.printStackTrace();
 		}
-		
+
 		System.out.println(handler.root);
+		System.out.println(handler.root.getGivenAssertions());
 	}
 
 }

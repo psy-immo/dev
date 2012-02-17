@@ -25,13 +25,17 @@ import java.util.Set;
 import java.util.Vector;
 
 import de.tu_dresden.psy.inference.Assertion.AssertionPart;
+import de.tu_dresden.psy.inference.AssertionInterface;
 import de.tu_dresden.psy.inference.InferenceMap;
+import de.tu_dresden.psy.inference.InferenceMaps;
 import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
 import de.tu_dresden.psy.regexp.KRegExp;
 import de.tu_dresden.psy.regexp.SplittedStringRelation;
 import de.tu_dresden.psy.regexp.SplittedStringRelation.MapSplitting;
 import de.tu_dresden.psy.regexp.StringRelationJoin;
-import de.tu_dresden.psy.regexp.StringSplitter;
+
+import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher;
+import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatchers;
 
 /**
  * implements a virtual root tag for xml style notation of regexp inference
@@ -43,9 +47,52 @@ import de.tu_dresden.psy.regexp.StringSplitter;
 public class XmlRootTag extends XmlTag {
 
 	private Set<InferenceMap> rules;
+	private Set<SubjectPredicateObjectMatcher> parsers;
+	private Set<String> assertions;
 
 	public XmlRootTag() {
 		rules = new HashSet<InferenceMap>();
+		parsers = new HashSet<SubjectPredicateObjectMatcher>();
+		assertions = new HashSet<String>();
+	}
+
+	/**
+	 * 
+	 * @return a combined inference map of all given inference rules
+	 */
+
+	public InferenceMaps getMaps() {
+		return new InferenceMaps(rules);
+	}
+
+	/**
+	 * 
+	 * @return a combined parser
+	 */
+
+	public SubjectPredicateObjectMatchers getParsers() {
+		return new SubjectPredicateObjectMatchers(parsers);
+	}
+
+	public Set<AssertionInterface> getGivenAssertions() {
+		Set<AssertionInterface> given = new HashSet<AssertionInterface>();
+		SubjectPredicateObjectMatchers matcher = getParsers();
+
+		for (String assertion : assertions) {
+			given.addAll(matcher.match(assertion));
+		}
+
+		return given;
+	}
+
+	/**
+	 * process a &lt;assert>-tag
+	 * 
+	 * @param child
+	 */
+
+	private void processAssert(XmlTag child) {
+		assertions.add(child.contents);
 	}
 
 	/**
@@ -92,7 +139,7 @@ public class XmlRootTag extends XmlTag {
 			Map<String, Integer> premise_id) {
 		RegExpInferenceMap.AdvancedPremiseCombinator conclusion = new RegExpInferenceMap.AdvancedPremiseCombinator(
 				rule);
-		
+
 		for (XmlTag tag : child.children) {
 			AssertionPart part = null;
 			if (tag.tagName.equals("SUBJECT")) {
@@ -102,10 +149,10 @@ public class XmlRootTag extends XmlTag {
 			} else if (tag.tagName.equals("OBJECT")) {
 				part = AssertionPart.object;
 			}
-			
+
 			if (part != null) {
-				if (tag.attributes.containsKey("id") &&
-						tag.attributes.containsKey("source")) {
+				if (tag.attributes.containsKey("id")
+						&& tag.attributes.containsKey("source")) {
 					AssertionPart source_part = null;
 					if (tag.attributes.get("source").equals("SUBJECT")) {
 						source_part = AssertionPart.subject;
@@ -114,21 +161,23 @@ public class XmlRootTag extends XmlTag {
 					} else if (tag.attributes.get("source").equals("OBJECT")) {
 						source_part = AssertionPart.object;
 					}
-					
+
 					if (source_part != null) {
 						/**
 						 * the children of the tag form a relation
 						 */
 
 						StringRelationJoin relation = null;
-						
+
 						if (tag.children.isEmpty() == false) {
 							relation = processPhi(child);
 						}
-						
-						conclusion.addPart(part, relation, premise_id.get(tag.attributes.get("id")), source_part);						
+
+						conclusion.addPart(part, relation,
+								premise_id.get(tag.attributes.get("id")),
+								source_part);
 					}
-					
+
 				} else {
 					conclusion.addConstantPart(part, tag.contents);
 				}
@@ -168,6 +217,40 @@ public class XmlRootTag extends XmlTag {
 			predicate = ".*";
 
 		rule.addPremiseForm(subject, predicate, object);
+	}
+
+	/**
+	 * process a &lt;parse>-tag
+	 * 
+	 * @param child
+	 */
+
+	private void processParse(XmlTag child) {
+		String subject = "";
+		String predicate = "";
+		String object = "";
+
+		for (XmlTag t : child.children) {
+			if (t.tagName.equals("SUBJECT")) {
+				subject += "(" + t.contents + ")";
+			} else if (t.tagName.equals("PREDICATE")) {
+				predicate += "(" + t.contents + ")";
+			} else if (t.tagName.equals("OBJECT")) {
+				object += "(" + t.contents + ")";
+			}
+		}
+
+		if (subject.isEmpty())
+			subject = ".*";
+
+		if (object.isEmpty())
+			object = ".*";
+
+		if (predicate.isEmpty())
+			predicate = ".*";
+
+		parsers.add(new SubjectPredicateObjectMatcher(subject, predicate,
+				object));
 	}
 
 	/**
@@ -275,11 +358,12 @@ public class XmlRootTag extends XmlTag {
 	@Override
 	public void addChild(XmlTag child) {
 		if (child.tagName.equals("RULE")) {
-			/**
-			 * a rule tag
-			 */
-
 			processRule(child);
+		} else if (child.tagName.equals("PARSE")) {
+			processParse(child);
+		}
+		else if (child.tagName.equals("ASSERT")) {
+			processAssert(child);
 		}
 
 		/**
@@ -290,7 +374,8 @@ public class XmlRootTag extends XmlTag {
 	@Override
 	public String toString() {
 
-		return rules.size() + " rule(s)";
+		return rules.size() + " rule(s), " + parsers.size() + " parser(s), "
+				+ assertions.size() + " assertion(s)";
 	}
 
 }
