@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-
 import de.tu_dresden.psy.inference.*;
 import de.tu_dresden.psy.inference.Assertion.AssertionPart;
 import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
@@ -64,15 +63,15 @@ public class Main {
 		/**
 		 * use equivalence classes to speed up the process
 		 */
-		
+
 		Set<AssertionInterface> valid_equivalence_classes = new HashSet<AssertionInterface>();
-		
-		EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes, valid);
+
+		EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes,
+				valid);
 
 		/**
 		 * do some inference
 		 */
-
 
 		int step = 0;
 		int size = 0;
@@ -82,11 +81,14 @@ public class Main {
 
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
 			if (step > 0)
-				EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes, InferredAssertion.nonTrivial(maps.inferNew(valid_equivalence_classes)));
+				EquivalentAssertions.addToEquivalenceClass(
+						valid_equivalence_classes, InferredAssertion
+								.nonTrivial(maps
+										.inferNew(valid_equivalence_classes)));
 
 			TreeSet<String> ordered = new TreeSet<String>();
-			for (Iterator<AssertionInterface> it = valid_equivalence_classes.iterator(); it
-					.hasNext();) {
+			for (Iterator<AssertionInterface> it = valid_equivalence_classes
+					.iterator(); it.hasNext();) {
 				AssertionInterface a = it.next();
 
 				ordered.add(a.toString());
@@ -166,7 +168,7 @@ public class Main {
 				".*→the voltage of ·»1");
 
 		mapset.add(phi1to2p);
-		
+
 		/**
 		 * monotone relation
 		 */
@@ -188,20 +190,20 @@ public class Main {
 								"the ·.*· (of|through).*→»2"), 0,
 						AssertionPart.object, new SplittedStringRelation(
 								"the ·.*· (of|through).*→»2")));
-		
+
 		phi2_3to3m1
-		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
-				0, AssertionPart.subject, new SplittedStringRelation(
-						"the ·.*· (of|through).*→»2"), 1,
-				AssertionPart.subject, new SplittedStringRelation(
-						"a (bigg|small)er ·.*→»2")));
-		
+				.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+						0, AssertionPart.subject, new SplittedStringRelation(
+								"the ·.*· (of|through).*→»2"), 1,
+						AssertionPart.subject, new SplittedStringRelation(
+								"a (bigg|small)er ·.*→»2")));
+
 		phi2_3to3m1
-		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
-				1, AssertionPart.subject, new SplittedStringRelation(
-						"a (bigg|small)er ·.*→»1"), 1,
-				AssertionPart.object, new SplittedStringRelation(
-						"a (bigg|small)er ·.*→»1")) );
+				.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+						1, AssertionPart.subject, new SplittedStringRelation(
+								"a (bigg|small)er ·.*→»1"), 1,
+						AssertionPart.object, new SplittedStringRelation(
+								"a (bigg|small)er ·.*→»1")));
 
 		/**
 		 * this rule cannot be represented with addConclusion -> need to do it
@@ -234,7 +236,6 @@ public class Main {
 
 		mapset.add(phi2_3to3m1);
 
-		
 		/**
 		 * antitone relation
 		 */
@@ -256,20 +257,20 @@ public class Main {
 								"the ·.*· (of|through).*→»2"), 0,
 						AssertionPart.object, new SplittedStringRelation(
 								"the ·.*· (of|through).*→»2")));
-		
+
 		phi2_3to3a1
-		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
-				0, AssertionPart.subject, new SplittedStringRelation(
-						"the ·.*· (of|through).*→»2"), 1,
-				AssertionPart.subject, new SplittedStringRelation(
-						"a (bigg|small)er ·.*→»2")));
-		
+				.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+						0, AssertionPart.subject, new SplittedStringRelation(
+								"the ·.*· (of|through).*→»2"), 1,
+						AssertionPart.subject, new SplittedStringRelation(
+								"a (bigg|small)er ·.*→»2")));
+
 		phi2_3to3a1
-		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
-				1, AssertionPart.subject, new StringRelationJoin(
-						"a bigger.*→big¶a smaller.*→small"), 1,
-				AssertionPart.object, new StringRelationJoin(
-						"a bigger.*→small¶a smaller.*→big")) );
+				.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+						1, AssertionPart.subject, new StringRelationJoin(
+								"a bigger.*→big¶a smaller.*→small"), 1,
+						AssertionPart.object, new StringRelationJoin(
+								"a bigger.*→small¶a smaller.*→big")));
 
 		/**
 		 * this rule cannot be represented with addConclusion -> need to do it
@@ -295,41 +296,42 @@ public class Main {
 		conclusion2.addObjectPart(new SplittedStringRelation(
 				"the.*(of|through) ·.*→»2"), 0, AssertionPart.object);
 
-		conclusion2.addPredicatePart(new StringRelationJoin("is bigger than→is smaller than¶is smaller than→is bigger than"), 0,
-				AssertionPart.predicate);
+		conclusion2
+				.addPredicatePart(
+						new StringRelationJoin(
+								"is bigger than→is smaller than¶is smaller than→is bigger than"),
+						0, AssertionPart.predicate);
 
 		phi2_3to3a1.addPremiseCombinator(conclusion2);
 
 		mapset.add(phi2_3to3a1);
-		
-		
-		
+
 		/**
 		 * initial premises
 		 */
 
 		String[] premises = {
-				
+
 				"bulb A·is connected in parallel with·bulbchain BC",
 				"bulb B·is serial connected with·bulb C",
 				"the voltage of bulbchain BC·is bigger than·the voltage of bulb B",
 				"a bigger voltage·means·a bigger current",
 				"a bigger voltage·means·a bigger luminosity",
 				"the current through bulb A·is bigger than·the current through bulbchain BC"
-				
-				/*
-				"bulb A is connected in parallel with bulbchain BC",
-				"bulb B is serial connected with bulb C",
-				"the voltage of bulbchain BC is bigger than the voltage of bulb B",
-				"a bigger voltage means a smaller current",
-				"a bigger voltage means a bigger luminosity",
-				"the current through bulb A is bigger than the current through bulbchain BC",
-				"my left leg is as crooked as my right leg",
-				"X is as big as Y", "Y is smaller than Z",
-				"V is bigger than X", "X is as big as X2", "Q means Q2",
-				"Q2 means Q3", "Q4 means Q3" */ 
-				
-				};
+
+		/*
+		 * "bulb A is connected in parallel with bulbchain BC",
+		 * "bulb B is serial connected with bulb C",
+		 * "the voltage of bulbchain BC is bigger than the voltage of bulb B",
+		 * "a bigger voltage means a smaller current",
+		 * "a bigger voltage means a bigger luminosity",
+		 * "the current through bulb A is bigger than the current through bulbchain BC"
+		 * , "my left leg is as crooked as my right leg", "X is as big as Y",
+		 * "Y is smaller than Z", "V is bigger than X", "X is as big as X2",
+		 * "Q means Q2", "Q2 means Q3", "Q4 means Q3"
+		 */
+
+		};
 
 		/**
 		 * chop into subject·predicate·object
@@ -350,14 +352,15 @@ public class Main {
 		for (int i = 0; i < premises.length; ++i) {
 			valid.addAll(matchStrings.match((premises[i])));
 		}
-		
+
 		/**
 		 * use equivalence classes to speed up the process
 		 */
-		
+
 		Set<AssertionInterface> valid_equivalence_classes = new HashSet<AssertionInterface>();
-		
-		EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes, valid);
+
+		EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes,
+				valid);
 
 		/**
 		 * do some inference
@@ -373,11 +376,14 @@ public class Main {
 
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
 			if (step > 0)
-				EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes, InferredAssertion.nonTrivial(maps.inferNew(valid_equivalence_classes)));
+				EquivalentAssertions.addToEquivalenceClass(
+						valid_equivalence_classes, InferredAssertion
+								.nonTrivial(maps
+										.inferNew(valid_equivalence_classes)));
 
 			TreeSet<String> ordered = new TreeSet<String>();
-			for (Iterator<AssertionInterface> it = valid_equivalence_classes.iterator(); it
-					.hasNext();) {
+			for (Iterator<AssertionInterface> it = valid_equivalence_classes
+					.iterator(); it.hasNext();) {
 				AssertionInterface a = it.next();
 
 				ordered.add(a.toString());
@@ -398,10 +404,22 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("Java-Coded: \n");
-		hardcodedExample();
-		System.out.println("\n\n\n\nRegExp-Coded: \n");
-		regexpExample();
+		if (args.length == 1) {
+			if (args[0].equals("--hard")) {
+				System.out.println("Java-Coded: \n");
+				hardcodedExample();
+			}
+			
+			if (args[0].equals("--regexp")) {
+				System.out.println("RegExp-Coded: \n");
+				regexpExample();
+			}
+		} else {
+			System.out.println("Java-Coded: \n");
+			hardcodedExample();
+			System.out.println("\n\n\n\nRegExp-Coded: \n");
+			regexpExample();
+		}
 	}
 
 }

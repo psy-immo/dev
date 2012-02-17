@@ -47,7 +47,7 @@ public class XmlTag {
 		this.attributes = new HashMap<String, String>();
 
 		for (int i = 0; i < atts.getLength(); ++i) {
-			attributes.put(atts.getLocalName(i).toLowerCase(), atts.getValue(i));
+			attributes.put(atts.getLocalName(i).toLowerCase(), atts.getValue(i).toLowerCase());
 		}
 
 		contents = "";

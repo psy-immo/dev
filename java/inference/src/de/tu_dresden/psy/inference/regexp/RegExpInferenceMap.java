@@ -277,10 +277,17 @@ public class RegExpInferenceMap implements InferenceMap {
 
 		public Morpher(StringRelationInterface phi, int index,
 				AssertionPart part) {
-			super();
+			
 			this.phi = phi;
 			this.index = index;
 			this.part = part;
+		}
+
+		/**
+		 * do not initialize MorpherConstant
+		 */
+		protected Morpher() {
+
 		}
 
 		Set<String> getMorphed(Vector<AssertionInterface> premises) {
@@ -293,6 +300,20 @@ public class RegExpInferenceMap implements InferenceMap {
 				result.add(input);
 				return result;
 			}
+		}
+	}
+	
+	private static class MorpherConstant extends Morpher {
+		Set<String> value;
+		
+		public MorpherConstant(String constant) {
+			value = new HashSet<String>();
+			value.add(constant);
+		}
+		
+		@Override
+		Set<String> getMorphed(Vector<AssertionInterface> premises) {
+			return value;
 		}
 	}
 
@@ -396,6 +417,27 @@ public class RegExpInferenceMap implements InferenceMap {
 		public void addPredicatePart(StringRelationInterface phi, int idx,
 				AssertionPart part) {
 			predicate.add(new Morpher(phi, idx, part));
+		}
+		
+		public void addPart(AssertionPart targetPart, StringRelationInterface phi, int idx,
+				AssertionPart sourcePart) {
+			if (targetPart == AssertionPart.subject) {
+				addSubjectPart(phi, idx, sourcePart);
+			} else if (targetPart == AssertionPart.predicate) {
+				addPredicatePart(phi, idx, sourcePart);
+			} else if (targetPart == AssertionPart.object) {
+				addObjectPart(phi, idx, sourcePart);
+			}
+		}
+		
+		public void addConstantPart(AssertionPart targetPart, String value) {
+			if (targetPart == AssertionPart.subject) {
+				subject.add(new MorpherConstant(value));
+			} else if (targetPart == AssertionPart.predicate) {
+				predicate.add(new MorpherConstant(value));
+			} else if (targetPart == AssertionPart.object) {
+				object.add(new MorpherConstant(value));
+			}
 		}
 
 		@Override

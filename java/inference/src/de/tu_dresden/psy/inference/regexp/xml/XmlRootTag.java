@@ -72,10 +72,68 @@ public class XmlRootTag extends XmlTag {
 				current_premise++;
 			} else if (tag.tagName.equals("CONSTRAINT")) {
 				processConstraint(child, rule, premise_id);
+			} else if (tag.tagName.equals("INFER")) {
+				processInfer(child, rule, premise_id);
 			}
 		}
 
 		rules.add(rule);
+	}
+
+	/**
+	 * process a &lt;infer>-tag within a &lt;rule>-tag
+	 * 
+	 * @param child
+	 * @param rule
+	 * @param premise_id
+	 */
+
+	private void processInfer(XmlTag child, RegExpInferenceMap rule,
+			Map<String, Integer> premise_id) {
+		RegExpInferenceMap.AdvancedPremiseCombinator conclusion = new RegExpInferenceMap.AdvancedPremiseCombinator(
+				rule);
+		
+		for (XmlTag tag : child.children) {
+			AssertionPart part = null;
+			if (tag.tagName.equals("SUBJECT")) {
+				part = AssertionPart.subject;
+			} else if (tag.tagName.equals("PREDICATE")) {
+				part = AssertionPart.predicate;
+			} else if (tag.tagName.equals("OBJECT")) {
+				part = AssertionPart.object;
+			}
+			
+			if (part != null) {
+				if (tag.attributes.containsKey("id") &&
+						tag.attributes.containsKey("source")) {
+					AssertionPart source_part = null;
+					if (tag.attributes.get("source").equals("SUBJECT")) {
+						source_part = AssertionPart.subject;
+					} else if (tag.attributes.get("source").equals("PREDICATE")) {
+						source_part = AssertionPart.predicate;
+					} else if (tag.attributes.get("source").equals("OBJECT")) {
+						source_part = AssertionPart.object;
+					}
+					
+					if (source_part != null) {
+						/**
+						 * the children of the tag form a relation
+						 */
+
+						StringRelationJoin relation = null;
+						
+						if (tag.children.isEmpty() == false) {
+							relation = processPhi(child);
+						}
+						
+						conclusion.addPart(part, relation, premise_id.get(tag.attributes.get("id")), source_part);						
+					}
+					
+				} else {
+					conclusion.addConstantPart(part, tag.contents);
+				}
+			}
+		}
 	}
 
 	/**
@@ -145,6 +203,7 @@ public class XmlRootTag extends XmlTag {
 					 */
 
 					StringRelationJoin relation = processPhi(child);
+
 					checker.addCheckPart(
 							premise_id.get(t.attributes.get("id")), part,
 							relation);
