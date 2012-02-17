@@ -18,14 +18,24 @@
 
 package de.tu_dresden.psy.inference.example;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 import de.tu_dresden.psy.inference.*;
 import de.tu_dresden.psy.inference.Assertion.AssertionPart;
 import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
+import de.tu_dresden.psy.inference.regexp.xml.XmlHandler;
 import de.tu_dresden.psy.regexp.SplittedStringRelation;
 import de.tu_dresden.psy.regexp.StringRelationJoin;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher;
@@ -402,6 +412,78 @@ public class Main {
 				break; // nothing new
 		}
 	}
+	
+	private static void xmlExample(InputStream input) {
+		XmlHandler handler = new XmlHandler();
+		try {
+			handler.readStream(input);
+		} catch (ParserConfigurationException e) {
+ 
+			e.printStackTrace();
+		} catch (SAXException e) {
+
+			e.printStackTrace();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+		
+		System.out.println("Input: "+handler.getRoot());
+		
+		
+		Set<AssertionInterface> valid = handler.getRoot().getGivenAssertions();
+
+		/**
+		 * use equivalence classes to speed up the process
+		 */
+
+		Set<AssertionInterface> valid_equivalence_classes = new HashSet<AssertionInterface>();
+
+		EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes,
+				valid);
+
+		/**
+		 * do some inference
+		 */
+
+		InferenceMaps maps = handler.getRoot().getMaps();
+
+		int step = 0;
+		int size = 0;
+
+		while (step <= 100) {
+			size = valid_equivalence_classes.size();
+
+			System.out.println("  ++++ Step " + step + " ++++\n\n");
+			if (step > 0)
+				EquivalentAssertions.addToEquivalenceClass(
+						valid_equivalence_classes, InferredAssertion
+								.nonTrivial(maps
+										.inferNew(valid_equivalence_classes)));
+
+			TreeSet<String> ordered = new TreeSet<String>();
+			for (Iterator<AssertionInterface> it = valid_equivalence_classes
+					.iterator(); it.hasNext();) {
+				AssertionInterface a = it.next();
+
+				ordered.add(a.toString());
+			}
+
+			for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
+				String s = it.next();
+				System.out.println(s);
+			}
+
+			step++;
+			System.out.println("\n   +++ premise assertions " + size + " -> "
+					+ valid_equivalence_classes.size());
+
+			if ((size == valid_equivalence_classes.size()) && (step > 1))
+				break; // nothing new
+		}
+	}
+	
+	
 
 	public static void main(String[] args) {
 		if (args.length == 1) {
@@ -414,11 +496,26 @@ public class Main {
 				System.out.println("RegExp-Coded: \n");
 				regexpExample();
 			}
-		} else {
-			System.out.println("Java-Coded: \n");
-			hardcodedExample();
-			System.out.println("\n\n\n\nRegExp-Coded: \n");
-			regexpExample();
+		} else if (args.length == 2) {
+			if (args[0].equals("--xml")) {
+				try {
+					xmlExample(new FileInputStream(new File(args[1])));
+				} catch (FileNotFoundException e) {
+
+					e.printStackTrace();
+				}
+			}
+			
+		}else {
+			
+			try {
+				xmlExample(new FileInputStream(new File("/home/immanuel/git/psyCode/demo/inference/bulbs.xml")));
+			} catch (FileNotFoundException e) {
+
+				e.printStackTrace();
+			}
+			
+			
 		}
 	}
 

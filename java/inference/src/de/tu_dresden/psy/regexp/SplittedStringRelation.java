@@ -204,15 +204,20 @@ public class SplittedStringRelation implements StringRelationInterface {
 		for (String[] split : splittings) {
 			for (Vector<MapSplitting> map_vector : maps) {
 				Set<String> prefixes = new HashSet<String>();
+				Set<String> concat = new HashSet<String>();
 				prefixes.add("");
+				
 				for (MapSplitting map : map_vector) {
-					Set<String> concat = new HashSet<String>();
+					concat.clear();
 					for (String left : prefixes) {
 						for (String right : map.map(split)) {
 							concat.add(left + right);
 						}
 					}
+					
+					Set<String> delta = prefixes;
 					prefixes = concat;
+					concat = prefixes;
 				}
 				result.addAll(prefixes);
 			}

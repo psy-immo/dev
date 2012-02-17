@@ -141,4 +141,8 @@ public class XmlHandler extends DefaultHandler {
 		System.out.println(handler.root.getGivenAssertions());
 	}
 
+	public XmlRootTag getRoot() {
+		return root;
+	}
+
 }

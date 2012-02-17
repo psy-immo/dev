@@ -192,9 +192,9 @@ public class RegExpInferenceMap implements InferenceMap {
 				return true;
 
 			Set<String> intersection = new HashSet<String>();
-
+			
 			int i = 0;
-
+			
 			int idx = index.get(i);
 			StringRelationInterface rel = phi.get(i);
 			AssertionPart pt = part.get(i);
@@ -204,18 +204,41 @@ public class RegExpInferenceMap implements InferenceMap {
 						premises.get(idx), pt);
 
 				if (rel == null) {
-					if (intersection.contains(value)) {
-						intersection.clear();
-						intersection.add(value);
-					} else
-						return false;
+					intersection.add(value);
 				} else {
-					intersection.retainAll(rel.allMaps(value));
+					intersection.addAll(rel.allMaps(value));
 					if (intersection.isEmpty())
 						return false;
 				}
 			} else
 				return false;
+
+			
+
+			for (i = 1; i < index.size(); ++i) {
+
+				idx = index.get(i);
+				rel = phi.get(i);
+				pt = part.get(i);
+
+				if (Assertion.getAssertionPart(premises.get(idx), pt) instanceof String) {
+					String value = (String) Assertion.getAssertionPart(
+							premises.get(idx), pt);
+
+					if (rel == null) {
+						if (intersection.contains(value)) {
+							intersection.clear();
+							intersection.add(value);
+						} else
+							return false;
+					} else {
+						intersection.retainAll(rel.allMaps(value));
+						if (intersection.isEmpty())
+							return false;
+					}
+				} else
+					return false;
+			}
 
 			return true;
 		}
@@ -277,7 +300,7 @@ public class RegExpInferenceMap implements InferenceMap {
 
 		public Morpher(StringRelationInterface phi, int index,
 				AssertionPart part) {
-			
+
 			this.phi = phi;
 			this.index = index;
 			this.part = part;
@@ -302,15 +325,15 @@ public class RegExpInferenceMap implements InferenceMap {
 			}
 		}
 	}
-	
+
 	private static class MorpherConstant extends Morpher {
 		Set<String> value;
-		
+
 		public MorpherConstant(String constant) {
 			value = new HashSet<String>();
 			value.add(constant);
 		}
-		
+
 		@Override
 		Set<String> getMorphed(Vector<AssertionInterface> premises) {
 			return value;
@@ -418,9 +441,9 @@ public class RegExpInferenceMap implements InferenceMap {
 				AssertionPart part) {
 			predicate.add(new Morpher(phi, idx, part));
 		}
-		
-		public void addPart(AssertionPart targetPart, StringRelationInterface phi, int idx,
-				AssertionPart sourcePart) {
+
+		public void addPart(AssertionPart targetPart,
+				StringRelationInterface phi, int idx, AssertionPart sourcePart) {
 			if (targetPart == AssertionPart.subject) {
 				addSubjectPart(phi, idx, sourcePart);
 			} else if (targetPart == AssertionPart.predicate) {
@@ -429,7 +452,7 @@ public class RegExpInferenceMap implements InferenceMap {
 				addObjectPart(phi, idx, sourcePart);
 			}
 		}
-		
+
 		public void addConstantPart(AssertionPart targetPart, String value) {
 			if (targetPart == AssertionPart.subject) {
 				subject.add(new MorpherConstant(value));
@@ -763,6 +786,15 @@ public class RegExpInferenceMap implements InferenceMap {
 				new StringRelationJoin(phiS), idxP, partP,
 				new StringRelationJoin(phiP), idxO, partO,
 				new StringRelationJoin(phiO)));
+	}
+
+	/**
+	 * adds a new conclusion
+	 * 
+	 * @param conclusion
+	 */
+	public void addConclusion(PremiseCombinatorInterface conclusion) {
+		conclusions.add(conclusion);
 	}
 
 	/**

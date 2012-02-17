@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<parse>
+		<subject>\S.*</subject>
+		<predicate>(means|is(\s.*\swith|\s.*\sthan|\s+as.*\sas))</predicate>
+		<object>\S.*</object>
+	</parse>
+	<assert>bulb A is connected in parallel with bulbchain BC</assert>
+	<assert>bulb B is serial connected with bulb C</assert>
+	<assert>the voltage of bulbchain BC is bigger than the voltage of bulb B</assert>
+	<assert>a bigger voltage means a bigger current</assert>
+	<assert>a bigger voltage means a bigger luminosity</assert>
+	<assert>the current through bulb A is bigger than the current through bulbchain BC</assert>
+
+	<rule name="trans">
+		<premise id="a">
+			<predicate>means</predicate>
+		</premise>
+		<premise id="b">
+			<predicate>means</predicate>
+		</premise>
+		<constraint>
+			<object id="a"/>
+			<subject id="b"/>
+		</constraint>
+		<infer>
+			<subject id="a" source="subject"/>
+			<predicate>means</predicate>
+			<object id="b" source="object"/>
+		</infer>
+	</rule>
+	<rule name="sym">
+		<premise id="a"><predicate>means</predicate></premise>
+		<infer><subject id="a" source="object"/><predicate>means</predicate><object id="a" source="subject"/></infer>
+	</rule>
+
+	<rule name="neg">
+		<premise id="a">
+			<predicate>is (as.*as|(smaller|bigger) than)</predicate>
+		</premise>
+		<infer>
+			<subject id="a" source="object"/>
+			<predicate id="a" source="predicate">
+				<phi>
+					<in>is bigger.*</in>
+					<out>is smaller than</out>
+				</phi>
+				<phi>
+					<in>is smaller.*</in>
+					<out>is bigger than</out>
+				</phi>
+				<phi>
+					<in id="x">is as.*as</in>
+					<out id="x"/>
+				</phi>
+			</predicate>
+			<object id="a" source="subject"/>
+		</infer>
+	</rule>
+
+	<rule name="monotone">
+		<premise id="a"><predicate>is ((bigger|smaller) than|as big as)</predicate></premise>
+		<premise id="b"><predicate>is ((bigger|smaller) than|as big as)</predicate></premise>
+		<constraint><predicate id="a"/>
+			<predicate id="b">
+				<phi>
+					<in>.*</in>
+					<out>is as big as</out>
+				</phi>
+				<phi>
+					<in id="x">is.*than</in>
+					<out id="x"/>
+				</phi>
+			</predicate>
+		</constraint>
+		<constraint>
+			<object id="a"/>
+			<subject id="b"/>
+		</constraint>
+		<infer><subject id="a" source="subject"/>
+		<predicate id="b" source="predicate"/>
+		<object id="b" source="object"/>
+		</infer>
+
+	</rule>
+
+	<rule name="serial">
+		<premise id="a">
+			<predicate>is serial connected with</predicate>
+		</premise>
+		<infer>
+			<subject id="a" source="subject">
+				<phi>
+					<in id="x">.*</in>
+					<out>the current through </out>
+					<out id="x"/>
+				</phi>
+			</subject>
+			<predicate>is as big as</predicate>
+			<object id="a" source="object">
+				<phi>
+					<in id="x">.*</in>
+					<out>the current through </out>
+					<out id="x"/>
+				</phi>
+			</object>
+		</infer>
+	</rule>
+
+
+	<rule name="parallel">
+		<premise id="a">
+			<predicate>is connected in parallel with</predicate>
+		</premise>
+		<infer>
+			<subject id="a" source="subject">
+				<phi>
+					<in id="x">.*</in>
+					<out>the voltage of </out>
+					<out id="x"/>
+				</phi>
+			</subject>
+			<predicate>is as big as</predicate>
+			<object id="a" source="object">
+				<phi>
+					<in id="x">.*</in>
+					<out>the voltage of </out>
+					<out id="x"/>
+				</phi>
+			</object>
+		</infer>
+	</rule>
+
+	<rule name="combine-monotone">
+		<premise id="a">
+			<subject>the.*(of|through).*</subject>
+			<predicate>is (as big as|(bigg|small)er than)</predicate>
+			<object>the.*(of|through).*</object>
+		</premise>
+		<premise id="b">
+			<predicate>means</predicate>
+		</premise>
+		<constraint>
+			<subject id="a">
+				<phi>
+					<in>the </in><in id="x">.*</in><in> (of|through).*</in>
+					<out id="x"/>
+				</phi>
+			</subject>
+			<object id="a">
+				<phi>
+					<in>the </in><in id="x">.*</in><in> (of|through).*</in>
+					<out id="x"/>
+				</phi>
+			</object>
+			<subject id="b">
+				<phi>
+					<in>a (bigger|smaller) </in><in id="x">.*</in>
+					<out id="x"/>
+				</phi>
+			</subject>
+		</constraint>
+		<constraint>
+			<subject id="b">
+				<phi>
+					<in id="x">a (bigger|smaller)</in><in>.*</in>
+					<out id="x"/>
+				</phi>
+			</subject>
+			<object id="b">
+				<phi>
+					<in id="x">a (bigger|smaller)</in><in>.*</in>
+					<out id="x"/>
+				</phi>
+			</object>
+		</constraint>
+		<infer>
+			<subject id="b" source="object">
+				<phi>
+					<in>a (bigg|small)er current</in>
+					<out>the current through </out>
+				</phi>
+				<phi>
+					<in> a (bigg|small)er </in><in id="x">[^c].*</in>
+					<out>the </out><out id="x"/><out> of </out>
+				</phi>
+			</subject>
+			<subject id="a" source="subject">
+				<phi>
+					<in>the.*(of|through) </in><in id="x">.*</in>
+					<out id="x"/>
+				</phi>
+			</subject>
+			<predicate id="a" source="predicate"/>	
+			<object id="b" source="object">
+				<phi>
+					<in>a (bigg|small)er current</in>
+					<out>the current through </out>
+				</phi>
+				<phi>
+					<in> a (bigg|small)er </in><in id="x">[^c].*</in>
+					<out>the </out><out id="x"/><out> of </out>
+				</phi>
+			</object>
+			<object id="a" source="object">
+				<phi>
+					<in>the.*(of|through) </in><in id="x">.*</in>
+					<out id="x"/>
+				</phi>
+			</object>
+		</infer>
+	</rule>
+
+
+	<rule name="combine-antitone">
+		<premise id="a">
+			<subject>the.*(of|through).*</subject>
+			<predicate>is (as big as|(bigg|small)er than)</predicate>
+			<object>the.*(of|through).*</object>
+		</premise>
+		<premise id="b">
+			<predicate>means</predicate>
+		</premise>
+		<constraint>
+			<subject id="a">
+				<phi>
+					<in>the </in><in id="x">.*</in><in> (of|through).*</in>
+					<out id="x"/>
+				</phi>
+			</subject>
+			<object id="a">
+				<phi>
+					<in>the </in><in id="x">.*</in><in> (of|through).*</in>
+					<out id="x"/>
+				</phi>
+			</object>
+			<subject id="b">
+				<phi>
+					<in>a (bigger|smaller) </in><in id="x">.*</in>
+					<out id="x"/>
+				</phi>
+			</subject>
+		</constraint>
+		<constraint>
+			<subject id="b">
+				<phi>
+					<in id="x">a (bigger|smaller)</in><in>.*</in>
+					<out id="x"/>
+				</phi>
+			</subject>
+			<object id="b">
+				<phi>
+					<in>a bigger.*</in>
+					<out>a smaller</out>
+				</phi>
+				<phi>
+					<in>a smaller.*</in>
+					<out>a bigger</out>
+				</phi>
+			</object>
+		</constraint>
+		<infer>
+			<subject id="b" source="object">
+				<phi>
+					<in>a (bigg|small)er current</in>
+					<out>the current through </out>
+				</phi>
+				<phi>
+					<in> a (bigg|small)er </in><in id="x">[^c].*</in>
+					<out>the </out><out id="x"/><out> of </out>
+				</phi>
+			</subject>
+			<subject id="a" source="subject">
+				<phi>
+					<in>the.*(of|through) </in><in id="x">.*</in>
+					<out id="x"/>
+				</phi>
+			</subject>
+			<predicate id="a" source="predicate">	
+				<phi>
+					<in>is bigger than</in>
+					<out>is smaller than</out>
+				</phi>
+				<phi>
+					<in>is smaller than</in>
+					<out>is bigger than</out>
+				</phi>
+			</predicate>
+			<object id="b" source="object">
+				<phi>
+					<in>a (bigg|small)er current</in>
+					<out>the current through </out>
+				</phi>
+				<phi>
+					<in> a (bigg|small)er </in><in id="x">[^c].*</in>
+					<out>the </out><out id="x"/><out> of </out>
+				</phi>
+			</object>
+			<object id="a" source="object">
+				<phi>
+					<in>the.*(of|through) </in><in id="x">.*</in>
+					<out id="x"/>
+				</phi>
+			</object>
+		</infer>
+	</rule>
+</root>

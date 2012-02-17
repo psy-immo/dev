@@ -117,10 +117,14 @@ public class XmlRootTag extends XmlTag {
 					premise_id.put(id, current_premise);
 
 				current_premise++;
-			} else if (tag.tagName.equals("CONSTRAINT")) {
-				processConstraint(child, rule, premise_id);
+			}
+		}
+		
+		for (XmlTag tag : child.children) {
+		    if (tag.tagName.equals("CONSTRAINT")) {
+				processConstraint(tag, rule, premise_id);
 			} else if (tag.tagName.equals("INFER")) {
-				processInfer(child, rule, premise_id);
+				processInfer(tag, rule, premise_id);
 			}
 		}
 
@@ -154,11 +158,12 @@ public class XmlRootTag extends XmlTag {
 				if (tag.attributes.containsKey("id")
 						&& tag.attributes.containsKey("source")) {
 					AssertionPart source_part = null;
-					if (tag.attributes.get("source").equals("SUBJECT")) {
+					
+					if (tag.attributes.get("source").equals("subject")) {
 						source_part = AssertionPart.subject;
-					} else if (tag.attributes.get("source").equals("PREDICATE")) {
+					} else if (tag.attributes.get("source").equals("predicate")) {
 						source_part = AssertionPart.predicate;
-					} else if (tag.attributes.get("source").equals("OBJECT")) {
+					} else if (tag.attributes.get("source").equals("object")) {
 						source_part = AssertionPart.object;
 					}
 
@@ -170,7 +175,7 @@ public class XmlRootTag extends XmlTag {
 						StringRelationJoin relation = null;
 
 						if (tag.children.isEmpty() == false) {
-							relation = processPhi(child);
+							relation = processPhi(tag);
 						}
 
 						conclusion.addPart(part, relation,
@@ -183,6 +188,9 @@ public class XmlRootTag extends XmlTag {
 				}
 			}
 		}
+		
+		rule.addConclusion(conclusion);
+		
 	}
 
 	/**
@@ -285,7 +293,7 @@ public class XmlRootTag extends XmlTag {
 					 * the children of t form a relation
 					 */
 
-					StringRelationJoin relation = processPhi(child);
+					StringRelationJoin relation = processPhi(t);
 
 					checker.addCheckPart(
 							premise_id.get(t.attributes.get("id")), part,
@@ -294,6 +302,8 @@ public class XmlRootTag extends XmlTag {
 				}
 			}
 		}
+		
+		rule.addConstraint(checker);
 	}
 
 	/**
@@ -338,7 +348,7 @@ public class XmlRootTag extends XmlTag {
 						if (outtags.attributes.containsKey("id")) {
 							output.add(new SplittedStringRelation.ProjectionMap(
 									ids.get(outtags.attributes.get("id"))));
-						}
+						} else
 						if (outtags.contents.isEmpty() == false) {
 							output.add(new SplittedStringRelation.ConstantMap(
 									outtags.contents));
