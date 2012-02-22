@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<parse>
+		<subject>\S.*</subject>
+		<predicate>(means|is(\s.*\swith|\s.*\sthan|\s+as.*\sas))</predicate>
+		<object>\S.*</object>
+	</parse>	
+	
+	<rule name="phi1to2">
+		<premise id="1">
+			<predicate>(is serial connected with|is connected in parallel with)</predicate>
+		</premise>
+		<infer>
+			<subject>the current through </subject>
+			<subject id="1" source="subject" />
+			<predicate id="1" source="predicate">
+				<rho>
+					<in>is serial connected with</in>
+					<out>is as big as</out>
+				</rho>
+			</predicate>
+			<object>the current through </object>
+			<object id="1" source="object" />
+		</infer>
+		<infer>
+			<subject>the current through </subject>
+			<subject id="1" source="object" />
+			<predicate id="1" source="predicate">
+				<rho>
+					<in>is serial connected with</in>
+					<out>is as big as</out>
+				</rho>
+			</predicate>
+			<object>the current through </object>
+			<object id="1" source="subject" />
+		</infer>
+		<infer>
+			<subject>the voltage of </subject>
+			<subject id="1" source="subject" />
+			<predicate id="1" source="predicate">
+				<rho>
+					<in>is connected in parallel with</in>
+					<out>is as big as</out>
+				</rho>
+			</predicate>
+			<object>the voltage of </object>
+			<object id="1" source="object" />
+		</infer>
+		<infer>
+			<subject>the voltage of </subject>
+			<subject id="1" source="object" />
+			<predicate id="1" source="predicate">
+				<rho>
+					<in>is connected in parallel with</in>
+					<out>is as big as</out>
+				</rho>
+			</predicate>
+			<object>the voltage of </object>
+			<object id="1" source="subject" />
+		</infer>
+	</rule>
+	
+	<assert>bulb A is serial connected with bulb B</assert>
+	<assert>bulb chain AB is connected in parallel with bulb A</assert>
+	<assert>a bigger B means a smaller D</assert>
+	<assert>a bigger A means a bigger E</assert>
+	<assert>a bigger E means a bigger B</assert>
+</root>

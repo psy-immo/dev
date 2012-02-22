@@ -6,22 +6,22 @@
 <!ELEMENT subject (#PCDATA|rho)* >
 
 <!ATTLIST subject 
-		id	CDATA	#IMPLIED
-		source	CDATA	#IMPLIED
+		id	CDATA				#IMPLIED
+		source	(subject|predicate|object)	#IMPLIED
  >
 
 <!ELEMENT object (#PCDATA|rho)* >
 
 <!ATTLIST object 
-		id	CDATA	#IMPLIED
-		source	CDATA	#IMPLIED
+		id	CDATA				#IMPLIED
+		source	(subject|predicate|object)	#IMPLIED
  >
 
 <!ELEMENT predicate (#PCDATA|rho)* >
 
 <!ATTLIST predicate 
-		id	CDATA	#IMPLIED
-		source	CDATA	#IMPLIED
+		id	CDATA				#IMPLIED
+		source	(subject|predicate|object)	#IMPLIED
  >
 
 <!ELEMENT assert (#PCDATA)* >

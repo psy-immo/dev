@@ -9,24 +9,24 @@ dtd.write("\n<!ELEMENT parse (subject|predicate|object)* >\n")
 dtd.write("\n<!ELEMENT subject (#PCDATA|rho)* >\n")
 
 dtd.write("\n<!ATTLIST subject "+"""
-		id	CDATA	#IMPLIED
-		source	CDATA	#IMPLIED
+		id	CDATA				#IMPLIED
+		source	(subject|predicate|object)	#IMPLIED
  >
 """)
 
 dtd.write("\n<!ELEMENT object (#PCDATA|rho)* >\n")
 
 dtd.write("\n<!ATTLIST object "+"""
-		id	CDATA	#IMPLIED
-		source	CDATA	#IMPLIED
+		id	CDATA				#IMPLIED
+		source	(subject|predicate|object)	#IMPLIED
  >
 """)
 
 dtd.write("\n<!ELEMENT predicate (#PCDATA|rho)* >\n")
 
 dtd.write("\n<!ATTLIST predicate "+"""
-		id	CDATA	#IMPLIED
-		source	CDATA	#IMPLIED
+		id	CDATA				#IMPLIED
+		source	(subject|predicate|object)	#IMPLIED
  >
 """)
 
