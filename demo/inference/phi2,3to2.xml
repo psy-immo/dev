@@ -190,10 +190,11 @@
 			</object>
 		</infer>
 	</rule>
-	<assert>the A of X is smaller than the A of Y</assert>
-	<assert>a bigger A means a smaller current</assert>
+	
+	<assert>a smaller resistance means a bigger current</assert>
 	<assert>a bigger current means a bigger voltage</assert>
-	<assert>the current through A is as big as the current through B</assert>
+	<assert>the resistance of A is smaller than the resistance of B</assert>
+	<assert>the current through C is bigger than the current through D</assert>
 	
 	
 </root>
