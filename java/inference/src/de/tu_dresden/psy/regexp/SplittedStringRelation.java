@@ -217,7 +217,7 @@ public class SplittedStringRelation implements StringRelationInterface {
 					
 					Set<String> delta = prefixes;
 					prefixes = concat;
-					concat = prefixes;
+					concat = delta;
 				}
 				result.addAll(prefixes);
 			}

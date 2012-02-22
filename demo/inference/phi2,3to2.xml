@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<parse>
+		<subject>\S.*</subject>
+		<predicate>(means|is(\s.*\swith|\s.*\sthan|\s+as.*\sas))</predicate>
+		<object>\S.*</object>
+	</parse>	
+	
+	<rule name="phi2,3to2.monotone">
+		<premise id="rel">
+			<subject>the .* (of|through) .*</subject>
+			<predicate>(is smaller than|is bigger than|is as big as)</predicate>
+			<object>the .* (of|through) .*</object>
+		</premise>
+		<premise id="q">
+			<subject>a (small|bigg)er .*</subject>
+			<predicate>means</predicate>
+			<object>a (small|bigg)er .*</object>
+		</premise>
+		<constraint>
+			<subject id="rel">
+				<rho>
+					<in>the </in><in id="parameter">.*</in><in> (of|through).*</in>
+					<out id="parameter"/>
+				</rho>
+			</subject>
+			<object id="rel">
+				<rho>
+					<in>the </in><in id="parameter">.*</in><in> (of|through).*</in>
+					<out id="parameter"/>
+				</rho>
+			</object>
+			<subject id="q">
+				<rho>
+					<in>a (bigg|small)er </in><in id="parameter">.*</in>
+					<out id="parameter"/>
+				</rho>
+			</subject>
+		</constraint>
+		<constraint>
+			<subject id="q">
+				<rho>
+					<in id="prefix">a (bigg|small)er </in><in>.*</in>
+					<out id="prefix"/>
+				</rho>
+			</subject>
+			<object id="q">
+				<rho>
+					<in id="prefix">a (bigg|small)er </in><in>.*</in>
+					<out id="prefix"/>
+				</rho>
+			</object>
+		</constraint>
+		<infer>
+			<subject>the </subject>
+			<subject id="q" source="object">
+				<rho>
+					<in>a (bigg|small)er </in><in id="parameter">current</in>
+					<out id="parameter"/><out> through </out>
+				</rho>
+				<rho>
+					<in>a (bigg|small)er </in><in id="parameter">([^c].*|c[^u].*|cu[^r].*|cur[^r].*|curr[^e].*|curre[^n].*|curren[^t].*|current.+)</in>
+					<out id="parameter"/><out> of </out>
+				</rho>
+			</subject>
+			<subject id="rel" source="subject">
+				<rho>
+					<in>.*(of|through) </in><in id="where">.*</in>
+					<out id="where"/>
+				</rho>
+			</subject>
+			<predicate id="rel" source="predicate"/>
+			<object>the </object>
+			<object id="q" source="object">
+				<rho>
+					<in>a (bigg|small)er </in><in id="parameter">current</in>
+					<out id="parameter"/><out> through </out>
+				</rho>
+				<rho>
+					<in>a (bigg|small)er </in><in id="parameter">([^c].*|c[^u].*|cu[^r].*|cur[^r].*|curr[^e].*|curre[^n].*|curren[^t].*|current.+)</in>
+					<out id="parameter"/><out> of </out>
+				</rho>
+			</object>
+			<object id="rel" source="object">
+				<rho>
+					<in>.*(of|through) </in><in id="where">.*</in>
+					<out id="where"/>
+				</rho>
+			</object>
+		</infer>
+	</rule>
+	
+	<rule name="phi2,3to2.antitone">
+		<premise id="rel">
+			<subject>the .* (of|through) .*</subject>
+			<predicate>(is smaller than|is bigger than|is as big as)</predicate>
+			<object>the .* (of|through) .*</object>
+		</premise>
+		<premise id="q">
+			<subject>a (small|bigg)er .*</subject>
+			<predicate>means</predicate>
+			<object>a (small|bigg)er .*</object>
+		</premise>
+		<constraint>
+			<subject id="rel">
+				<rho>
+					<in>the </in><in id="parameter">.*</in><in> (of|through).*</in>
+					<out id="parameter"/>
+				</rho>
+			</subject>
+			<object id="rel">
+				<rho>
+					<in>the </in><in id="parameter">.*</in><in> (of|through).*</in>
+					<out id="parameter"/>
+				</rho>
+			</object>
+			<subject id="q">
+				<rho>
+					<in>a (bigg|small)er </in><in id="parameter">.*</in>
+					<out id="parameter"/>
+				</rho>
+			</subject>
+		</constraint>
+		<constraint>
+			<subject id="q">
+				<rho>
+					<in id="prefix">a (bigg|small)er </in><in>.*</in>
+					<out id="prefix"/>
+				</rho>
+			</subject>
+			<object id="q">
+				<rho>
+					<in id="prefix">a bigger </in><in>.*</in>
+					<out>a smaller </out>
+				</rho>
+				<rho>
+					<in id="prefix">a smaller </in><in>.*</in>
+					<out>a bigger </out>
+				</rho>
+			</object>
+		</constraint>
+		<infer>
+			<subject>the </subject>
+			<subject id="q" source="object">
+				<rho>
+					<in>a (bigg|small)er </in><in id="parameter">current</in>
+					<out id="parameter"/><out> through </out>
+				</rho>
+				<rho>
+					<in>a (bigg|small)er </in><in id="parameter">([^c].*|c[^u].*|cu[^r].*|cur[^r].*|curr[^e].*|curre[^n].*|curren[^t].*|current.+)</in>
+					<out id="parameter"/><out> of </out>
+				</rho>
+			</subject>
+			<subject id="rel" source="subject">
+				<rho>
+					<in>.*(of|through) </in><in id="where">.*</in>
+					<out id="where"/>
+				</rho>
+			</subject>
+			<predicate id="rel" source="predicate">
+				<rho>
+					<in>is bigger than</in>
+					<out>is smaller than</out>
+				</rho>
+				<rho>
+					<in>is smaller than</in>
+					<out>is bigger than</out>
+				</rho>
+				<rho>
+					<in>is as big as</in>
+					<out>is as big as</out>
+				</rho>
+			</predicate>
+			<object>the </object>
+			<object id="q" source="object">
+				<rho>
+					<in>a (bigg|small)er </in><in id="parameter">current</in>
+					<out id="parameter"/><out> through </out>
+				</rho>
+				<rho>
+					<in>a (bigg|small)er </in><in id="parameter">([^c].*|c[^u].*|cu[^r].*|cur[^r].*|curr[^e].*|curre[^n].*|curren[^t].*|current.+)</in>
+					<out id="parameter"/><out> of </out>
+				</rho>
+			</object>
+			<object id="rel" source="object">
+				<rho>
+					<in>.*(of|through) </in><in id="where">.*</in>
+					<out id="where"/>
+				</rho>
+			</object>
+		</infer>
+	</rule>
+	<assert>the A of X is smaller than the A of Y</assert>
+	<assert>a bigger A means a smaller current</assert>
+	<assert>a bigger current means a bigger voltage</assert>
+	<assert>the current through A is as big as the current through B</assert>
+	
+	
+</root>
