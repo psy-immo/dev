@@ -29,10 +29,10 @@
 			<object id="b" source="object"/>
 		</infer>
 	</rule>
-	<norule name="sym">
+	<rule name="sym">
 		<premise id="a"><predicate>means</predicate></premise>
 		<infer><subject id="a" source="object"/><predicate>means</predicate><object id="a" source="subject"/></infer>
-	</norule>
+	</rule>
 
 	<rule name="neg">
 		<premise id="a">
