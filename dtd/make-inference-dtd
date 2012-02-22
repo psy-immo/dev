@@ -1,0 +1,65 @@
+#!/usr/bin/python 
+
+dtd = open("inference.0.0.1.0.dtd","w")
+
+dtd.write("\n<!ELEMENT root (parse|assert|rule) >\n")
+
+dtd.write("\n<!ELEMENT parse (subject|predicate|object)* >\n")
+
+dtd.write("\n<!ELEMENT subject (#PCDATA|rho)* >\n")
+
+dtd.write("\n<!ATTLIST subject "+"""
+		id	CDATA	#IMPLIED
+		source	CDATA	#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT object (#PCDATA|rho)* >\n")
+
+dtd.write("\n<!ATTLIST object "+"""
+		id	CDATA	#IMPLIED
+		source	CDATA	#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT predicate (#PCDATA|rho)* >\n")
+
+dtd.write("\n<!ATTLIST predicate "+"""
+		id	CDATA	#IMPLIED
+		source	CDATA	#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT assert (#PCDATA)* >\n")
+dtd.write("\n<!ELEMENT rule (premise|constraint|infer)* >\n")
+dtd.write("\n<!ATTLIST rule "+"""
+		name	CDATA	#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT premise (subject|predicate|object)* >\n")
+
+dtd.write("\n<!ATTLIST premise "+"""
+		id	CDATA	#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT constraint (subject|predicate|object)* >\n")
+dtd.write("\n<!ELEMENT infer (subject|predicate|object)* >\n")
+
+dtd.write("\n<!ELEMENT rho (in|out)* >\n")
+
+
+dtd.write("\n<!ELEMENT in (#PCDATA)* >\n")
+dtd.write("\n<!ELEMENT out (#PCDATA)* >\n")
+
+dtd.write("\n<!ATTLIST in "+"""
+		id	CDATA	#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ATTLIST out "+"""
+		id	CDATA	#IMPLIED
+ >
+""")
+

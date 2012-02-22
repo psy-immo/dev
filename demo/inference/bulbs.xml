@@ -29,10 +29,10 @@
 			<object id="b" source="object"/>
 		</infer>
 	</rule>
-	<rule name="sym">
+	<norule name="sym">
 		<premise id="a"><predicate>means</predicate></premise>
 		<infer><subject id="a" source="object"/><predicate>means</predicate><object id="a" source="subject"/></infer>
-	</rule>
+	</norule>
 
 	<rule name="neg">
 		<premise id="a">
@@ -41,18 +41,18 @@
 		<infer>
 			<subject id="a" source="object"/>
 			<predicate id="a" source="predicate">
-				<phi>
+				<rho>
 					<in>is bigger.*</in>
 					<out>is smaller than</out>
-				</phi>
-				<phi>
+				</rho>
+				<rho>
 					<in>is smaller.*</in>
 					<out>is bigger than</out>
-				</phi>
-				<phi>
+				</rho>
+				<rho>
 					<in id="x">is as.*as</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</predicate>
 			<object id="a" source="subject"/>
 		</infer>
@@ -63,14 +63,14 @@
 		<premise id="b"><predicate>is ((bigger|smaller) than|as big as)</predicate></premise>
 		<constraint><predicate id="a"/>
 			<predicate id="b">
-				<phi>
+				<rho>
 					<in>.*</in>
 					<out>is as big as</out>
-				</phi>
-				<phi>
+				</rho>
+				<rho>
 					<in id="x">is.*than</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</predicate>
 		</constraint>
 		<constraint>
@@ -90,19 +90,19 @@
 		</premise>
 		<infer>
 			<subject id="a" source="subject">
-				<phi>
+				<rho>
 					<in id="x">.*</in>
 					<out>the current through </out>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</subject>
 			<predicate>is as big as</predicate>
 			<object id="a" source="object">
-				<phi>
+				<rho>
 					<in id="x">.*</in>
 					<out>the current through </out>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</object>
 		</infer>
 	</rule>
@@ -114,19 +114,19 @@
 		</premise>
 		<infer>
 			<subject id="a" source="subject">
-				<phi>
+				<rho>
 					<in id="x">.*</in>
 					<out>the voltage of </out>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</subject>
 			<predicate>is as big as</predicate>
 			<object id="a" source="object">
-				<phi>
+				<rho>
 					<in id="x">.*</in>
 					<out>the voltage of </out>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</object>
 		</infer>
 	</rule>
@@ -142,71 +142,71 @@
 		</premise>
 		<constraint>
 			<subject id="a">
-				<phi>
+				<rho>
 					<in>the </in><in id="x">.*</in><in> (of|through).*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</subject>
 			<object id="a">
-				<phi>
+				<rho>
 					<in>the </in><in id="x">.*</in><in> (of|through).*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</object>
 			<subject id="b">
-				<phi>
+				<rho>
 					<in>a (bigger|smaller) </in><in id="x">.*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</subject>
 		</constraint>
 		<constraint>
 			<subject id="b">
-				<phi>
+				<rho>
 					<in id="x">a (bigger|smaller)</in><in>.*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</subject>
 			<object id="b">
-				<phi>
+				<rho>
 					<in id="x">a (bigger|smaller)</in><in>.*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</object>
 		</constraint>
 		<infer>
 			<subject id="b" source="object">
-				<phi>
+				<rho>
 					<in>a (bigg|small)er current</in>
 					<out>the current through </out>
-				</phi>
-				<phi>
+				</rho>
+				<rho>
 					<in> a (bigg|small)er </in><in id="x">[^c].*</in>
 					<out>the </out><out id="x"/><out> of </out>
-				</phi>
+				</rho>
 			</subject>
 			<subject id="a" source="subject">
-				<phi>
+				<rho>
 					<in>the.*(of|through) </in><in id="x">.*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</subject>
 			<predicate id="a" source="predicate"/>	
 			<object id="b" source="object">
-				<phi>
+				<rho>
 					<in>a (bigg|small)er current</in>
 					<out>the current through </out>
-				</phi>
-				<phi>
+				</rho>
+				<rho>
 					<in> a (bigg|small)er </in><in id="x">[^c].*</in>
 					<out>the </out><out id="x"/><out> of </out>
-				</phi>
+				</rho>
 			</object>
 			<object id="a" source="object">
-				<phi>
+				<rho>
 					<in>the.*(of|through) </in><in id="x">.*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</object>
 		</infer>
 	</rule>
@@ -223,84 +223,84 @@
 		</premise>
 		<constraint>
 			<subject id="a">
-				<phi>
+				<rho>
 					<in>the </in><in id="x">.*</in><in> (of|through).*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</subject>
 			<object id="a">
-				<phi>
+				<rho>
 					<in>the </in><in id="x">.*</in><in> (of|through).*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</object>
 			<subject id="b">
-				<phi>
+				<rho>
 					<in>a (bigger|smaller) </in><in id="x">.*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</subject>
 		</constraint>
 		<constraint>
 			<subject id="b">
-				<phi>
+				<rho>
 					<in id="x">a (bigger|smaller)</in><in>.*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</subject>
 			<object id="b">
-				<phi>
+				<rho>
 					<in>a bigger.*</in>
 					<out>a smaller</out>
-				</phi>
-				<phi>
+				</rho>
+				<rho>
 					<in>a smaller.*</in>
 					<out>a bigger</out>
-				</phi>
+				</rho>
 			</object>
 		</constraint>
 		<infer>
 			<subject id="b" source="object">
-				<phi>
+				<rho>
 					<in>a (bigg|small)er current</in>
 					<out>the current through </out>
-				</phi>
-				<phi>
+				</rho>
+				<rho>
 					<in> a (bigg|small)er </in><in id="x">[^c].*</in>
 					<out>the </out><out id="x"/><out> of </out>
-				</phi>
+				</rho>
 			</subject>
 			<subject id="a" source="subject">
-				<phi>
+				<rho>
 					<in>the.*(of|through) </in><in id="x">.*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</subject>
 			<predicate id="a" source="predicate">	
-				<phi>
+				<rho>
 					<in>is bigger than</in>
 					<out>is smaller than</out>
-				</phi>
-				<phi>
+				</rho>
+				<rho>
 					<in>is smaller than</in>
 					<out>is bigger than</out>
-				</phi>
+				</rho>
 			</predicate>
 			<object id="b" source="object">
-				<phi>
+				<rho>
 					<in>a (bigg|small)er current</in>
 					<out>the current through </out>
-				</phi>
-				<phi>
+				</rho>
+				<rho>
 					<in> a (bigg|small)er </in><in id="x">[^c].*</in>
 					<out>the </out><out id="x"/><out> of </out>
-				</phi>
+				</rho>
 			</object>
 			<object id="a" source="object">
-				<phi>
+				<rho>
 					<in>the.*(of|through) </in><in id="x">.*</in>
 					<out id="x"/>
-				</phi>
+				</rho>
 			</object>
 		</infer>
 	</rule>

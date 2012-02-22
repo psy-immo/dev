@@ -1,0 +1,57 @@
+
+<!ELEMENT root (parse|assert|rule) >
+
+<!ELEMENT parse (subject|predicate|object)* >
+
+<!ELEMENT subject (#PCDATA|rho)* >
+
+<!ATTLIST subject 
+		id	CDATA	#IMPLIED
+		source	CDATA	#IMPLIED
+ >
+
+<!ELEMENT object (#PCDATA|rho)* >
+
+<!ATTLIST object 
+		id	CDATA	#IMPLIED
+		source	CDATA	#IMPLIED
+ >
+
+<!ELEMENT predicate (#PCDATA|rho)* >
+
+<!ATTLIST predicate 
+		id	CDATA	#IMPLIED
+		source	CDATA	#IMPLIED
+ >
+
+<!ELEMENT assert (#PCDATA)* >
+
+<!ELEMENT rule (premise|constraint|infer)* >
+
+<!ATTLIST rule 
+		name	CDATA	#IMPLIED
+ >
+
+<!ELEMENT premise (subject|predicate|object)* >
+
+<!ATTLIST premise 
+		id	CDATA	#IMPLIED
+ >
+
+<!ELEMENT constraint (subject|predicate|object)* >
+
+<!ELEMENT infer (subject|predicate|object)* >
+
+<!ELEMENT rho (in|out)* >
+
+<!ELEMENT in (#PCDATA)* >
+
+<!ELEMENT out (#PCDATA)* >
+
+<!ATTLIST in 
+		id	CDATA	#IMPLIED
+ >
+
+<!ATTLIST out 
+		id	CDATA	#IMPLIED
+ >

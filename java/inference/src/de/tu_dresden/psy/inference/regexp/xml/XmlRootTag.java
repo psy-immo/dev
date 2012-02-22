@@ -175,7 +175,7 @@ public class XmlRootTag extends XmlTag {
 						StringRelationJoin relation = null;
 
 						if (tag.children.isEmpty() == false) {
-							relation = processPhi(tag);
+							relation = processRho(tag);
 						}
 
 						conclusion.addPart(part, relation,
@@ -293,7 +293,7 @@ public class XmlRootTag extends XmlTag {
 					 * the children of t form a relation
 					 */
 
-					StringRelationJoin relation = processPhi(t);
+					StringRelationJoin relation = processRho(t);
 
 					checker.addCheckPart(
 							premise_id.get(t.attributes.get("id")), part,
@@ -307,16 +307,16 @@ public class XmlRootTag extends XmlTag {
 	}
 
 	/**
-	 * process a string join relation from &lt;phi>-tags
+	 * process a string join relation from &lt;rho>-tags
 	 * 
 	 * @param parent
 	 * @return
 	 */
-	private StringRelationJoin processPhi(XmlTag parent) {
+	private StringRelationJoin processRho(XmlTag parent) {
 		StringRelationJoin result = new StringRelationJoin();
 
-		for (XmlTag phi : parent.children) {
-			if (phi.tagName.equals("PHI")) {
+		for (XmlTag rho : parent.children) {
+			if (rho.tagName.equals("RHO")) {
 				SplittedStringRelation relation = new SplittedStringRelation();
 
 				Map<String, Integer> ids = new HashMap<String, Integer>();
@@ -329,7 +329,7 @@ public class XmlRootTag extends XmlTag {
 				 * process <IN> tags
 				 */
 
-				for (XmlTag intags : phi.children) {
+				for (XmlTag intags : rho.children) {
 					if (intags.tagName.equals("IN")) {
 						if (intags.attributes.containsKey("id")) {
 							ids.put(intags.attributes.get("id"), input_part);
@@ -343,7 +343,7 @@ public class XmlRootTag extends XmlTag {
 				 * process <OUT> tags
 				 */
 
-				for (XmlTag outtags : phi.children) {
+				for (XmlTag outtags : rho.children) {
 					if (outtags.tagName.equals("OUT")) {
 						if (outtags.attributes.containsKey("id")) {
 							output.add(new SplittedStringRelation.ProjectionMap(
