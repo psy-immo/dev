@@ -174,8 +174,14 @@ public class EquivalentAssertions implements AssertionInterface {
 	@Override
 	public String toString() {
 
-		return subject.toString() + "·" + predicate.toString() + "·"
+		String p = subject.toString() + "·" + predicate.toString() + "·"
 				+ object.toString() + " [" + assertions.size() + "]";
+		
+		for (AssertionInterface assertion: assertions) {
+			p += "\n    " + assertion;
+		}
+		
+		return p+"\n";
 	}
 
 }

@@ -176,21 +176,10 @@ public class InferredAssertion implements AssertionInterface {
 
 	@Override
 	public String toString() {
-		String s = "";
-		for (Iterator<AssertionInterface> itpremises = this.premises.iterator(); itpremises
-				.hasNext();) {
-			if (s.isEmpty() == false) {
-				s += " & ";
-			}
-			AssertionInterface premise = itpremises.next();
-			if (premise instanceof InferredAssertion) {
-				InferredAssertion inferred_premise = (InferredAssertion) premise;
-				s += inferred_premise.assertion.toString();
-			} else
-				s += premise.toString();
-		}
 		
-		return assertion.toString() + " <=[" + rule.ruleName() + "]= " + s;
+		String s = "  |"+ rule.ruleName();
+		
+		return s;
 	}
 
 	@Override

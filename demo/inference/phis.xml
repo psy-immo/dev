@@ -2,7 +2,7 @@
 <root>
 	<parse>
 		<subject>\S.*</subject>
-		<predicate>(means|is(\s.*\swith|\s.*\sthan|\s+as.*\sas))</predicate>
+		<predicate>(means, for bulbs,|is(\s.*\swith|\s.*\sthan|\s+as.*\sas|\sa|\san))</predicate>
 		<object>\S.*</object>
 	</parse>	
 	
@@ -130,9 +130,35 @@
 		</premise>
 		<premise id="q">
 			<subject>a (small|bigg)er .*</subject>
-			<predicate>means</predicate>
+			<predicate>means, for bulbs,</predicate>
 			<object>a (small|bigg)er .*</object>
 		</premise>
+		<premise id="a">
+			<predicate>is a</predicate>
+			<object>bulb</object>
+		</premise>
+		<premise id="b">
+			<predicate>is a</predicate>
+			<object>bulb</object>
+		</premise>
+		<constraint>
+			<subject id="rel">
+				<rho>
+					<in>the .* (of|through) </in><in id="object">.*</in>
+					<out id="object"/>
+				</rho>
+			</subject>
+			<subject id="a"/>
+		</constraint>		
+		<constraint>
+			<object id="rel">
+				<rho>
+					<in>the .* (of|through) </in><in id="object">.*</in>
+					<out id="object"/>
+				</rho>
+			</object>
+			<subject id="b"/>
+		</constraint>		
 		<constraint>
 			<subject id="rel">
 				<rho>
@@ -214,9 +240,35 @@
 		</premise>
 		<premise id="q">
 			<subject>a (small|bigg)er .*</subject>
-			<predicate>means</predicate>
+			<predicate>means, for bulbs,</predicate>
 			<object>a (small|bigg)er .*</object>
 		</premise>
+		<premise id="a">
+			<predicate>is a</predicate>
+			<object>bulb</object>
+		</premise>
+		<premise id="b">
+			<predicate>is a</predicate>
+			<object>bulb</object>
+		</premise>
+		<constraint>
+			<subject id="rel">
+				<rho>
+					<in>the .* (of|through) </in><in id="object">.*</in>
+					<out id="object"/>
+				</rho>
+			</subject>
+			<subject id="a"/>
+		</constraint>		
+		<constraint>
+			<object id="rel">
+				<rho>
+					<in>the .* (of|through) </in><in id="object">.*</in>
+					<out id="object"/>
+				</rho>
+			</object>
+			<subject id="b"/>
+		</constraint>
 		<constraint>
 			<subject id="rel">
 				<rho>
@@ -334,10 +386,10 @@
 	
 	<rule name="phi3,3to3">
 		<premise id="ab">
-			<predicate>means</predicate>
+			<predicate>means, for bulbs,</predicate>
 		</premise>
 		<premise id="bc">
-			<predicate>means</predicate>
+			<predicate>means, for bulbs,</predicate>
 		</premise>
 		<constraint>
 			<object id="ab"/>
@@ -345,7 +397,7 @@
 		</constraint>
 		<infer>
 			<subject id="ab" source="subject"/>
-			<predicate>means</predicate>
+			<predicate>means, for bulbs,</predicate>
 			<object id="bc" source="object"/>
 		</infer>
 	</rule>
@@ -353,7 +405,7 @@
 	<rule name="phi3to-3">
 		<premise id="ab">
 			<subject>a (small|bigg)er .*</subject>
-			<predicate>means</predicate>
+			<predicate>means, for bulbs,</predicate>
 			<object>a (small|bigg)er .*</object>
 		</premise>
 		<infer>
@@ -367,7 +419,7 @@
 					<out>a smaller </out><out id="what"/>
 				</rho>
 			</subject>
-			<predicate>means</predicate>
+			<predicate>means, for bulbs,</predicate>
 			<object id="ab" source="object">
 				<rho>
 					<in>a smaller </in><in id="what">.*</in>
@@ -380,6 +432,7 @@
 			</object>
 		</infer>
 	</rule>
+	
 	
 	<rule name="serial/parallel-swap">
 		<premise id="ab">
@@ -413,13 +466,17 @@
 			<object id="bc" source="object"/>
 		</infer>
 	</rule>
-	
+
+	<assert>bulb A is a bulb</assert>
+	<assert>bulb B is a bulb</assert>
+	<assert>bulb C is a bulb</assert>
 	<assert>bulb A is connected in parallel with bulb chain BC</assert>
-	<assert>bulb B is serial connected with bulb C</assert>		
-	<assert>bulb B is serial connected with bulb C</assert>		
-	<assert>a bigger voltage means a bigger current</assert>	
-	<assert>a bigger voltage means a bigger input power</assert>
-	<assert>a bigger input power means a bigger luminosity</assert>
+	<assert>bulb B is serial connected with bulb C</assert>			
+	<assert>a bigger voltage means, for bulbs, a bigger current</assert>	
+	<assert>a bigger current means, for bulbs, a bigger voltage</assert>	
+	<assert>a bigger voltage means, for bulbs, a bigger input power</assert>
+	<assert>a bigger resistance means, for bulbs, a smaller current</assert>
+	<assert>a bigger input power means, for bulbs, a bigger luminosity</assert>
 	<assert>the battery is connected in parallel with bulb A</assert>
 	<assert>the resistance of bulb A is as big as the resistance of bulb B</assert>
 	<assert>the resistance of bulb A is as big as the resistance of bulb C</assert>
