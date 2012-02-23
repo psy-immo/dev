@@ -55,5 +55,15 @@ public interface AssertionInterface {
 	 * @return true, if <b>this</b> has been inferred by using assertion as premise
 	 */
 	public boolean isPremise(AssertionInterface assertion);
-
+	
+	/**
+	 * 
+	 * @return true, if the Assertion is marked old
+	 */
+	public boolean isOld();
+	
+	/**
+	 * mark an Assertion as old
+	 */
+	public void markAsOld();
 }

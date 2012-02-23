@@ -46,10 +46,15 @@ public class InferenceMaps implements InferenceMap {
 			Set<AssertionInterface> validPremises) {
 		Set<AssertionInterface> inferred = new HashSet<AssertionInterface>();
 		
+		System.out.print("\n inferring: ");
+		
 		for (Iterator<InferenceMap> it = maps.iterator();it.hasNext();) {
 			InferenceMap phi = it.next();
+			System.out.print(".");
 			inferred.addAll(phi.inferNew(validPremises));
 		}
+		
+		System.out.println("");
 		
 		return inferred;
 	}

@@ -73,11 +73,11 @@ public class Main {
 		/**
 		 * use equivalence classes to speed up the process
 		 */
+		
+		AssertionEquivalenceClasses eq_classes = new AssertionEquivalenceClasses();
 
-		Set<AssertionInterface> valid_equivalence_classes = new HashSet<AssertionInterface>();
-
-		EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes,
-				valid);
+		eq_classes.addNewAssertions(valid);
+		
 
 		/**
 		 * do some inference
@@ -87,17 +87,18 @@ public class Main {
 		int size = 0;
 
 		while (step <= 100) {
-			size = valid_equivalence_classes.size();
+			size = eq_classes.getClasses().size();
 
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
-			if (step > 0)
-				EquivalentAssertions.addToEquivalenceClass(
-						valid_equivalence_classes, InferredAssertion
-								.nonTrivial(maps
-										.inferNew(valid_equivalence_classes)));
+			if (step > 0) 
+			{
+				Set<AssertionInterface> new_assertions = InferredAssertion.nonTrivial(maps.inferNew(eq_classes.getClasses()));
+				eq_classes.markAllOld();
+				eq_classes.addNewAssertions(new_assertions);
+			}
 
 			TreeSet<String> ordered = new TreeSet<String>();
-			for (Iterator<AssertionInterface> it = valid_equivalence_classes
+			for (Iterator<AssertionInterface> it = eq_classes.getClasses()
 					.iterator(); it.hasNext();) {
 				AssertionInterface a = it.next();
 
@@ -111,9 +112,9 @@ public class Main {
 
 			step++;
 			System.out.println("\n   +++ premise assertions " + size + " -> "
-					+ valid_equivalence_classes.size());
+					+ eq_classes.getClasses().size());
 
-			if ((size == valid_equivalence_classes.size()) && (step > 1))
+			if ((size == eq_classes.getClasses().size()) && (step > 1))
 				break; // nothing new
 		}
 	}
@@ -362,37 +363,38 @@ public class Main {
 		for (int i = 0; i < premises.length; ++i) {
 			valid.addAll(matchStrings.match((premises[i])));
 		}
+		
+		InferenceMaps maps = new InferenceMaps(mapset);
 
 		/**
 		 * use equivalence classes to speed up the process
 		 */
+		
+		AssertionEquivalenceClasses eq_classes = new AssertionEquivalenceClasses();
 
-		Set<AssertionInterface> valid_equivalence_classes = new HashSet<AssertionInterface>();
-
-		EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes,
-				valid);
+		eq_classes.addNewAssertions(valid);
+		
 
 		/**
 		 * do some inference
 		 */
 
-		InferenceMaps maps = new InferenceMaps(mapset);
-
 		int step = 0;
 		int size = 0;
 
 		while (step <= 100) {
-			size = valid_equivalence_classes.size();
+			size = eq_classes.getClasses().size();
 
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
-			if (step > 0)
-				EquivalentAssertions.addToEquivalenceClass(
-						valid_equivalence_classes, InferredAssertion
-								.nonTrivial(maps
-										.inferNew(valid_equivalence_classes)));
+			if (step > 0) 
+			{
+				Set<AssertionInterface> new_assertions = InferredAssertion.nonTrivial(maps.inferNew(eq_classes.getClasses()));
+				eq_classes.markAllOld();
+				eq_classes.addNewAssertions(new_assertions);
+			}
 
 			TreeSet<String> ordered = new TreeSet<String>();
-			for (Iterator<AssertionInterface> it = valid_equivalence_classes
+			for (Iterator<AssertionInterface> it = eq_classes.getClasses()
 					.iterator(); it.hasNext();) {
 				AssertionInterface a = it.next();
 
@@ -406,14 +408,14 @@ public class Main {
 
 			step++;
 			System.out.println("\n   +++ premise assertions " + size + " -> "
-					+ valid_equivalence_classes.size());
+					+ eq_classes.getClasses().size());
 
-			if ((size == valid_equivalence_classes.size()) && (step > 1))
+			if ((size == eq_classes.getClasses().size()) && (step > 1))
 				break; // nothing new
 		}
 	}
 	
-	private static void xmlExample(InputStream input) {
+	private static void xmlExample(InputStream input, int nbrSteps) {
 		XmlHandler handler = new XmlHandler();
 		try {
 			handler.readStream(input);
@@ -433,36 +435,37 @@ public class Main {
 		
 		Set<AssertionInterface> valid = handler.getRoot().getGivenAssertions();
 
+		InferenceMaps maps = handler.getRoot().getMaps();
+		
 		/**
 		 * use equivalence classes to speed up the process
 		 */
+		
+		AssertionEquivalenceClasses eq_classes = new AssertionEquivalenceClasses();
 
-		Set<AssertionInterface> valid_equivalence_classes = new HashSet<AssertionInterface>();
-
-		EquivalentAssertions.addToEquivalenceClass(valid_equivalence_classes,
-				valid);
+		eq_classes.addNewAssertions(valid);
+		
 
 		/**
 		 * do some inference
 		 */
 
-		InferenceMaps maps = handler.getRoot().getMaps();
-
 		int step = 0;
 		int size = 0;
 
-		while (step <= 100) {
-			size = valid_equivalence_classes.size();
+		while (step <= nbrSteps) {
+			size = eq_classes.getClasses().size();
 
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
-			if (step > 0)
-				EquivalentAssertions.addToEquivalenceClass(
-						valid_equivalence_classes, InferredAssertion
-								.nonTrivial(maps
-										.inferNew(valid_equivalence_classes)));
+			if (step > 0) 
+			{
+				Set<AssertionInterface> new_assertions = maps.inferNew(eq_classes.getClasses());
+				eq_classes.markAllOld();
+				eq_classes.addNewAssertions(new_assertions);
+			}
 
 			TreeSet<String> ordered = new TreeSet<String>();
-			for (Iterator<AssertionInterface> it = valid_equivalence_classes
+			for (Iterator<AssertionInterface> it = eq_classes.getClasses()
 					.iterator(); it.hasNext();) {
 				AssertionInterface a = it.next();
 
@@ -476,9 +479,9 @@ public class Main {
 
 			step++;
 			System.out.println("\n   +++ premise assertions " + size + " -> "
-					+ valid_equivalence_classes.size());
+					+ eq_classes.getClasses().size());
 
-			if ((size == valid_equivalence_classes.size()) && (step > 1))
+			if ((size == eq_classes.getClasses().size()) && (step > 1))
 				break; // nothing new
 		}
 	}
@@ -499,24 +502,25 @@ public class Main {
 		} else if (args.length == 2) {
 			if (args[0].equals("--xml")) {
 				try {
-					xmlExample(new FileInputStream(new File(args[1])));
+					xmlExample(new FileInputStream(new File(args[1])),10);
 				} catch (FileNotFoundException e) {
 
 					e.printStackTrace();
 				}
 			}
 			
-		}else {
-			
-			try {
-				xmlExample(new FileInputStream(new File("/home/immanuel/git/psyCode/demo/inference/bulbs.xml")));
-			} catch (FileNotFoundException e) {
+		} else if (args.length == 3) {
+			if (args[0].equals("--xml")) {
+				try {
+					xmlExample(new FileInputStream(new File(args[2])),Integer.parseInt(args[1]));
+				} catch (FileNotFoundException e) {
 
-				e.printStackTrace();
+					e.printStackTrace();
+				}
 			}
 			
-			
 		}
+		
 	}
 
 }

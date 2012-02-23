@@ -34,12 +34,45 @@ import de.tu_dresden.psy.regexp.StringRelationJoin;
 /**
  * implements inference on String-Assertions via regular expressions
  * 
+ * (the name parameter is the only information used to check for equality!)
+ * 
  * @author albrecht
  * 
  */
 public class RegExpInferenceMap implements InferenceMap {
 
+	/**
+	 * WATCH OUT!
+	 * 
+	 * we will compare rules only based on this name and not on the actual rule !!!
+	 * 
+	 */
 	private String name;
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RegExpInferenceMap other = (RegExpInferenceMap) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
 
 	private Vector<AssertionFilter> premiseForms;
 
@@ -192,9 +225,9 @@ public class RegExpInferenceMap implements InferenceMap {
 				return true;
 
 			Set<String> intersection = new HashSet<String>();
-			
+
 			int i = 0;
-			
+
 			int idx = index.get(i);
 			StringRelationInterface rel = phi.get(i);
 			AssertionPart pt = part.get(i);
@@ -212,8 +245,6 @@ public class RegExpInferenceMap implements InferenceMap {
 				}
 			} else
 				return false;
-
-			
 
 			for (i = 1; i < index.size(); ++i) {
 
@@ -544,7 +575,7 @@ public class RegExpInferenceMap implements InferenceMap {
 				Vector<Vector<AssertionInterface>> factors) {
 			this.factors = factors;
 		}
-
+//TODO: add check whether current vector contains only old assertions
 		public static class CrossProductIterator implements
 				Iterator<Vector<AssertionInterface>> {
 
@@ -682,6 +713,7 @@ public class RegExpInferenceMap implements InferenceMap {
 
 		for (Vector<AssertionInterface> premiseVector : mergePremises
 				.getProduct(premises)) {
+
 			boolean passed = true;
 			for (ConstraintInterface check : checkPremises) {
 				if (check.check(premiseVector) == false) {
@@ -694,6 +726,7 @@ public class RegExpInferenceMap implements InferenceMap {
 					inferred.addAll(combine.combine(premiseVector));
 				}
 			}
+
 		}
 
 		return inferred;

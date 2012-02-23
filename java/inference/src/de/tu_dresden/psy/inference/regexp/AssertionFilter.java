@@ -18,7 +18,9 @@
 
 package de.tu_dresden.psy.inference.regexp;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -29,6 +31,12 @@ public class AssertionFilter {
 	private Pattern subjectPattern;
 	private Pattern predicatePattern;
 	private Pattern objectPattern;
+	
+	private Map<String,Boolean> subjectCache;
+	private Map<String,Boolean> predicateCache;
+	private Map<String,Boolean> objectCache;
+	
+	
 
 	/**
 	 * constructs the filter from the given regular expressions
@@ -43,6 +51,18 @@ public class AssertionFilter {
 		this.subjectPattern = Pattern.compile(subjectPattern);
 		this.predicatePattern = Pattern.compile(predicatePattern);
 		this.objectPattern = Pattern.compile(objectPattern);
+		this.subjectCache = new HashMap<String, Boolean>();
+		this.predicateCache = new HashMap<String, Boolean>();
+		this.objectCache = new HashMap<String, Boolean>();
+	}
+	
+	static private boolean checkPattern(String toMatch, Map<String,Boolean> cache, Pattern pattern) {
+		if (cache.containsKey(toMatch))
+			return cache.get(toMatch);
+		
+		boolean matches = pattern.matcher(toMatch).matches();
+		cache.put(toMatch, matches);
+		return matches;
 	}
 	
 	/**
@@ -63,9 +83,9 @@ public class AssertionFilter {
 					if (assertion.getObject() instanceof String) {
 						String object = (String) assertion.getObject();
 
-						if (predicatePattern.matcher(predicate).matches()) {
-							if (subjectPattern.matcher(subject).matches()) {
-								if (objectPattern.matcher(object).matches()) {
+						if (checkPattern(predicate,predicateCache,predicatePattern)) {
+							if (checkPattern(subject,subjectCache,subjectPattern)) {
+								if (checkPattern(object,objectCache,objectPattern)) {
 									result.add(assertion);
 								}
 							}

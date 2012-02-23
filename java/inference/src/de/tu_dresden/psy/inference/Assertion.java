@@ -40,7 +40,21 @@ public class Assertion implements AssertionInterface {
 		return assertion.getObject();
 	}
 
+	private boolean old;
+	
+	@Override
+	public boolean isOld() {
+		return old;
+	}
+	
+	@Override
+	public void markAsOld() {
+		old = true;
+	}
+	
 	private Object s, o, p;
+	private int hashS, hashO, hashP;
+	private int hashCode;
 
 	/**
 	 * create assertion from subject, predicate and object
@@ -54,6 +68,16 @@ public class Assertion implements AssertionInterface {
 		s = subject;
 		p = predicate;
 		o = object;
+		hashS = s.hashCode();
+		hashP = p.hashCode();
+		hashO = o.hashCode();
+		old = false;
+		
+		
+		hashCode = 1;
+		hashCode = 31 * hashCode + (hashO);
+		hashCode = 31 * hashCode + (hashP);
+		hashCode = 31 * hashCode + (hashS);
 	}
 
 	/**
@@ -68,6 +92,15 @@ public class Assertion implements AssertionInterface {
 		o = null;
 		s = subject;
 		p = predicate;
+		hashS = s.hashCode();
+		hashP = p.hashCode();
+		hashO = 0;
+		
+		hashCode = 1;
+		hashCode = 31 * hashCode + (hashO);
+		hashCode = 31 * hashCode + (hashP);
+		hashCode = 31 * hashCode + (hashS);
+		old = false;
 	}
 
 	/**
@@ -78,6 +111,8 @@ public class Assertion implements AssertionInterface {
 	 */
 
 	public Assertion(String fromString) {
+		old = false;
+		
 		String[] parts = fromString.split("·");
 
 		if (parts.length == 2) {
@@ -92,6 +127,15 @@ public class Assertion implements AssertionInterface {
 
 		throw new RuntimeException(
 				"Assertion must be either SUBJECT·PREDICATE or SUBJECT·PREDICATE·OBJECT: "+fromString);
+		
+		hashS = s.hashCode();
+		hashP = p.hashCode();
+		hashO = o.hashCode();
+		
+		hashCode = 1;
+		hashCode = 31 * hashCode + (hashO);
+		hashCode = 31 * hashCode + (hashP);
+		hashCode = 31 * hashCode + (hashS);
 	}
 
 	@Override
@@ -114,12 +158,7 @@ public class Assertion implements AssertionInterface {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((o == null) ? 0 : o.hashCode());
-		result = prime * result + ((p == null) ? 0 : p.hashCode());
-		result = prime * result + ((s == null) ? 0 : s.hashCode());
-		return result;
+		return hashCode;
 	}
 
 	@Override
@@ -128,25 +167,11 @@ public class Assertion implements AssertionInterface {
 			return true;
 		if (obj == null)
 			return false;
+	
 		if (getClass() != obj.getClass())
-			return false;
-		Assertion other = (Assertion) obj;
-		if (o == null) {
-			if (other.o != null)
-				return false;
-		} else if (!o.equals(other.o))
-			return false;
-		if (p == null) {
-			if (other.p != null)
-				return false;
-		} else if (!p.equals(other.p))
-			return false;
-		if (s == null) {
-			if (other.s != null)
-				return false;
-		} else if (!s.equals(other.s))
-			return false;
-		return true;
+			return false;		
+		
+		return isEqualTo((Assertion)obj);
 	}
 
 	@Override
@@ -162,6 +187,12 @@ public class Assertion implements AssertionInterface {
 		if (assertion == null)
 			return false;
 		
+		if (hashP != assertion.getPredicate().hashCode())
+			return false;
+		if (hashS != assertion.getSubject().hashCode())
+			return false;
+		if (hashO != assertion.getObject().hashCode())
+			return false;
 		
 		if (o == null) {
 			if (assertion.getObject() != null)

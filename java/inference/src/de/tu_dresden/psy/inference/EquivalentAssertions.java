@@ -18,7 +18,6 @@
 
 package de.tu_dresden.psy.inference;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,50 +32,23 @@ import java.util.Set;
 public class EquivalentAssertions implements AssertionInterface {
 
 	private Object subject, predicate, object;
+	
+	private int hashSubject,hashPredicate,hashObject;
 
 	private Set<AssertionInterface> assertions;
-
-	/**
-	 * add all new assertions to the corresponding equivalence classes of a set
-	 * of assertions
-	 * 
-	 * @param equivalenceClasses
-	 * @param newAssertions
-	 */
-
-	public static void addToEquivalenceClass(
-			Set<AssertionInterface> equivalenceClasses,
-			Set<AssertionInterface> newAssertions) {
-
-		HashMap<EquivalentAssertions, EquivalentAssertions> get_class = new HashMap<EquivalentAssertions, EquivalentAssertions>();
-
-		for (AssertionInterface assertion : newAssertions) {
-			EquivalentAssertions ea;
-			if (assertion instanceof EquivalentAssertions) {
-				ea = (EquivalentAssertions) assertion;
-			} else {
-				ea = new EquivalentAssertions(assertion);
-			}
-
-			if (equivalenceClasses.contains(ea) == false) {
-				equivalenceClasses.add(ea);
-			} else {
-				if (get_class.containsKey(ea)) {
-					get_class.get(ea).add(ea);
-				} else {
-					for (AssertionInterface equivalence_class : equivalenceClasses) {
-						if (equivalence_class.equals(ea)) {
-							((EquivalentAssertions) equivalence_class).add(ea);
-							get_class.put(
-									(EquivalentAssertions) equivalence_class,
-									(EquivalentAssertions) equivalence_class);
-							break;
-						}
-					}
-				}
-			}
-		}
+	
+	private boolean old;
+	
+	@Override
+	public boolean isOld() {
+		return old;
 	}
+	
+	@Override
+	public void markAsOld() {
+		old = true;
+	}
+
 
 	/**
 	 * create a new equivalence class from a representing assertion only
@@ -90,6 +62,10 @@ public class EquivalentAssertions implements AssertionInterface {
 		subject = representant.getSubject();
 		object = representant.getObject();
 		predicate = representant.getPredicate();
+		old = false;
+		hashSubject = subject.hashCode();
+		hashPredicate = predicate.hashCode();
+		hashObject = object.hashCode();
 	}
 
 	/**
@@ -130,6 +106,13 @@ public class EquivalentAssertions implements AssertionInterface {
 
 	@Override
 	public boolean isEqualTo(AssertionInterface assertion) {
+		if (hashPredicate != assertion.getPredicate().hashCode())
+			return false;
+		if (hashSubject != assertion.getSubject().hashCode())
+			return false;
+		if (hashObject != assertion.getObject().hashCode())
+			return false;
+		
 		if (assertion.getPredicate().equals(predicate) == false) {
 			return false;
 		}

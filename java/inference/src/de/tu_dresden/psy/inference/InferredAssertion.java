@@ -37,6 +37,18 @@ public class InferredAssertion implements AssertionInterface {
 	private Set<AssertionInterface> premises;
 	private AssertionInterface assertion;
 	private InferenceMap rule;
+	
+	private boolean old;
+	
+	@Override
+	public boolean isOld() {
+		return old;
+	}
+	
+	@Override
+	public void markAsOld() {
+		old = true;
+	}
 
 	/**
 	 * unified initialization method
@@ -51,6 +63,7 @@ public class InferredAssertion implements AssertionInterface {
 		this.rule = usedRule;
 		this.premises = new HashSet<AssertionInterface>();
 		this.premises.addAll(usedPremises);
+		this.old = false;
 	}
 	
 
@@ -186,8 +199,6 @@ public class InferredAssertion implements AssertionInterface {
 		int result = 1;
 		result = prime * result
 				+ ((assertion == null) ? 0 : assertion.hashCode());
-		result = prime * result
-				+ ((premises == null) ? 0 : premises.hashCode());
 		result = prime * result + ((rule == null) ? 0 : rule.hashCode());
 		return result;
 	}
@@ -205,11 +216,6 @@ public class InferredAssertion implements AssertionInterface {
 			if (other.assertion != null)
 				return false;
 		} else if (!assertion.equals(other.assertion))
-			return false;
-		if (premises == null) {
-			if (other.premises != null)
-				return false;
-		} else if (!premises.equals(other.premises))
 			return false;
 		if (rule == null) {
 			if (other.rule != null)
