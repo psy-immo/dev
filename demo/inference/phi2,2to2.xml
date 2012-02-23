@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<parse>
+		<subject>\S.*</subject>
+		<predicate>(means|is(\s.*\swith|\s.*\sthan|\s+as.*\sas))</predicate>
+		<object>\S.*</object>
+	</parse>	
+	
+	<rule name="phi2,2to2.1">
+		<premise id="ab">
+			<predicate>is ((small|bigg)er than|as big as)</predicate>
+		</premise>
+		<premise id="bc">
+			<predicate>is ((small|bigg)er than|as big as)</predicate>
+		</premise>
+		<constraint>
+			<object id="ab"/>
+			<subject id="bc"/>
+		</constraint>
+		<constraint>
+			<predicate id="ab">
+				<rho>
+					<in id="same">.*</in>
+					<out id="same"/>
+				</rho>
+				<rho>
+					<in>.*</in>
+					<out>is as big as</out>
+				</rho>
+			</predicate>
+			<predicate id="bc"/>
+		</constraint>
+		<infer>
+			<subject id="ab" source="subject"/>
+			<predicate id="ab" source="predicate"/>
+			<object id="bc" source="object"/>
+		</infer>
+	</rule>
+	<rule name="phi2,2to2.2">
+		<premise id="ab">
+			<predicate>is ((small|bigg)er than|as big as)</predicate>
+		</premise>
+		<premise id="bc">
+			<predicate>is ((small|bigg)er than|as big as)</predicate>
+		</premise>
+		<constraint>
+			<object id="ab"/>
+			<subject id="bc"/>
+		</constraint>
+		<constraint>
+			<predicate id="bc">
+				<rho>
+					<in id="same">.*</in>
+					<out id="same"/>
+				</rho>
+				<rho>
+					<in>.*</in>
+					<out>is as big as</out>
+				</rho>
+			</predicate>
+			<predicate id="ab"/>
+		</constraint>
+		<infer>
+			<subject id="ab" source="subject"/>
+			<predicate id="bc" source="predicate"/>
+			<object id="bc" source="object"/>
+		</infer>
+	</rule>
+	
+	
+	<assert>A is smaller than B</assert>
+	<assert>B is as big as C</assert>
+	<assert>B is bigger than D</assert>
+	<assert>D is as big as A</assert>
+	<assert>B is smaller than E</assert>
+	
+	
+</root>

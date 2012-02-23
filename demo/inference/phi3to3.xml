@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<parse>
+		<subject>\S.*</subject>
+		<predicate>(means|is(\s.*\swith|\s.*\sthan|\s+as.*\sas))</predicate>
+		<object>\S.*</object>
+	</parse>	
+	
+	<rule name="phi3to3*">
+		<premise id="ab">
+			<predicate>means</predicate>
+		</premise>
+		<infer>
+			<subject id="ab" source="object"/>
+			<predicate>means</predicate>
+			<object id="ab" source="subject"/>
+		</infer>
+	</rule>
+	
+	<rule name="phi3,3to3">
+		<premise id="ab">
+			<predicate>means</predicate>
+		</premise>
+		<premise id="bc">
+			<predicate>means</predicate>
+		</premise>
+		<constraint>
+			<object id="ab"/>
+			<subject id="bc"/>
+		</constraint>
+		<infer>
+			<subject id="ab" source="subject"/>
+			<predicate>means</predicate>
+			<object id="bc" source="object"/>
+		</infer>
+	</rule>
+	
+	<rule name="phi3to-3">
+		<premise id="ab">
+			<subject>a (small|bigg)er .*</subject>
+			<predicate>means</predicate>
+			<object>a (small|bigg)er .*</object>
+		</premise>
+		<infer>
+			<subject id="ab" source="subject">
+				<rho>
+					<in>a smaller </in><in id="what">.*</in>
+					<out>a bigger </out><out id="what"/>
+				</rho>
+				<rho>
+					<in>a bigger </in><in id="what">.*</in>
+					<out>a smaller </out><out id="what"/>
+				</rho>
+			</subject>
+			<predicate>means</predicate>
+			<object id="ab" source="object">
+				<rho>
+					<in>a smaller </in><in id="what">.*</in>
+					<out>a bigger </out><out id="what"/>
+				</rho>
+				<rho>
+					<in>a bigger </in><in id="what">.*</in>
+					<out>a smaller </out><out id="what"/>
+				</rho>
+			</object>
+		</infer>
+	</rule>
+	
+	
+	<assert>a smaller X1 means a smaller X2</assert>
+	<assert>a bigger X2 means a smaller Y1</assert>
+	<assert>a bigger Y1 means a smaller Z1</assert>
+	<assert>a bigger Y1 means a bigger Y2</assert>
+	<assert>a smaller Z1 means a smaller Z2</assert>
+	
+	
+</root>

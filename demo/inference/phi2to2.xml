@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<parse>
+		<subject>\S.*</subject>
+		<predicate>(means|is(\s.*\swith|\s.*\sthan|\s+as.*\sas))</predicate>
+		<object>\S.*</object>
+	</parse>	
+	
+	<rule name="phi2to2">
+		<premise id="ab">
+			<predicate>is ((small|bigg)er than|as big as)</predicate>
+		</premise>
+		<infer>
+			<subject id="ab" source="object"/>
+			<predicate id="ab" source="predicate">
+				<rho>
+					<in>is as big as</in>
+					<out>is as big as</out>
+				</rho>
+				<rho>
+					<in>is smaller than</in>
+					<out>is bigger than</out>
+				</rho>
+				<rho>
+					<in>is bigger than</in>
+					<out>is smaller than</out>
+				</rho>
+			</predicate>
+			<object id="ab" source="subject"/>
+		</infer>
+	</rule>
+	
+	
+	<assert>A is smaller than B</assert>
+	<assert>B is as big as C</assert>
+	<assert>B is bigger than D</assert>
+	<assert>D is as big as A</assert>
+	<assert>B is smaller than E</assert>
+	
+	
+</root>
