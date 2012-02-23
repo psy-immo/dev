@@ -46,11 +46,14 @@ public class InferenceMaps implements InferenceMap {
 			Set<AssertionInterface> validPremises) {
 		Set<AssertionInterface> inferred = new HashSet<AssertionInterface>();
 		
-		System.out.print("\n inferring: ");
+		int count=0;
+		int size = maps.size();
 		
 		for (Iterator<InferenceMap> it = maps.iterator();it.hasNext();) {
+			++count;
+			System.out.print("\r inferring: "+((count*100)/size)+"% ("+count+")");
 			InferenceMap phi = it.next();
-			System.out.print(".");
+			
 			inferred.addAll(phi.inferNew(validPremises));
 		}
 		

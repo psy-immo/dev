@@ -6,17 +6,6 @@
 		<object>\S.*</object>
 	</parse>	
 	
-	<rule name="phi3to3*">
-		<premise id="ab">
-			<predicate>means</predicate>
-		</premise>
-		<infer>
-			<subject id="ab" source="object"/>
-			<predicate>means</predicate>
-			<object id="ab" source="subject"/>
-		</infer>
-	</rule>
-	
 	<rule name="phi3,3to3">
 		<premise id="ab">
 			<predicate>means</predicate>

@@ -331,16 +331,6 @@
 		</infer>
 	</rule>
 		
-	<rule name="phi3to3*">
-		<premise id="ab">
-			<predicate>means</predicate>
-		</premise>
-		<infer>
-			<subject id="ab" source="object"/>
-			<predicate>means</predicate>
-			<object id="ab" source="subject"/>
-		</infer>
-	</rule>
 	
 	<rule name="phi3,3to3">
 		<premise id="ab">
@@ -425,16 +415,18 @@
 	</rule>
 	
 	<assert>bulb A is connected in parallel with bulb chain BC</assert>
-	<assert>bulb B is serial connected with bulb C</assert>	
-	<assert>the battery is connected in parallel with bulb A</assert>	
-	<assert>the resistance of bulb chain BC is bigger than the resistance of bulb A</assert>	
-	<assert>the resistance of bulb B is as big as the resistance of bulb A</assert>	
-	<assert>the resistance of bulb B is as big as the resistance of bulb C</assert>	
+	<assert>bulb B is serial connected with bulb C</assert>		
+	<assert>bulb B is serial connected with bulb C</assert>		
 	<assert>a bigger voltage means a bigger current</assert>	
-	<assert>a bigger resistance means a smaller current</assert>
-	<assert>a bigger voltage means a bigger luminosity</assert>
-	<assert>a bigger input power means a bigger luminosity</assert>
 	<assert>a bigger voltage means a bigger input power</assert>
-	<assert>a bigger current means a bigger input power</assert>
+	<assert>a bigger input power means a bigger luminosity</assert>
+	<assert>the battery is connected in parallel with bulb A</assert>
+	<assert>the resistance of bulb A is as big as the resistance of bulb B</assert>
+	<assert>the resistance of bulb A is as big as the resistance of bulb C</assert>
+	<assert>the resistance of bulb chain BC is bigger than the resistance of bulb C</assert>
+	<assert>the voltage of bulb chain BC is bigger than the voltage of bulb B</assert>
+	
+	
+	
 	
 </root>
