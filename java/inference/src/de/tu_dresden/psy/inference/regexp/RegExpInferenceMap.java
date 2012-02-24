@@ -44,7 +44,8 @@ public class RegExpInferenceMap implements InferenceMap {
 	/**
 	 * WATCH OUT!
 	 * 
-	 * we will compare rules only based on this name and not on the actual rule !!!
+	 * we will compare rules only based on this name and not on the actual rule
+	 * !!!
 	 * 
 	 */
 	private String name;
@@ -575,7 +576,7 @@ public class RegExpInferenceMap implements InferenceMap {
 				Vector<Vector<AssertionInterface>> factors) {
 			this.factors = factors;
 		}
-//TODO: add check whether current vector contains only old assertions
+
 		public static class CrossProductIterator implements
 				Iterator<Vector<AssertionInterface>> {
 
@@ -668,6 +669,168 @@ public class RegExpInferenceMap implements InferenceMap {
 	}
 
 	/**
+	 * implements cross-product recombination of premise forms, where at least
+	 * one form is marked to be new
+	 * 
+	 * @author albrecht
+	 */
+	public static class CrossProductNewRecombinator implements
+			Iterable<Vector<AssertionInterface>> {
+
+		private Vector<Vector<AssertionInterface>> factors;
+
+		public CrossProductNewRecombinator(
+				Vector<Vector<AssertionInterface>> factors) {
+			this.factors = factors;
+		}
+
+		public static class CrossProductIterator implements
+				Iterator<Vector<AssertionInterface>> {
+
+			private Vector<Integer> currentIndices;
+			private Vector<Boolean> isNewAssertionLeftOfIndex;
+
+			private int factorCount;
+
+			private Vector<Vector<AssertionInterface>> factors;
+
+			private Vector<AssertionInterface> currentElement;
+			private Vector<AssertionInterface> nextElement;
+
+			private boolean nextIndex() {
+				boolean do_it_again = true;
+				while (do_it_again) {
+					do_it_again = false;
+					for (int index = factorCount - 1; index >= 0; --index) {
+						int new_value = currentIndices.get(index) + 1;
+						if (new_value >= factors.get(index).size()) {
+							currentIndices.set(index, 0);
+						} else {
+							currentIndices.set(index, new_value);
+
+							boolean have_new = isNewAssertionLeftOfIndex
+									.get(index);
+							for (int i = index; i < factorCount; ++i) {
+								if (have_new == false)
+									if (factors.get(i)
+											.get(currentIndices.get(i)).isOld() == false) {
+										have_new = true;
+									}
+								isNewAssertionLeftOfIndex.set(i + 1, have_new);
+							}
+
+							if (have_new)
+								return true;
+
+							/**
+							 * here we have a new combination, but it has no new
+							 * assertions in it, so skip!
+							 */
+
+							do_it_again = true;
+							break;
+						}
+					}
+				}
+				return false;
+			}
+
+			private void retrieveNextElement() {
+				if (nextIndex() == false) {
+					this.nextElement = null;
+				} else {
+					for (int i = 0; i < factorCount; ++i) {
+						this.nextElement.set(i,
+								factors.get(i).get(currentIndices.get(i)));
+					}
+				}
+			}
+
+			public CrossProductIterator(
+					Vector<Vector<AssertionInterface>> factors) {
+				this.factors = factors;
+				this.factorCount = factors.size();
+				boolean noMore = false;
+
+				currentIndices = new Vector<Integer>(factorCount);
+
+				for (int i = 0; i < factorCount; ++i) {
+					currentIndices.add(0);
+
+					if (factors.get(i).isEmpty() == true) {
+						noMore = true;
+					}
+				}
+
+				if (noMore) {
+					this.currentElement = null;
+					return;
+				}
+
+				isNewAssertionLeftOfIndex = new Vector<Boolean>(factorCount + 1);
+				isNewAssertionLeftOfIndex.add(false);
+
+				boolean haveNewAssertion = false;
+
+				for (int i = 0; i < factorCount; ++i) {
+					if (haveNewAssertion == false)
+						if (factors.get(i).get(0).isOld() == false) {
+							haveNewAssertion = true;
+						}
+					isNewAssertionLeftOfIndex.add(haveNewAssertion);
+				}
+
+				/**
+				 * get next index that is also a new combination, in order to do
+				 * that, set the current index to (0,..,0,-1).
+				 */
+
+				currentIndices.set(factorCount - 1, -1);
+
+				if (nextIndex() == false) {
+					this.currentElement = null;
+				} else {
+					this.currentElement = new Vector<AssertionInterface>();
+					this.nextElement = new Vector<AssertionInterface>();
+
+					for (int i = 0; i < factorCount; ++i) {
+						this.currentElement.add(factors.get(i).get(0));
+						this.nextElement.add(factors.get(i).get(0));
+					}
+				}
+			}
+
+			@Override
+			public boolean hasNext() {
+
+				return currentElement != null;
+			}
+
+			@Override
+			public Vector<AssertionInterface> next() {
+				retrieveNextElement();
+
+				Vector<AssertionInterface> swap = this.currentElement;
+				this.currentElement = this.nextElement;
+				this.nextElement = swap;
+
+				return swap;
+			}
+
+			@Override
+			public void remove() {
+				throw new RuntimeException(
+						"Cannot remove elements from cross product");
+			}
+		};
+
+		@Override
+		public Iterator<Vector<AssertionInterface>> iterator() {
+			return new CrossProductIterator(factors);
+		}
+	}
+
+	/**
 	 * interface that returns a new iterable of assertion vectors for a given
 	 * vector of premise that have given forms
 	 * 
@@ -692,6 +855,22 @@ public class RegExpInferenceMap implements InferenceMap {
 		public Iterable<Vector<AssertionInterface>> getProduct(
 				Vector<Vector<AssertionInterface>> premises) {
 			return new CrossProductRecombinator(premises);
+		}
+	};
+	
+	/**
+	 * 
+	 * use CrossProductNewRecombinator with RecombinatorInterface
+	 * 
+	 * @author albrecht
+	 * 
+	 */
+
+	public static class CrossProductIfNew implements RecombinatorInterface {
+		@Override
+		public Iterable<Vector<AssertionInterface>> getProduct(
+				Vector<Vector<AssertionInterface>> premises) {
+			return new CrossProductNewRecombinator(premises);
 		}
 	};
 
@@ -745,7 +924,7 @@ public class RegExpInferenceMap implements InferenceMap {
 	 */
 
 	public RegExpInferenceMap(String name) {
-		this.mergePremises = new CrossProduct();
+		this.mergePremises = new CrossProductIfNew();
 		this.name = name;
 		this.conclusions = new HashSet<RegExpInferenceMap.PremiseCombinatorInterface>();
 		this.premiseForms = new Vector<AssertionFilter>();

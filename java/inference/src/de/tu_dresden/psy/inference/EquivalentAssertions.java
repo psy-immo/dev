@@ -137,10 +137,10 @@ public class EquivalentAssertions implements AssertionInterface {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((object == null) ? 0 : object.hashCode());
+		result = prime * result + hashObject;
 		result = prime * result
-				+ ((predicate == null) ? 0 : predicate.hashCode());
-		result = prime * result + ((subject == null) ? 0 : subject.hashCode());
+				+ hashPredicate;
+		result = prime * result + hashSubject;
 		return result;
 	}
 
@@ -150,25 +150,11 @@ public class EquivalentAssertions implements AssertionInterface {
 			return true;
 		if (obj == null)
 			return false;
+				
 		if (getClass() != obj.getClass())
 			return false;
-		EquivalentAssertions other = (EquivalentAssertions) obj;
-		if (object == null) {
-			if (other.object != null)
-				return false;
-		} else if (!object.equals(other.object))
-			return false;
-		if (predicate == null) {
-			if (other.predicate != null)
-				return false;
-		} else if (!predicate.equals(other.predicate))
-			return false;
-		if (subject == null) {
-			if (other.subject != null)
-				return false;
-		} else if (!subject.equals(other.subject))
-			return false;
-		return true;
+		
+		return isEqualTo((EquivalentAssertions) obj);
 	}
 
 	@Override
@@ -178,7 +164,7 @@ public class EquivalentAssertions implements AssertionInterface {
 				+ object.toString() + " [" + assertions.size() + "]";
 		
 		for (AssertionInterface assertion: assertions) {
-			p += "\n    " + assertion;
+			p += "\n" + assertion;
 		}
 		
 		return p+"\n";

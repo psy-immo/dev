@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
 
 
 /**
@@ -34,7 +35,8 @@ import java.util.Set;
 
 public class InferredAssertion implements AssertionInterface {
 
-	private Set<AssertionInterface> premises;
+	private Vector<? extends AssertionInterface> premises;
+	private int thisHash;
 	private AssertionInterface assertion;
 	private InferenceMap rule;
 	
@@ -56,14 +58,32 @@ public class InferredAssertion implements AssertionInterface {
 	 * @param newAssertion
 	 * @param usedPremises
 	 */
+	@SuppressWarnings("unchecked")
 	private void initialize(InferenceMap usedRule,
 			AssertionInterface newAssertion,
 			Collection<? extends AssertionInterface> usedPremises) {
 		this.assertion = newAssertion;
 		this.rule = usedRule;
-		this.premises = new HashSet<AssertionInterface>();
-		this.premises.addAll(usedPremises);
+		if (usedPremises instanceof Vector<?>) {
+			this.premises = (Vector<? extends AssertionInterface>) ((Vector<?>)usedPremises).clone();
+		} else {
+			Vector<AssertionInterface> premise_vector= new Vector<AssertionInterface>(usedPremises.size());
+			this.premises = premise_vector;
+			premise_vector.addAll(usedPremises);
+		}
+		
 		this.old = false;
+		
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((assertion == null) ? 0 : assertion.hashCode());
+			result = prime * result
+					+ ((premises == null) ? 0 : premises.hashCode());
+			result = prime * result + ((rule == null) ? 0 : rule.hashCode());
+			this.thisHash = result;
+		}
 	}
 	
 
@@ -159,13 +179,13 @@ public class InferredAssertion implements AssertionInterface {
 
 	@Override
 	public boolean isPremise(AssertionInterface assertion) {
-		for (Iterator<AssertionInterface> itpremises = this.premises.iterator(); itpremises
+		for (Iterator<? extends AssertionInterface> itpremises = this.premises.iterator(); itpremises
 				.hasNext();) {
 			AssertionInterface premise = itpremises.next();
 			if (premise.isEqualTo(assertion))
 				return true;
 		}
-		for (Iterator<AssertionInterface> itpremises = this.premises.iterator(); itpremises
+		for (Iterator<? extends AssertionInterface> itpremises = this.premises.iterator(); itpremises
 				.hasNext();) {
 			AssertionInterface premise = itpremises.next();
 			if (premise.isPremise(assertion))
@@ -177,40 +197,50 @@ public class InferredAssertion implements AssertionInterface {
 	@Override
 	public String toString() {
 		
-		String s = "  |"+ rule.ruleName();
-		
+		String s = "  +--- "+ rule.ruleName();
+		for (AssertionInterface premise : premises) {
+			s += "\n  | " + premise.getSubject()+"·"+premise.getPredicate()+"·"+premise.getObject();
+		}
+		s += "\n  +---";
 		return s;
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((assertion == null) ? 0 : assertion.hashCode());
-		result = prime * result + ((rule == null) ? 0 : rule.hashCode());
-		return result;
+		
+		return thisHash;
 	}
 
+	/**
+	 * NOTE: WE TRUST THE HASH OF THE PREMISE VECTOR TO BE UNIQUE FOR ALL VALID COMBINATIONS!
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
+		
+		
 		if (getClass() != obj.getClass())
 			return false;
 		InferredAssertion other = (InferredAssertion) obj;
-		if (assertion == null) {
-			if (other.assertion != null)
-				return false;
-		} else if (!assertion.equals(other.assertion))
+		
+		if (thisHash != other.thisHash)
 			return false;
+		
+		if (!assertion.equals(other.assertion))
+			return false;		
+		
 		if (rule == null) {
 			if (other.rule != null)
 				return false;
 		} else if (!rule.equals(other.rule))
 			return false;
+		
+		if (!premises.equals(other.premises))
+			return false;
+		
 		return true;
 	}
 
