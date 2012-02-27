@@ -28,6 +28,7 @@ import de.tu_dresden.psy.inference.Assertion.AssertionPart;
 import de.tu_dresden.psy.inference.AssertionInterface;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.InferenceMaps;
+import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
 import de.tu_dresden.psy.inference.regexp.NonEmptyIntersectionChecker;
 import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
 import de.tu_dresden.psy.regexp.KRegExp;
@@ -50,11 +51,33 @@ public class XmlRootTag extends XmlTag {
 	private Set<InferenceMap> rules;
 	private Set<SubjectPredicateObjectMatcher> parsers;
 	private Set<String> assertions;
+	private Set<ConstrainedAssertionFilter> invalid;
+	private Set<ConstrainedAssertionFilter> trivial;
 
 	public XmlRootTag() {
 		rules = new HashSet<InferenceMap>();
 		parsers = new HashSet<SubjectPredicateObjectMatcher>();
 		assertions = new HashSet<String>();
+		invalid = new HashSet<ConstrainedAssertionFilter>();
+		trivial = new HashSet<ConstrainedAssertionFilter>();
+	}
+	
+	/**
+	 * 
+	 * @return a set of filters that filter out invalid assertions
+	 */
+	
+	public Set<ConstrainedAssertionFilter> getInvalidityFilters() {
+		return invalid;
+	}
+	
+	/**
+	 * 
+	 * @return a set of filters that filter out trivial assertions
+	 */
+	
+	public Set<ConstrainedAssertionFilter> getTrivialityFilters() {
+		return trivial;
 	}
 
 	/**
@@ -75,6 +98,10 @@ public class XmlRootTag extends XmlTag {
 		return new SubjectPredicateObjectMatchers(parsers);
 	}
 
+	/**
+	 * 
+	 * @return all assertions given in the xml document
+	 */
 	public Set<AssertionInterface> getGivenAssertions() {
 		Set<AssertionInterface> given = new HashSet<AssertionInterface>();
 		SubjectPredicateObjectMatchers matcher = getParsers();
@@ -94,6 +121,107 @@ public class XmlRootTag extends XmlTag {
 
 	private void processAssert(XmlTag child) {
 		assertions.add(child.contents);
+	}
+
+	/**
+	 * process a &lt;trivial>-tag
+	 * 
+	 * @param child
+	 */
+
+	private void processTrivial(XmlTag child) {
+		trivial.add(processConstraintFilter(child));
+	}
+
+	/**
+	 * process a &lt;invalid>-tag
+	 * 
+	 * @param child
+	 */
+
+	private void processInvalid(XmlTag child) {
+		invalid.add(processConstraintFilter(child));
+	}
+
+	/**
+	 * process a constraint for &lt;trivial>- and &lt;invalid>-tags
+	 * 
+	 * @param child
+	 * @return constraint described by child
+	 */
+
+	private NonEmptyIntersectionChecker processConstraint(XmlTag child) {
+		NonEmptyIntersectionChecker checker = new NonEmptyIntersectionChecker();
+
+		for (XmlTag t : child.children) {
+			AssertionPart part = null;
+			if (t.tagName.equals("SUBJECT")) {
+				part = AssertionPart.subject;
+			} else if (t.tagName.equals("PREDICATE")) {
+				part = AssertionPart.predicate;
+			} else if (t.tagName.equals("OBJECT")) {
+				part = AssertionPart.object;
+			}
+
+			if (part != null) {
+				if (t.children.isEmpty() == true) {
+					checker.addCheckPart(0, part);
+				} else {
+					/**
+					 * the children of t form a relation
+					 */
+
+					StringRelationJoin relation = processRho(t);
+
+					checker.addCheckPart(0, part, relation);
+
+				}
+			}
+		}
+
+		return checker;
+	}
+
+	/**
+	 * process a &lt;trivial>-tag
+	 * 
+	 * @param child
+	 */
+
+	private ConstrainedAssertionFilter processConstraintFilter(XmlTag child) {
+		String subject = "";
+		String predicate = "";
+		String object = "";
+
+		for (XmlTag t : child.children) {
+			if (t.tagName.equals("SUBJECT")) {
+				subject += "(" + t.contents + ")";
+			} else if (t.tagName.equals("PREDICATE")) {
+				predicate += "(" + t.contents + ")";
+			} else if (t.tagName.equals("OBJECT")) {
+				object += "(" + t.contents + ")";
+			}
+		}
+
+		if (subject.isEmpty())
+			subject = ".*";
+
+		if (object.isEmpty())
+			object = ".*";
+
+		if (predicate.isEmpty())
+			predicate = ".*";
+
+		ConstrainedAssertionFilter filter = new ConstrainedAssertionFilter(
+				subject, predicate, object);
+
+		for (XmlTag t : child.children) {
+			if (t.tagName.equals("CONSTRAINT")) {
+				filter.addConstraint(processConstraint(t));
+			}
+		}
+
+		return filter;
 	}
 
 	/**
@@ -120,9 +248,9 @@ public class XmlRootTag extends XmlTag {
 				current_premise++;
 			}
 		}
-		
+
 		for (XmlTag tag : child.children) {
-		    if (tag.tagName.equals("CONSTRAINT")) {
+			if (tag.tagName.equals("CONSTRAINT")) {
 				processConstraint(tag, rule, premise_id);
 			} else if (tag.tagName.equals("INFER")) {
 				processInfer(tag, rule, premise_id);
@@ -159,7 +287,7 @@ public class XmlRootTag extends XmlTag {
 				if (tag.attributes.containsKey("id")
 						&& tag.attributes.containsKey("source")) {
 					AssertionPart source_part = null;
-					
+
 					if (tag.attributes.get("source").equals("subject")) {
 						source_part = AssertionPart.subject;
 					} else if (tag.attributes.get("source").equals("predicate")) {
@@ -189,9 +317,9 @@ public class XmlRootTag extends XmlTag {
 				}
 			}
 		}
-		
+
 		rule.addConclusion(conclusion);
-		
+
 	}
 
 	/**
@@ -303,7 +431,7 @@ public class XmlRootTag extends XmlTag {
 				}
 			}
 		}
-		
+
 		rule.addConstraint(checker);
 	}
 
@@ -349,8 +477,7 @@ public class XmlRootTag extends XmlTag {
 						if (outtags.attributes.containsKey("id")) {
 							output.add(new SplittedStringRelation.ProjectionMap(
 									ids.get(outtags.attributes.get("id"))));
-						} else
-						if (outtags.contents.isEmpty() == false) {
+						} else if (outtags.contents.isEmpty() == false) {
 							output.add(new SplittedStringRelation.ConstantMap(
 									outtags.contents));
 						}
@@ -372,9 +499,12 @@ public class XmlRootTag extends XmlTag {
 			processRule(child);
 		} else if (child.tagName.equals("PARSE")) {
 			processParse(child);
-		}
-		else if (child.tagName.equals("ASSERT")) {
+		} else if (child.tagName.equals("ASSERT")) {
 			processAssert(child);
+		} else if (child.tagName.equals("TRIVIAL")) {
+			processTrivial(child);
+		} else if (child.tagName.equals("INVALID")) {
+			processInvalid(child);
 		}
 
 		/**
@@ -386,7 +516,9 @@ public class XmlRootTag extends XmlTag {
 	public String toString() {
 
 		return rules.size() + " rule(s), " + parsers.size() + " parser(s), "
-				+ assertions.size() + " assertion(s)";
+				+ assertions.size() + " assertion(s), " + trivial.size()
+				+ " triviality filter(s), " + invalid.size()
+				+ " invalidity filter(s)";
 	}
 
 }

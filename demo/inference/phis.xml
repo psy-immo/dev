@@ -479,6 +479,62 @@
 			<object id="bc" source="object"/>
 		</infer>
 	</rule>
+	
+	<trivial>
+		<predicate>(means, for bulbs,|is as big as)</predicate>
+		<constraint>
+			<subject/>
+			<object/>
+		</constraint>
+	</trivial>
+	
+	<invalid>
+		<predicate>is (bigg|small)er than</predicate>
+		<constraint>
+			<subject/>
+			<object/>
+		</constraint>
+	</invalid>
+	
+	<invalid>
+		<subject>a bigger .*</subject>
+		<predicate>means, for bulbs,</predicate>
+		<object>a smaller .*</object>
+		<constraint>
+			<subject>
+				<rho>
+					<in>a bigger </in><in id="what">.*</in>
+					<out id="what"/>
+				</rho>
+			</subject>
+			<object>
+				<rho>
+					<in>a smaller </in><in id="what">.*</in>
+					<out id="what"/>
+				</rho>
+			</object>
+		</constraint>
+	</invalid>
+	
+	<invalid>
+		<subject>a smaller .*</subject>
+		<predicate>means, for bulbs,</predicate>
+		<object>a bigger .*</object>
+		<constraint>
+			<subject>
+				<rho>
+					<in>a smaller </in><in id="what">.*</in>
+					<out id="what"/>
+				</rho>
+			</subject>
+			<object>
+				<rho>
+					<in>a bigger </in><in id="what">.*</in>
+					<out id="what"/>
+				</rho>
+			</object>
+		</constraint>
+	</invalid>
 
 	<assert>bulb A is a bulb</assert>
 	<assert>bulb B is a bulb</assert>

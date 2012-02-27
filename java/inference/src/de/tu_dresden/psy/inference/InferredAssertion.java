@@ -41,6 +41,7 @@ public class InferredAssertion implements AssertionInterface {
 	private InferenceMap rule;
 	
 	private boolean old;
+	private String representation;
 	
 	@Override
 	public boolean isOld() {
@@ -74,16 +75,24 @@ public class InferredAssertion implements AssertionInterface {
 		
 		this.old = false;
 		
+		representation = "  +--- "+ rule.ruleName();
+		for (AssertionInterface premise : premises) {
+			representation += "\n  | " + premise.getSubject()+"·"+premise.getPredicate()+"·"+premise.getObject();
+		}
+		representation += "\n  +---";
+		
 		{
 			final int prime = 31;
 			int result = 1;
 			result = prime * result
 					+ ((assertion == null) ? 0 : assertion.hashCode());
 			result = prime * result
-					+ ((premises == null) ? 0 : premises.hashCode());
+					+ (representation.hashCode());
 			result = prime * result + ((rule == null) ? 0 : rule.hashCode());
 			this.thisHash = result;
 		}
+		
+		
 	}
 	
 
@@ -196,13 +205,8 @@ public class InferredAssertion implements AssertionInterface {
 
 	@Override
 	public String toString() {
-		
-		String s = "  +--- "+ rule.ruleName();
-		for (AssertionInterface premise : premises) {
-			s += "\n  | " + premise.getSubject()+"·"+premise.getPredicate()+"·"+premise.getObject();
-		}
-		s += "\n  +---";
-		return s;
+	
+		return representation;
 	}
 
 	@Override
@@ -211,9 +215,6 @@ public class InferredAssertion implements AssertionInterface {
 		return thisHash;
 	}
 
-	/**
-	 * NOTE: WE TRUST THE HASH OF THE PREMISE VECTOR TO BE UNIQUE FOR ALL VALID COMBINATIONS!
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -238,7 +239,7 @@ public class InferredAssertion implements AssertionInterface {
 		} else if (!rule.equals(other.rule))
 			return false;
 		
-		if (!premises.equals(other.premises))
+		if (!representation.equals(other.representation))
 			return false;
 		
 		return true;

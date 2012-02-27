@@ -34,6 +34,7 @@ import org.xml.sax.SAXException;
 
 import de.tu_dresden.psy.inference.*;
 import de.tu_dresden.psy.inference.Assertion.AssertionPart;
+import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
 import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
 import de.tu_dresden.psy.inference.regexp.xml.XmlHandler;
 import de.tu_dresden.psy.regexp.SplittedStringRelation;
@@ -73,11 +74,10 @@ public class Main {
 		/**
 		 * use equivalence classes to speed up the process
 		 */
-		
+
 		AssertionEquivalenceClasses eq_classes = new AssertionEquivalenceClasses();
 
 		eq_classes.addNewAssertions(valid);
-		
 
 		/**
 		 * do some inference
@@ -90,9 +90,9 @@ public class Main {
 			size = eq_classes.getClasses().size();
 
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
-			if (step > 0) 
-			{
-				Set<AssertionInterface> new_assertions = InferredAssertion.nonTrivial(maps.inferNew(eq_classes.getClasses()));
+			if (step > 0) {
+				Set<AssertionInterface> new_assertions = InferredAssertion
+						.nonTrivial(maps.inferNew(eq_classes.getClasses()));
 				eq_classes.markAllOld();
 				eq_classes.addNewAssertions(new_assertions);
 			}
@@ -363,17 +363,16 @@ public class Main {
 		for (int i = 0; i < premises.length; ++i) {
 			valid.addAll(matchStrings.match((premises[i])));
 		}
-		
+
 		InferenceMaps maps = new InferenceMaps(mapset);
 
 		/**
 		 * use equivalence classes to speed up the process
 		 */
-		
+
 		AssertionEquivalenceClasses eq_classes = new AssertionEquivalenceClasses();
 
 		eq_classes.addNewAssertions(valid);
-		
 
 		/**
 		 * do some inference
@@ -386,9 +385,9 @@ public class Main {
 			size = eq_classes.getClasses().size();
 
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
-			if (step > 0) 
-			{
-				Set<AssertionInterface> new_assertions = InferredAssertion.nonTrivial(maps.inferNew(eq_classes.getClasses()));
+			if (step > 0) {
+				Set<AssertionInterface> new_assertions = InferredAssertion
+						.nonTrivial(maps.inferNew(eq_classes.getClasses()));
 				eq_classes.markAllOld();
 				eq_classes.addNewAssertions(new_assertions);
 			}
@@ -414,13 +413,13 @@ public class Main {
 				break; // nothing new
 		}
 	}
-	
+
 	private static void xmlExample(InputStream input, int nbrSteps) {
 		XmlHandler handler = new XmlHandler();
 		try {
 			handler.readStream(input);
 		} catch (ParserConfigurationException e) {
- 
+
 			e.printStackTrace();
 		} catch (SAXException e) {
 
@@ -429,22 +428,25 @@ public class Main {
 
 			e.printStackTrace();
 		}
-		
-		System.out.println("Input: "+handler.getRoot());
-		
-		
+
+		System.out.println("Input: " + handler.getRoot());
+
 		Set<AssertionInterface> valid = handler.getRoot().getGivenAssertions();
 
 		InferenceMaps maps = handler.getRoot().getMaps();
-		
+
+		Set<ConstrainedAssertionFilter> invalidity = handler.getRoot()
+				.getInvalidityFilters();
+		Set<ConstrainedAssertionFilter> triviality = handler.getRoot()
+				.getTrivialityFilters();
+
 		/**
 		 * use equivalence classes to speed up the process
 		 */
-		
+
 		AssertionEquivalenceClasses eq_classes = new AssertionEquivalenceClasses();
 
 		eq_classes.addNewAssertions(valid);
-		
 
 		/**
 		 * do some inference
@@ -457,10 +459,73 @@ public class Main {
 			size = eq_classes.getClasses().size();
 
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
-			if (step > 0) 
-			{
-				Set<AssertionInterface> new_assertions = maps.inferNew(eq_classes.getClasses());
+			if (step > 0) {
+				Set<AssertionInterface> new_assertions = maps
+						.inferNew(eq_classes.getClasses());
 				eq_classes.markAllOld();
+
+				boolean cancel_further_steps = false;
+
+				for (ConstrainedAssertionFilter filter : invalidity) {
+					Set<AssertionInterface> invalid = filter
+							.filter(new_assertions);
+					if (invalid.isEmpty() == false) {
+
+						System.out
+								.println(" #### The following inferred assertions are invalid #### ");
+
+						TreeSet<String> ordered = new TreeSet<String>();
+						for (Iterator<AssertionInterface> it = invalid
+								.iterator(); it.hasNext();) {
+							AssertionInterface a = it.next();
+
+							ordered.add("!! " + a.getSubject() + "·"
+									+ a.getPredicate() + "·" + a.getObject()
+									+ "\n"
+									+ a.toString().replaceAll("\n", "\n!! "));
+						}
+
+						for (Iterator<String> it = ordered.iterator(); it
+								.hasNext();) {
+							String s = it.next();
+							System.out.println(s);
+						}
+
+						cancel_further_steps = true;
+					}
+				}
+
+				if (cancel_further_steps)
+					break;
+
+				int dropped_trivial = 0;
+
+				for (ConstrainedAssertionFilter filter : triviality) {
+					Set<AssertionInterface> trivial = filter
+							.filter(new_assertions);
+					dropped_trivial += trivial.size();
+
+					TreeSet<String> ordered = new TreeSet<String>();
+					for (Iterator<AssertionInterface> it = trivial.iterator(); it
+							.hasNext();) {
+						AssertionInterface a = it.next();
+
+						ordered.add("  ++ trivial ++ " + a.getSubject() + "·"
+								+ a.getPredicate() + "·" + a.getObject() + "\n"
+								+ a.toString().replaceAll("\n", "\n  ++ "));
+					}
+
+					for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
+						String s = it.next();
+						System.out.println(s);
+					}
+
+					new_assertions.removeAll(trivial);
+				}
+
+				System.out.println("   ++ dropped " + dropped_trivial
+						+ " trivial assertions ++ ");
+
 				eq_classes.addNewAssertions(new_assertions);
 			}
 
@@ -485,8 +550,6 @@ public class Main {
 				break; // nothing new
 		}
 	}
-	
-	
 
 	public static void main(String[] args) {
 		if (args.length == 1) {
@@ -494,7 +557,7 @@ public class Main {
 				System.out.println("Java-Coded: \n");
 				hardcodedExample();
 			}
-			
+
 			if (args[0].equals("--regexp")) {
 				System.out.println("RegExp-Coded: \n");
 				regexpExample();
@@ -502,25 +565,26 @@ public class Main {
 		} else if (args.length == 2) {
 			if (args[0].equals("--xml")) {
 				try {
-					xmlExample(new FileInputStream(new File(args[1])),10);
+					xmlExample(new FileInputStream(new File(args[1])), 10);
 				} catch (FileNotFoundException e) {
 
 					e.printStackTrace();
 				}
 			}
-			
+
 		} else if (args.length == 3) {
 			if (args[0].equals("--xml")) {
 				try {
-					xmlExample(new FileInputStream(new File(args[2])),Integer.parseInt(args[1]));
+					xmlExample(new FileInputStream(new File(args[2])),
+							Integer.parseInt(args[1]));
 				} catch (FileNotFoundException e) {
 
 					e.printStackTrace();
 				}
 			}
-			
+
 		}
-		
+
 	}
 
 }

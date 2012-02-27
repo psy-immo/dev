@@ -57,8 +57,13 @@ public class AssertionFilter {
 	}
 	
 	static private boolean checkPattern(String toMatch, Map<String,Boolean> cache, Pattern pattern) {
-		if (cache.containsKey(toMatch))
-			return cache.get(toMatch);
+		
+		/**
+		 * the cache doesn't seem to have benefits
+		 */
+		
+		//if (cache.containsKey(toMatch))
+		//	return cache.get(toMatch);
 		
 		boolean matches = pattern.matcher(toMatch).matches();
 		cache.put(toMatch, matches);

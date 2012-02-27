@@ -19,7 +19,9 @@
 package de.tu_dresden.psy.inference;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * implements an AssertionInterface that will take care of differently derived
@@ -78,9 +80,7 @@ public class EquivalentAssertions implements AssertionInterface {
 			return;
 		if (a == this)
 			return;
-		if (a.isPremise(this))
-			return;
-
+		
 		if (a instanceof EquivalentAssertions) {
 			EquivalentAssertions ea = (EquivalentAssertions) a;
 			assertions.addAll(ea.assertions);
@@ -163,8 +163,13 @@ public class EquivalentAssertions implements AssertionInterface {
 		String p = subject.toString() + "·" + predicate.toString() + "·"
 				+ object.toString() + " [" + assertions.size() + "]";
 		
+		TreeSet<String> ordered = new TreeSet<String>();
+		
 		for (AssertionInterface assertion: assertions) {
-			p += "\n" + assertion;
+			ordered.add(assertion.toString());
+		}
+		for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
+			p += "\n"+ it.next();
 		}
 		
 		return p+"\n";
