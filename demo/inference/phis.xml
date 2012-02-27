@@ -481,7 +481,7 @@
 	</rule>
 	
 	<trivial>
-		<predicate>(means, for bulbs,|is as big as)</predicate>
+		<predicate>(means, for bulbs,|is as big as|is (connected in parallel|serial connected) with)</predicate>
 		<constraint>
 			<subject/>
 			<object/>
@@ -550,6 +550,7 @@
 	<assert>the resistance of bulb A is as big as the resistance of bulb C</assert>
 	<assert>the resistance of bulb chain BC is bigger than the resistance of bulb C</assert>
 	<assert>the voltage of bulb chain BC is bigger than the voltage of bulb B</assert>
+	<assert>the current through bulb chain BC is as big as the current through bulb B</assert>
 	
 	
 	

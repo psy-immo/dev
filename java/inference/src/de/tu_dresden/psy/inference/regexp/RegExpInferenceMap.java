@@ -551,7 +551,7 @@ public class RegExpInferenceMap implements InferenceMap {
 			this.factors = factors;
 		}
 
-		public static class CrossProductIterator implements
+		public static class CrossProductIfNewIterator implements
 				Iterator<Vector<AssertionInterface>> {
 
 			private Vector<Integer> currentIndices;
@@ -586,9 +586,13 @@ public class RegExpInferenceMap implements InferenceMap {
 								isNewAssertionLeftOfIndex.set(i + 1, have_new);
 							}
 
-							if (have_new)
+							if (have_new) {
+								//System.out.println("Is new: " + factors.get(0).get(currentIndices.get(0)));
 								return true;
+							}
 
+							//System.out.println("Not new: " + factors.get(0).get(currentIndices.get(0)));
+							
 							/**
 							 * here we have a new combination, but it has no new
 							 * assertions in it, so skip!
@@ -613,7 +617,7 @@ public class RegExpInferenceMap implements InferenceMap {
 				}
 			}
 
-			public CrossProductIterator(
+			public CrossProductIfNewIterator(
 					Vector<Vector<AssertionInterface>> factors) {
 				this.factors = factors;
 				this.factorCount = factors.size();
@@ -661,7 +665,7 @@ public class RegExpInferenceMap implements InferenceMap {
 					this.nextElement = new Vector<AssertionInterface>();
 
 					for (int i = 0; i < factorCount; ++i) {
-						this.currentElement.add(factors.get(i).get(0));
+						this.currentElement.add(factors.get(i).get(currentIndices.get(i)));
 						this.nextElement.add(factors.get(i).get(0));
 					}
 				}
@@ -693,7 +697,7 @@ public class RegExpInferenceMap implements InferenceMap {
 
 		@Override
 		public Iterator<Vector<AssertionInterface>> iterator() {
-			return new CrossProductIterator(factors);
+			return new CrossProductIfNewIterator(factors);
 		}
 	}
 

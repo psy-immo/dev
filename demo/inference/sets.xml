@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<parse>
+		<subject>\S.*</subject>
+		<predicate>is a</predicate>
+		<object>set</object>
+	</parse>	
+	<rule name="singleton">
+		<premise id="set">
+			<predicate>is a</predicate>
+			<object>set</object>
+		</premise>
+		<infer>
+			<subject>{</subject>
+			<subject id="set" source="subject"/>
+			<subject>}</subject>
+			<predicate>is a</predicate>
+			<object>set</object>
+		</infer>
+	</rule>
+	<norule name="union,product">
+		<premise id="A">
+			<predicate>is a</predicate>
+			<object>set</object>
+		</premise>
+		<premise id="B">
+			<predicate>is a</predicate>
+			<object>set</object>
+		</premise>
+		<infer>
+			<subject>(</subject>
+			<subject id="A" source="subject"/>
+			<subject> u </subject>
+			<subject id="B" source="subject"/>
+			<subject>)</subject>
+			<predicate>is a</predicate>
+			<object>set</object>
+		</infer>
+		<infer>
+			<subject id="A" source="subject"/>
+			<subject> x </subject>
+			<subject id="B" source="subject"/>
+			<predicate>is a</predicate>
+			<object>set</object>
+		</infer>
+	</norule>
+	
+	<assert>0 is a set</assert>	
+	
+	
+</root>

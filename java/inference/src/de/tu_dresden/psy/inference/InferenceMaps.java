@@ -51,7 +51,7 @@ public class InferenceMaps implements InferenceMap {
 		
 		for (Iterator<InferenceMap> it = maps.iterator();it.hasNext();) {
 			++count;
-			System.out.print("\r inferring: "+((count*100)/size)+"% ("+count+")");
+			System.err.print("\r inferring: "+((count*100)/size)+"% ("+count+")");
 			InferenceMap phi = it.next();
 			
 			inferred.addAll(phi.inferNew(validPremises));

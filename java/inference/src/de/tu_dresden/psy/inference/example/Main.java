@@ -454,6 +454,8 @@ public class Main {
 
 		int step = 0;
 		int size = 0;
+		
+		boolean cancel_further_steps = false;
 
 		while (step <= nbrSteps) {
 			size = eq_classes.getClasses().size();
@@ -462,9 +464,8 @@ public class Main {
 			if (step > 0) {
 				Set<AssertionInterface> new_assertions = maps
 						.inferNew(eq_classes.getClasses());
-				eq_classes.markAllOld();
-
-				boolean cancel_further_steps = false;
+				
+				eq_classes.markAllOld();			
 
 				for (ConstrainedAssertionFilter filter : invalidity) {
 					Set<AssertionInterface> invalid = filter
@@ -548,6 +549,32 @@ public class Main {
 
 			if ((size == eq_classes.getClasses().size()) && (step > 1))
 				break; // nothing new
+		}
+		
+		if (cancel_further_steps) {
+			System.out.println("\n\nIt was possible to infer invalid assertions from the given \n"+
+							   "initial set of assertions and the given inference rules! Please check!");
+			
+			return;
+		}
+		
+		System.out.println("\n\n The following non-trivial assertions can be inferred\n\n");
+		
+		TreeSet<String> ordered = new TreeSet<String>();
+		for (Iterator<AssertionInterface> it = eq_classes.getClasses()
+				.iterator(); it.hasNext();) {
+			AssertionInterface a = it.next();
+
+			ordered.add(a.getSubject()+" "+a.getPredicate()+" "+a.getObject());
+		}
+		
+		int count=0;
+		
+		for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
+			String s = it.next();
+			++count;
+			
+			System.out.println(String.format("%6d", count)+"    "+s);
 		}
 	}
 

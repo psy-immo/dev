@@ -56,7 +56,9 @@ public class AssertionEquivalenceClasses {
 			if (assertion.isOld() == false) {
 				assertion.markAsOld();
 				count_new_olds++;
+				System.out.println("now old: "+assertion);
 			}
+			
 		}
 		System.out.println("\n ~~~~ Assertions marked as old: "
 				+ count_new_olds + " of " + equivalenceClasses.size());
@@ -76,7 +78,7 @@ public class AssertionEquivalenceClasses {
 
 		for (AssertionInterface assertion : newAssertions) {
 			++count;
-			System.out.print("\r ~~~~ done: " + ((count * 100) / size) + "% ("
+			System.err.print("\r ~~~~ done: " + ((count * 100) / size) + "% ("
 					+ count + ")  new classes: " + new_classes);
 
 			EquivalentAssertions e_class = new EquivalentAssertions(assertion);
@@ -90,25 +92,6 @@ public class AssertionEquivalenceClasses {
 				representants.put(e_class, e_class);
 				new_classes++;
 			}
-
-			/*
-			 * old approach
-			 */
-			// boolean found = false;
-			//
-			// for (AssertionInterface assertionClass : equivalenceClasses) {
-			// EquivalentAssertions ea = (EquivalentAssertions) assertionClass;
-			// if (ea.isEqualTo(assertion)) {
-			// ea.add(assertion);
-			// found = true;
-			// break;
-			// }
-			// }
-			//
-			// if (found == false) {
-			// equivalenceClasses.add(new EquivalentAssertions(assertion));
-			// new_classes++;
-			// }
 
 		}
 		System.out.println("");
