@@ -28,6 +28,7 @@ import de.tu_dresden.psy.inference.Assertion.AssertionPart;
 import de.tu_dresden.psy.inference.AssertionInterface;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.InferenceMaps;
+import de.tu_dresden.psy.inference.regexp.NonEmptyIntersectionChecker;
 import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
 import de.tu_dresden.psy.regexp.KRegExp;
 import de.tu_dresden.psy.regexp.SplittedStringRelation;
@@ -272,7 +273,7 @@ public class XmlRootTag extends XmlTag {
 	private void processConstraint(XmlTag child, RegExpInferenceMap rule,
 			Map<String, Integer> premise_id) {
 
-		RegExpInferenceMap.NonEmptyIntersectionChecker checker = new RegExpInferenceMap.NonEmptyIntersectionChecker();
+		NonEmptyIntersectionChecker checker = new NonEmptyIntersectionChecker();
 
 		for (XmlTag t : child.children) {
 			AssertionPart part = null;
