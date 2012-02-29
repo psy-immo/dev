@@ -535,22 +535,28 @@
 			</object>
 		</constraint>
 	</invalid>
+	
+	<justified>
+		<predicate>means, for bulbs,</predicate>
+	</justified>
 
-	<assert>bulb A is a bulb</assert>
-	<assert>bulb B is a bulb</assert>
-	<assert>bulb C is a bulb</assert>
-	<assert>bulb A is connected in parallel with bulb chain BC</assert>
-	<assert>bulb B is serial connected with bulb C</assert>			
-	<assert>a bigger voltage means, for bulbs, a bigger current</assert>	
-	<assert>a bigger current means, for bulbs, a bigger voltage</assert>	
-	<assert>a bigger voltage means, for bulbs, a bigger input power</assert>
-	<assert>a bigger input power means, for bulbs, a bigger luminosity</assert>
-	<assert>the battery is connected in parallel with bulb A</assert>
-	<assert>the resistance of bulb A is as big as the resistance of bulb B</assert>
-	<assert>the resistance of bulb A is as big as the resistance of bulb C</assert>
-	<assert>the resistance of bulb chain BC is bigger than the resistance of bulb C</assert>
-	<assert>the voltage of bulb chain BC is bigger than the voltage of bulb B</assert>
-	<assert>the current through bulb chain BC is as big as the current through bulb B</assert>
+	<implicit>bulb A is a bulb</implicit>
+	<implicit>bulb B is a bulb</implicit>
+	<implicit>bulb C is a bulb</implicit>
+	
+	<expert>bulb A is connected in parallel with bulb chain BC</expert>
+	<expert>bulb B is serial connected with bulb C</expert>			
+	<expert>a bigger voltage means, for bulbs, a bigger current</expert>	
+	<expert>a bigger current means, for bulbs, a bigger voltage</expert>	
+	<expert>a bigger voltage means, for bulbs, a bigger input power</expert>
+	<expert>a bigger input power means, for bulbs, a bigger luminosity</expert>
+	<expert>the battery is connected in parallel with bulb A</expert>
+	<expert>the resistance of bulb A is as big as the resistance of bulb B</expert>
+	<expert>the resistance of bulb A is as big as the resistance of bulb C</expert>
+	<expert>the resistance of bulb chain BC is bigger than the resistance of bulb C</expert>
+	<expert>the voltage of bulb chain BC is bigger than the voltage of bulb B</expert>
+	<expert>the current through bulb chain BC is as big as the current through bulb B</expert>
+	
 	
 	
 	

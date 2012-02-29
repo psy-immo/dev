@@ -1,5 +1,5 @@
 
-<!ELEMENT root (parse|assert|rule) >
+<!ELEMENT root (parse|assert|expert|implicit|justified|trivial|invalid|rule) >
 
 <!ELEMENT parse (subject|predicate|object)* >
 
@@ -25,6 +25,10 @@
  >
 
 <!ELEMENT assert (#PCDATA)* >
+
+<!ELEMENT expert (#PCDATA)* >
+
+<!ELEMENT implicit (#PCDATA)* >
 
 <!ELEMENT rule (premise|constraint|infer)* >
 
@@ -55,3 +59,9 @@
 <!ATTLIST out 
 		id	CDATA	#IMPLIED
  >
+
+<!ELEMENT justified (subject|predicate|object|constraint)* >
+
+<!ELEMENT trivial (subject|predicate|object|constraint)* >
+
+<!ELEMENT invalid (subject|predicate|object|constraint)* >

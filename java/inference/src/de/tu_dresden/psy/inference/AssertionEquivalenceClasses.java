@@ -56,7 +56,7 @@ public class AssertionEquivalenceClasses {
 			if (assertion.isOld() == false) {
 				assertion.markAsOld();
 				count_new_olds++;
-				System.out.println("now old: "+assertion);
+				//System.out.println("now old: "+assertion);
 			}
 			
 		}

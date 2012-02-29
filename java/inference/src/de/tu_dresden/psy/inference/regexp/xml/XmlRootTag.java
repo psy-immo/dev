@@ -48,11 +48,40 @@ import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatchers;
  */
 public class XmlRootTag extends XmlTag {
 
+	/**
+	 * all given inference rules
+	 */
 	private Set<InferenceMap> rules;
+	/**
+	 * all given parsers
+	 */
 	private Set<SubjectPredicateObjectMatcher> parsers;
+	/**
+	 * all given student assertions
+	 */
 	private Set<String> assertions;
+	/**
+	 * all filters for invalid assertions (self-contradictory etc.)
+	 */
 	private Set<ConstrainedAssertionFilter> invalid;
+	/**
+	 * all filters for trivial assertions (e.g. A means A)
+	 */
 	private Set<ConstrainedAssertionFilter> trivial;
+	/**
+	 * all filters for assertions, that do not need further justification
+	 */
+	private Set<ConstrainedAssertionFilter> justified;
+	/**
+	 * all implicit assertions (e.g. assertions that do not need to be given
+	 * explicitly)
+	 */
+	private Set<String> implicit;
+	/**
+	 * all given expert assertions (all assertions needed to generate all valid
+	 * assertions in context)
+	 */
+	private Set<String> expert;
 
 	public XmlRootTag() {
 		rules = new HashSet<InferenceMap>();
@@ -60,22 +89,25 @@ public class XmlRootTag extends XmlTag {
 		assertions = new HashSet<String>();
 		invalid = new HashSet<ConstrainedAssertionFilter>();
 		trivial = new HashSet<ConstrainedAssertionFilter>();
+		justified = new HashSet<ConstrainedAssertionFilter>();
+		implicit = new HashSet<String>();
+		expert = new HashSet<String>();
 	}
-	
+
 	/**
 	 * 
 	 * @return a set of filters that filter out invalid assertions
 	 */
-	
+
 	public Set<ConstrainedAssertionFilter> getInvalidityFilters() {
 		return invalid;
 	}
-	
+
 	/**
 	 * 
 	 * @return a set of filters that filter out trivial assertions
 	 */
-	
+
 	public Set<ConstrainedAssertionFilter> getTrivialityFilters() {
 		return trivial;
 	}
@@ -112,6 +144,36 @@ public class XmlRootTag extends XmlTag {
 
 		return given;
 	}
+	
+	/**
+	 * 
+	 * @return all expert assertions given in the xml document
+	 */
+	public Set<AssertionInterface> getExpertAssertions() {
+		Set<AssertionInterface> given = new HashSet<AssertionInterface>();
+		SubjectPredicateObjectMatchers matcher = getParsers();
+
+		for (String assertion : expert) {
+			given.addAll(matcher.match(assertion));
+		}
+
+		return given;
+	}
+	
+	/**
+	 * 
+	 * @return all expert assertions given in the xml document
+	 */
+	public Set<AssertionInterface> getImplicitAssertions() {
+		Set<AssertionInterface> given = new HashSet<AssertionInterface>();
+		SubjectPredicateObjectMatchers matcher = getParsers();
+
+		for (String assertion : implicit) {
+			given.addAll(matcher.match(assertion));
+		}
+
+		return given;
+	}
 
 	/**
 	 * process a &lt;assert>-tag
@@ -121,6 +183,26 @@ public class XmlRootTag extends XmlTag {
 
 	private void processAssert(XmlTag child) {
 		assertions.add(child.contents);
+	}
+
+	/**
+	 * process a &lt;implicit>-tag
+	 * 
+	 * @param child
+	 */
+
+	private void processImplicit(XmlTag child) {
+		implicit.add(child.contents);
+	}
+
+	/**
+	 * process a &lt;expert>-tag
+	 * 
+	 * @param child
+	 */
+
+	private void processExpert(XmlTag child) {
+		expert.add(child.contents);
 	}
 
 	/**
@@ -141,6 +223,16 @@ public class XmlRootTag extends XmlTag {
 
 	private void processInvalid(XmlTag child) {
 		invalid.add(processConstraintFilter(child));
+	}
+
+	/**
+	 * process a &lt;justified>-tag
+	 * 
+	 * @param child
+	 */
+
+	private void processJustified(XmlTag child) {
+		justified.add(processConstraintFilter(child));
 	}
 
 	/**
@@ -505,6 +597,12 @@ public class XmlRootTag extends XmlTag {
 			processTrivial(child);
 		} else if (child.tagName.equals("INVALID")) {
 			processInvalid(child);
+		} else if (child.tagName.equals("IMPLICIT")) {
+			processImplicit(child);
+		} else if (child.tagName.equals("EXPERT")) {
+			processExpert(child);
+		} else if (child.tagName.equals("JUSTIFIED")) {
+			processJustified(child);
 		}
 
 		/**
@@ -518,7 +616,10 @@ public class XmlRootTag extends XmlTag {
 		return rules.size() + " rule(s), " + parsers.size() + " parser(s), "
 				+ assertions.size() + " assertion(s), " + trivial.size()
 				+ " triviality filter(s), " + invalid.size()
-				+ " invalidity filter(s)";
+				+ " invalidity filter(s), " + implicit.size()
+				+ " implicit assertion(s), " + expert.size()
+				+ " expert assertion(s), " + justified.size()
+				+ " justified-assertion filter(s)";
 	}
 
 }
