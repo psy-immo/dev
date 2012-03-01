@@ -21,11 +21,14 @@ package de.tu_dresden.psy.inference.regexp.xml;
 import java.applet.Applet;
 import java.io.FileInputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import de.tu_dresden.psy.inference.AssertionInterface;
-import de.tu_dresden.psy.inference.InferenceMaps;
+import de.tu_dresden.psy.inference.InferenceMap;
+import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
 
 /**
  * 
@@ -46,12 +49,17 @@ public class InferenceMachine extends Applet {
 	 * machine state variables
 	 */
 	private Set<AssertionInterface> implicit, expert, student;
-	private Set<InferenceMaps> inferenceMaps;
+	private Map<String, InferenceMap> inferenceMaps;
+	private Set<ConstrainedAssertionFilter> trivial,invalid,justified;
 	
 	public InferenceMachine() {
 		implicit = new HashSet<AssertionInterface>();
 		expert = new HashSet<AssertionInterface>();
 		student = new HashSet<AssertionInterface>();
+		inferenceMaps = new HashMap<String, InferenceMap>();
+		trivial = new HashSet<ConstrainedAssertionFilter>();
+		invalid = new HashSet<ConstrainedAssertionFilter>();
+		justified = new HashSet<ConstrainedAssertionFilter>();
 	}
 	
 	/**
@@ -62,6 +70,16 @@ public class InferenceMachine extends Applet {
 		implicit.addAll(root.getImplicitAssertions());
 		expert.addAll(root.getExpertAssertions());
 		student.addAll(root.getGivenAssertions());
+		
+		Map<String, InferenceMap> updated_rules = root.getInferenceMapsByName();
+		
+		for (String key : updated_rules.keySet()) {
+			inferenceMaps.put(key, updated_rules.get(key));
+		}
+		
+		trivial.addAll(root.getTrivialityFilters());
+		invalid.addAll(root.getInvalidityFilters());
+		justified.addAll(root.getJustifiedFilters());
 	}
 
 	/**

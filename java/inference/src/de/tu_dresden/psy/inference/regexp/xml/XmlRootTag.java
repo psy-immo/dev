@@ -93,6 +93,25 @@ public class XmlRootTag extends XmlTag {
 		implicit = new HashSet<String>();
 		expert = new HashSet<String>();
 	}
+	
+	/**
+	 * 
+	 * @return all inference maps by their name
+	 */
+	public Map<String, InferenceMap> getInferenceMapsByName() {
+		Map<String, InferenceMap> by_name = new HashMap<String, InferenceMap>();
+		
+		for (InferenceMap map : rules) {
+			if (by_name.containsKey(map.ruleName())) {
+				int c=1;
+				while (by_name.containsKey(map.ruleName()+" ("+c+")")) ++c;
+				by_name.put(map.ruleName()+" ("+c+")", map);
+			} else
+				by_name.put(map.ruleName(), map);
+		}
+		
+		return by_name;
+	}
 
 	/**
 	 * 
