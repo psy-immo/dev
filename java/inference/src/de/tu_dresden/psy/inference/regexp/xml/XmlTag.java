@@ -93,7 +93,7 @@ public class XmlTag {
 	 * 
 	 * @param child
 	 */
-	public void addChild(XmlTag child) {
+	public void addChild(XmlTag child) throws Exception {
 		children.add(child);
 	}
 

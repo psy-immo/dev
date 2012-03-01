@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+		
+	<rule name="unknown rho reference">
+		<premise id="1"></premise>
+		<constraint>
+			<subject id="1" source="subject">
+				<rho>
+					<in>.*</in>
+					<out id="a"/>
+				</rho>
+			</subject>
+		</constraint>
+	</rule>
+</root>

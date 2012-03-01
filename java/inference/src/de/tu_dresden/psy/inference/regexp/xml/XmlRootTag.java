@@ -35,7 +35,6 @@ import de.tu_dresden.psy.regexp.KRegExp;
 import de.tu_dresden.psy.regexp.SplittedStringRelation;
 import de.tu_dresden.psy.regexp.SplittedStringRelation.MapSplitting;
 import de.tu_dresden.psy.regexp.StringRelationJoin;
-
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatchers;
 
@@ -82,6 +81,7 @@ public class XmlRootTag extends XmlTag {
 	 * assertions in context)
 	 */
 	private Set<String> expert;
+	
 
 	public XmlRootTag() {
 		rules = new HashSet<InferenceMap>();
@@ -110,6 +110,15 @@ public class XmlRootTag extends XmlTag {
 
 	public Set<ConstrainedAssertionFilter> getTrivialityFilters() {
 		return trivial;
+	}
+	
+	/**
+	 * 
+	 * @return a set of filters that filter out trivial assertions
+	 */
+
+	public Set<ConstrainedAssertionFilter> getJustifiedFilters() {
+		return justified;
 	}
 
 	/**
@@ -209,9 +218,10 @@ public class XmlRootTag extends XmlTag {
 	 * process a &lt;trivial>-tag
 	 * 
 	 * @param child
+	 * @throws Exception 
 	 */
 
-	private void processTrivial(XmlTag child) {
+	private void processTrivial(XmlTag child) throws Exception {
 		trivial.add(processConstraintFilter(child));
 	}
 
@@ -219,9 +229,10 @@ public class XmlRootTag extends XmlTag {
 	 * process a &lt;invalid>-tag
 	 * 
 	 * @param child
+	 * @throws Exception 
 	 */
 
-	private void processInvalid(XmlTag child) {
+	private void processInvalid(XmlTag child) throws Exception {
 		invalid.add(processConstraintFilter(child));
 	}
 
@@ -229,9 +240,10 @@ public class XmlRootTag extends XmlTag {
 	 * process a &lt;justified>-tag
 	 * 
 	 * @param child
+	 * @throws Exception 
 	 */
 
-	private void processJustified(XmlTag child) {
+	private void processJustified(XmlTag child) throws Exception {
 		justified.add(processConstraintFilter(child));
 	}
 
@@ -240,9 +252,10 @@ public class XmlRootTag extends XmlTag {
 	 * 
 	 * @param child
 	 * @return constraint described by child
+	 * @throws Exception 
 	 */
 
-	private NonEmptyIntersectionChecker processConstraint(XmlTag child) {
+	private NonEmptyIntersectionChecker processConstraint(XmlTag child) throws Exception {
 		NonEmptyIntersectionChecker checker = new NonEmptyIntersectionChecker();
 
 		for (XmlTag t : child.children) {
@@ -278,9 +291,10 @@ public class XmlRootTag extends XmlTag {
 	 * process a &lt;trivial>-tag
 	 * 
 	 * @param child
+	 * @throws Exception 
 	 */
 
-	private ConstrainedAssertionFilter processConstraintFilter(XmlTag child) {
+	private ConstrainedAssertionFilter processConstraintFilter(XmlTag child) throws Exception {
 		String subject = "";
 		String predicate = "";
 		String object = "";
@@ -320,9 +334,10 @@ public class XmlRootTag extends XmlTag {
 	 * process a &lt;rule>-tag
 	 * 
 	 * @param child
+	 * @throws Exception 
 	 */
 
-	private void processRule(XmlTag child) {
+	private void processRule(XmlTag child) throws Exception {
 		RegExpInferenceMap rule = new RegExpInferenceMap(
 				child.getAttributeOrDefault("name", "#" + rules.size()));
 
@@ -358,10 +373,11 @@ public class XmlRootTag extends XmlTag {
 	 * @param child
 	 * @param rule
 	 * @param premise_id
+	 * @throws Exception
 	 */
 
 	private void processInfer(XmlTag child, RegExpInferenceMap rule,
-			Map<String, Integer> premise_id) {
+			Map<String, Integer> premise_id) throws Exception {
 		RegExpInferenceMap.AdvancedPremiseCombinator conclusion = new RegExpInferenceMap.AdvancedPremiseCombinator(
 				rule);
 
@@ -397,6 +413,10 @@ public class XmlRootTag extends XmlTag {
 
 						if (tag.children.isEmpty() == false) {
 							relation = processRho(tag);
+						}
+						
+						if (premise_id.containsKey((tag.attributes.get("id")))==false) {
+							throw new Exception("Inference rule refers to unknown premise \""+(tag.attributes.get("id"))+"\".");
 						}
 
 						conclusion.addPart(part, relation,
@@ -488,10 +508,11 @@ public class XmlRootTag extends XmlTag {
 	 * @param child
 	 * @param rule
 	 * @param premise_id
+	 * @throws Exception 
 	 */
 
 	private void processConstraint(XmlTag child, RegExpInferenceMap rule,
-			Map<String, Integer> premise_id) {
+			Map<String, Integer> premise_id) throws Exception {
 
 		NonEmptyIntersectionChecker checker = new NonEmptyIntersectionChecker();
 
@@ -507,6 +528,11 @@ public class XmlRootTag extends XmlTag {
 
 			if ((part != null) && (t.attributes.containsKey("id"))) {
 				if (t.children.isEmpty() == true) {
+					
+					if (premise_id.containsKey((t.attributes.get("id")))==false) {
+						throw new Exception("Constraint refers to unknown premise \""+(t.attributes.get("id"))+"\".");
+					}
+					
 					checker.addCheckPart(
 							premise_id.get(t.attributes.get("id")), part);
 				} else {
@@ -515,6 +541,10 @@ public class XmlRootTag extends XmlTag {
 					 */
 
 					StringRelationJoin relation = processRho(t);
+					
+					if (premise_id.containsKey((t.attributes.get("id")))==false) {
+						throw new Exception("Constraint refers to unknown premise \""+(t.attributes.get("id"))+"\".");
+					}
 
 					checker.addCheckPart(
 							premise_id.get(t.attributes.get("id")), part,
@@ -532,8 +562,9 @@ public class XmlRootTag extends XmlTag {
 	 * 
 	 * @param parent
 	 * @return
+	 * @throws Exception 
 	 */
-	private StringRelationJoin processRho(XmlTag parent) {
+	private StringRelationJoin processRho(XmlTag parent) throws Exception {
 		StringRelationJoin result = new StringRelationJoin();
 
 		for (XmlTag rho : parent.children) {
@@ -567,6 +598,11 @@ public class XmlRootTag extends XmlTag {
 				for (XmlTag outtags : rho.children) {
 					if (outtags.tagName.equals("OUT")) {
 						if (outtags.attributes.containsKey("id")) {
+							
+							if (ids.containsKey((outtags.attributes.get("id")))==false) {
+								throw new Exception("Rho output rule refers to unknown input part \""+(outtags.attributes.get("id"))+"\".");
+							}
+							
 							output.add(new SplittedStringRelation.ProjectionMap(
 									ids.get(outtags.attributes.get("id"))));
 						} else if (outtags.contents.isEmpty() == false) {
@@ -586,7 +622,7 @@ public class XmlRootTag extends XmlTag {
 	}
 
 	@Override
-	public void addChild(XmlTag child) {
+	public void addChild(XmlTag child) throws Exception {
 		if (child.tagName.equals("RULE")) {
 			processRule(child);
 		} else if (child.tagName.equals("PARSE")) {

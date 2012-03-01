@@ -41,6 +41,7 @@ public class XmlHandler extends DefaultHandler {
 
 			return;
 		}
+		
 
 		XmlTag tag = new XmlTag(qName, attributes);
 
@@ -52,7 +53,13 @@ public class XmlHandler extends DefaultHandler {
 			throws SAXException {
 		XmlTag top = stack.pop();
 		if (stack.isEmpty() == false)
-			stack.peek().addChild(top);
+			try {
+				stack.peek().addChild(top);
+			} catch (Exception e) {
+				SAXException sax_e = new SAXException(e.getMessage(),e);
+				sax_e.setStackTrace(e.getStackTrace());
+				throw sax_e;
+			}
 	}
 
 	@Override
