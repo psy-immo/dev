@@ -52,7 +52,47 @@ public class InferenceMachine extends Applet {
 	private Map<String, InferenceMap> inferenceMaps;
 	private Set<ConstrainedAssertionFilter> trivial,invalid,justified;
 	
-	public InferenceMachine() {
+	/**
+	 * class for keeping track of inferred assertions
+	 * @author immanuel
+	 *
+	 */
+	
+	public static class InferrableAssertions {
+		
+		public static enum State {
+			/**
+			 * there are no more inferrable assertions using the given rules,
+			 * and none of them are invalid
+			 */
+			closed, 
+			/**
+			 * some invalid assertions could be inferred
+			 */
+			invalid, 
+			/**
+			 * inference did not stop within some given limit
+			 */
+			excess};
+			
+		private Set<AssertionInterface> givenAssertions;
+		private Set<AssertionInterface> validAssertions;
+		private Set<InferenceMap> usedRules;
+		private Set<ConstrainedAssertionFilter> invalid,trivial;
+		private State state;
+	};
+	
+	/**
+	 * keep inference states
+	 */
+	
+	InferrableAssertions expertValid, studentValid;
+	
+	/**
+	 * reset the state of the machine
+	 */
+	
+	public void resetState() {
 		implicit = new HashSet<AssertionInterface>();
 		expert = new HashSet<AssertionInterface>();
 		student = new HashSet<AssertionInterface>();
@@ -60,6 +100,12 @@ public class InferenceMachine extends Applet {
 		trivial = new HashSet<ConstrainedAssertionFilter>();
 		invalid = new HashSet<ConstrainedAssertionFilter>();
 		justified = new HashSet<ConstrainedAssertionFilter>();
+		expertValid = null;
+		studentValid = null;
+	}
+	
+	public InferenceMachine() {
+		resetState();
 	}
 	
 	/**
