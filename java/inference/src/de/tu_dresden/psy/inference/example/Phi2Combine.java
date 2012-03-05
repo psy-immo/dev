@@ -26,6 +26,7 @@ import java.util.Set;
 
 import de.tu_dresden.psy.inference.Assertion;
 import de.tu_dresden.psy.inference.AssertionInterface;
+import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.InferredAssertion;
 
@@ -46,7 +47,7 @@ public class Phi2Combine implements InferenceMap {
 
 	@Override
 	public Set<AssertionInterface> inferNew(
-			Set<AssertionInterface> validPremises) {
+			Set<AssertionInterface> validPremises, ExcessLimit limit) {
 		Set<AssertionInterface> inferred = new HashSet<AssertionInterface>();
 
 		Map<Object, Set<AssertionInterface>> by_subject = new HashMap<Object, Set<AssertionInterface>>();
@@ -158,7 +159,7 @@ public class Phi2Combine implements InferenceMap {
 		premises.add(new Assertion("D·is as big as·A"));
 		premises.add(new Assertion("B·is smaller than·E"));
 
-		Set<AssertionInterface> level1 = phi2combine.inferNew(premises);
+		Set<AssertionInterface> level1 = phi2combine.inferNew(premises, null);
 
 		System.out.println("first degree: ");
 
@@ -168,7 +169,7 @@ public class Phi2Combine implements InferenceMap {
 
 		level1.addAll(premises);
 
-		Set<AssertionInterface> level2 = phi2combine.inferNew(level1);
+		Set<AssertionInterface> level2 = phi2combine.inferNew(level1, null);
 
 		System.out.println("first+second degree: ");
 
@@ -178,7 +179,7 @@ public class Phi2Combine implements InferenceMap {
 
 		level1.addAll(level2);
 
-		level2 = phi2combine.inferNew(level1);
+		level2 = phi2combine.inferNew(level1, null);
 
 		System.out.println("first+second+third degree: ");
 

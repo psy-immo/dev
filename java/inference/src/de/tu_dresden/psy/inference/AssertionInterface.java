@@ -22,6 +22,8 @@ package de.tu_dresden.psy.inference;
  * 
  * provides means to check assertions for their distinct parts
  * 
+ * 
+ * 
  * @author albrecht
  * 
  */
@@ -29,17 +31,22 @@ package de.tu_dresden.psy.inference;
 public interface AssertionInterface {
 
 	/**
+	 * <b>All implementations are considered to yield immutable results here</b>
+	 * 
 	 * @return the subject of the sentence
 	 */
 	public Object getSubject();
 
 	/**
+	 * <b>All implementations are considered to yield immutable results here</b>
 	 * 
 	 * @return the object of the sentence, or <b>null</b>
 	 */
 	public Object getObject();
 
 	/**
+	 * <b>All implementations are considered to yield immutable results here</b>
+	 * 
 	 * @return the predicate of the sentence
 	 */
 	public Object getPredicate();

@@ -37,14 +37,51 @@ public class AssertionEquivalenceClasses {
 	private Set<AssertionInterface> equivalenceClasses;
 	private Map<EquivalentAssertions, EquivalentAssertions> representants;
 
+	
+	/**
+	 * default constructor
+	 */
+	
 	public AssertionEquivalenceClasses() {
 		equivalenceClasses = new HashSet<AssertionInterface>();
 		representants = new HashMap<EquivalentAssertions, EquivalentAssertions>();
-
 	}
+	
+	/**
+	 * copy constructor
+	 * @param copyContents
+	 */
+	
+	public AssertionEquivalenceClasses(AssertionEquivalenceClasses copyContents) {
+		equivalenceClasses = new HashSet<AssertionInterface>(copyContents.representants.size());
+		representants = new HashMap<EquivalentAssertions, EquivalentAssertions>(copyContents.representants.size());
+		
+		for (EquivalentAssertions ea : copyContents.representants.keySet()) {
+			EquivalentAssertions copy = new EquivalentAssertions(ea);
+			equivalenceClasses.add(copy);
+			representants.put(copy, copy);
+		}
+	}
+	
+	/**
+	 * 
+	 * @return set of EquivalentAssertions
+	 */
 
 	public Set<AssertionInterface> getClasses() {
 		return equivalenceClasses;
+	}
+
+	/**
+	 * 
+	 * @param ass
+	 * @return true, if there is an assertion class that equals the given
+	 *         assertion
+	 */
+
+	public boolean contains(AssertionInterface ass) {
+		EquivalentAssertions ec = new EquivalentAssertions(ass);
+		return representants.get(ec) != null;
 	}
 
 	/**

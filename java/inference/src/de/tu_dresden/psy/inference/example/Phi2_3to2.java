@@ -26,6 +26,7 @@ import java.util.Set;
 
 import de.tu_dresden.psy.inference.Assertion;
 import de.tu_dresden.psy.inference.AssertionInterface;
+import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.InferredAssertion;
 
@@ -74,7 +75,7 @@ public class Phi2_3to2 implements InferenceMap {
 
 	@Override
 	public Set<AssertionInterface> inferNew(
-			Set<AssertionInterface> validPremises) {
+			Set<AssertionInterface> validPremises, ExcessLimit limit) {
 		Set<AssertionInterface> inferred = new HashSet<AssertionInterface>();
 
 		Map<String, Set<AssertionInterface>> by_prefix = new HashMap<String, Set<AssertionInterface>>();
@@ -221,7 +222,7 @@ public class Phi2_3to2 implements InferenceMap {
 		premises.add(new Assertion("the current through C", "is bigger than",
 				"the current through D"));
 
-		Set<AssertionInterface> level1 = phi2_3to_2.inferNew(premises);
+		Set<AssertionInterface> level1 = phi2_3to_2.inferNew(premises, null);
 
 		System.out.println("first degree: ");
 
@@ -231,7 +232,7 @@ public class Phi2_3to2 implements InferenceMap {
 
 		level1.addAll(premises);
 
-		Set<AssertionInterface> level2 = phi2_3to_2.inferNew(level1);
+		Set<AssertionInterface> level2 = phi2_3to_2.inferNew(level1, null);
 
 		System.out.println("first+second degree: ");
 
@@ -241,7 +242,7 @@ public class Phi2_3to2 implements InferenceMap {
 
 		level1.addAll(level2);
 
-		level2 = phi2_3to_2.inferNew(level1);
+		level2 = phi2_3to_2.inferNew(level1, null);
 
 		System.out.println("first+second+third degree: ");
 

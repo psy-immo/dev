@@ -52,6 +52,22 @@ public class InferenceMain {
 					++i;
 					System.out.print(machine.addXmlUrl(args[i]));
 				}
+			} else if (argument.equalsIgnoreCase("--expert")) {
+				System.out.println(machine.closeExpertAssertions());
+			} else if (argument.equalsIgnoreCase("--student")) {
+				System.out.println(machine.closeStudentAssertions());
+			} else if (argument.equalsIgnoreCase("--correct")) {
+				System.out.println("Correct conclusions:");
+				System.out.println(machine.getCorrectStudentConclusions());
+			} else if (argument.equalsIgnoreCase("--incorrect")) {
+				System.out.println("Incorrect conclusions:");
+				System.out.println(machine.getIncorrectStudentConclusions());
+			} else if (argument.equalsIgnoreCase("--inferable")) {
+				System.out.println("Inferable conclusions:");
+				System.out.println(machine.getInferableStudentConclusions());
+			} else if (argument.equalsIgnoreCase("--non-inferable")) {
+				System.out.println("Non-inferable conclusions:");
+				System.out.println(machine.getNonInferableStudentConclusions());
 			}
 		}
 	}

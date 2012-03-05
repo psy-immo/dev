@@ -41,6 +41,8 @@ public class EquivalentAssertions implements AssertionInterface {
 	
 	private boolean old;
 	
+	
+	
 	@Override
 	public boolean isOld() {
 		return old;
@@ -68,6 +70,23 @@ public class EquivalentAssertions implements AssertionInterface {
 		hashSubject = subject.hashCode();
 		hashPredicate = predicate.hashCode();
 		hashObject = object.hashCode();
+	}
+	/**
+	 * copy constructor
+	 * @param copyContents
+	 */
+	
+	public EquivalentAssertions(EquivalentAssertions copyContents) {
+		assertions = new HashSet<AssertionInterface>(copyContents.assertions.size());
+		assertions.addAll(copyContents.assertions);
+		subject = copyContents.subject;
+		object = copyContents.object;
+		predicate = copyContents.predicate;
+		old = false;
+		hashSubject = copyContents.hashSubject;
+		hashPredicate = copyContents.hashPredicate;
+		hashObject = copyContents.hashObject;
+
 	}
 
 	/**

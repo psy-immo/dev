@@ -26,6 +26,7 @@ import java.util.Vector;
 import de.tu_dresden.psy.inference.Assertion;
 import de.tu_dresden.psy.inference.Assertion.AssertionPart;
 import de.tu_dresden.psy.inference.AssertionInterface;
+import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.InferredAssertion;
 import de.tu_dresden.psy.regexp.StringRelationInterface;
@@ -587,12 +588,14 @@ public class RegExpInferenceMap implements InferenceMap {
 							}
 
 							if (have_new) {
-								//System.out.println("Is new: " + factors.get(0).get(currentIndices.get(0)));
+								// System.out.println("Is new: " +
+								// factors.get(0).get(currentIndices.get(0)));
 								return true;
 							}
 
-							//System.out.println("Not new: " + factors.get(0).get(currentIndices.get(0)));
-							
+							// System.out.println("Not new: " +
+							// factors.get(0).get(currentIndices.get(0)));
+
 							/**
 							 * here we have a new combination, but it has no new
 							 * assertions in it, so skip!
@@ -665,7 +668,8 @@ public class RegExpInferenceMap implements InferenceMap {
 					this.nextElement = new Vector<AssertionInterface>();
 
 					for (int i = 0; i < factorCount; ++i) {
-						this.currentElement.add(factors.get(i).get(currentIndices.get(i)));
+						this.currentElement.add(factors.get(i).get(
+								currentIndices.get(i)));
 						this.nextElement.add(factors.get(i).get(0));
 					}
 				}
@@ -728,7 +732,7 @@ public class RegExpInferenceMap implements InferenceMap {
 			return new CrossProductRecombinator(premises);
 		}
 	};
-	
+
 	/**
 	 * 
 	 * use CrossProductNewRecombinator with RecombinatorInterface
@@ -751,7 +755,7 @@ public class RegExpInferenceMap implements InferenceMap {
 
 	@Override
 	public Set<AssertionInterface> inferNew(
-			Set<AssertionInterface> validPremises) {
+			Set<AssertionInterface> validPremises, ExcessLimit limit) {
 
 		Set<AssertionInterface> inferred = new HashSet<AssertionInterface>();
 		Vector<Vector<AssertionInterface>> premises = new Vector<Vector<AssertionInterface>>();
@@ -761,8 +765,17 @@ public class RegExpInferenceMap implements InferenceMap {
 					.filter(validPremises)));
 		}
 
+		int count = 0;
+
 		for (Vector<AssertionInterface> premiseVector : mergePremises
 				.getProduct(premises)) {
+			if (count == 100) {
+				count = 0;
+				if (limit.continueTask() == false)
+					break;
+
+			} else
+				++count;
 
 			boolean passed = true;
 			for (ConstraintInterface check : checkPremises) {

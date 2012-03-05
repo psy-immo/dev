@@ -32,8 +32,14 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-import de.tu_dresden.psy.inference.*;
+import de.tu_dresden.psy.inference.Assertion;
 import de.tu_dresden.psy.inference.Assertion.AssertionPart;
+import de.tu_dresden.psy.inference.AssertionEquivalenceClasses;
+import de.tu_dresden.psy.inference.AssertionInterface;
+import de.tu_dresden.psy.inference.ExcessLimit;
+import de.tu_dresden.psy.inference.InferenceMap;
+import de.tu_dresden.psy.inference.InferenceMaps;
+import de.tu_dresden.psy.inference.InferredAssertion;
 import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
 import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
 import de.tu_dresden.psy.inference.regexp.xml.XmlHandler;
@@ -92,7 +98,7 @@ public class Main {
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
 			if (step > 0) {
 				Set<AssertionInterface> new_assertions = InferredAssertion
-						.nonTrivial(maps.inferNew(eq_classes.getClasses()));
+						.nonTrivial(maps.inferNew(eq_classes.getClasses(), null));
 				eq_classes.markAllOld();
 				eq_classes.addNewAssertions(new_assertions);
 			}
@@ -387,7 +393,8 @@ public class Main {
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
 			if (step > 0) {
 				Set<AssertionInterface> new_assertions = InferredAssertion
-						.nonTrivial(maps.inferNew(eq_classes.getClasses()));
+						.nonTrivial(maps.inferNew(eq_classes.getClasses(),
+								new ExcessLimit(30)));
 				eq_classes.markAllOld();
 				eq_classes.addNewAssertions(new_assertions);
 			}
@@ -454,18 +461,20 @@ public class Main {
 
 		int step = 0;
 		int size = 0;
-		
+
 		boolean cancel_further_steps = false;
+
+		ExcessLimit limit = new ExcessLimit(30);
 
 		while (step <= nbrSteps) {
 			size = eq_classes.getClasses().size();
 
 			System.out.println("  ++++ Step " + step + " ++++\n\n");
 			if (step > 0) {
-				Set<AssertionInterface> new_assertions = maps
-						.inferNew(eq_classes.getClasses());
-				
-				eq_classes.markAllOld();			
+				Set<AssertionInterface> new_assertions = maps.inferNew(
+						eq_classes.getClasses(), limit);
+
+				eq_classes.markAllOld();
 
 				for (ConstrainedAssertionFilter filter : invalidity) {
 					Set<AssertionInterface> invalid = filter
@@ -550,31 +559,38 @@ public class Main {
 			if ((size == eq_classes.getClasses().size()) && (step > 1))
 				break; // nothing new
 		}
-		
+
 		if (cancel_further_steps) {
-			System.out.println("\n\nIt was possible to infer invalid assertions from the given \n"+
-							   "initial set of assertions and the given inference rules! Please check!");
-			
+			System.out
+					.println("\n\nIt was possible to infer invalid assertions from the given \n"
+							+ "initial set of assertions and the given inference rules! Please check!");
+
 			return;
 		}
-		
-		System.out.println("\n\n The following non-trivial assertions can be inferred\n\n");
-		
+
+		System.out
+				.println("\n\n The following non-trivial assertions can be inferred\n\n");
+
 		TreeSet<String> ordered = new TreeSet<String>();
 		for (Iterator<AssertionInterface> it = eq_classes.getClasses()
 				.iterator(); it.hasNext();) {
 			AssertionInterface a = it.next();
 
-			ordered.add(a.getSubject()+" "+a.getPredicate()+" "+a.getObject());
+			ordered.add(a.getSubject() + " " + a.getPredicate() + " "
+					+ a.getObject());
 		}
-		
-		int count=0;
-		
+
+		int count = 0;
+
 		for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
 			String s = it.next();
 			++count;
-			
-			System.out.println(String.format("%6d", count)+"    "+s);
+
+			System.out.println(String.format("%6d", count) + "    " + s);
+		}
+		
+		if (limit.exceeded()) {
+			System.out.println("Stopped inference after time limit exceeded.");
 		}
 	}
 

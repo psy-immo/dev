@@ -43,7 +43,7 @@ public class InferenceMaps implements InferenceMap {
 
 	@Override
 	public Set<AssertionInterface> inferNew(
-			Set<AssertionInterface> validPremises) {
+			Set<AssertionInterface> validPremises, ExcessLimit limit) {
 		Set<AssertionInterface> inferred = new HashSet<AssertionInterface>();
 		
 		int count=0;
@@ -54,7 +54,10 @@ public class InferenceMaps implements InferenceMap {
 			System.err.print("\r inferring: "+((count*100)/size)+"% ("+count+")");
 			InferenceMap phi = it.next();
 			
-			inferred.addAll(phi.inferNew(validPremises));
+			if (limit.continueTask() == false)
+				break;
+
+			inferred.addAll(phi.inferNew(validPremises, limit));
 		}
 		
 		System.out.println("");

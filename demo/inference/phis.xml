@@ -537,8 +537,18 @@
 	</invalid>
 	
 	<justified>
-		<predicate>means, for bulbs,</predicate>
+		<predicate>(means, for bulbs,|is (serial connected|connected in parallel) with)</predicate>
 	</justified>
+	<justified>
+		<subject>the voltage of bulb chain BC</subject>
+		<predicate>is bigger than</predicate>
+		<object>the voltage of bulb (B|C)</object>
+	 </justified>
+	 <justified>
+		<object>the voltage of bulb chain BC</object>
+		<predicate>is smaller than</predicate>
+		<subject>the voltage of bulb (B|C)</subject>
+	 </justified>
 
 	<implicit>bulb A is a bulb</implicit>
 	<implicit>bulb B is a bulb</implicit>

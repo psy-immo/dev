@@ -23,7 +23,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import de.tu_dresden.psy.inference.*;
+
+import de.tu_dresden.psy.inference.Assertion;
+import de.tu_dresden.psy.inference.AssertionInterface;
+import de.tu_dresden.psy.inference.ExcessLimit;
+import de.tu_dresden.psy.inference.InferenceMap;
+import de.tu_dresden.psy.inference.InferredAssertion;
 
 /**
  * implements inference map phi_3
@@ -41,7 +46,7 @@ public class Phi3 implements InferenceMap {
 
 	@Override
 	public Set<AssertionInterface> inferNew(
-			Set<AssertionInterface> validPremises) {
+			Set<AssertionInterface> validPremises, ExcessLimit limit) {
 		Set<AssertionInterface> inferred = new HashSet<AssertionInterface>();
 
 		Map<String, Set<AssertionInterface>> by_subject = new HashMap<String, Set<AssertionInterface>>();
@@ -156,7 +161,7 @@ public class Phi3 implements InferenceMap {
 		premises.add(new Assertion("a bigger A", "means", "a bigger E"));
 		premises.add(new Assertion("a bigger E", "means", "a bigger B"));
 		
-		Set<AssertionInterface> level1 = phi3.inferNew(premises);
+		Set<AssertionInterface> level1 = phi3.inferNew(premises, null);
 		
 		System.out.println("first degree: ");
 		
@@ -166,7 +171,7 @@ public class Phi3 implements InferenceMap {
 		
 		level1.addAll(premises);
 		
-		Set<AssertionInterface> level2 = phi3.inferNew(level1);
+		Set<AssertionInterface> level2 = phi3.inferNew(level1, null);
 		
 		System.out.println("first+second degree: ");
 		
@@ -176,7 +181,7 @@ public class Phi3 implements InferenceMap {
 		
 		level1.addAll(level2);
 		
-		level2 = phi3.inferNew(level1);
+		level2 = phi3.inferNew(level1, null);
 		
 		System.out.println("first+second+third degree: ");
 		

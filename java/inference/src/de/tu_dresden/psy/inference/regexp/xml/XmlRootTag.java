@@ -82,6 +82,10 @@ public class XmlRootTag extends XmlTag {
 	 */
 	private Set<String> expert;
 	
+	/**
+	 * all given conclusions
+	 */
+	private Set<String> conclusions;
 
 	public XmlRootTag() {
 		rules = new HashSet<InferenceMap>();
@@ -92,6 +96,7 @@ public class XmlRootTag extends XmlTag {
 		justified = new HashSet<ConstrainedAssertionFilter>();
 		implicit = new HashSet<String>();
 		expert = new HashSet<String>();
+		conclusions = new HashSet<String>();
 	}
 	
 	/**
@@ -175,6 +180,21 @@ public class XmlRootTag extends XmlTag {
 	
 	/**
 	 * 
+	 * @return all assertions given in the xml document
+	 */
+	public Set<AssertionInterface> getGivenConclusions() {
+		Set<AssertionInterface> given = new HashSet<AssertionInterface>();
+		SubjectPredicateObjectMatchers matcher = getParsers();
+
+		for (String assertion : conclusions) {
+			given.addAll(matcher.match(assertion));
+		}
+
+		return given;
+	}
+
+	/**
+	 * 
 	 * @return all expert assertions given in the xml document
 	 */
 	public Set<AssertionInterface> getExpertAssertions() {
@@ -221,6 +241,16 @@ public class XmlRootTag extends XmlTag {
 
 	private void processImplicit(XmlTag child) {
 		implicit.add(child.contents);
+	}
+
+	/**
+	 * process a &lt;conclusion>-tag
+	 * 
+	 * @param child
+	 */
+
+	private void processConclusion(XmlTag child) {
+		conclusions.add(child.contents);
 	}
 
 	/**
@@ -656,6 +686,8 @@ public class XmlRootTag extends XmlTag {
 			processImplicit(child);
 		} else if (child.tagName.equals("EXPERT")) {
 			processExpert(child);
+		} else if (child.tagName.equals("CONCLUSION")) {
+			processConclusion(child);
 		} else if (child.tagName.equals("JUSTIFIED")) {
 			processJustified(child);
 		}
