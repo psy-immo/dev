@@ -68,6 +68,18 @@ public class InferenceMain {
 			} else if (argument.equalsIgnoreCase("--non-inferable")) {
 				System.out.println("Non-inferable conclusions:");
 				System.out.println(machine.getNonInferableStudentConclusions());
+			} else if (argument.equalsIgnoreCase("--justification")) {
+				machine.updateExpertJustification();
+				machine.updateStudentJustification();
+			} else if (argument.equalsIgnoreCase("--expert-report")) {
+				System.out.println("Expert-Report:");
+				System.out.println(machine.getExpertReport());
+			} else if (argument.equalsIgnoreCase("--student-report")) {
+				System.out.println("Student-Report:");
+				System.out.println(machine.getStudentReport());
+			} else if (argument.equalsIgnoreCase("--report")) {
+				System.out.println("Answer-Report:");
+				System.out.println(machine.getReport());
 			}
 		}
 	}

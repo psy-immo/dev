@@ -266,4 +266,14 @@ public class InferredAssertion implements AssertionInterface {
 		
 		return non_trivial;
 	}
+
+	/**
+	 * 
+	 * @return the premise vector of this inferred assertion
+	 */
+
+	public Vector<? extends AssertionInterface> getPremises() {
+		return premises;
+	}
+
 }

@@ -27,9 +27,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import de.tu_dresden.psy.inference.AssertionEquivalenceClasses;
 import de.tu_dresden.psy.inference.AssertionInterface;
+import de.tu_dresden.psy.inference.EquivalentAssertions;
 import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.InferenceMaps;
@@ -49,6 +51,10 @@ public class InferenceMachine extends Applet {
 	 * serialization
 	 */
 	private static final long serialVersionUID = 8101906904403439152L;
+
+	/**
+	 * stop inference process after ... seconds
+	 */
 
 	private static final float defaultExcessTimeLimit = 5;
 
@@ -117,8 +123,17 @@ public class InferenceMachine extends Applet {
 				Set<ConstrainedAssertionFilter> invalid,
 				Set<ConstrainedAssertionFilter> trivial) {
 			givenAssertions = new AssertionEquivalenceClasses();
-			givenAssertions.addNewAssertions(given);
+
 			givenAssertions.addNewAssertions(implicit);
+
+			for (AssertionInterface a : givenAssertions.getClasses()) {
+				if (a instanceof EquivalentAssertions) {
+					EquivalentAssertions ea = (EquivalentAssertions) a;
+					ea.considerJustified();
+				}
+			}
+
+			givenAssertions.addNewAssertions(given);
 			validAssertions = new AssertionEquivalenceClasses(givenAssertions);
 
 			state = State.open;
@@ -132,6 +147,72 @@ public class InferenceMachine extends Applet {
 
 			this.invalid = invalid;
 			this.trivial = trivial;
+		}
+
+		/**
+		 * 
+		 * @return a quick report about the state of the inference mechanism :)
+		 */
+
+		public String getReport() {
+			String report = "";
+
+			if (state == State.open) {
+				report += "No inference attempts have been made so far.\n";
+			} else if (state == State.closed) {
+				report += "All inferable assertions have been found.\n";
+			} else if (state == State.closed) {
+				report += "It was possible to infer invalid assertions.\n";
+			} else if (state == State.excess) {
+				report += "Inference was stopped because the process exceeded the time limit.\n";
+			}
+
+			if (invalidInferredAssertions.isEmpty() == false) {
+				report += "\nThe following invalid assertions could be inferred:\n";
+				for (AssertionInterface ia : invalidInferredAssertions) {
+					report += " !> " + ia.getSubject() + "·"
+							+ ia.getPredicate() + "·" + ia.getObject() + "\n";
+				}
+			}
+
+			Set<String> orderedOutput = new TreeSet<String>();
+
+			for (AssertionInterface a : validAssertions.getClasses()) {
+				EquivalentAssertions ea = (EquivalentAssertions) a;
+				if (ea.getJustificationDepth() == EquivalentAssertions.notJustified) {
+					orderedOutput.add(" [unjustified] " + ea.getSubject() + "·"
+							+ ea.getPredicate() + "·" + ea.getObject() + "\n");
+				} else {
+					orderedOutput.add(" ["
+							+ String.format("%1d", ea.getJustificationDepth())
+							+ "-justified] " + ea.getSubject() + "·"
+							+ ea.getPredicate() + "·" + ea.getObject() + "\n");
+				}
+			}
+
+			for (String s : orderedOutput) {
+				report += s;
+			}
+
+			return report;
+		}
+
+		/**
+		 * 
+		 * @return all inferred assertions
+		 */
+
+		public Set<AssertionInterface> getInferred() {
+			return validAssertions.getClasses();
+		}
+
+		/**
+		 * 
+		 * @return invalid inferred assertions
+		 */
+
+		public Set<AssertionInterface> getInvalid() {
+			return invalidInferredAssertions;
 		}
 
 		/**
@@ -150,6 +231,48 @@ public class InferenceMachine extends Applet {
 		 */
 		public boolean isInferable(AssertionInterface assertion) {
 			return validAssertions.contains(assertion);
+		}
+
+		/**
+		 * NOTE: close the valid assertions first, and update justification
+		 * 
+		 * @param assertion
+		 * @return justification level of the assertion
+		 */
+		public int justificationLevel(AssertionInterface assertion) {
+			return validAssertions.justification(assertion);
+		}
+
+		/**
+		 * use the given filters to update the justification levels
+		 * 
+		 * @param justified
+		 */
+
+		public void updateJustification(
+				Set<ConstrainedAssertionFilter> justified) {
+			for (ConstrainedAssertionFilter filter : justified) {
+				for (AssertionInterface a : filter.filter(validAssertions
+						.getClasses())) {
+					if (a instanceof EquivalentAssertions) {
+						EquivalentAssertions ea = (EquivalentAssertions) a;
+						ea.considerJustified();
+					}
+				}
+			}
+
+			boolean keep_updating = true;
+			while (keep_updating) {
+				keep_updating = false;
+
+				for (AssertionInterface a : validAssertions.getClasses()) {
+					if (a instanceof EquivalentAssertions) {
+						EquivalentAssertions ea = (EquivalentAssertions) a;
+						if (ea.updateJustificationDepth())
+							keep_updating = true;
+					}
+				}
+			}
 		}
 
 		/**
@@ -479,5 +602,130 @@ public class InferenceMachine extends Applet {
 		}
 
 		return result;
+	}
+
+	/**
+	 * calculate justification levels
+	 */
+
+	public void updateExpertJustification() {
+		expertValid.updateJustification(justified);
+	}
+
+	/**
+	 * calculate justification levels
+	 */
+
+	public void updateStudentJustification() {
+		studentValid.updateJustification(justified);
+	}
+
+	/**
+	 * 
+	 * @return report on the inference of the expert assertions
+	 */
+	public String getExpertReport() {
+		return expertValid.getReport();
+	}
+
+	/**
+	 * 
+	 * @return report on the inference of the student assertions
+	 */
+	public String getStudentReport() {
+		return studentValid.getReport();
+	}
+
+	public static String orderedAssertionSetString(String pre,
+			Collection<? extends AssertionInterface> set, String post,
+			String heading) {
+
+		if (set.isEmpty())
+			return "";
+
+		String result = heading;
+
+		Set<String> s = new TreeSet<String>();
+
+		for (AssertionInterface a : set) {
+			s.add(a.getSubject().toString() + "·" + a.getPredicate().toString()
+					+ "·" + a.getObject().toString());
+		}
+
+		for (String x : s) {
+			result += pre + x + post;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * @return report on the student assertions, conclusions etc. relative to
+	 *         the expert solution
+	 */
+	public String getReport() {
+		String report = "";
+
+		Set<AssertionInterface> correct_arguments = new HashSet<AssertionInterface>();
+		Set<AssertionInterface> incorrect_arguments = new HashSet<AssertionInterface>();
+		Set<AssertionInterface> correct_arguments_yet_unjustified = new HashSet<AssertionInterface>();
+
+		for (AssertionInterface a : studentArguments) {
+			if (expertValid.isInferable(a)) {
+				correct_arguments.add(a);
+				if (studentValid.justificationLevel(a) == EquivalentAssertions.notJustified) {
+					correct_arguments_yet_unjustified.add(a);
+				}
+			} else {
+				incorrect_arguments.add(a);
+			}
+
+		}
+
+		Set<AssertionInterface> correct_conclusions = new HashSet<AssertionInterface>();
+		Set<AssertionInterface> incorrect_conclusions = new HashSet<AssertionInterface>();
+		Set<AssertionInterface> inferable_conclusions = new HashSet<AssertionInterface>();
+		Set<AssertionInterface> inferable_conclusions_yet_unjustified = new HashSet<AssertionInterface>();
+
+		for (AssertionInterface a : studentConclusions) {
+			if (expertValid.isInferable(a)) {
+				correct_conclusions.add(a);
+			} else {
+				incorrect_conclusions.add(a);
+			}
+			if (studentValid.isInferable(a)) {
+				inferable_conclusions.add(a);
+				if (studentValid.justificationLevel(a) == EquivalentAssertions.notJustified) {
+					inferable_conclusions_yet_unjustified.add(a);
+				}
+			}
+		}
+
+		report += orderedAssertionSetString("     ", correct_arguments, "\n",
+				"\nThe following arguments are correct:\n");
+		report += orderedAssertionSetString("     ",
+				correct_arguments_yet_unjustified, "\n",
+				" where the following arguments need further justification:\n");
+
+		report += orderedAssertionSetString("     ", incorrect_arguments, "\n",
+				"\nThe following arguments are incorrect:\n");
+
+		report += orderedAssertionSetString("     ", correct_conclusions, "\n",
+				"\nThe following conclusions are correct:\n");
+
+		report += orderedAssertionSetString("     ", incorrect_conclusions,
+				"\n",
+				"\nThe following conclusions are incorrect:\n");
+
+		report += orderedAssertionSetString("     ", inferable_conclusions,
+				"\n",
+				"\nThe following conclusions can be infered from the arguments:\n");
+
+		report += orderedAssertionSetString("     ",
+				inferable_conclusions_yet_unjustified, "\n",
+				" where the following conclusions need further justification:\n");
+
+		return report;
 	}
 }

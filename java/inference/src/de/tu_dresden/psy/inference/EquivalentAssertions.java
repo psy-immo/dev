@@ -34,25 +34,35 @@ import java.util.TreeSet;
 public class EquivalentAssertions implements AssertionInterface {
 
 	private Object subject, predicate, object;
-	
-	private int hashSubject,hashPredicate,hashObject;
+
+	private int hashSubject, hashPredicate, hashObject;
 
 	private Set<AssertionInterface> assertions;
-	
+
 	private boolean old;
-	
-	
-	
+
+	/**
+	 * justification depth, where 0 means that the assertion is justified
+	 * itself, and if the assertion can be inferred from assertions with
+	 * justification depth k or less, the justification depth of the assertion
+	 * is (k+1)
+	 * 
+	 * where -1 means not justified at all
+	 */
+
+	public static int notJustified = -1;
+
+	private int justificationDepth;
+
 	@Override
 	public boolean isOld() {
 		return old;
 	}
-	
+
 	@Override
 	public void markAsOld() {
 		old = true;
 	}
-
 
 	/**
 	 * create a new equivalence class from a representing assertion only
@@ -70,14 +80,87 @@ public class EquivalentAssertions implements AssertionInterface {
 		hashSubject = subject.hashCode();
 		hashPredicate = predicate.hashCode();
 		hashObject = object.hashCode();
+		justificationDepth = notJustified;
 	}
+
+	/**
+	 * 
+	 * @return the justification level of the assertion, or
+	 *         EquivalentAssertions.notJustified
+	 */
+
+	public int getJustificationDepth() {
+		return justificationDepth;
+	}
+
+	/**
+	 * makes this assertion class to be considered justified
+	 */
+
+	public void considerJustified() {
+		justificationDepth = 0;
+	}
+
+	/**
+	 * checks whether the justification depth can be reduced due to inferrence
+	 * 
+	 * @return true, if justification depth has improved
+	 */
+
+	public boolean updateJustificationDepth() {
+		if ((justificationDepth >= 0) && (justificationDepth <= 1))
+			return false;
+
+		boolean better = false;
+
+		for (AssertionInterface assertion : assertions) {
+			if (assertion instanceof InferredAssertion) {
+
+				InferredAssertion inferred = (InferredAssertion) assertion;
+
+				boolean all_justified = true;
+				int max_level = 0;
+
+				for (AssertionInterface premise : inferred.getPremises()) {
+					if (premise instanceof EquivalentAssertions) {
+						EquivalentAssertions ea = (EquivalentAssertions) premise;
+
+						if (ea.justificationDepth == notJustified) {
+							all_justified = false;
+							break;
+						}
+
+						if (max_level < ea.justificationDepth)
+							max_level = ea.justificationDepth;
+					} else {
+						all_justified = false;
+						break;
+					}
+				}
+
+				if (all_justified == true) {
+					if ((max_level + 1 < justificationDepth)
+							|| (justificationDepth == notJustified)) {
+
+						justificationDepth = max_level + 1;
+						better = true;
+					}
+				}
+			}
+		}
+
+		return better;
+	}
+
 	/**
 	 * copy constructor
+	 * 
 	 * @param copyContents
 	 */
-	
+
 	public EquivalentAssertions(EquivalentAssertions copyContents) {
-		assertions = new HashSet<AssertionInterface>(copyContents.assertions.size());
+		assertions = new HashSet<AssertionInterface>(
+				copyContents.assertions.size());
 		assertions.addAll(copyContents.assertions);
 		subject = copyContents.subject;
 		object = copyContents.object;
@@ -86,6 +169,7 @@ public class EquivalentAssertions implements AssertionInterface {
 		hashSubject = copyContents.hashSubject;
 		hashPredicate = copyContents.hashPredicate;
 		hashObject = copyContents.hashObject;
+		justificationDepth = copyContents.justificationDepth;
 
 	}
 
@@ -99,7 +183,7 @@ public class EquivalentAssertions implements AssertionInterface {
 			return;
 		if (a == this)
 			return;
-		
+
 		if (a instanceof EquivalentAssertions) {
 			EquivalentAssertions ea = (EquivalentAssertions) a;
 			assertions.addAll(ea.assertions);
@@ -131,7 +215,7 @@ public class EquivalentAssertions implements AssertionInterface {
 			return false;
 		if (hashObject != assertion.getObject().hashCode())
 			return false;
-		
+
 		if (assertion.getPredicate().equals(predicate) == false) {
 			return false;
 		}
@@ -157,8 +241,7 @@ public class EquivalentAssertions implements AssertionInterface {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + hashObject;
-		result = prime * result
-				+ hashPredicate;
+		result = prime * result + hashPredicate;
 		result = prime * result + hashSubject;
 		return result;
 	}
@@ -169,10 +252,10 @@ public class EquivalentAssertions implements AssertionInterface {
 			return true;
 		if (obj == null)
 			return false;
-				
+
 		if (getClass() != obj.getClass())
 			return false;
-		
+
 		return isEqualTo((EquivalentAssertions) obj);
 	}
 
@@ -181,17 +264,17 @@ public class EquivalentAssertions implements AssertionInterface {
 
 		String p = subject.toString() + "·" + predicate.toString() + "·"
 				+ object.toString() + " [" + assertions.size() + "]";
-		
+
 		TreeSet<String> ordered = new TreeSet<String>();
-		
-		for (AssertionInterface assertion: assertions) {
+
+		for (AssertionInterface assertion : assertions) {
 			ordered.add(assertion.toString());
 		}
 		for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
-			p += "\n"+ it.next();
+			p += "\n" + it.next();
 		}
-		
-		return p+"\n";
+
+		return p + "\n";
 	}
 
 }

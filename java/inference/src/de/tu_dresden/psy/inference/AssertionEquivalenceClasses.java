@@ -38,31 +38,36 @@ public class AssertionEquivalenceClasses {
 	private Map<EquivalentAssertions, EquivalentAssertions> representants;
 
 	
+
 	/**
 	 * default constructor
 	 */
-	
+
 	public AssertionEquivalenceClasses() {
 		equivalenceClasses = new HashSet<AssertionInterface>();
 		representants = new HashMap<EquivalentAssertions, EquivalentAssertions>();
 	}
-	
+
+
 	/**
 	 * copy constructor
+	 * 
 	 * @param copyContents
 	 */
-	
+
 	public AssertionEquivalenceClasses(AssertionEquivalenceClasses copyContents) {
-		equivalenceClasses = new HashSet<AssertionInterface>(copyContents.representants.size());
-		representants = new HashMap<EquivalentAssertions, EquivalentAssertions>(copyContents.representants.size());
-		
+		equivalenceClasses = new HashSet<AssertionInterface>(
+				copyContents.representants.size());
+		representants = new HashMap<EquivalentAssertions, EquivalentAssertions>(
+				copyContents.representants.size());
+
 		for (EquivalentAssertions ea : copyContents.representants.keySet()) {
 			EquivalentAssertions copy = new EquivalentAssertions(ea);
 			equivalenceClasses.add(copy);
 			representants.put(copy, copy);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @return set of EquivalentAssertions
@@ -93,9 +98,9 @@ public class AssertionEquivalenceClasses {
 			if (assertion.isOld() == false) {
 				assertion.markAsOld();
 				count_new_olds++;
-				//System.out.println("now old: "+assertion);
+				// System.out.println("now old: "+assertion);
 			}
-			
+
 		}
 		System.out.println("\n ~~~~ Assertions marked as old: "
 				+ count_new_olds + " of " + equivalenceClasses.size());
@@ -132,5 +137,21 @@ public class AssertionEquivalenceClasses {
 
 		}
 		System.out.println("");
+	}
+
+	/**
+	 * 
+	 * @param assertion
+	 * @return justification level of the given assertion
+	 */
+
+	public int justification(AssertionInterface assertion) {
+		EquivalentAssertions ec = new EquivalentAssertions(assertion);
+
+		EquivalentAssertions r = representants.get(ec);
+		if (r == null)
+			return EquivalentAssertions.notJustified;
+
+		return r.getJustificationDepth();
 	}
 }
