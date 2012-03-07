@@ -154,4 +154,24 @@ public class AssertionEquivalenceClasses {
 
 		return r.getJustificationDepth();
 	}
+
+	/**
+	 * calculate all ancestral relations
+	 */
+
+	public void calculateAncestors() {
+		for (EquivalentAssertions ea : representants.keySet()) {
+			ea.updateDirectAncestors();
+		}
+
+		boolean keep_going = true;
+
+		while (keep_going) {
+			keep_going = false;
+			for (EquivalentAssertions ea : representants.keySet()) {
+				if (ea.updateAllAncestors())
+					keep_going = true;
+			}
+		}
+	}
 }

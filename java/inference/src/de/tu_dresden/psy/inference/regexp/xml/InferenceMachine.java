@@ -199,6 +199,16 @@ public class InferenceMachine extends Applet {
 
 		/**
 		 * 
+		 * update ancestor terms
+		 * 
+		 */
+
+		public void calculateAncestors() {
+			validAssertions.calculateAncestors();
+		}
+
+		/**
+		 * 
 		 * @return all inferred assertions
 		 */
 
@@ -727,5 +737,11 @@ public class InferenceMachine extends Applet {
 				" where the following conclusions need further justification:\n");
 
 		return report;
+	}
+
+	public String calculateAncestors() {
+		String result = "";
+		expertValid.calculateAncestors();
+		return result;
 	}
 }

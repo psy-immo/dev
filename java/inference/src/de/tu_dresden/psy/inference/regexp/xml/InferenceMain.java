@@ -80,6 +80,9 @@ public class InferenceMain {
 			} else if (argument.equalsIgnoreCase("--report")) {
 				System.out.println("Answer-Report:");
 				System.out.println(machine.getReport());
+			} else if (argument.equalsIgnoreCase("--ancestors")) {
+				System.out.println("CA");
+				System.out.println(machine.calculateAncestors());
 			}
 		}
 	}

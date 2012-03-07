@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import de.tu_dresden.psy.inference.forms.DisjunctiveNormalForm;
+
 /**
  * implements an AssertionInterface that will take care of differently derived
  * but otherwise equivalent assertions
@@ -41,6 +43,11 @@ public class EquivalentAssertions implements AssertionInterface {
 
 	private boolean old;
 
+	private DisjunctiveNormalForm<EquivalentAssertions> directAncestors;
+	private DisjunctiveNormalForm<EquivalentAssertions> allAncestors;
+
+	public static int notJustified = -1;
+
 	/**
 	 * justification depth, where 0 means that the assertion is justified
 	 * itself, and if the assertion can be inferred from assertions with
@@ -49,8 +56,6 @@ public class EquivalentAssertions implements AssertionInterface {
 	 * 
 	 * where -1 means not justified at all
 	 */
-
-	public static int notJustified = -1;
 
 	private int justificationDepth;
 
@@ -81,6 +86,66 @@ public class EquivalentAssertions implements AssertionInterface {
 		hashPredicate = predicate.hashCode();
 		hashObject = object.hashCode();
 		justificationDepth = notJustified;
+		directAncestors = new DisjunctiveNormalForm<EquivalentAssertions>();
+		allAncestors = new DisjunctiveNormalForm<EquivalentAssertions>();
+	}
+
+	/**
+	 * add new conjunctions to directAncestors & allAncestors
+	 */
+
+	public void updateDirectAncestors() {
+
+		for (AssertionInterface assertion : assertions) {
+			if (assertion instanceof InferredAssertion) {
+
+				InferredAssertion inferred = (InferredAssertion) assertion;
+
+				boolean all_equivalence_classes = true;
+				Set<EquivalentAssertions> ancestors = new HashSet<EquivalentAssertions>();
+
+				for (AssertionInterface premise : inferred.getPremises()) {
+					if (premise instanceof EquivalentAssertions) {
+						EquivalentAssertions ea = (EquivalentAssertions) premise;
+
+						ancestors.add(ea);
+					} else {
+						all_equivalence_classes = false;
+						break;
+					}
+				}
+
+				if (all_equivalence_classes == true) {
+					directAncestors
+							.join(new DisjunctiveNormalForm<EquivalentAssertions>(
+									ancestors));
+				}
+			}
+		}
+
+		allAncestors.join(directAncestors);
+	}
+
+	/**
+	 * add new conjunctions to allAncestors
+	 */
+
+	public boolean updateAllAncestors() {
+		int initial_size = allAncestors.getTerm().size();
+		
+		Set<EquivalentAssertions> current_ancestors = new HashSet<EquivalentAssertions>();
+
+		for (Set<EquivalentAssertions> c : allAncestors.getTerm()) {
+			current_ancestors.addAll(c);
+		}
+
+		for (EquivalentAssertions a : current_ancestors) {
+			allAncestors.replaceJoin(a, a.allAncestors);
+		}
+		System.out.print("Ancestors " + initial_size + " -> "
+				+ allAncestors.getTerm().size());
+
+		return allAncestors.getTerm().size() > initial_size;
 	}
 
 	/**
@@ -170,7 +235,11 @@ public class EquivalentAssertions implements AssertionInterface {
 		hashPredicate = copyContents.hashPredicate;
 		hashObject = copyContents.hashObject;
 		justificationDepth = copyContents.justificationDepth;
+		directAncestors = new DisjunctiveNormalForm<EquivalentAssertions>();
+		allAncestors = new DisjunctiveNormalForm<EquivalentAssertions>();
 
+		directAncestors.join(copyContents.directAncestors);
+		allAncestors.join(copyContents.allAncestors);
 	}
 
 	/**
