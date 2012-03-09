@@ -69,7 +69,7 @@ public class InferenceMachine extends Applet {
 	 * keep inference states
 	 */
 
-	InferrableAssertions expertValid, studentValid;
+	InferableAssertions expertValid, studentValid;
 
 	/**
 	 * reset the state of the machine
@@ -84,12 +84,12 @@ public class InferenceMachine extends Applet {
 		trivial = new HashSet<ConstrainedAssertionFilter>();
 		invalid = new HashSet<ConstrainedAssertionFilter>();
 		justified = new HashSet<ConstrainedAssertionFilter>();
-		expertValid = new InferrableAssertions(
+		expertValid = new InferableAssertions(
 				new HashSet<AssertionInterface>(),
 				new HashSet<AssertionInterface>(), new HashSet<InferenceMap>(),
 				new HashSet<ConstrainedAssertionFilter>(),
 				new HashSet<ConstrainedAssertionFilter>());
-		studentValid = new InferrableAssertions(
+		studentValid = new InferableAssertions(
 				new HashSet<AssertionInterface>(),
 				new HashSet<AssertionInterface>(), new HashSet<InferenceMap>(),
 				new HashSet<ConstrainedAssertionFilter>(),
@@ -239,7 +239,7 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public String closeExpertAssertions() {
-		expertValid = new InferrableAssertions(implicit.getClasses(),
+		expertValid = new InferableAssertions(implicit.getClasses(),
 				expert.getClasses(),
 				inferenceMaps.values(), invalid, trivial);
 		return expertValid.closeValid(new ExcessLimit(excessTimeLimit)).name();
@@ -252,7 +252,7 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public String closeStudentAssertions() {
-		studentValid = new InferrableAssertions(implicit.getClasses(),
+		studentValid = new InferableAssertions(implicit.getClasses(),
 				studentArguments.getClasses(),
 				inferenceMaps.values(), invalid, trivial);
 		return studentValid.closeValid(new ExcessLimit(excessTimeLimit)).name();

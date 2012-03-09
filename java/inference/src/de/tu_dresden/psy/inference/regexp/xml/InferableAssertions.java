@@ -39,7 +39,7 @@ import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
  * 
  */
 
-public class InferrableAssertions {
+public class InferableAssertions {
 
 	public static enum State {
 		/**
@@ -67,7 +67,7 @@ public class InferrableAssertions {
 	private Set<InferenceMap> usedRules;
 	private Set<ConstrainedAssertionFilter> invalid, trivial;
 	private Set<AssertionInterface> invalidInferredAssertions;
-	private InferrableAssertions.State state;
+	private InferableAssertions.State state;
 
 	/**
 	 * used to make a premise vector for triviality tests
@@ -83,7 +83,7 @@ public class InferrableAssertions {
 	 * @param trivial
 	 */
 
-	public InferrableAssertions(Set<AssertionInterface> implicit,
+	public InferableAssertions(Set<AssertionInterface> implicit,
 			Set<AssertionInterface> given, Collection<InferenceMap> rules,
 			Set<ConstrainedAssertionFilter> invalid,
 			Set<ConstrainedAssertionFilter> trivial) {
@@ -196,7 +196,7 @@ public class InferrableAssertions {
 	 * 
 	 * @return closure state
 	 */
-	public InferrableAssertions.State getState() {
+	public InferableAssertions.State getState() {
 		return state;
 	}
 
@@ -261,7 +261,7 @@ public class InferrableAssertions {
 	 * @return closure state
 	 */
 
-	public InferrableAssertions.State closeValid(ExcessLimit limit) {
+	public InferableAssertions.State closeValid(ExcessLimit limit) {
 		InferenceMaps maps = new InferenceMaps(usedRules);
 
 		int lastCount = 0;
