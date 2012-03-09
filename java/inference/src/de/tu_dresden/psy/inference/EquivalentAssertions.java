@@ -363,4 +363,21 @@ public class EquivalentAssertions implements AssertionInterface {
 		// return p + "\n";
 	}
 
+	/**
+	 * 
+	 * @return allAncestors
+	 */
+
+	public DisjunctiveNormalForm<EquivalentAssertions> ancestors() {
+		return allAncestors;
+	}
+
+	/**
+	 * 
+	 * @return directAncestors
+	 */
+
+	public DisjunctiveNormalForm<EquivalentAssertions> precursors() {
+		return directAncestors;
+	}
 }

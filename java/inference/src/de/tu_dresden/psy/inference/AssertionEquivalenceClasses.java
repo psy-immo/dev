@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import de.tu_dresden.psy.inference.forms.DisjunctiveNormalForm;
+
 /**
  * implements the management of assertion equivalence classes
  * 
@@ -178,5 +180,38 @@ public class AssertionEquivalenceClasses {
 			if (excessLimit.continueTask() == false)
 				break;
 		}
+	}
+
+	/**
+	 * 
+	 * @param assertion
+	 * @return ancestors of the equivalence class
+	 */
+
+	public DisjunctiveNormalForm<EquivalentAssertions> ancestors(
+			AssertionInterface assertion) {
+		EquivalentAssertions ec = new EquivalentAssertions(assertion);
+
+		EquivalentAssertions r = representants.get(ec);
+		if (r == null)
+			return new DisjunctiveNormalForm<EquivalentAssertions>();
+
+		return r.ancestors();
+	}
+
+	/**
+	 * 
+	 * @param assertion
+	 * @return precursors of the equivalence class
+	 */
+	public DisjunctiveNormalForm<EquivalentAssertions> precursors(
+			AssertionInterface assertion) {
+		EquivalentAssertions ec = new EquivalentAssertions(assertion);
+
+		EquivalentAssertions r = representants.get(ec);
+		if (r == null)
+			return new DisjunctiveNormalForm<EquivalentAssertions>();
+
+		return r.precursors();
 	}
 }

@@ -26,66 +26,83 @@ package de.tu_dresden.psy.inference.regexp.xml;
  */
 public class InferenceMain {
 	public static void main(String[] args) {
-		
-		InferenceMachine machine = new InferenceMachine(); 
-		
+
+		InferenceMachine machine = new InferenceMachine();
+
 		/**
 		 * check command line arguments
 		 */
-		
+
 		for (int i = 0; i < args.length; i++) {
 			String argument = args[i];
-			
+
 			if (argument.equalsIgnoreCase("--xml")) {
-				if (i+1==args.length) {
-					System.err.println("--xml needs file name as next argument");
-				} else
-				{
+				if (i + 1 == args.length) {
+					System.err
+							.println("--xml needs file name as next argument");
+				} else {
 					++i;
 					System.out.print(machine.addXmlFile(args[i]));
 				}
-			} else if (argument.equalsIgnoreCase("--xml-url")) {
-				if (i+1==args.length) {
-					System.err.println("--xml-url needs file name as next argument");
-				} else
-				{
+			}
+			if (argument.equalsIgnoreCase("--xml-url")) {
+				if (i + 1 == args.length) {
+					System.err
+							.println("--xml-url needs file name as next argument");
+				} else {
 					++i;
 					System.out.print(machine.addXmlUrl(args[i]));
 				}
-			} else if (argument.equalsIgnoreCase("--expert")) {
+			}
+			if (argument.equalsIgnoreCase("--expert")
+					|| argument.equalsIgnoreCase("--check")) {
 				System.out.print("Calculating expert valid assertions: ");
 				System.out.println(machine.closeExpertAssertions());
-			} else if (argument.equalsIgnoreCase("--student")) {
+			}
+			if (argument.equalsIgnoreCase("--student")
+					|| argument.equalsIgnoreCase("--check")) {
 				System.out.print("Calculating student valid assertions: ");
 				System.out.println(machine.closeStudentAssertions());
-			} else if (argument.equalsIgnoreCase("--correct")) {
+			}
+			if (argument.equalsIgnoreCase("--correct")) {
 				System.out.println("Correct conclusions:");
 				System.out.println(machine.getCorrectStudentConclusions());
-			} else if (argument.equalsIgnoreCase("--incorrect")) {
+			}
+			if (argument.equalsIgnoreCase("--incorrect")) {
 				System.out.println("Incorrect conclusions:");
 				System.out.println(machine.getIncorrectStudentConclusions());
-			} else if (argument.equalsIgnoreCase("--inferable")) {
+			}
+			if (argument.equalsIgnoreCase("--inferable")) {
 				System.out.println("Inferable conclusions:");
 				System.out.println(machine.getInferableStudentConclusions());
-			} else if (argument.equalsIgnoreCase("--non-inferable")) {
+			}
+			if (argument.equalsIgnoreCase("--non-inferable")) {
 				System.out.println("Non-inferable conclusions:");
 				System.out.println(machine.getNonInferableStudentConclusions());
-			} else if (argument.equalsIgnoreCase("--justification")) {
+			}
+			if (argument.equalsIgnoreCase("--justification")
+					|| argument.equalsIgnoreCase("--check")) {
 				machine.updateExpertJustification();
 				machine.updateStudentJustification();
-			} else if (argument.equalsIgnoreCase("--expert-report")) {
+			}
+			if (argument.equalsIgnoreCase("--expert-report")) {
 				System.out.println("Expert-Report:");
 				System.out.println(machine.getExpertReport());
-			} else if (argument.equalsIgnoreCase("--student-report")) {
+			}
+			if (argument.equalsIgnoreCase("--student-report")) {
 				System.out.println("Student-Report:");
 				System.out.println(machine.getStudentReport());
-			} else if (argument.equalsIgnoreCase("--report")) {
+			}
+			if (argument.equalsIgnoreCase("--report")) {
 				System.out.println("Answer-Report:");
 				System.out.println(machine.getReport());
-			} else if (argument.equalsIgnoreCase("--ancestors")) {
+			}
+			if (argument.equalsIgnoreCase("--ancestors")
+					|| argument.equalsIgnoreCase("--check")) {
 				System.out.print("Calculating ancestor sets: ");
 				System.out.println(machine.calculateAncestors());
 			}
+
 		}
 	}
 }

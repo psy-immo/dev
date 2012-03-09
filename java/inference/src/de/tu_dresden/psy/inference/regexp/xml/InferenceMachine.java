@@ -240,8 +240,7 @@ public class InferenceMachine extends Applet {
 
 	public String closeExpertAssertions() {
 		expertValid = new InferableAssertions(implicit.getClasses(),
-				expert.getClasses(),
-				inferenceMaps.values(), invalid, trivial);
+				expert.getClasses(), inferenceMaps.values(), invalid, trivial);
 		return expertValid.closeValid(new ExcessLimit(excessTimeLimit)).name();
 	}
 
@@ -253,8 +252,8 @@ public class InferenceMachine extends Applet {
 
 	public String closeStudentAssertions() {
 		studentValid = new InferableAssertions(implicit.getClasses(),
-				studentArguments.getClasses(),
-				inferenceMaps.values(), invalid, trivial);
+				studentArguments.getClasses(), inferenceMaps.values(), invalid,
+				trivial);
 		return studentValid.closeValid(new ExcessLimit(excessTimeLimit)).name();
 	}
 
@@ -339,7 +338,7 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public void updateExpertJustification() {
-		expertValid.updateJustification(justified);
+		expertValid.updateJustification(justified, expertValid.getValid());
 	}
 
 	/**
@@ -347,7 +346,7 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public void updateStudentJustification() {
-		studentValid.updateJustification(justified);
+		studentValid.updateJustification(justified, expertValid.getValid());
 	}
 
 	/**
@@ -445,8 +444,7 @@ public class InferenceMachine extends Applet {
 				"\nThe following conclusions are correct:\n");
 
 		report += orderedAssertionSetString("     ", incorrect_conclusions,
-				"\n",
-				"\nThe following conclusions are incorrect:\n");
+				"\n", "\nThe following conclusions are incorrect:\n");
 
 		report += orderedAssertionSetString("     ", inferable_conclusions,
 				"\n",
@@ -455,6 +453,11 @@ public class InferenceMachine extends Applet {
 		report += orderedAssertionSetString("     ",
 				inferable_conclusions_yet_unjustified, "\n",
 				" where the following conclusions need further justification:\n");
+
+		Set<AssertionInterface> need_more_justification = new HashSet<AssertionInterface>();
+		need_more_justification.addAll(inferable_conclusions_yet_unjustified);
+		need_more_justification.addAll(correct_arguments_yet_unjustified);
+
 
 		return report;
 	}

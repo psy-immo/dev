@@ -19,8 +19,10 @@
 package de.tu_dresden.psy.inference.regexp.xml;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -30,6 +32,7 @@ import de.tu_dresden.psy.inference.EquivalentAssertions;
 import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.InferenceMaps;
+import de.tu_dresden.psy.inference.forms.DisjunctiveNormalForm;
 import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
 
 /**
@@ -116,6 +119,15 @@ public class InferableAssertions {
 
 	/**
 	 * 
+	 * @return valid assertions that have been inferred
+	 */
+
+	public AssertionEquivalenceClasses getValid() {
+		return validAssertions;
+	}
+
+	/**
+	 * 
 	 * @return a quick report about the state of the inference mechanism :)
 	 */
 
@@ -135,8 +147,8 @@ public class InferableAssertions {
 		if (invalidInferredAssertions.isEmpty() == false) {
 			report += "\nThe following invalid assertions could be inferred:\n";
 			for (AssertionInterface ia : invalidInferredAssertions) {
-				report += " !> " + ia.getSubject() + "·"
-						+ ia.getPredicate() + "·" + ia.getObject() + "\n";
+				report += " !> " + ia.getSubject() + "·" + ia.getPredicate()
+						+ "·" + ia.getObject() + "\n";
 			}
 		}
 
@@ -221,19 +233,35 @@ public class InferableAssertions {
 	}
 
 	/**
+	 * NOTE: close the valid assertions first, then update justification, and
+	 * then calculate ancestors
+	 * 
+	 * @param assertion
+	 * @return all ancestors of the assertion
+	 */
+
+	public DisjunctiveNormalForm<EquivalentAssertions> getAncestors(
+			AssertionInterface assertion) {
+		return validAssertions.ancestors(assertion);
+	}
+
+	/**
 	 * use the given filters to update the justification levels
 	 * 
 	 * @param justified
+	 *            filter for justification
 	 */
 
-	public void updateJustification(
-			Set<ConstrainedAssertionFilter> justified) {
+	public void updateJustification(Set<ConstrainedAssertionFilter> justified,
+			AssertionEquivalenceClasses valid) {
 		for (ConstrainedAssertionFilter filter : justified) {
 			for (AssertionInterface a : filter.filter(validAssertions
 					.getClasses())) {
 				if (a instanceof EquivalentAssertions) {
-					EquivalentAssertions ea = (EquivalentAssertions) a;
-					ea.considerJustified();
+					if (valid.contains(a)) {
+						EquivalentAssertions ea = (EquivalentAssertions) a;
+						ea.considerJustified();
+					}
 				}
 			}
 		}
@@ -291,8 +319,8 @@ public class InferableAssertions {
 				trivialInferred.addAll(filter.filter(inferred));
 			}
 
-			for (Iterator<AssertionInterface> i_assertion = inferred
-					.iterator(); i_assertion.hasNext();) {
+			for (Iterator<AssertionInterface> i_assertion = inferred.iterator(); i_assertion
+					.hasNext();) {
 				if (trivialInferred.contains(i_assertion.next()))
 					i_assertion.remove();
 			}
@@ -312,4 +340,90 @@ public class InferableAssertions {
 
 		return state;
 	}
+
+	/**
+	 * 
+	 * @param justificationNeeded
+	 *            assertion for that the lookup is done
+	 * @param otherGivenAssertions
+	 *            other assertions that may be used
+	 * @return all minimal in justification-depth-plus-one sum of non-given
+	 *         assertions direct ancestor missing sets
+	 */
+
+	public Set<Set<EquivalentAssertions>> getMinimalDepthPrecursorSets(
+			AssertionInterface justificationNeeded,
+			Set<EquivalentAssertions> otherGivenAssertions) {
+		Set<Set<EquivalentAssertions>> minimal_precursors = new HashSet<Set<EquivalentAssertions>>();
+
+		if (isInferable(justificationNeeded) == false)
+			return minimal_precursors;
+
+		if (justificationLevel(justificationNeeded) == EquivalentAssertions.notJustified)
+			return minimal_precursors;
+
+		int minimal_depth = Integer.MAX_VALUE;
+
+		for (Set<EquivalentAssertions> precursors : givenAssertions.ancestors(
+				justificationNeeded).getTerm()) {
+			int depth_sum = 0;
+			Set<EquivalentAssertions> missing = new HashSet<EquivalentAssertions>();
+
+			for (EquivalentAssertions ea : precursors) {
+				if (otherGivenAssertions.contains(ea) == false) {
+					if (ea.getJustificationDepth() > depth_sum) {
+						depth_sum += ea.getJustificationDepth() + 1;
+						missing.add(ea);
+					}
+				}
+			}
+
+			if (missing.isEmpty()) {
+				/**
+				 * this argument is relatively justified with the given
+				 * assertions
+				 */
+				minimal_precursors.clear();
+				return minimal_precursors;
+			}
+
+			if (depth_sum < minimal_depth) {
+				minimal_precursors.clear();
+				minimal_depth = depth_sum;
+			}
+
+			if (depth_sum == minimal_depth) {
+				minimal_precursors.add(missing);
+			}
+
+		}
+
+		return minimal_precursors;
+	}
+
+	/**
+	 * 
+	 * @param needJustification
+	 * @param otherGivenAssertions
+	 * @return tips for justification
+	 */
+
+	public String getJustificationTips(Set<AssertionInterface> needJustification, Set<EquivalentAssertions> otherGivenAssertions) {
+
+		Map<EquivalentAssertions, Set<Set<EquivalentAssertions>>> justified_by = new HashMap<EquivalentAssertions, Set<Set<EquivalentAssertions>>>();
+		
+		for (AssertionInterface a : needJustification) {
+			EquivalentAssertions ea = new EquivalentAssertions(a);
+			
+			justified_by.put(ea,
+					getMinimalDepthPrecursorSets(ea, otherGivenAssertions));
+		}
+
+		// TODO
+
+		StringBuffer tips = new StringBuffer();
+
+		return tips.toString();
+	}
+
 }
