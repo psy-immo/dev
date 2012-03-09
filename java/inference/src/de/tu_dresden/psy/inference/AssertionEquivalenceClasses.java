@@ -157,11 +157,13 @@ public class AssertionEquivalenceClasses {
 
 	/**
 	 * calculate all ancestral relations
+	 * 
+	 * @param excessLimit
 	 */
 
-	public void calculateAncestors() {
+	public void calculateAncestors(ExcessLimit excessLimit) {
 		for (EquivalentAssertions ea : representants.keySet()) {
-			ea.updateDirectAncestors();
+			ea.updateDirectAncestors(excessLimit);
 		}
 
 		boolean keep_going = true;
@@ -169,9 +171,12 @@ public class AssertionEquivalenceClasses {
 		while (keep_going) {
 			keep_going = false;
 			for (EquivalentAssertions ea : representants.keySet()) {
-				if (ea.updateAllAncestors())
+				if (ea.updateAllAncestors(excessLimit))
 					keep_going = true;
 			}
+
+			if (excessLimit.continueTask() == false)
+				break;
 		}
 	}
 }

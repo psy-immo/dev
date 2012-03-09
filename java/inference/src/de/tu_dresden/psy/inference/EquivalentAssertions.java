@@ -19,9 +19,7 @@
 package de.tu_dresden.psy.inference;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.TreeSet;
 
 import de.tu_dresden.psy.inference.forms.DisjunctiveNormalForm;
 
@@ -92,30 +90,43 @@ public class EquivalentAssertions implements AssertionInterface {
 
 	/**
 	 * add new conjunctions to directAncestors & allAncestors
+	 * 
+	 * @param excessLimit
 	 */
 
-	public void updateDirectAncestors() {
+	public void updateDirectAncestors(ExcessLimit excessLimit) {
 
 		for (AssertionInterface assertion : assertions) {
+
+			if (excessLimit.continueTask() == false)
+				break;
+
 			if (assertion instanceof InferredAssertion) {
 
 				InferredAssertion inferred = (InferredAssertion) assertion;
 
-				boolean all_equivalence_classes = true;
+				boolean all_equivalence_classes_and_precursors = true;
 				Set<EquivalentAssertions> ancestors = new HashSet<EquivalentAssertions>();
 
 				for (AssertionInterface premise : inferred.getPremises()) {
 					if (premise instanceof EquivalentAssertions) {
 						EquivalentAssertions ea = (EquivalentAssertions) premise;
 
+						if ((ea.getJustificationDepth() == notJustified)
+								|| (ea.getJustificationDepth() >= justificationDepth)) {
+							all_equivalence_classes_and_precursors = false;
+							break;
+						}
+
 						ancestors.add(ea);
+
 					} else {
-						all_equivalence_classes = false;
+						all_equivalence_classes_and_precursors = false;
 						break;
 					}
 				}
 
-				if (all_equivalence_classes == true) {
+				if (all_equivalence_classes_and_precursors == true) {
 					directAncestors
 							.join(new DisjunctiveNormalForm<EquivalentAssertions>(
 									ancestors));
@@ -128,9 +139,11 @@ public class EquivalentAssertions implements AssertionInterface {
 
 	/**
 	 * add new conjunctions to allAncestors
+	 * 
+	 * @param excessLimit
 	 */
 
-	public boolean updateAllAncestors() {
+	public boolean updateAllAncestors(ExcessLimit excessLimit) {
 		int initial_size = allAncestors.getTerm().size();
 		
 		Set<EquivalentAssertions> current_ancestors = new HashSet<EquivalentAssertions>();
@@ -140,10 +153,12 @@ public class EquivalentAssertions implements AssertionInterface {
 		}
 
 		for (EquivalentAssertions a : current_ancestors) {
+
+			if (excessLimit.continueTask() == false)
+				break;
+
 			allAncestors.replaceJoin(a, a.allAncestors);
 		}
-		System.out.print("Ancestors " + initial_size + " -> "
-				+ allAncestors.getTerm().size());
 
 		return allAncestors.getTerm().size() > initial_size;
 	}
@@ -334,16 +349,18 @@ public class EquivalentAssertions implements AssertionInterface {
 		String p = subject.toString() + "·" + predicate.toString() + "·"
 				+ object.toString() + " [" + assertions.size() + "]";
 
-		TreeSet<String> ordered = new TreeSet<String>();
+		return p;
 
-		for (AssertionInterface assertion : assertions) {
-			ordered.add(assertion.toString());
-		}
-		for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
-			p += "\n" + it.next();
-		}
-
-		return p + "\n";
+		// TreeSet<String> ordered = new TreeSet<String>();
+		//
+		// for (AssertionInterface assertion : assertions) {
+		// ordered.add(assertion.toString());
+		// }
+		// for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
+		// p += "\n" + it.next();
+		// }
+		//
+		// return p + "\n";
 	}
 
 }

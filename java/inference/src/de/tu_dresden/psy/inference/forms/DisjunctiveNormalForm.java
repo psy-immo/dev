@@ -162,4 +162,31 @@ public class DisjunctiveNormalForm<Atoms> {
 		return termForm;
 	}
 
+	@Override
+	public String toString() {
+		StringBuffer presentation = new StringBuffer();
+		for (Set<Atoms> conjs : termForm) {
+			if (presentation.length() == 0) {
+				presentation.append("     (");
+			} else
+				presentation.append(" or (");
+
+			boolean first = true;
+
+			for (Atoms a : conjs) {
+				if (first) {
+					first = false;
+					presentation.append("   ");
+				} else
+					presentation.append("   and   ");
+
+				presentation.append(a.toString());
+				presentation.append("\n");
+			}
+
+			presentation.append(")");
+		}
+
+		return presentation.toString();
+	}
 }

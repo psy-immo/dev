@@ -61,7 +61,7 @@ public class InferenceMachine extends Applet {
 	/**
 	 * machine state variables
 	 */
-	private Set<AssertionInterface> implicit, expert, studentArguments,
+	private AssertionEquivalenceClasses implicit, expert, studentArguments,
 			studentConclusions;
 	private Map<String, InferenceMap> inferenceMaps;
 	private Set<ConstrainedAssertionFilter> trivial, invalid, justified;
@@ -201,10 +201,12 @@ public class InferenceMachine extends Applet {
 		 * 
 		 * update ancestor terms
 		 * 
+		 * @param excessLimit
+		 * 
 		 */
 
-		public void calculateAncestors() {
-			validAssertions.calculateAncestors();
+		public void calculateAncestors(ExcessLimit excessLimit) {
+			validAssertions.calculateAncestors(excessLimit);
 		}
 
 		/**
@@ -358,10 +360,10 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public void resetState() {
-		implicit = new HashSet<AssertionInterface>();
-		expert = new HashSet<AssertionInterface>();
-		studentArguments = new HashSet<AssertionInterface>();
-		studentConclusions = new HashSet<AssertionInterface>();
+		implicit = new AssertionEquivalenceClasses();
+		expert = new AssertionEquivalenceClasses();
+		studentArguments = new AssertionEquivalenceClasses();
+		studentConclusions = new AssertionEquivalenceClasses();
 		inferenceMaps = new HashMap<String, InferenceMap>();
 		trivial = new HashSet<ConstrainedAssertionFilter>();
 		invalid = new HashSet<ConstrainedAssertionFilter>();
@@ -390,10 +392,10 @@ public class InferenceMachine extends Applet {
 	 * @param root
 	 */
 	private void addXml(XmlRootTag root) {
-		implicit.addAll(root.getImplicitAssertions());
-		expert.addAll(root.getExpertAssertions());
-		studentArguments.addAll(root.getGivenAssertions());
-		studentConclusions.addAll(root.getGivenConclusions());
+		implicit.addNewAssertions(root.getImplicitAssertions());
+		expert.addNewAssertions(root.getExpertAssertions());
+		studentArguments.addNewAssertions(root.getGivenAssertions());
+		studentConclusions.addNewAssertions(root.getGivenConclusions());
 
 		Map<String, InferenceMap> updated_rules = root.getInferenceMapsByName();
 
@@ -521,7 +523,8 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public String closeExpertAssertions() {
-		expertValid = new InferrableAssertions(implicit, expert,
+		expertValid = new InferrableAssertions(implicit.getClasses(),
+				expert.getClasses(),
 				inferenceMaps.values(), invalid, trivial);
 		return expertValid.closeValid(new ExcessLimit(excessTimeLimit)).name();
 	}
@@ -533,7 +536,8 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public String closeStudentAssertions() {
-		studentValid = new InferrableAssertions(implicit, studentArguments,
+		studentValid = new InferrableAssertions(implicit.getClasses(),
+				studentArguments.getClasses(),
 				inferenceMaps.values(), invalid, trivial);
 		return studentValid.closeValid(new ExcessLimit(excessTimeLimit)).name();
 	}
@@ -545,7 +549,7 @@ public class InferenceMachine extends Applet {
 	public String getCorrectStudentConclusions() {
 		String result = "";
 
-		for (AssertionInterface conclusion : studentConclusions) {
+		for (AssertionInterface conclusion : studentConclusions.getClasses()) {
 			if (expertValid.isInferable(conclusion)) {
 				if (result.isEmpty() == false) {
 					result += "\n";
@@ -564,7 +568,7 @@ public class InferenceMachine extends Applet {
 	public String getIncorrectStudentConclusions() {
 		String result = "";
 
-		for (AssertionInterface conclusion : studentConclusions) {
+		for (AssertionInterface conclusion : studentConclusions.getClasses()) {
 			if (expertValid.isInferable(conclusion) == false) {
 				if (result.isEmpty() == false) {
 					result += "\n";
@@ -583,7 +587,7 @@ public class InferenceMachine extends Applet {
 	public String getInferableStudentConclusions() {
 		String result = "";
 
-		for (AssertionInterface conclusion : studentConclusions) {
+		for (AssertionInterface conclusion : studentConclusions.getClasses()) {
 			if (studentValid.isInferable(conclusion)) {
 				if (result.isEmpty() == false) {
 					result += "\n";
@@ -602,7 +606,7 @@ public class InferenceMachine extends Applet {
 	public String getNonInferableStudentConclusions() {
 		String result = "";
 
-		for (AssertionInterface conclusion : studentConclusions) {
+		for (AssertionInterface conclusion : studentConclusions.getClasses()) {
 			if (studentValid.isInferable(conclusion) == false) {
 				if (result.isEmpty() == false) {
 					result += "\n";
@@ -681,7 +685,7 @@ public class InferenceMachine extends Applet {
 		Set<AssertionInterface> incorrect_arguments = new HashSet<AssertionInterface>();
 		Set<AssertionInterface> correct_arguments_yet_unjustified = new HashSet<AssertionInterface>();
 
-		for (AssertionInterface a : studentArguments) {
+		for (AssertionInterface a : studentArguments.getClasses()) {
 			if (expertValid.isInferable(a)) {
 				correct_arguments.add(a);
 				if (studentValid.justificationLevel(a) == EquivalentAssertions.notJustified) {
@@ -698,7 +702,7 @@ public class InferenceMachine extends Applet {
 		Set<AssertionInterface> inferable_conclusions = new HashSet<AssertionInterface>();
 		Set<AssertionInterface> inferable_conclusions_yet_unjustified = new HashSet<AssertionInterface>();
 
-		for (AssertionInterface a : studentConclusions) {
+		for (AssertionInterface a : studentConclusions.getClasses()) {
 			if (expertValid.isInferable(a)) {
 				correct_conclusions.add(a);
 			} else {
@@ -739,9 +743,17 @@ public class InferenceMachine extends Applet {
 		return report;
 	}
 
+	/**
+	 * calculate all ancestor sets for the expert valid assertions
+	 * 
+	 * @return "closed" or "excess"
+	 */
+
 	public String calculateAncestors() {
-		String result = "";
-		expertValid.calculateAncestors();
-		return result;
+		ExcessLimit result = new ExcessLimit(excessTimeLimit);
+		expertValid.calculateAncestors(result);
+		if (result.exceeded())
+			return "excess";
+		return "closed";
 	}
 }

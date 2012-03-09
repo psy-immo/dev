@@ -53,8 +53,10 @@ public class InferenceMain {
 					System.out.print(machine.addXmlUrl(args[i]));
 				}
 			} else if (argument.equalsIgnoreCase("--expert")) {
+				System.out.print("Calculating expert valid assertions: ");
 				System.out.println(machine.closeExpertAssertions());
 			} else if (argument.equalsIgnoreCase("--student")) {
+				System.out.print("Calculating student valid assertions: ");
 				System.out.println(machine.closeStudentAssertions());
 			} else if (argument.equalsIgnoreCase("--correct")) {
 				System.out.println("Correct conclusions:");
@@ -81,7 +83,7 @@ public class InferenceMain {
 				System.out.println("Answer-Report:");
 				System.out.println(machine.getReport());
 			} else if (argument.equalsIgnoreCase("--ancestors")) {
-				System.out.println("CA");
+				System.out.print("Calculating ancestor sets: ");
 				System.out.println(machine.calculateAncestors());
 			}
 		}
