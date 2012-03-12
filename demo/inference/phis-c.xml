@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<parse>
+		<subject>\S.*</subject>
+		<predicate>(means, for bulbs,|is(\s.*\swith|\s.*\sthan|\s+as.*\sas|\sa|\san))</predicate>
+		<object>\S.*</object>
+	</parse>	
+	<assert>the voltage of bulb A is bigger than the voltage of bulb B</assert>
+	<conclusion>the luminosity of bulb A is bigger than the luminosity of bulb B</conclusion>
+	
+	
+	
+	
+</root>

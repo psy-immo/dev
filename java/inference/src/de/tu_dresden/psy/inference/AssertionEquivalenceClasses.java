@@ -214,4 +214,14 @@ public class AssertionEquivalenceClasses {
 
 		return r.precursors();
 	}
+
+	/**
+	 * 
+	 * @return all classes
+	 */
+
+	public Set<EquivalentAssertions> getEquivalencyClasses() {
+
+		return representants.keySet();
+	}
 }

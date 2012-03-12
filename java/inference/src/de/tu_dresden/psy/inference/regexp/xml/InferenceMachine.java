@@ -338,7 +338,8 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public void updateExpertJustification() {
-		expertValid.updateJustification(justified, expertValid.getValid());
+		expertValid
+				.updateJustification(justified, expertValid.getValid(), true);
 	}
 
 	/**
@@ -346,7 +347,8 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public void updateStudentJustification() {
-		studentValid.updateJustification(justified, expertValid.getValid());
+		studentValid.updateJustification(justified, expertValid.getValid(),
+				false);
 	}
 
 	/**
@@ -415,19 +417,20 @@ public class InferenceMachine extends Applet {
 		Set<AssertionInterface> correct_conclusions = new HashSet<AssertionInterface>();
 		Set<AssertionInterface> incorrect_conclusions = new HashSet<AssertionInterface>();
 		Set<AssertionInterface> inferable_conclusions = new HashSet<AssertionInterface>();
-		Set<AssertionInterface> inferable_conclusions_yet_unjustified = new HashSet<AssertionInterface>();
+		Set<AssertionInterface> correct_conclusions_yet_unjustified = new HashSet<AssertionInterface>();
 
 		for (AssertionInterface a : studentConclusions.getClasses()) {
 			if (expertValid.isInferable(a)) {
 				correct_conclusions.add(a);
+				if (studentValid.justificationLevel(a) == EquivalentAssertions.notJustified) {
+					correct_conclusions_yet_unjustified.add(a);
+				}
 			} else {
 				incorrect_conclusions.add(a);
 			}
 			if (studentValid.isInferable(a)) {
 				inferable_conclusions.add(a);
-				if (studentValid.justificationLevel(a) == EquivalentAssertions.notJustified) {
-					inferable_conclusions_yet_unjustified.add(a);
-				}
+
 			}
 		}
 
@@ -443,6 +446,10 @@ public class InferenceMachine extends Applet {
 		report += orderedAssertionSetString("     ", correct_conclusions, "\n",
 				"\nThe following conclusions are correct:\n");
 
+		report += orderedAssertionSetString("     ",
+				correct_conclusions_yet_unjustified, "\n",
+				" where the following conclusions need further justification:\n");
+
 		report += orderedAssertionSetString("     ", incorrect_conclusions,
 				"\n", "\nThe following conclusions are incorrect:\n");
 
@@ -450,13 +457,15 @@ public class InferenceMachine extends Applet {
 				"\n",
 				"\nThe following conclusions can be infered from the arguments:\n");
 
-		report += orderedAssertionSetString("     ",
-				inferable_conclusions_yet_unjustified, "\n",
-				" where the following conclusions need further justification:\n");
+
 
 		Set<AssertionInterface> need_more_justification = new HashSet<AssertionInterface>();
-		need_more_justification.addAll(inferable_conclusions_yet_unjustified);
+		need_more_justification.addAll(correct_conclusions_yet_unjustified);
 		need_more_justification.addAll(correct_arguments_yet_unjustified);
+
+		report += "\nTips\n";
+		report += expertValid.getJustificationTips(need_more_justification,
+				studentValid.getGiven().getEquivalencyClasses());
 
 
 		return report;
@@ -475,4 +484,5 @@ public class InferenceMachine extends Applet {
 			return "excess";
 		return "closed";
 	}
+
 }

@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import de.tu_dresden.psy.inference.AssertionEquivalenceClasses;
@@ -124,6 +125,15 @@ public class InferableAssertions {
 
 	public AssertionEquivalenceClasses getValid() {
 		return validAssertions;
+	}
+
+	/**
+	 * 
+	 * @return given assertions
+	 */
+
+	public AssertionEquivalenceClasses getGiven() {
+		return givenAssertions;
 	}
 
 	/**
@@ -250,12 +260,16 @@ public class InferableAssertions {
 	 * 
 	 * @param justified
 	 *            filter for justification
+	 * @param useClosure
+	 *            if true, use all validAssertions as justification base,
+	 *            otherwise only given assertions
 	 */
 
 	public void updateJustification(Set<ConstrainedAssertionFilter> justified,
-			AssertionEquivalenceClasses valid) {
+			AssertionEquivalenceClasses valid, boolean useClosure) {
 		for (ConstrainedAssertionFilter filter : justified) {
-			for (AssertionInterface a : filter.filter(validAssertions
+			for (AssertionInterface a : filter
+					.filter((useClosure ? validAssertions : givenAssertions)
 					.getClasses())) {
 				if (a instanceof EquivalentAssertions) {
 					if (valid.contains(a)) {
@@ -364,17 +378,16 @@ public class InferableAssertions {
 
 		int minimal_depth = Integer.MAX_VALUE;
 
-		for (Set<EquivalentAssertions> precursors : givenAssertions.ancestors(
+		for (Set<EquivalentAssertions> precursors : validAssertions.precursors(
 				justificationNeeded).getTerm()) {
+
 			int depth_sum = 0;
 			Set<EquivalentAssertions> missing = new HashSet<EquivalentAssertions>();
 
 			for (EquivalentAssertions ea : precursors) {
 				if (otherGivenAssertions.contains(ea) == false) {
-					if (ea.getJustificationDepth() > depth_sum) {
-						depth_sum += ea.getJustificationDepth() + 1;
-						missing.add(ea);
-					}
+					depth_sum += ea.getJustificationDepth() + 1;
+					missing.add(ea);
 				}
 			}
 
@@ -419,9 +432,75 @@ public class InferableAssertions {
 					getMinimalDepthPrecursorSets(ea, otherGivenAssertions));
 		}
 
-		// TODO
+		boolean is_closed = false;
+
+		do_again:
+		while (is_closed == false) {
+			is_closed = true;
+			for (EquivalentAssertions ea : justified_by.keySet()) {
+				for (Set<EquivalentAssertions> combinations : justified_by
+						.get(ea)) {
+					for (EquivalentAssertions ea2 : combinations) {
+						if (justified_by.containsKey(ea2) == false) {
+							justified_by.put(
+									ea2,
+									getMinimalDepthPrecursorSets(ea2,
+											otherGivenAssertions));
+							is_closed = false;
+							continue do_again;
+						}
+					}
+				}
+			}
+		}
+
+		Map<String, String> ordered = new TreeMap<String, String>();
+
+		for (EquivalentAssertions ea : justified_by.keySet()) {
+			String justifications = "";
+			
+			Set<Set<EquivalentAssertions>> ways = justified_by.get(ea);
+			
+			if (ways.isEmpty())
+				continue;
+
+			for (Set<EquivalentAssertions> combination : ways) {
+				if (justifications.isEmpty() == false)
+					justifications += "\n  or";
+
+				boolean add_and = false;
+
+				for (EquivalentAssertions ea2 : combination) {
+					if (add_and) {
+						justifications += "\n    and ";
+					} else {
+						justifications += "\n        ";
+						add_and = true;
+					}
+					justifications += ea2.getSubject() + "·"
+							+ ea2.getPredicate() + "·" + ea2.getObject();
+				}
+			}
+
+			if (needJustification.contains(ea)) {
+				ordered.put(" " + ea.getSubject() + "·" + ea.getPredicate()
+						+ "·" + ea.getObject(), justifications);
+			} else {
+				ordered.put("*" + ea.getSubject() + "·" + ea.getPredicate()
+						+ "·" + ea.getObject(), justifications);
+			}
+		}
+
+
 
 		StringBuffer tips = new StringBuffer();
+
+		for (String key : ordered.keySet()) {
+			tips.append("\n\n");
+			tips.append(key);
+			tips.append(" may be justified by further asserting that:");
+			tips.append(ordered.get(key));
+		}
 
 		return tips.toString();
 	}
