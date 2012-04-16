@@ -65,3 +65,9 @@
 <!ELEMENT trivial (subject|predicate|object|constraint)* >
 
 <!ELEMENT invalid (subject|predicate|object|constraint)* >
+
+<!ELEMENT quality (subject|predicate|object|constraint)* >
+
+<!ATTLIST quality 
+        name   CDATA  #IMPLIED
+ >

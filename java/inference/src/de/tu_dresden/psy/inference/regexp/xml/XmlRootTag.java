@@ -86,6 +86,11 @@ public class XmlRootTag extends XmlTag {
 	 * all given conclusions
 	 */
 	private Set<String> conclusions;
+	/**
+	 * quality filters for lacking assertions in rationales (e.g. assertions
+	 * that do not need to be given explicitly)
+	 */
+	private Map<String, ConstrainedAssertionFilter> lackQualities;
 
 	public XmlRootTag() {
 		rules = new HashSet<InferenceMap>();
@@ -97,6 +102,7 @@ public class XmlRootTag extends XmlTag {
 		implicit = new HashSet<String>();
 		expert = new HashSet<String>();
 		conclusions = new HashSet<String>();
+		lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
 	}
 	
 	/**
@@ -143,6 +149,15 @@ public class XmlRootTag extends XmlTag {
 
 	public Set<ConstrainedAssertionFilter> getJustifiedFilters() {
 		return justified;
+	}
+
+	/**
+	 * 
+	 * @return a set of qualities
+	 */
+
+	public Map<String, ConstrainedAssertionFilter> getQualityFilters() {
+		return lackQualities;
 	}
 
 	/**
@@ -294,6 +309,19 @@ public class XmlRootTag extends XmlTag {
 
 	private void processJustified(XmlTag child) throws Exception {
 		justified.add(processConstraintFilter(child));
+	}
+
+	/**
+	 * process a &lt;quality>-tag
+	 * 
+	 * @param child
+	 * @throws Exception
+	 */
+
+	private void processQuality(XmlTag child) throws Exception {
+		String name = child.getAttributeOrDefault("name",
+				"Q" + lackQualities.size());
+		lackQualities.put(name, processConstraintFilter(child));
 	}
 
 	/**
@@ -690,6 +718,8 @@ public class XmlRootTag extends XmlTag {
 			processConclusion(child);
 		} else if (child.tagName.equals("JUSTIFIED")) {
 			processJustified(child);
+		} else if (child.tagName.equals("QUALITY")) {
+			processQuality(child);
 		}
 
 		/**

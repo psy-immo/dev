@@ -66,7 +66,12 @@ dtd.write("\n<!ATTLIST out "+"""
  >
 """)
 
-for tag in ["justified","trivial","invalid"]:
+for tag in ["justified","trivial","invalid","quality"]:
 	dtd.write("\n<!ELEMENT "+tag+" (subject|predicate|object|constraint)* >\n")
+	
+dtd.write("\n<!ATTLIST quality "+"""
+        name   CDATA  #IMPLIED
+ >
+""")
 
 

@@ -421,9 +421,14 @@ public class InferableAssertions {
 	 * @return tips for justification
 	 */
 
-	public String getJustificationTips(Set<AssertionInterface> needJustification, Set<EquivalentAssertions> otherGivenAssertions) {
+	public String getJustificationTips(
+			Set<AssertionInterface> needJustification,
+			Set<EquivalentAssertions> otherGivenAssertions,
+			Map<String, ConstrainedAssertionFilter> qualities) {
 
 		Map<EquivalentAssertions, Set<Set<EquivalentAssertions>>> justified_by = new HashMap<EquivalentAssertions, Set<Set<EquivalentAssertions>>>();
+		
+		Set<String> qualities_lacking = new TreeSet<String>();
 		
 		for (AssertionInterface a : needJustification) {
 			EquivalentAssertions ea = new EquivalentAssertions(a);
@@ -455,6 +460,8 @@ public class InferableAssertions {
 		}
 
 		Map<String, String> ordered = new TreeMap<String, String>();
+		
+		Set<AssertionInterface> filter_input = new HashSet<AssertionInterface>();
 
 		for (EquivalentAssertions ea : justified_by.keySet()) {
 			String justifications = "";
@@ -479,6 +486,17 @@ public class InferableAssertions {
 					}
 					justifications += ea2.getSubject() + "·"
 							+ ea2.getPredicate() + "·" + ea2.getObject();
+
+					for (String name : qualities.keySet()) {
+						if (qualities_lacking.contains(name) == false) {
+							filter_input.clear();
+							filter_input.add(ea2);
+							if (qualities.get(name).filter(filter_input)
+									.isEmpty() == false) {
+								qualities_lacking.add(name);
+							}
+						}
+					}
 				}
 			}
 
@@ -489,6 +507,18 @@ public class InferableAssertions {
 				ordered.put("*" + ea.getSubject() + "·" + ea.getPredicate()
 						+ "·" + ea.getObject(), justifications);
 			}
+			
+			for (String name : qualities.keySet()) {
+				if (qualities_lacking.contains(name) == false) {
+					filter_input.clear();
+					filter_input.add(ea);
+					if (qualities.get(name).filter(filter_input).isEmpty() == false) {
+						qualities_lacking.add(name);
+					}
+				}
+			}
+			
+			
 		}
 
 
@@ -501,6 +531,11 @@ public class InferableAssertions {
 			tips.append(" may be justified by further asserting that:");
 			tips.append(ordered.get(key));
 		}
+
+		tips.append("\n\nThere are missing pieces of information regarding:");
+
+		for (String name : qualities_lacking)
+			tips.append("\n     " + name);
 
 		return tips.toString();
 	}

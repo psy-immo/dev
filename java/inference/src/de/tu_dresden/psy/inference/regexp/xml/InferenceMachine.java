@@ -54,7 +54,7 @@ public class InferenceMachine extends Applet {
 	 * stop inference process after ... seconds
 	 */
 
-	private static final float defaultExcessTimeLimit = 5;
+	private static final float defaultExcessTimeLimit = 10;
 
 	/**
 	 * machine state variables
@@ -63,6 +63,7 @@ public class InferenceMachine extends Applet {
 			studentConclusions;
 	private Map<String, InferenceMap> inferenceMaps;
 	private Set<ConstrainedAssertionFilter> trivial, invalid, justified;
+	private Map<String, ConstrainedAssertionFilter> lackQualities;
 	private float excessTimeLimit;
 
 	/**
@@ -94,6 +95,7 @@ public class InferenceMachine extends Applet {
 				new HashSet<AssertionInterface>(), new HashSet<InferenceMap>(),
 				new HashSet<ConstrainedAssertionFilter>(),
 				new HashSet<ConstrainedAssertionFilter>());
+		lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
 	}
 
 	public InferenceMachine() {
@@ -122,6 +124,11 @@ public class InferenceMachine extends Applet {
 		trivial.addAll(root.getTrivialityFilters());
 		invalid.addAll(root.getInvalidityFilters());
 		justified.addAll(root.getJustifiedFilters());
+
+		for (String key : root.getQualityFilters().keySet()) {
+			lackQualities.put(key, root.getQualityFilters().get(key));
+		}
+
 	}
 
 	/**
@@ -465,7 +472,7 @@ public class InferenceMachine extends Applet {
 
 		report += "\nTips\n";
 		report += expertValid.getJustificationTips(need_more_justification,
-				studentValid.getGiven().getEquivalencyClasses());
+				studentValid.getGiven().getEquivalencyClasses(), lackQualities);
 
 
 		return report;
