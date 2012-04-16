@@ -269,12 +269,16 @@ public class InferableAssertions {
 			AssertionEquivalenceClasses valid, boolean useClosure) {
 		for (ConstrainedAssertionFilter filter : justified) {
 			for (AssertionInterface a : filter
-					.filter((useClosure ? validAssertions : givenAssertions)
+.filter(validAssertions
 					.getClasses())) {
+				if ((useClosure == true) || (givenAssertions.contains(a)))
 				if (a instanceof EquivalentAssertions) {
 					if (valid.contains(a)) {
 						EquivalentAssertions ea = (EquivalentAssertions) a;
 						ea.considerJustified();
+						System.err.println("VALID: " + a);
+					} else {
+						System.err.println("INVALID: " + a);
 					}
 				}
 			}

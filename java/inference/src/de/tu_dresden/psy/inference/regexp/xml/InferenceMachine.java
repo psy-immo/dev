@@ -354,6 +354,7 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public void updateStudentJustification() {
+		System.err.println("SJ");
 		studentValid.updateJustification(justified, expertValid.getValid(),
 				false);
 	}
