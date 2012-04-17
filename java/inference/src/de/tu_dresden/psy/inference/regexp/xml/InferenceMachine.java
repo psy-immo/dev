@@ -493,4 +493,27 @@ public class InferenceMachine extends Applet {
 		return "closed";
 	}
 
+	/**
+	 * count the number of possible justifications
+	 * 
+	 * @return report
+	 */
+
+	public String countJustifications() {
+		ExcessLimit result = new ExcessLimit(excessTimeLimit);
+		expertValid.calculateRuleAncestors(result);
+		if (result.exceeded())
+			return "Cannot calculate ancestors due to time excess!";
+
+		String report = "";
+
+		for (AssertionInterface a : studentConclusions.getClasses()) {
+			if (report.isEmpty() == false)
+				report += "\n";
+			report += a + ": " + expertValid.countPossibleJustifications(a);
+		}
+
+		return report;
+	}
+
 }

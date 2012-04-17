@@ -73,6 +73,8 @@ public class InferableAssertions {
 	private Set<AssertionInterface> invalidInferredAssertions;
 	private InferableAssertions.State state;
 
+	private int highestDepth, highestCount;
+
 	/**
 	 * used to make a premise vector for triviality tests
 	 */
@@ -116,6 +118,9 @@ public class InferableAssertions {
 
 		this.invalid = invalid;
 		this.trivial = trivial;
+
+		highestCount = 0;
+		highestDepth = 0;
 	}
 
 	/**
@@ -195,6 +200,7 @@ public class InferableAssertions {
 	public void calculateAncestors(ExcessLimit excessLimit) {
 		validAssertions.calculateAncestors(excessLimit);
 	}
+
 
 	/**
 	 * 
@@ -276,10 +282,7 @@ public class InferableAssertions {
 					if (valid.contains(a)) {
 						EquivalentAssertions ea = (EquivalentAssertions) a;
 						ea.considerJustified();
-						System.err.println("VALID: " + a);
-					} else {
-						System.err.println("INVALID: " + a);
-					}
+						}
 				}
 			}
 		}
@@ -315,7 +318,11 @@ public class InferableAssertions {
 
 		state = State.closed;
 
-		while (validCount > lastCount) {
+		boolean close_again = true;
+
+		while ((validCount > lastCount) || close_again) {
+
+			close_again = (validCount > lastCount);
 
 			if (limit.exceeded()) {
 				state = State.excess;
@@ -416,6 +423,137 @@ public class InferableAssertions {
 		}
 
 		return minimal_precursors;
+	}
+
+	/**
+	 * 
+	 * @param toJustify
+	 * @param disregard
+	 *            these assertions are considered to be justified already
+	 * @param forbidden
+	 *            these assertions are to be justified right now
+	 * @param currentDepth
+	 * @param maximumDepth
+	 * 
+	 * @return number of ways to justify the given assertion
+	 */
+
+	public int countJustificationDelta(AssertionInterface toJustify,
+			Set<EquivalentAssertions> disregard,
+			Set<EquivalentAssertions> forbidden,
+			int currentDepth,
+			int maximumDepth) {
+		
+		if (currentDepth == maximumDepth)
+			return 0;
+		
+		Set<Set<EquivalentAssertions>> ways = validAssertions.preimages(
+				toJustify).getTerm();
+
+		int count = 0;
+
+
+		for (Set<EquivalentAssertions> way : ways) {
+			boolean no_way = false;
+
+			for (EquivalentAssertions ea : way) {
+				if (forbidden.contains(ea)) {
+					no_way = true;
+					break;
+				}
+			}
+
+			if (no_way == false) {
+				int factor = 1;
+
+				for (EquivalentAssertions ea : way) {
+					if (true != (disregard.contains(ea) || (ea
+							.getJustificationDepth() == 0))) {
+
+						forbidden.add(ea);
+
+
+						factor *= countJustificationDelta(ea, disregard,
+								forbidden, currentDepth + 1, maximumDepth);
+
+						forbidden.remove(ea);
+
+						if (factor == 0)
+							break;
+					}
+				}
+
+				count += factor;
+			}
+		}
+		
+
+
+		if (count > highestCount) {
+			highestCount = count;
+
+			System.err.println("C count=" + count + "  depth="
+					+ (currentDepth + 1));
+		}
+
+		if ((currentDepth > highestDepth) && (count > 0)) {
+			highestDepth = currentDepth;
+			System.err.println("D count=" + count + "  depth="
+					+ (currentDepth + 1));
+		}
+
+
+
+		return count;
+	}
+
+	/**
+	 * 
+	 * @param assertion
+	 * @return number of different ways to justify an assertion
+	 */
+
+	public int countPossibleJustifications(AssertionInterface assertion) {
+		if (validAssertions.contains(assertion) == false)
+			return 0;
+		
+		Set<EquivalentAssertions> disregard = new HashSet<EquivalentAssertions>();
+		Set<EquivalentAssertions> forbidden = new HashSet<EquivalentAssertions>();
+
+		forbidden.add(new EquivalentAssertions(assertion));
+
+		return countJustificationDelta(assertion, disregard, forbidden, 0, 5);
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param ways
+	 * @return String that describes the DNF term
+	 */
+
+	public String waysToString(Set<Set<EquivalentAssertions>> ways) {
+		String justifications = "";
+
+		for (Set<EquivalentAssertions> combination : ways) {
+			if (justifications.isEmpty() == false)
+				justifications += "\n  or";
+
+			boolean add_and = false;
+
+			for (EquivalentAssertions ea2 : combination) {
+				if (add_and) {
+					justifications += "\n    and ";
+				} else {
+					justifications += "\n        ";
+					add_and = true;
+				}
+				justifications += ea2.getSubject() + "·" + ea2.getPredicate()
+						+ "·" + ea2.getObject();
+			}
+		}
+
+		return justifications;
 	}
 
 	/**
@@ -542,6 +680,18 @@ public class InferableAssertions {
 			tips.append("\n     " + name);
 
 		return tips.toString();
+	}
+
+	/**
+	 * 
+	 * update rule ancestor terms
+	 * 
+	 * @param excessLimit
+	 * 
+	 */
+
+	public void calculateRuleAncestors(ExcessLimit result) {
+		validAssertions.calculateRuleAncestors(result);
 	}
 
 }

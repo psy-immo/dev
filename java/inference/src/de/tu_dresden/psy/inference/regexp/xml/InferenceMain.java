@@ -102,6 +102,10 @@ public class InferenceMain {
 				System.out.print("Calculating ancestor sets: ");
 				System.out.println(machine.calculateAncestors());
 			}
+			if (argument.equalsIgnoreCase("--count")) {
+				System.out.println("Number of Justifications:\n");
+				System.out.println(machine.countJustifications());
+			}
 
 		}
 	}

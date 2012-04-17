@@ -183,6 +183,19 @@ public class AssertionEquivalenceClasses {
 	}
 
 	/**
+	 * calculate all rule ancestral relations
+	 * 
+	 * @param excessLimit
+	 */
+
+	public void calculateRuleAncestors(ExcessLimit excessLimit) {
+		for (EquivalentAssertions ea : representants.keySet()) {
+			ea.updateRuleAncestors(excessLimit);
+		}
+
+	}
+
+	/**
 	 * 
 	 * @param assertion
 	 * @return ancestors of the equivalence class
@@ -213,6 +226,23 @@ public class AssertionEquivalenceClasses {
 			return new DisjunctiveNormalForm<EquivalentAssertions>();
 
 		return r.precursors();
+	}
+
+	/**
+	 * 
+	 * @param assertion
+	 * @return all possible valid rule inputs that generate the equivalence
+	 *         class as output
+	 */
+	public DisjunctiveNormalForm<EquivalentAssertions> preimages(
+			AssertionInterface assertion) {
+		EquivalentAssertions ec = new EquivalentAssertions(assertion);
+
+		EquivalentAssertions r = representants.get(ec);
+		if (r == null)
+			return new DisjunctiveNormalForm<EquivalentAssertions>();
+
+		return r.preimages();
 	}
 
 	/**
