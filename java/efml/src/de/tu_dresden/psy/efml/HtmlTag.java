@@ -29,7 +29,8 @@ public class HtmlTag implements AnyTag {
 	 * @throws IOException
 	 */
 	static public void writeAllIncludes(Writer writer) throws IOException {
-		writer.write("	<script type=\"text/javascript\" src=\"storage.js\"></script>\n"
+		writer.write("	<script type=\"text/javascript\" src=\"loglet.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"storage.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"logger.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"tags.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"logic.js\"></script>\n"
@@ -79,7 +80,7 @@ public class HtmlTag implements AnyTag {
 		 * include all scripts
 		 */
 
-		writeAllIncludes(writer);
+		// moved to body tag writeAllIncludes(writer);
 
 		/**
 		 * write inner tags

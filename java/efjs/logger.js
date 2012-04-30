@@ -68,3 +68,4 @@ function Logger() {
  * generate the myLooger object
  */
 myLogger = new Logger();
+

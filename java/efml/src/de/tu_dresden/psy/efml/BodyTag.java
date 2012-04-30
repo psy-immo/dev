@@ -42,7 +42,9 @@ public class BodyTag implements AnyTag {
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		writer.write("<body id=\"body\">");
+		writer.write("<body id=\"body\">\n");
+
+		HtmlTag.writeAllIncludes(writer);
 
 		/**
 		 * all content will be displayed in the main "myhoverframe"

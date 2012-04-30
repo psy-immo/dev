@@ -133,6 +133,7 @@ function Storage() {
 		
 		myStorage.RestoreFrom(myStorageLocation, myStorageName);		
 	};
+	
 }
 
 myStorage = new Storage();
