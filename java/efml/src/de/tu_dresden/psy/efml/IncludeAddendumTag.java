@@ -34,7 +34,7 @@ public class IncludeAddendumTag implements AnyTag {
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		HtmlTag.writeAllInitializations(writer);
+		HtmlTag.writeAllStaticInitializations(writer);
 	}
 
 	@Override

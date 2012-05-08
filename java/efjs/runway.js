@@ -31,7 +31,7 @@ function Runway(name, tags, token, accept, reject) {
 
 	if ((name === undefined) || (name === "") || (name === false)) {
 		this.name = "";
-		for (var i = 0; i < tags.length; ++i) {
+		for ( var i = 0; i < tags.length; ++i) {
 			this.name += tags[i];
 		}
 	} else {
@@ -121,17 +121,14 @@ function Runway(name, tags, token, accept, reject) {
 	 * write the HTML code that will be used for displaying the run way
 	 */
 	this.WriteHtml = function() {
-		document.write("<span id=\"runway"
-				+ this.id + "\" ");
-		
+		document.write("<span id=\"runway" + this.id + "\" ");
+
 		document.write(" style=\" display: inline-block; ");
-		
+
 		if (this.token) {
-			document.write("background-color:" + this.colorFilled
-					+ "; ");
+			document.write("background-color:" + this.colorFilled + "; ");
 		} else {
-			document.write("background-color:" + this.colorEmpty
-					+ "; ");
+			document.write("background-color:" + this.colorEmpty + "; ");
 		}
 		if (this.width) {
 			document.write("width:" + this.width + "; ");
@@ -279,10 +276,18 @@ function Runway(name, tags, token, accept, reject) {
 		 */
 		if (this.token) {
 			if (true != this.noTakeOff) {
-				if (myHover.TakeOff(this.token, this, this.respawn))
+				if (myHover.TakeOff(this.token, this, this.respawn)) {
+					var log_data = "";
+					if (this.name) {
+						log_data += this.name;
+					}
+					log_data += " take off: " + myHover.token;
+					myLogger.Log(log_data);
+
 					if (this.stayFilled != true) {
 						this.SetToken(null);
 					}
+				}
 			}
 		}
 
@@ -293,6 +298,13 @@ function Runway(name, tags, token, accept, reject) {
 	 */
 	this.GiveBackToken = function(token) {
 		this.SetToken(token);
+		
+		var log_data = "";
+		if (this.name) {
+			log_data += this.name;
+		}
+		log_data += " token returns: " + token;
+		myLogger.Log(log_data);
 	};
 
 	/**
@@ -305,7 +317,7 @@ function Runway(name, tags, token, accept, reject) {
 		this.SetToken(null);
 		this.respawn = null;
 	};
-	
+
 	/**
 	 * return the current contents of the run way as string
 	 */
@@ -315,23 +327,24 @@ function Runway(name, tags, token, accept, reject) {
 		}
 		return "";
 	};
-	
+
 	/**
 	 * restore the run way state from string
 	 */
-	
+
 	this.SetValue = function(contents) {
 		this.SetToken(contents);
 	};
 
 	runwayArray[this.id] = this;
 	myTags.Add(this, this.tags);
-	
-	myStorage.RegisterField(this,"runwayArray["+this.id+"]");
+
+	myStorage.RegisterField(this, "runwayArray[" + this.id + "]");
 }
 
 /**
- *  this function fixes the bug where runways are moving down when filled the first time
+ * this function fixes the bug where runways are moving down when filled the
+ * first time
  */
 function RunwayDisplayBugfix() {
 	for ( var int = 0; int < runwayArray.length; int++) {

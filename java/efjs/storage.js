@@ -24,18 +24,42 @@
 function Storage() {
 	this.dataFields = [];
 	this.dataFieldNames = [];
+	this.localOnlyDataFields = [];
+
+	/**
+	 * return true, if we use the loglet applet to store/retrieve data on the
+	 * server
+	 */
+
+	this.useLoglet = function() {
+		/**
+		 * implement singleton check pattern
+		 */
+		if (doesOperate()) {
+			this.useLoglet = function() {
+				return true;
+			};
+			return true;
+		} else {
+			this.useLoglet = function() {
+				return false;
+			};
+			return false;
+		}
+	};
 
 	/**
 	 * registers a data field with a unique name, data field objects should
 	 * provide:
 	 * 
-	 * .GetValue() which returns a string representation of the current state data
+	 * .GetValue() which returns a string representation of the current state
+	 * data
 	 * 
 	 * .SetValue(v) which restores a state given by a previously returned state
 	 * data string
 	 */
 
-	this.RegisterField = function(datafield, name) {
+	this.RegisterField = function(datafield, name, onlylocal) {
 		/**
 		 * try to fix name collisions
 		 */
@@ -59,6 +83,10 @@ function Storage() {
 
 		this.dataFields.push(datafield);
 		this.dataFieldNames.push(good_name);
+		
+		if (onlylocal) {
+			this.localOnlyDataFields.push(datafield);
+		}
 	};
 
 	/**
@@ -78,15 +106,27 @@ function Storage() {
 
 			if (obj.GetValue) {
 				var v = obj.GetValue();
-				var keyname = "myStorage"+name + this.dataFieldNames[int];
-				
+				var spacedname = name + "---" + this.dataFieldNames[int];
+				var keyname = "myStorage" + spacedname;
+
 				storage.setItem(keyname, v);
-				
+
+				if ((this.useLoglet())&&(this.localOnlyDataFields.lastIndexOf(obj) == -1)) {
+					/**
+					 * use server storage too
+					 */
+					if (v === null) {
+						doSet(spacedname, "-null");
+					} else {
+						doSet(spacedname, "v" + v);
+					}
+				}
+
 			}
-			
+
 		}
 	};
-	
+
 	/**
 	 * restores all data in the storage space using name to avoid collisions,
 	 * storage can be sessionStorage or localStorage
@@ -99,41 +139,62 @@ function Storage() {
 			}
 		}
 
+		var server_entries = {};
+
+		if (this.useLoglet()) {
+			server_entries = doGetAll();
+		}
+
 		for ( var int = 0; int < this.dataFieldNames.length; int++) {
 			var obj = this.dataFields[int];
 
 			if (obj.SetValue) {
-				var keyname = "myStorage"+name + this.dataFieldNames[int];
-				var v = storage.getItem(keyname);
-				
-				if (v !== null) {
-					obj.SetValue(v);
+				var spacedname = name + "---" + this.dataFieldNames[int];
+				var keyname = "myStorage" + spacedname;
+
+				if (this.useLoglet()&&(this.localOnlyDataFields.lastIndexOf(obj) == -1)) {
+
+					if (spacedname in server_entries) {
+						var v = server_entries[spacedname];
+
+						if (v.charAt(0) == 'v') {
+							obj.SetValue(v.substr(1));
+						}
+					}
+
+				} else {
+
+					var v = storage.getItem(keyname);
+
+					if (v !== null) {
+						obj.SetValue(v);
+					}
 				}
 			}
-			
+
 		}
-	};	
-	
+	};
+
 	/**
 	 * set up automatic storage and restoring of contents
 	 */
 	this.SetupAutoRestore = function(storage, name) {
 		myStorageLocation = storage;
 		myStorageName = name;
-		
+
 		myStorageAncientUnloader = window.onunload;
-		
+
 		window.onunload = function() {
 			myStorage.StoreIn(myStorageLocation, myStorageName);
-			
+
 			if (myStorageAncientUnloader) {
 				myStorageAncientUnloader();
 			}
 		};
-		
-		myStorage.RestoreFrom(myStorageLocation, myStorageName);		
+
+		myStorage.RestoreFrom(myStorageLocation, myStorageName);
 	};
-	
+
 }
 
 myStorage = new Storage();

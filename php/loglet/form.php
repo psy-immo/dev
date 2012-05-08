@@ -19,6 +19,15 @@ name: <input name="varname" type="text" />
 </form>
 <br/>
 
+Pull values:
+<br/>
+<form action="pullall.php" method="post"> 
+id: <input name="id" type="text" /> 
+name prefix: <input name="varname" type="text" /> 
+<input type="submit" />
+</form>
+<br/>
+
 Log string:
 <br/>
 <form action="log.php" method="post"> 

@@ -154,3 +154,11 @@
 <!ATTLIST option 
 	value	CDATA			#IMPLIED
  >
+
+<!ELEMENT phpurl (#PCDATA)* >
+
+<!ELEMENT jsurl (#PCDATA)* >
+
+<!ELEMENT documentid (#PCDATA)* >
+
+<!ELEMENT studyid (#PCDATA)* >

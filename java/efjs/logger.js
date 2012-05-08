@@ -30,7 +30,11 @@ function Logger() {
 	this.Log = function(item) {
 		var logstring = ("" + item).replace("\n","<br/>");
 		var timestamp = new Date();
-		this.events[this.events.length] = timestamp + " = t0 + "+(timestamp - this.t0) + "ms: "+ logstring;
+		var logdata = timestamp + " = t0 + "+(timestamp - this.t0) + "ms: "+ logstring;
+		this.events[this.events.length] = logdata;
+		if (myStorage.useLoglet()) {
+			doLog(logdata);
+		}
 	};
 	
 	/**
@@ -61,7 +65,7 @@ function Logger() {
 	};
 	
 	
-	myStorage.RegisterField(this,"Logger");
+	myStorage.RegisterField(this,"Logger",true);
 }
 
 /**

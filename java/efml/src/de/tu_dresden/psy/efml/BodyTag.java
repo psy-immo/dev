@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.UUID;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -33,18 +34,64 @@ import javax.naming.OperationNotSupportedException;
  */
 
 public class BodyTag implements AnyTag {
-	
+
 	private ArrayList<AnyTag> innerTags;
-	
+
+	/**
+	 * document id
+	 */
+
+	private String idDoc;
+
+	/**
+	 * study id
+	 */
+
+	private String idStudy;
+
+	/**
+	 * loglet url base
+	 */
+
+	private String logletUrl;
+
+	/**
+	 * script url base
+	 */
+
+	private String scriptUrl;
+
 	public BodyTag() {
 		innerTags = new ArrayList<AnyTag>();
+
+		idDoc = UUID.randomUUID().toString();
+		idStudy = UUID.randomUUID().toString();
+		logletUrl = null;
+		scriptUrl = "";
 	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
 		writer.write("<body id=\"body\">\n");
 
-		HtmlTag.writeAllIncludes(writer);
+		/**
+		 * write the identification strings & base url
+		 * 
+		 */
+
+		writer.write("	<script type=\"text/javascript\">\n" + "  docId = \""
+				+ StringEscape.escapeToJavaScript(idDoc) + "\";\n"
+				+ "  studyId = \"" + StringEscape.escapeToJavaScript(idStudy)
+				+ "\";\n");
+
+		if (logletUrl != null) {
+			writer.write("  logletBaseURL = \""
+					+ StringEscape.escapeToJavaScript(logletUrl) + "\";\n");
+		}
+
+		writer.write("  </script>\n");
+
+		HtmlTag.writeAllIncludes(writer, scriptUrl);
 
 		/**
 		 * all content will be displayed in the main "myhoverframe"
@@ -53,12 +100,11 @@ public class BodyTag implements AnyTag {
 		writer.write("<div id=\"myhoverframe\" \n"
 				+ "		onmousemove=\"if ( document.all && myHover.flight != 0 ) myHover.MovePlane();\"\n"
 				+ "		onclick=\"myHover.OnFlight();\">");
-		
-		
+
 		writeInnerTags(writer);
-	
+
 	}
-	
+
 	/**
 	 * writes the inner tags of the body tag only
 	 * 
@@ -66,12 +112,11 @@ public class BodyTag implements AnyTag {
 	 * @throws IOException
 	 */
 	public void writeInnerTags(Writer writer) throws IOException {
-		
+
 		/**
 		 * write inner tags
 		 */
-		for (Iterator<AnyTag> it=innerTags.iterator();it.hasNext();)
-		{
+		for (Iterator<AnyTag> it = innerTags.iterator(); it.hasNext();) {
 			AnyTag innerTag = it.next();
 			innerTag.open(writer);
 			innerTag.close(writer);
@@ -86,12 +131,22 @@ public class BodyTag implements AnyTag {
 		 * add code for the hovering feature
 		 */
 		includeHover(writer);
-		
+
+		/**
+		 * initialize session storage handler
+		 */
+
+		writer.write("	<script type=\"text/javascript\">\n"
+				+ "  myStorage.SetupAutoRestore(sessionStorage,\""
+				+ StringEscape.escapeToJavaScript(idDoc) + "\");"
+				+ "  </script>\n");
+
 		writer.write("</body>");
 	}
-	
+
 	/**
 	 * add code for hovering feature
+	 * 
 	 * @param writer
 	 * @throws IOException
 	 */
@@ -99,9 +154,8 @@ public class BodyTag implements AnyTag {
 		writer.write("	<script type=\"text/javascript\">\n"
 				+ "		myHover.WriteHtml();\n" + "	</script>");
 
-		
 	}
-	
+
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {

@@ -20,27 +20,43 @@ public class HtmlTag implements AnyTag {
 
 	public HtmlTag() {
 		innerTags = new ArrayList<AnyTag>();
+
 	}
 
 	/**
 	 * write the code needed to include the js containing general code
 	 * 
 	 * @param writer
+	 * @param baseUrl
+	 *            base Url for scripts
 	 * @throws IOException
 	 */
-	static public void writeAllIncludes(Writer writer) throws IOException {
-		writer.write("	<script type=\"text/javascript\" src=\"loglet.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"storage.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"logger.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"tags.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"logic.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"hover.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"endecoder.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"runway.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"answer.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"sniffybutton.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"dropdown.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"takeofffield.js\"></script>\n");
+	static public void writeAllIncludes(Writer writer, String baseUrl)
+			throws IOException {
+		writer.write("	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "loglet.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "storage.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "logger.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "tags.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "logic.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "hover.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "endecoder.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "runway.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "answer.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "sniffybutton.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "dropdown.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "takeofffield.js\"></script>\n");
 	}
 
 	/**
@@ -49,7 +65,7 @@ public class HtmlTag implements AnyTag {
 	 * @param writer
 	 * @throws IOException
 	 */
-	static public void writeAllInitializations(Writer writer)
+	static public void writeAllStaticInitializations(Writer writer)
 			throws IOException {
 		
 		/**
@@ -60,17 +76,8 @@ public class HtmlTag implements AnyTag {
 				+ "  RunwayDisplayBugfix();"
 				+ "  </script>\n");
 		
-		/**
-		 * initialize session storage handler
-		 */
-		
-		String id_token = java.util.UUID.randomUUID().toString()+"--"
-				+ java.util.UUID.randomUUID().toString();
-		writer.write("	<script type=\"text/javascript\">\n"
-				+ "  myStorage.SetupAutoRestore(sessionStorage,\""
-				+ StringEscape.escapeToJavaScript(id_token) + "\");"
-				+ "  </script>\n");
 	}
+
 
 	@Override
 	public void open(Writer writer) throws IOException {
@@ -100,7 +107,8 @@ public class HtmlTag implements AnyTag {
 		 * html layout
 		 */
 
-		writeAllInitializations(writer);
+		writeAllStaticInitializations(writer);
+
 
 		writer.write("</html>\n");
 	}

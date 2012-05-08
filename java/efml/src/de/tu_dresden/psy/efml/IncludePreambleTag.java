@@ -34,7 +34,7 @@ public class IncludePreambleTag implements AnyTag {
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		HtmlTag.writeAllIncludes(writer);
+		HtmlTag.writeAllIncludes(writer, "");
 	}
 
 	@Override
