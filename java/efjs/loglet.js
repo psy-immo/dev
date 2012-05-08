@@ -52,6 +52,14 @@ if (typeof subjectIdPrompt == 'undefined') {
 	subjectIdPrompt = "Please enter your identification token:";
 };
 
+if (typeof subjectIdInfo == 'undefined') {
+	subjectIdInfo = "Your identification token is";
+};
+
+if (typeof subjectIdChange == 'undefined') {
+	subjectIdChange = "Change";
+};
+
 
 if (typeof subjectId == 'undefined') {
 	var keyname = "subject-id-" + studyId;
@@ -200,4 +208,19 @@ function doesOperate() {
 	return false;
 }
 
+/**
+ * 
+ * print the current subject token and change button
+ * 
+ */
 
+function printChangeSubjectButton() {
+
+	document.write("<div>"+subjectIdInfo+" <b>"+subjectId+"</b>. <a href=\"javascript:changeSubject()\">"+subjectIdChange+"</a></div>");
+}
+
+function changeSubject() {
+	var keyname = "subject-id-" + studyId;
+	sessionStorage.removeItem(keyname);
+	window.location.reload();
+}

@@ -153,6 +153,12 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new JsUrlTag(body));
 		} else if (qName.equals("phpurl")) {
 			this.processingTags.push(new PhpUrlTag(body));
+		} else if (qName.equals("subjectinfo")) {
+			this.processingTags.push(new SubjectInfoTag(body));
+		} else if (qName.equals("subjectprompt")) {
+			this.processingTags.push(new SubjectPromptTag(body));
+		} else if (qName.equals("subjectchange")) {
+			this.processingTags.push(new SubjectChangeTag(body));
 		}
 		else {
 			/**

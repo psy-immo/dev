@@ -100,7 +100,7 @@ dtd.write("\n<!ATTLIST option "+"""
  >
 """)
 
-for tag in ["phpurl","jsurl","documentid","studyid"]:
+for tag in ["phpurl","jsurl","documentid","studyid","subjectprompt","subjectinfo","subjectchange"]:
 	dtd.write("\n<!ELEMENT "+tag+" (#PCDATA)* >\n")
 	#dtd.write("\n<!ATTLIST "+tag+" "+universal_attributes+" >\n")
 

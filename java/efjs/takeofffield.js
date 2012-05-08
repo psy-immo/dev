@@ -103,7 +103,7 @@ function TakeOffField(name, tags, token_generator) {
 			this.respawn.DoRespawn();
 		}
 		this.SetToken(this.doRespawn);
-s		this.respawn = this;
+		this.respawn = this;
 	};
 
 	/**

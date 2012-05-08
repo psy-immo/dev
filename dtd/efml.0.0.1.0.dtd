@@ -162,3 +162,9 @@
 <!ELEMENT documentid (#PCDATA)* >
 
 <!ELEMENT studyid (#PCDATA)* >
+
+<!ELEMENT subjectprompt (#PCDATA)* >
+
+<!ELEMENT subjectinfo (#PCDATA)* >
+
+<!ELEMENT subjectchange (#PCDATA)* >

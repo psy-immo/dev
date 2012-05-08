@@ -26,14 +26,14 @@ import javax.naming.OperationNotSupportedException;
 /**
  * 
  * 
- * implements the &lt;phpurl>...&lt;/phpurl> tag
+ * implements the &lt;subjectprompt>...&lt;/subjectprompt> tag
  * 
  * 
  * @author albrecht
  * 
  */
 
-public class PhpUrlTag implements AnyTag {
+public class SubjectPromptTag implements AnyTag {
 
 	/**
 	 * store current token
@@ -45,7 +45,7 @@ public class PhpUrlTag implements AnyTag {
 	 */
 	private BodyTag body;
 
-	public PhpUrlTag(BodyTag body) {
+	public SubjectPromptTag(BodyTag body) {
 		this.body = body;
 		token = "";
 	}
@@ -63,9 +63,10 @@ public class PhpUrlTag implements AnyTag {
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
 			this.token += ((PlainContent) innerTag).getPlainContent();
-			body.setPhp(token);
+			body.setPrompt(token);
 		} else
-			throw new OperationNotSupportedException("<phpurl> cannot enclose "
+			throw new OperationNotSupportedException(
+					"<subjectprompt> cannot enclose "
 							+ innerTag.getClass().toString());
 
 	}

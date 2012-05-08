@@ -61,6 +61,24 @@ public class BodyTag implements AnyTag {
 
 	private String scriptUrl;
 
+	/**
+	 * prompt for subject id token
+	 */
+
+	private String subjectPrompt;
+
+	/**
+	 * info text for subject id token
+	 */
+
+	private String subjectInfo;
+
+	/**
+	 * change button text for subject id token
+	 */
+
+	private String subjectChange;
+
 	public BodyTag() {
 		innerTags = new ArrayList<AnyTag>();
 
@@ -68,6 +86,9 @@ public class BodyTag implements AnyTag {
 		idStudy = UUID.randomUUID().toString();
 		logletUrl = null;
 		scriptUrl = "";
+		subjectChange = null;
+		subjectInfo = null;
+		subjectPrompt = null;
 	}
 
 	/**
@@ -78,6 +99,36 @@ public class BodyTag implements AnyTag {
 
 	public void setStudy(String id) {
 		idStudy = id;
+	}
+
+	/**
+	 * 
+	 * @param prompt
+	 *            subject id prompt
+	 */
+
+	public void setPrompt(String prompt) {
+		subjectPrompt = prompt;
+	}
+
+	/**
+	 * 
+	 * @param info
+	 *            subject id info
+	 */
+
+	public void setInfo(String info) {
+		subjectInfo = info;
+	}
+
+	/**
+	 * 
+	 * @param text
+	 *            subject id change button text
+	 */
+
+	public void setChange(String text) {
+		subjectChange = text;
 	}
 
 	/**
@@ -115,7 +166,7 @@ public class BodyTag implements AnyTag {
 		writer.write("<body id=\"body\">\n");
 
 		/**
-		 * write the identification strings & base url
+		 * write the identification strings & base url & ...
 		 * 
 		 */
 
@@ -129,6 +180,21 @@ public class BodyTag implements AnyTag {
 					+ StringEscape.escapeToJavaScript(logletUrl) + "\";\n");
 		}
 
+		if (subjectPrompt != null) {
+			writer.write("  subjectIdPrompt = \""
+					+ StringEscape.escapeToJavaScript(subjectPrompt) + "\";\n");
+		}
+
+		if (subjectInfo != null) {
+			writer.write("  subjectIdInfo = \""
+					+ StringEscape.escapeToJavaScript(subjectInfo) + "\";\n");
+		}
+
+		if (subjectChange != null) {
+			writer.write("  subjectIdChange = \""
+					+ StringEscape.escapeToJavaScript(subjectChange) + "\";\n");
+		}
+
 		writer.write("  </script>\n");
 
 		HtmlTag.writeAllIncludes(writer, scriptUrl);
@@ -140,6 +206,12 @@ public class BodyTag implements AnyTag {
 		writer.write("<div id=\"myhoverframe\" \n"
 				+ "		onmousemove=\"if ( document.all && myHover.flight != 0 ) myHover.MovePlane();\"\n"
 				+ "		onclick=\"myHover.OnFlight();\">");
+
+		/**
+		 * print the current subject id token and change button
+		 */
+
+		writer.write("<script type=\"text/javascript\">printChangeSubjectButton();</script>");
 
 		writeInnerTags(writer);
 
