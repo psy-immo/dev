@@ -70,6 +70,46 @@ public class BodyTag implements AnyTag {
 		scriptUrl = "";
 	}
 
+	/**
+	 * 
+	 * @param id
+	 *            new study id
+	 */
+
+	public void setStudy(String id) {
+		idStudy = id;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 *            new document id
+	 */
+
+	public void setDocument(String id) {
+		idDoc = id;
+	}
+
+	/**
+	 * 
+	 * @param url
+	 *            new php base url
+	 */
+
+	public void setPhp(String url) {
+		logletUrl = url;
+	}
+
+	/**
+	 * 
+	 * @param url
+	 *            new js base url
+	 */
+
+	public void setJs(String url) {
+		scriptUrl = url;
+	}
+
 	@Override
 	public void open(Writer writer) throws IOException {
 		writer.write("<body id=\"body\">\n");

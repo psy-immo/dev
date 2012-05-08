@@ -145,6 +145,14 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new DropdownTag(this.currentTags.peek()));
 		}else if (qName.equals("option")) {
 			this.processingTags.push(new OptionTag(this.currentTags.peek()));
+		} else if (qName.equals("studyid")) {
+			this.processingTags.push(new StudyIdTag(body));
+		} else if (qName.equals("documentid")) {
+			this.processingTags.push(new DocumentIdTag(body));
+		} else if (qName.equals("jsurl")) {
+			this.processingTags.push(new JsUrlTag(body));
+		} else if (qName.equals("phpurl")) {
+			this.processingTags.push(new PhpUrlTag(body));
 		}
 		else {
 			/**
