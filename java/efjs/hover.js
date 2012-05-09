@@ -49,8 +49,8 @@ function Hover() {
 		 * legacy code
 		 */
 		this.flight = 2;
-		var formatted_token = '<FONT face="Arial" size="3" color="#FFD600"><I><B>'
-				+ token + '</B></I></FONT>';
+		var formatted_token = '<FONT face="Arial" size="3" color="#FFD6AA"><B>'
+				+ token + '</B></FONT>';
 		if (document.layers) {
 			var doc = document.myhoverlplane.document;
 			doc.open();

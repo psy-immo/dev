@@ -84,7 +84,25 @@ if (typeof logId == 'undefined') {
 	logId = studyId + "+" + subjectId;
 };
 
+/**
+ * escape & < and >
+ * @param s
+ * @returns
+ */
 
+function escapeSome(s) {
+	return (""+s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+/**
+ * unescape & < and >
+ * @param s
+ * @returns
+ */
+
+function unescapeSome(s) {
+	return (""+s).replace(/&gt;/g,">").replace(/&lt;/g,"<").replace(/&amp;/g,"&");
+}
 
 /**
  * query server for stored value
@@ -101,7 +119,9 @@ function getServer(id, name, serverurl) {
 	 * java script to java interaction is buggy so add string termination zeros....
 	 */
 	
-	return applet.queryLogger(""+id+"\0",""+name+"\0","\0",""+serverurl+"\0");	
+	var val = applet.queryLogger(""+id+"\0",""+name+"\0","\0",""+serverurl+"\0");
+	
+	return unescapeSome(val);	
 }
 
 /**
@@ -119,7 +139,7 @@ function setServer(id, name, value, serverurl) {
 	 * java script to java interaction is buggy so add string termination zeros....
 	 */
 	
-	return applet.queryLogger(""+id+"\0",""+name+"\0",""+value+"\0",""+serverurl+"\0");	
+	applet.queryLogger(""+id+"\0",""+name+"\0",""+escapeSome(value)+"\0",""+serverurl+"\0");	
 }
 
 /**

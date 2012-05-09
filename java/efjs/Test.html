@@ -21,13 +21,8 @@
 	<script type="text/javascript" src="answer.js"></script>
 	<script type="text/javascript" src="sniffybutton.js"></script>
 	<script type="text/javascript" src="dropdown.js"></script>
+	<script type="text/javascript" src="sentencepattern.js"></script>
 
-<script type="text/javascript">
-
-	new Dropdown("", [ "r1",
-					"c1" ]).Size(100,
-					20).Option("Option A").Option("Option B").WriteHtml();
-</script>
 
 <br />
 <br />
@@ -209,6 +204,17 @@
 		onmousemove="if ( document.all && myHover.flight != 0 ) myHover.MovePlane();"
 		onclick="myHover.OnFlight()">
 		<center>
+<script type="text/javascript">
+
+	new Dropdown("", [ "r1",
+					"c1" ]).Size(100,
+					20).Option("Option A").Option("Option B").WriteHtml();
+	
+	new SentencePattern("Pattern 1",[ "r1", "c1" ], ["a b ", new Dropdown("", [ "r1",
+	                                                    					"c1" ]).Size(100,
+	                                                    							20).Option("Option A").Option("Option B") ," c"],true).WriteHtml();
+</script>
+<br />
 
 			<table border=2>
 				<tr>
@@ -221,7 +227,7 @@
 											<tr>
 												<td><script type="text/javascript">
 													new Runway("", [ "r1",
-															"c1" ]).Size(100,
+															"c1" ]).Size("100px",
 															20).WriteHtml();
 												</script></td>
 											</tr>
@@ -560,10 +566,12 @@
 	</script>
 	<script type="text/javascript">
   myStorage.SetupAutoRestore(sessionStorage,"4a5bb859-5326-4b09-8666-a6cbb0d47a03--63bd1140-114b-4737-a5ac-cc4509a99e5b");  
-  
   </script>
 					
 	
 
 </body>
+<script type="text/javascript">
+	RunwayDisplayBugfix();
+	</script>
 </html>
