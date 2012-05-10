@@ -4,4 +4,4 @@ cd $(dirname $0)
 
 cd java/efjs
 cp ../launchSniffyApplet/jar/*.jar .
-
+cp ../loglet/jar/*.jar .
