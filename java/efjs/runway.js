@@ -47,6 +47,7 @@ function Runway(name, tags, token, accept, reject) {
 	this.colorEmpty = "#CCCCCC";
 	this.colorFilled = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
+	this.markedgood = false;
 	this.accept = accept;
 	this.reject = reject;
 	this.doRespawn = null;
@@ -168,6 +169,7 @@ function Runway(name, tags, token, accept, reject) {
 	this.MarkAsGood = function() {
 		var html_object = document.getElementById("runway" + this.id);
 		html_object.style.backgroundColor = this.colorGood;
+		this.markedgood = true;
 	};
 
 	/**
@@ -182,6 +184,7 @@ function Runway(name, tags, token, accept, reject) {
 
 			html_object.style.backgroundColor = this.colorEmpty;
 		}
+		this.markedgood = false;
 	};
 
 	/**
@@ -298,7 +301,7 @@ function Runway(name, tags, token, accept, reject) {
 	 */
 	this.GiveBackToken = function(token) {
 		this.SetToken(token);
-		
+
 		var log_data = "";
 		if (this.name) {
 			log_data += this.name;
@@ -322,10 +325,14 @@ function Runway(name, tags, token, accept, reject) {
 	 * return the current contents of the run way as string
 	 */
 	this.GetValue = function() {
+		var value = "N";
+		if (this.markedgood)
+			value = "G";
+
 		if (this.token) {
-			return this.token;
+			return value + this.token;
 		}
-		return "";
+		return value + "";
 	};
 
 	/**
@@ -333,7 +340,14 @@ function Runway(name, tags, token, accept, reject) {
 	 */
 
 	this.SetValue = function(contents) {
-		this.SetToken(contents);
+		if (contents) {
+			this.SetToken(contents.substr(1));
+			if (contents.charAt(0) == "G")
+				this.MarkAsGood();
+			else
+				this.MarkNeutral();
+		} else
+			this.SetToken(contents);
 	};
 
 	runwayArray[this.id] = this;
@@ -350,7 +364,7 @@ function RunwayDisplayBugfix() {
 	for ( var int = 0; int < runwayArray.length; int++) {
 		var runway = runwayArray[int];
 		var value = runway.GetValue();
-		runway.SetValue("gxl");
+		runway.SetValue("Ngxl");
 		runway.SetValue(value);
 	}
 }

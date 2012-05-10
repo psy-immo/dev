@@ -31,6 +31,7 @@ function Answer(testfn) {
 	this.text = "Check your answer";
 	this.testfn = testfn;
 	this.waitfor = [];
+	this.uncheckedbadgood = 0;
 
 	/**
 	 * write the HTML code that will be used for displaying the answer button
@@ -66,10 +67,10 @@ function Answer(testfn) {
 	 * 
 	 * @returns this
 	 */
-	
+
 	this.WaitFor = function(waitforfn) {
 		this.waitfor[this.waitfor.length] = waitforfn;
-		
+
 		return this;
 	};
 
@@ -103,8 +104,8 @@ function Answer(testfn) {
 		 * check, whether giving a solution is allowed
 		 */
 		for ( var int = 0; int < this.waitfor.length; int++) {
-			if (this.waitfor[int]()!=true) {
-				myLogger.Log("Check answer: check refused by "+int+".");
+			if (this.waitfor[int]() != true) {
+				myLogger.Log("Check answer: check refused by " + int + ".");
 				return;
 			}
 		}
@@ -114,14 +115,45 @@ function Answer(testfn) {
 			this.SetHint(this.feedbackAllGood);
 
 			myLogger.Log("Check answer: good (" + this.errorCount + ")");
+
+			this.uncheckedbadgood = 2;
 		} else {
 			this.SetHint(this.feedbackErrors[Math.min(
 					this.feedbackErrors.length - 1, this.errorCount)]);
 			this.errorCount++;
 
 			myLogger.Log("Check answer: errors (" + this.errorCount + ")");
+
+			this.uncheckedbadgood = 1;
+		}
+	};
+
+	/**
+	 * return the current state
+	 */
+	this.GetValue = function() {
+		return "" + this.uncheckedbadgood + "," + this.errorCount;
+	};
+
+	/**
+	 * restore the given state
+	 */
+
+	this.SetValue = function(contents) {
+		var data = ("" + contents).split(",");
+		if (data.length == 2) {
+			this.uncheckedbadgood = parseInt(data[0]);
+			this.errorCount = parseInt(data[1]);
+
+			if (this.uncheckedbadgood == 2) {
+				this.SetHint(this.feedbackAllGood);
+			} else if (this.uncheckedbadgood == 1) {
+				this.SetHint(this.feedbackErrors[Math.min(
+						this.feedbackErrors.length - 1, this.errorCount - 1)]);
+			}
 		}
 	};
 
 	answerArray[this.id] = this;
+	myStorage.RegisterField(this, "answerArray[" + this.id + "]");
 };

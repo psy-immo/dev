@@ -60,12 +60,13 @@ function Logger() {
 		var splitted = ("" + events).split("\n");
 		
 		this.events = splitted;
-		
-		this.Log("Site reloaded.");
+		this.Log("Site reloaded: "+window.location.href);
 	};
 	
 	
 	myStorage.RegisterField(this,"Logger",true);
+	
+	this.Log("Site loaded: "+window.location.href);
 }
 
 /**
