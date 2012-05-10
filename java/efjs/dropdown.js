@@ -191,7 +191,7 @@ function Dropdown(name, tags, label, token) {
 	this.SetValue = function(contents) {
 		var element = document.getElementById("dropdown"+this.id);
 		element.selectedIndex = contents;
-		
+		this.token = element.value;
 			
 		if (element.selectedIndex > 0) {
 			element.style.backgroundColor = this.colorFilled;

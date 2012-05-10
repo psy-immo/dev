@@ -1,6 +1,6 @@
 /**
- * sentencepattern.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
- * Professur für die Psychologie des Lernen und Lehrens
+ * sentencepattern.js, (c) 2012, Immanuel Albrecht; Dresden University of
+ * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -44,6 +44,7 @@ function SentencePattern(name, tags, generators, nonempty) {
 	this.width = "20px";
 	this.height = "20px";
 	this.colorFilled = "#EEEEEE";
+	this.colorBox = "#DDDDDD";
 	this.noTakeOff = false;
 	this.nonempty = nonempty;
 
@@ -60,7 +61,8 @@ function SentencePattern(name, tags, generators, nonempty) {
 	};
 
 	/**
-	 * this function unsets/sets the flag that prevents take off from the sentencePattern
+	 * this function unsets/sets the flag that prevents take off from the
+	 * sentencePattern
 	 * 
 	 * @returns this
 	 */
@@ -69,7 +71,6 @@ function SentencePattern(name, tags, generators, nonempty) {
 
 		return this;
 	};
-
 
 	/**
 	 * this function sets the color parameters
@@ -83,14 +84,28 @@ function SentencePattern(name, tags, generators, nonempty) {
 	};
 
 	/**
+	 * this function sets the color parameters
+	 * 
+	 * @returns this
+	 */
+	this.ColorBox = function(color) {
+		this.colorBox = color;
+
+		return this;
+	};
+
+	/**
 	 * write the HTML code that will be used for displaying the run way
 	 */
 	this.WriteHtml = function() {
 		document.write("<span id=\"sentencePatternBox" + this.id + "\" ");
-		
-		document.write(">");
-		
-		for (var int=0;int<this.generators.length;++int) {
+
+		document.write(" style=\" display: inline-block; ");
+		document.write("background-color:" + this.colorBox + "; ");
+		document.write("padding: 2px; ");
+		document.write("\" >");
+
+		for ( var int = 0; int < this.generators.length; ++int) {
 			var part = this.generators[int];
 			if (typeof part == "string") {
 				document.write(part);
@@ -98,13 +113,13 @@ function SentencePattern(name, tags, generators, nonempty) {
 				part.WriteHtml();
 			}
 		}
-		
-		document.write("<span id=\"sentencePattern" + this.id + "\" ");
+
+		document.write("&nbsp;<span id=\"sentencePattern" + this.id + "\" ");
 
 		document.write(" style=\" display: inline-block; ");
 
 		document.write("background-color:" + this.colorFilled + "; ");
-		
+
 		if (this.width) {
 			document.write("width:" + this.width + "; ");
 		}
@@ -112,7 +127,8 @@ function SentencePattern(name, tags, generators, nonempty) {
 			document.write("height:" + this.height + "; ");
 		}
 		document.write("\"");
-		document.write("onClick=\"sentencePatternArray[" + this.id + "].OnClick()\">");
+		document.write("onClick=\"sentencePatternArray[" + this.id
+				+ "].OnClick()\">");
 		document.write("Up");
 		document.write("</span>");
 		document.write("</span>");
@@ -122,16 +138,17 @@ function SentencePattern(name, tags, generators, nonempty) {
 	/**
 	 * this function sets the objects token
 	 */
-	this.SetToken = function(token) {};
+	this.SetToken = function(token) {
+	};
 
 	/**
-	 * this function returns the currently generated token 
+	 * this function returns the currently generated token
 	 * 
 	 */
 	this.GetCurrentToken = function() {
 		var token = "";
-		
-		for (var int=0;int<this.generators.length;++int) {
+
+		for ( var int = 0; int < this.generators.length; ++int) {
 			var part = this.generators[int];
 			if (typeof part == "string") {
 				token = token + part;
@@ -146,7 +163,6 @@ function SentencePattern(name, tags, generators, nonempty) {
 		}
 		return token;
 	};
-	
 
 	/**
 	 * this function is called, when the run way object is clicked
@@ -162,7 +178,7 @@ function SentencePattern(name, tags, generators, nonempty) {
 			 */
 			return;
 		}
-		
+
 		var current_token = this.GetCurrentToken();
 		/**
 		 * Allow take off
@@ -185,7 +201,7 @@ function SentencePattern(name, tags, generators, nonempty) {
 	/**
 	 * this function is called, when a token is given back after a take off
 	 */
-	this.GiveBackToken = function(token) {		
+	this.GiveBackToken = function(token) {
 		var log_data = "";
 		if (this.name) {
 			log_data += this.name;
@@ -204,6 +220,9 @@ function SentencePattern(name, tags, generators, nonempty) {
 	};
 
 	sentencePatternArray[this.id] = this;
-	myTags.Add(this, this.tags);
+	/**
+	 * this is not for making checked answers, so we don't register in the tags
+	 * hive
+	 */
+	// myTags.Add(this, this.tags);
 }
-

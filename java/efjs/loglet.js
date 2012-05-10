@@ -20,8 +20,7 @@
  * load the server communication applet
  */
 
-document.write("<applet id=\"loglet\" "
-		+ "name=\"loglet\""
+document.write("<applet id=\"loglet\" " + "name=\"loglet\""
 		+ " archive=\"loglet.jar\" "
 		+ "code=\"de.tu_dresden.psy.util.Loglet\" "
 		+ "MAYSCRIPT style=\"width: 1px; height: 1px\"></applet>");
@@ -32,8 +31,8 @@ document.write("<applet id=\"loglet\" "
 
 if (typeof logletBaseURL == 'undefined') {
 	var scripts = document.getElementsByTagName('script');
-	logletBaseURL = scripts[scripts.length-1].src + "\n";
-	logletBaseURL = logletBaseURL.replace("loglet.js\n","");
+	logletBaseURL = scripts[scripts.length - 1].src + "\n";
+	logletBaseURL = logletBaseURL.replace("loglet.js\n", "");
 };
 
 /**
@@ -56,10 +55,13 @@ if (typeof subjectIdInfo == 'undefined') {
 	subjectIdInfo = "Your identification token is";
 };
 
+if (typeof serverNotWorking == 'undefined') {
+	serverNotWorking = "Your current identification token is <b>not working</b>! ";
+};
+
 if (typeof subjectIdChange == 'undefined') {
 	subjectIdChange = "Change";
 };
-
 
 if (typeof subjectId == 'undefined') {
 	var keyname = "subject-id-" + studyId;
@@ -68,11 +70,11 @@ if (typeof subjectId == 'undefined') {
 	if (v !== null) {
 		subjectId = v;
 	} else {
-		v = prompt(subjectIdPrompt);
+		v = prompt(subjectIdPrompt).toUpperCase();
 		if (v == null)
 			v = "";
 		subjectId = v;
-		sessionStorage.setItem(keyname,subjectId);
+		sessionStorage.setItem(keyname, subjectId);
 	}
 };
 
@@ -86,27 +88,31 @@ if (typeof logId == 'undefined') {
 
 /**
  * escape & < and >
+ * 
  * @param s
  * @returns
  */
 
 function escapeSome(s) {
-	return (""+s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+	return ("" + s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g,
+			"&gt;");
 }
 
 /**
  * unescape & < and >
+ * 
  * @param s
  * @returns
  */
 
 function unescapeSome(s) {
-	return (""+s).replace(/&gt;/g,">").replace(/&lt;/g,"<").replace(/&amp;/g,"&");
+	return ("" + s).replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(
+			/&amp;/g, "&");
 }
 
 /**
  * query server for stored value
- *  
+ * 
  * @param id
  * @param name
  * @param serverurl
@@ -114,19 +120,21 @@ function unescapeSome(s) {
 
 function getServer(id, name, serverurl) {
 	var applet = document.getElementById("loglet");
-	
+
 	/**
-	 * java script to java interaction is buggy so add string termination zeros....
+	 * java script to java interaction is buggy so add string termination
+	 * zeros....
 	 */
-	
-	var val = applet.queryLogger(""+id+"\0",""+name+"\0","\0",""+serverurl+"\0");
-	
-	return unescapeSome(val);	
+
+	var val = applet.queryLogger("" + id + "\0", "" + name + "\0", "\0", ""
+			+ serverurl + "\0");
+
+	return unescapeSome(val);
 }
 
 /**
  * query server for stored value
- *  
+ * 
  * @param id
  * @param name
  * @param serverurl
@@ -134,94 +142,95 @@ function getServer(id, name, serverurl) {
 
 function setServer(id, name, value, serverurl) {
 	var applet = document.getElementById("loglet");
-	
+
 	/**
-	 * java script to java interaction is buggy so add string termination zeros....
+	 * java script to java interaction is buggy so add string termination
+	 * zeros....
 	 */
-	
-	applet.queryLogger(""+id+"\0",""+name+"\0",""+escapeSome(value)+"\0",""+serverurl+"\0");	
+
+	applet.queryLogger("" + id + "\0", "" + name + "\0", "" + escapeSome(value)
+			+ "\0", "" + serverurl + "\0");
 }
 
 /**
  * 
  * log the string using the global variables
- *
+ * 
  * @param string
  * 
  */
 
 function doLog(string) {
 	if (logletBaseURL) {
-		setServer(logId, docId, string, logletBaseURL+"log.php");
+		setServer(logId, docId, string, logletBaseURL + "log.php");
 	}
 }
 
 /**
  * 
  * store a named variable on server
- *
+ * 
  * @param name
- * @param value 
+ * @param value
  * 
  */
 
 function doSet(name, value) {
 	if (logletBaseURL) {
-		setServer(logId, docId + "+" + name, value, logletBaseURL+"push.php");
+		setServer(logId, docId + "+" + name, value, logletBaseURL + "push.php");
 	}
 }
 
 /**
  * 
  * retrieve the stored value of a named variable
- *
+ * 
  * @param name
- * @returns value 
+ * @returns value
  * 
  */
 
 function doGet(name) {
 	if (logletBaseURL) {
-		return getServer(logId, docId + "+" + name, logletBaseURL+"pull.php");
+		return getServer(logId, docId + "+" + name, logletBaseURL + "pull.php");
 	}
 	return "";
 }
 
 function doGetAll() {
 	var urldecode = function(url) {
-	  return decodeURIComponent(url.replace(/\+/g, ' '));
+		return decodeURIComponent(url.replace(/\+/g, ' '));
 	};
-	
+
 	if (logletBaseURL) {
-		var raw = getServer(logId, docId + "+", logletBaseURL+"pullall.php").split('\n');
+		var raw = getServer(logId, docId + "+", logletBaseURL + "pullall.php")
+				.split('\n');
 		var entries = {};
 		var prefix_length = docId.length + 1;
-		
-		for (var int=0; int < raw.length; ++int) {
+
+		for ( var int = 0; int < raw.length; ++int) {
 			var line = raw[int].split(' ');
 			if (line.length > 1) {
 				var key = urldecode(line[0]).substr(prefix_length);
-				entries[key] = urldecode(line[1]); 
-			}			
+				entries[key] = urldecode(line[1]);
+			}
 		}
 		return entries;
 	}
 	return {};
 }
 
-
-
 /**
  * 
  * check whether the server storage works currently
  * 
- * @returns true, if storage works 
+ * @returns true, if storage works
  * 
  */
 
 function doesOperate() {
 	if (logletBaseURL) {
-		if (getServer(logId, docId + "+" + name, logletBaseURL+"operates.php") == "okay") {
+		if (getServer(logId, docId + "+" + name, logletBaseURL + "operates.php") == "okay") {
 			return true;
 		}
 	}
@@ -235,8 +244,16 @@ function doesOperate() {
  */
 
 function printChangeSubjectButton() {
-
-	document.write("<div>"+subjectIdInfo+" <b>"+subjectId+"</b>. <a href=\"javascript:changeSubject()\">"+subjectIdChange+"</a></div>");
+	if (myStorage.useLoglet()) {
+		document.write("<div>" + subjectIdInfo + " <b>" + subjectId
+				+ "</b>. <a href=\"javascript:changeSubject()\">"
+				+ subjectIdChange + "</a></div>");
+	} else {
+		document.write("<div>" + subjectIdInfo + " <font color=\"#FF0000\"><b>"
+				+ subjectId + "</b></font>. " + serverNotWorking
+				+ " <a href=\"javascript:changeSubject()\">" + subjectIdChange
+				+ "</a></div>");
+	}
 }
 
 function changeSubject() {
