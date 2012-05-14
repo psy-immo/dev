@@ -43,6 +43,23 @@ function Tags() {
 
 		this.objs.push(obj);
 	};
+	
+	/**
+	 * this removes the object from the respective tag lists
+	 */
+	
+	this.Remove = function(obj) {
+		var keepOthers = function(x) {
+			return x !== obj;
+		};
+		for (var int = 0; int < this.tags.length; int++) {
+			var tag = this.tags[int];
+			if (tag in this.taglists) {
+				this.taglists[tag] = this.taglists[tag].filter(keepOthers);
+			}
+		}
+		this.objs = this.objs.filter(keepOthers);
+	};
 
 	/**
 	 * this return all objects bearing all of the tags
