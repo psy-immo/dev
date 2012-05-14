@@ -172,7 +172,7 @@ public class AnswerCheckParser {
 					+ "\n})();"
 					+ "if (result) {\n"
 					+ " for (var i=0;i<goodParts.length;++i) {\n"
-					+ " if (goodParts[i].MarkAsGood) {\n"
+					+ " if (typeof goodParts[i].MarkAsGood != \"undefined\") {\n"
 					+ "goodParts[i].MarkAsGood();\n}\n"
 					+ " }\n}\nreturn result;}";
 		}

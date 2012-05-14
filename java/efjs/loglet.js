@@ -111,6 +111,31 @@ function unescapeSome(s) {
 }
 
 /**
+ * escape \\,\n,\t,\r
+ * 
+ * @param s
+ * @returns
+ */
+
+function escapeBTNR(s) {
+	return ("" + s).replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/\r/g,
+			"\\r").replace(/\t/g,
+			"\\t");
+}
+
+/**
+ * unescape \\,\n,\t,\r
+ * 
+ * @param s
+ * @returns
+ */
+
+function unescapeBTNR(s) {
+	return ("" + s).replace(/\\n/g, "\n").replace(/\\r/g, "\r").replace(
+			/\\t/g, "\t").replace(/\\\\/g, "\\");
+}
+
+/**
  * query server for stored value
  * 
  * @param id

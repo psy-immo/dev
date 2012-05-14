@@ -69,7 +69,7 @@ public class AnswerTag implements AnyTag {
 				+ attributes.getAcceptTags() + "," + attributes.getRejectTags()
 				+ "),");
 		javascript.append("function(c) { \n");
-		javascript.append("if ( c.MarkNeutral ) c.MarkNeutral();\n");
+		javascript.append("if ( typeof c.MarkNeutral != \"undefined\" ) c.MarkNeutral();\n");
 		javascript.append("return false;\n});\n\n");
 
 		javascript.append("var good_count = 0;\n");

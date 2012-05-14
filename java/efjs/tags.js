@@ -27,7 +27,7 @@ function Tags() {
 	/**
 	 * this adds the object to the respective tag lists
 	 */
-	this.Add = function(obj, tags) {
+	this.Add = function(obj, tags, nopush) {
 
 		for ( var int = 0; int < tags.length; int++) {
 			var tag = tags[int];
@@ -41,7 +41,8 @@ function Tags() {
 
 		}
 
-		this.objs.push(obj);
+		if (typeof nopush == "undefined")
+			this.objs.push(obj);
 	};
 	
 	/**
