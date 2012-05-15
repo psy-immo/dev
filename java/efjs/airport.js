@@ -251,6 +251,32 @@ function Airport(name, tags, accept, reject) {
 			document.write("height:" + this.height + "; ");
 		}
 		document.write("\">");
+		
+		/**
+		 *  content 
+		 */
+		
+		var contents = "<table style=\"  border-spacing: 0px; ";
+
+		if (this.width) {
+			contents += "width:" + this.width + "; ";
+		}
+
+		contents += "\">";
+		/**
+		 * padding
+		 */
+
+		contents += "<tr style=\"";
+		if (this.width)
+			contents += " width:" + this.width + "; ";
+		contents += "background-color:" + this.colorEmpty + "; \" ";
+		contents += "onClick=\"airportArray[" + this.id + "].OnClickRow(0)\"><td>&nbsp;";
+		contents += "</td><td>&nbsp;</td></tr>";
+		
+		contents += "</table>";
+		
+		document.write(contents);
 
 		// document.write("onClick=\"airportArray[" + this.id +
 		// "].OnClick()\">");
@@ -468,120 +494,7 @@ function Airport(name, tags, accept, reject) {
 		this.UpdateContents();
 	};
 
-	/**
-	 * this function is called, when the airport object is clicked
-	 */
-	this.OnClick = function() {
-
-		this.OnClickRow(this.content.length * 2 + 1);
-
-		return;
-
-		/**
-		 * Allow landing
-		 */
-		if (myHover.flight) {
-
-			/**
-			 * if this airport stays filled, do not allow landing
-			 */
-			if (this.stayFilled) {
-				return;
-			}
-
-			var log_data = "";
-			if (myHover.source.name) {
-				log_data += myHover.source.name;
-			}
-			log_data += " -> " + this.name + ": " + myHover.token;
-
-			/**
-			 * check for acceptance tags
-			 */
-			if (this.accept) {
-				if (myHover.source.tags) {
-					for ( var i = 0; i < this.accept.length; i++) {
-						if (myHover.source.tags.indexOf(this.accept[i]) < 0) {
-							myLogger.Log(log_data + " rejected");
-							return;
-						}
-
-					}
-				} else {
-					myLogger.Log(log_data + " rejected");
-					return;
-				}
-			}
-
-			/**
-			 * check for rejection tags
-			 */
-			if (this.reject) {
-				if (myHover.source.tags) {
-					for ( var i = 0; i < this.reject.length; i++) {
-						if (myHover.source.tags.indexOf(this.reject[i]) >= 0) {
-							myLogger.Log(log_data + " rejected");
-							return;
-						}
-					}
-				}
-			}
-
-			/**
-			 * the event handlers will be bubbling or capturing, depends on
-			 * browser, so handle it twice, this is the capturing part
-			 */
-			if (myHover.source.TakeAway) {
-				myHover.source.TakeAway();
-			}
-			/**
-			 * and the bubbling part
-			 */
-			myHover.dontGiveBack = true;
-
-			/**
-			 * now update the airport
-			 */
-			this.SetToken(myHover.token);
-
-			/**
-			 * respawn the old contents
-			 */
-
-			var respawn = this.respawn;
-
-			this.respawn = myHover.respawn;
-
-			if (respawn) {
-				respawn.DoRespawn();
-			}
-
-			myLogger.Log(log_data);
-
-			return;
-		}
-		/**
-		 * Allow take off
-		 */
-		if (this.token) {
-			if (true != this.noTakeOff) {
-				if (myHover.TakeOff(this.token, this, this.respawn)) {
-					var log_data = "";
-					if (this.name) {
-						log_data += this.name;
-					}
-					log_data += " take off: " + myHover.token;
-					myLogger.Log(log_data);
-
-					if (this.stayFilled != true) {
-						this.SetToken(null);
-					}
-				}
-			}
-		}
-
-	};
-
+	
 	/**
 	 * this function is called, when a token is given back after a take off
 	 */
@@ -674,4 +587,5 @@ function Airport(name, tags, accept, reject) {
 	airportArray[this.id] = this;
 
 	myStorage.RegisterField(this, "airportArray[" + this.id + "]");
+	
 }
