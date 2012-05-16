@@ -5,6 +5,7 @@ dtd = open("efml.0.0.1.0.dtd","w")
 html_elements = "i|b|br|p|div|span"
 efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown"
 efml_extra = "tables"
+nested_elements = "plain|dropdown"
 
 
 universal_attributes = r"""
@@ -100,7 +101,19 @@ dtd.write("\n<!ATTLIST option "+"""
  >
 """)
 
-for tag in ["phpurl","jsurl","documentid","studyid","subjectprompt","subjectinfo","subjectchange"]:
+for tag in ["phpurl","jsurl","documentid","studyid","subjectprompt","subjectinfo","subjectchange","plain"]:
 	dtd.write("\n<!ELEMENT "+tag+" (#PCDATA)* >\n")
 	#dtd.write("\n<!ATTLIST "+tag+" "+universal_attributes+" >\n")
 
+dtd.write("\n<!ELEMENT template (#PCDATA|"+nested_elements+")* >\n")
+dtd.write("\n<!ATTLIST template "+universal_attributes+"""
+	name		CDATA				#IMPLIED
+	nonempty	(allow|disallow)	#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT airport (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST airport "+universal_attributes+"""
+	name	CDATA			#IMPLIED
+ >
+""")

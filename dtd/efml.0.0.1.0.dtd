@@ -168,3 +168,26 @@
 <!ELEMENT subjectinfo (#PCDATA)* >
 
 <!ELEMENT subjectchange (#PCDATA)* >
+
+<!ELEMENT plain (#PCDATA)* >
+
+<!ELEMENT template (#PCDATA|plain|dropdown)* >
+
+<!ATTLIST template 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+
+	name		CDATA				#IMPLIED
+	nonempty	(allow|disallow)	#IMPLIED
+ >
+
+<!ELEMENT airport (#PCDATA)* >
+
+<!ATTLIST airport 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+
+	name	CDATA			#IMPLIED
+ >
