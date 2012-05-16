@@ -40,20 +40,19 @@ function Dropdown(name, tags, label, token) {
 
 	this.tags = tags;
 	if (token === undefined) {
-		this.token = "";
+		this.token = null;
 	} else {
 		this.token = token;
 	}
+	
+	this.emptyToken = this.token;
 	
 	if (label === undefined) {
 		this.label = "";
 	} else {
 		this.label = label;
 	}
-	
-	if (this.token == "") {
-		this.token = this.label;
-	}
+
 	
 	this.respawn = null;
 	this.width = "";
@@ -144,13 +143,14 @@ function Dropdown(name, tags, label, token) {
 	 */
 	this.OnChange = function() {
 		var element = document.getElementById("dropdown"+this.id);
-		this.token = element.value;
+		
 		
 		if (element.selectedIndex > 0) {
 			element.style.backgroundColor = this.colorFilled;
+			this.token = this.contentValues[element.selectedIndex - 1];
 		} else {
-
 			element.style.backgroundColor = this.colorEmpty;
+			this.token = this.emptyToken;
 		}
 		
 		myLogger.Log(this.name + " <- " + this.token);
@@ -191,12 +191,13 @@ function Dropdown(name, tags, label, token) {
 	this.SetValue = function(contents) {
 		var element = document.getElementById("dropdown"+this.id);
 		element.selectedIndex = contents;
-		this.token = element.value;
 			
 		if (element.selectedIndex > 0) {
 			element.style.backgroundColor = this.colorFilled;
+			this.token = this.contentValues[element.selectedIndex - 1];
 		} else {
 			element.style.backgroundColor = this.colorEmpty;
+			this.token = this.emptyToken;
 		}
 	};
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE efml SYSTEM "https://raw.github.com/psy-immo/dev/master/dtd/efml.0.0.1.0.dtd">
+<efml>
+	<tags tags="frage1" atags="frage1">
+	
+			<template>
+				<plain>The </plain>
+				<dropdown>(Letter)
+				<option>A</option>
+				<option>B</option>
+				<option>C</option>
+				<option>D</option>
+				</dropdown>
+				<plain> of </plain>
+				<dropdown>(Number)
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				</dropdown>
+				<plain> is okay.</plain>
+			</template>
+			<br />
+			Rationale:
+			<airport name="rationale" tags="rationale"/>
+			<br />
+			Conclusion:
+			<airport name="conclusion" tags="conclusion"/>
+	
+	</tags>
+</efml>

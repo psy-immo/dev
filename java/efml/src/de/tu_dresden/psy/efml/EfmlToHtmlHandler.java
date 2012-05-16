@@ -143,7 +143,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new WaitForTag());			
 		}  else if (qName.equals("dropdown")) {
 			this.processingTags.push(new DropdownTag(this.currentTags.peek()));
-		}else if (qName.equals("option")) {
+		} else if (qName.equals("option")) {
 			this.processingTags.push(new OptionTag(this.currentTags.peek()));
 		} else if (qName.equals("studyid")) {
 			this.processingTags.push(new StudyIdTag(body));
@@ -159,6 +159,12 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new SubjectPromptTag(body));
 		} else if (qName.equals("subjectchange")) {
 			this.processingTags.push(new SubjectChangeTag(body));
+		} else if (qName.equals("plain")) {
+			this.processingTags.push(new PlainTag());
+		} else if (qName.equals("template")) {
+			this.processingTags.push(new TemplateTag(this.currentTags.peek()));
+		} else if (qName.equals("airport")) {
+			this.processingTags.push(new AirportTag(this.currentTags.peek()));
 		}
 		else {
 			/**

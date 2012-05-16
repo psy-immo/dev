@@ -14,7 +14,7 @@ import javax.naming.OperationNotSupportedException;
  * 
  */
 
-public class DropdownTag implements AnyTag {
+public class DropdownTag implements AnyTag, NestedTag {
 
 	private EfmlTagsAttribute attributes;
 	private String label;
@@ -31,6 +31,21 @@ public class DropdownTag implements AnyTag {
 	public void open(Writer writer) throws IOException {
 		writer.write("<script type=\"text/javascript\">");
 
+		/**
+		 * create new javascript dropdown object with name, tags, label, token
+		 */
+
+		createNew(writer);
+
+		/**
+		 * finally let javascript create the html code
+		 */
+
+		writer.write(".WriteHtml();");
+	}
+
+	@Override
+	public void createNew(Writer writer) throws IOException {
 		/**
 		 * create new javascript dropdown object with name, tags, label, token
 		 */
@@ -90,11 +105,6 @@ public class DropdownTag implements AnyTag {
 			writer.write(it.next().getJsContent());
 		}
 
-		/**
-		 * finally let javascript create the html code
-		 */
-
-		writer.write(".WriteHtml();");
 	}
 
 	@Override
@@ -106,7 +116,7 @@ public class DropdownTag implements AnyTag {
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
-			this.label += ((PlainContent) innerTag).getPlainContent();
+			this.label += ((PlainContent) innerTag).getPlainContent().trim();
 		} else if (innerTag.getClass() == OptionTag.class) {
 			this.options.add((OptionTag) innerTag);
 		} else
