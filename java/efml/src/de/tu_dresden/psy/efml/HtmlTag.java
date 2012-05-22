@@ -58,7 +58,9 @@ public class HtmlTag implements AnyTag {
 				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
 				+ "sentencepattern.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "airport.js\"></script>\n");
+				+ "airport.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "inference.js\"></script>\n");
 	}
 
 	/**
@@ -78,6 +80,13 @@ public class HtmlTag implements AnyTag {
 				+ "  RunwayDisplayBugfix();"
 				+ "  </script>\n");
 		
+		/**
+		 * feed inference applets
+		 */
+
+		writer.write("	<script type=\"text/javascript\">\n"
+				+ "  FeedInferenceApplets();" + "  </script>\n");
+
 	}
 
 

@@ -26,17 +26,32 @@ myInferenceId = 0;
  * 
  * @param atags accept tags
  * @param rtags reject tags
+ * @param points points tag
+ * @param conclusions conclusion tag
  * 
  * @returns
  */
 
-function InferenceButton(atags, rtags) {
+function InferenceButton(atags, rtags, points, conclusions) {
 	
 	this.id = myInferenceId++;
 	this.errorCount = 0;
 	
 	this.acceptTags = atags;
 	this.rejectTags = rtags;
+	
+	if (typeof points == "undefined") {
+		this.points = "points";
+	} else {
+		this.points = points;
+	}
+	
+	if (typeof conclusions == "undefined") {
+		this.conclusions = "conclusions";
+	} else {
+		this.conclusions = conclusions;
+	}
+	
 	
 	/**
 	 * unlike the answer button, the feedback text is given by the applet
@@ -52,7 +67,7 @@ function InferenceButton(atags, rtags) {
 			document.write("<applet id=\"inferenceApplet"+this.id+"\" "
 					+ "name=\"inferenceApplet"+this.id+"\""
 					+ " archive=\"inferenceApplet.jar\" "
-					+ "code=\"de.tu_dresden.psy.util.LauncherApplet\" "
+					+ "code=\"de.tu_dresden.psy.inference.regexp.xml.InferenceMachine\" "
 					+ "MAYSCRIPT style=\"width: 1px; height: 1px; float:right;\"></applet>");
 		}
 		document.write("<form onsubmit=\"return false;\">");

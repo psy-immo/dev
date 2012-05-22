@@ -105,7 +105,7 @@ function Answer(testfn) {
 		 */
 		for ( var int = 0; int < this.waitfor.length; int++) {
 			if (this.waitfor[int]() != true) {
-				myLogger.Log("Check answer: check refused by " + int + ".");
+				myLogger.Log("Check answer " + this.id+ ": check refused by " + int + ".");
 				return;
 			}
 		}
@@ -114,7 +114,7 @@ function Answer(testfn) {
 
 			this.SetHint(this.feedbackAllGood);
 
-			myLogger.Log("Check answer: good (" + this.errorCount + ")");
+			myLogger.Log("Check answer " + this.id+ ": good (" + this.errorCount + ")");
 
 			this.uncheckedbadgood = 2;
 		} else {
@@ -122,7 +122,7 @@ function Answer(testfn) {
 					this.feedbackErrors.length - 1, this.errorCount)]);
 			this.errorCount++;
 
-			myLogger.Log("Check answer: errors (" + this.errorCount + ")");
+			myLogger.Log("Check answer " + this.id+ ": errors (" + this.errorCount + ")");
 
 			this.uncheckedbadgood = 1;
 		}
