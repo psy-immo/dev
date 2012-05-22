@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-	
-	
+
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Hover.js test file</title>
 </head>
 
 <body id="body">
-	
+
 
 	<script type="text/javascript" src="loglet.js"></script>
 	<script type="text/javascript" src="storage.js"></script>
@@ -23,18 +23,30 @@
 	<script type="text/javascript" src="dropdown.js"></script>
 	<script type="text/javascript" src="sentencepattern.js"></script>
 	<script type="text/javascript" src="airport.js"></script>
+	<script type="text/javascript" src="inference.js"></script>
 
+<applet id="inferenceApplet0" name="inferenceApplet0" archive="inferenceApplet.jar" code="de.tu_dresden.psy.inference.regexp.xml.InferenceMachine" mayscript="" style="width: 1px; height: 1px; float:right;"></applet>
+	<br />
+	<br />
 
-<br />
-<br />
-
-<script type="text/javascript">
-
-	printChangeSubjectButton();
+	<script type="text/javascript">
 	
-	new InstructionsButton("http://www.google.com/").WriteHtml();
-	new SniffyButton("Starte Sniffy!").WriteHtml();
-</script>
+	
+	
+		new InferenceButton([], []).Feed(
+				[ 94, 76, 221, 244, 176, 165, 184, 186, 171, 231, 246, 173,
+						173, 244, 190, 231, 176, 165, 184, 186, 171, 231, 148,
+						22, 251, 186, 10, 99, 189, 179, 162, 136, 16, 107, 144,
+						47, 199, 228, 46, 170, 207, 134, 30, 97, 228, 51, 77,
+						60, 106, 47, 73, 41, 139, 88, 75, 182, 187, 67, 214,
+						254, 35, 152, 39, 216, 240, 76, 91, 186, 41, 45, 173,
+						157, 69, 226, 93, 111, 78, 191, 177, 231, 148, 20, 7,
+						215, 101, 113, 56, 165, 105, 150, 178, 109, 31, 219,
+						51, 21, 76, 58, 70, 91, 253, 207, 8, 153, 156, 4, 254,
+						39, 71, 168, 38, 20, 43, 210, 41, 38, 117, 52, 111, 34,
+						63, 250, 68, 91, 246, 144, 41, 170, 74, 155 ])
+				.WriteHtml();
+	</script>
 
 	<script type="text/javascript">
 		function TestSolution() {
@@ -208,22 +220,21 @@
 		onmousemove="if ( document.all && myHover.flight != 0 ) myHover.MovePlane();"
 		onclick="myHover.OnFlight()">
 		<center>
-<script type="text/javascript">
+			<script type="text/javascript">
+				new Dropdown("", [ "r1", "c1" ]).Size(100, 20).Option(
+						"Option A").Option("Option B").WriteHtml();
 
-	new Dropdown("", [ "r1",
-					"c1" ]).Size(100,
-					20).Option("Option A").Option("Option B").WriteHtml();
-	
-	new SentencePattern("Pattern 1",[ "r1", "c1" ], ["a b ", new Dropdown("", [ "r1",
-	                                                    					"c1" ]).Size(100,
-	                                                    							20).Option("Option A").Option("Option B") ," c"],true).WriteHtml();
-	                                                    			
-</script>
-<br />
-<script type="text/javascript">
-		new Airport("port", [ "port" ]).WriteHtml();
-	</script>
-<br />
+				new SentencePattern("Pattern 1", [ "r1", "c1" ], [
+						"a b ",
+						new Dropdown("", [ "r1", "c1" ]).Size(100, 20).Option(
+								"Option A").Option("Option B"), " c" ], true)
+						.WriteHtml();
+			</script>
+			<br />
+			<script type="text/javascript">
+				new Airport("port", [ "port" ]).WriteHtml();
+			</script>
+			<br />
 			<table border=2>
 				<tr>
 					<td>
@@ -234,9 +245,10 @@
 									<td><table cellpadding=0 cellspacing=1>
 											<tr>
 												<td><script type="text/javascript">
-													new Runway("", [ "r1",
-															"c1" ]).Size("100px",
-															20).WriteHtml();
+													new Runway("",
+															[ "r1", "c1" ])
+															.Size("100px", 20)
+															.WriteHtml();
 												</script></td>
 											</tr>
 											<tr>
@@ -552,8 +564,7 @@
 																228, 183, 170,
 																247 ]) ])
 												.WriteHtml();
-									</script>
-									</td>
+									</script></td>
 								</tr>
 							</table>
 						</div>
@@ -573,13 +584,16 @@
 		myHover.WriteHtml();
 	</script>
 	<script type="text/javascript">
-  myStorage.SetupAutoRestore(sessionStorage,"4a5bb859-5326-4b09-8666-a6cbb0d47a03--63bd1140-114b-4737-a5ac-cc4509a99e5b");  
-  </script>
-					
-	
+		myStorage
+				.SetupAutoRestore(sessionStorage,
+						"4a5bb859-5326-4b09-8666-a6cbb0d47a03--63bd1140-114b-4737-a5ac-cc4509a99e5b");
+	</script>
+
+
 
 </body>
 <script type="text/javascript">
 	RunwayDisplayBugfix();
-	</script>
+	FeedInferenceApplets();
+</script>
 </html>

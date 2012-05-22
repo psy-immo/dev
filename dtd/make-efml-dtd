@@ -117,3 +117,14 @@ dtd.write("\n<!ATTLIST airport "+universal_attributes+"""
 	name	CDATA			#IMPLIED
  >
 """)
+
+#add embedded inference xml node
+
+__name__ = "efml"
+rootname = "inference"
+execfile("make-inference-dtd")
+dtd.write("\n<!ATTLIST "+ rootname + " "+universal_attributes+"""
+	name	CDATA			#IMPLIED
+ >
+""")
+

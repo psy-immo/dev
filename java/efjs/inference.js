@@ -1,6 +1,6 @@
 /**
- * inference.js, (c) 2012, Immanuel Albrecht; Dresden University of
- * Technology, Professur für die Psychologie des Lernen und Lehrens
+ * inference.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
+ * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -20,73 +20,111 @@
 myInferenceButtons = [];
 myInferenceId = 0;
 
-
 /**
  * generate a check inference button
  * 
- * @param atags accept tags
- * @param rtags reject tags
- * @param points points tag
- * @param conclusions conclusion tag
+ * @param atags
+ *            accept tags
+ * @param rtags
+ *            reject tags
+ * @param points
+ *            points tag
+ * @param conclusions
+ *            conclusion tag
  * 
  * @returns
  */
 
 function InferenceButton(atags, rtags, points, conclusions) {
-	
+
 	this.id = myInferenceId++;
 	this.errorCount = 0;
-	
+
 	this.acceptTags = atags;
 	this.rejectTags = rtags;
 	
+	this.name = "";
+	for ( var i = 0; i < atags.length; ++i) {
+		this.name += atags[i];
+	}
+	this.name += "_"+this.id;
+	
+	this.food = [];
+
 	if (typeof points == "undefined") {
 		this.points = "points";
 	} else {
 		this.points = points;
 	}
-	
+
 	if (typeof conclusions == "undefined") {
 		this.conclusions = "conclusions";
 	} else {
 		this.conclusions = conclusions;
 	}
-	
-	
+
 	/**
 	 * unlike the answer button, the feedback text is given by the applet
 	 */
 	this.currentFeedback = "";
 	this.text = "Check your answer";
-	
+
 	this.waitfor = [];
-	
+
 	this.WriteHtml = function() {
-		if (inferenceIncludeApplet) {
-			inferenceIncludeApplet = false;
-			document.write("<applet id=\"inferenceApplet"+this.id+"\" "
-					+ "name=\"inferenceApplet"+this.id+"\""
-					+ " archive=\"inferenceApplet.jar\" "
-					+ "code=\"de.tu_dresden.psy.inference.regexp.xml.InferenceMachine\" "
-					+ "MAYSCRIPT style=\"width: 1px; height: 1px; float:right;\"></applet>");
-		}
-		document.write("<form onsubmit=\"return false;\">");
-		document.write("<input type=\"button\" value=\"" + text
-				+ "\" onclick=\"myInferenceButtons[" + this.id + "].OnClick()\"/>");
+
 		document
-		.write("<br /><table border=0 cellpadding=0 cellspacing=0><tr><td id=\"InferenceHint"
-				+ this.id
-				+ "\" style=\"height: 20px; width: 100%\"></td></tr></table>");		
+				.write("<applet id=\"inferenceApplet"
+						+ this.id
+						+ "\" "
+						+ "name=\"inferenceApplet"
+						+ this.id
+						+ "\""
+						+ " archive=\"inferenceApplet.jar\" "
+						+ "code=\"de.tu_dresden.psy.inference.regexp.xml.InferenceMachine\" "
+						+ "MAYSCRIPT style=\"width: 1px; height: 1px; float:right;\"></applet>");
+
+		document.write("<form onsubmit=\"return false;\">");
+		document.write("<input type=\"button\" value=\"" + this.text
+				+ "\" onclick=\"myInferenceButtons[" + this.id
+				+ "].OnClick()\"/>");
+		document
+				.write("<br /><table border=0 cellpadding=0 cellspacing=0><tr><td id=\"InferenceHint"
+						+ this.id
+						+ "\" style=\"height: 20px; width: 100%\"></td></tr></table>");
 		document.write("</form>");
 	};
 	
 	/**
-	 * We have to wait for the page to finish loading the applet instance before we may feed it with the relevant information
+	 * add data that is post-poned to be fed into the applet after the page loaded.
+	 * 
+	 * @returns this 
+	 */
+	
+	this.Feed = function(encodedData) {
+		for (var int=0; int<encodedData.length;++int) {
+			this.food.push(encodedData[int]);
+		}
+		return this;
+	};
+
+	/**
+	 * We have to wait for the page to finish loading the applet instance before
+	 * we may feed it with the relevant information
 	 */
 	this.FeedApplet = function() {
-		var applet = document.getElementById("inferenceApplet"+this.id);		
+		var applet = document.getElementById("inferenceApplet" + this.id);
+		
+		console.log(applet);
+		a = applet;
+		
+		if (this.food.length) {
+			var ret = applet.Feed(bugfixParam(decodeString(this.food)));
+			
+			myLogger.Log(this.name +" feed: "+ret);
+		}
 	};
-	
+
 	/**
 	 * this function sets the text of the component
 	 * 
@@ -96,6 +134,16 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		this.text = text;
 		return this;
 	};
+	
+	/**
+	 * this function sets the name of the component
+	 * 
+	 * @returns this
+	 */
+	this.Name = function(name) {
+		this.name = name;
+		return this;
+	};	
 
 	/**
 	 * this function adds a waitfor-function of the component, which is called
@@ -111,7 +159,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 
 		return this;
 	};
-	
+
 	/**
 	 * this is called whenever the button is clicked
 	 */
@@ -122,14 +170,43 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		 */
 		for ( var int = 0; int < this.waitfor.length; int++) {
 			if (this.waitfor[int]() != true) {
-				myLogger.Log("Check answer " + this.id+ ": check refused by " + int + ".");
+				myLogger.Log("Check answer " + this.id + ": check refused by "
+						+ int + ".");
 				return;
 			}
 		}
-
-		var applet = document.getElementById("inferenceApplet"+this.id);
+		
+		var applet = document.getElementById("inferenceApplet" + this.id);
+		
+		/**
+		 * reset student's state
+		 */
+		
+		applet.resetStudentsState();
+		
+		/**
+		 * fetch all inputs
+		 */
+		
+		this.acceptTags.push(this.points);
+		
+		var points = myTags.AllTagsBut(this.acceptTags,this.rejectTags);
+		
+		this.acceptTags.pop();
+		
+		this.acceptTags.push(this.conclusions);
+		
+		var conclusions = myTags.AllTagsBut(this.acceptTags,this.rejectTags);
+		
+		this.acceptTags.pop();
+		
+		/**
+		 * submit inputs
+		 */
+		
+		
 	};
-	
+
 	/**
 	 * this function sets the contents of the hint area
 	 */
@@ -137,12 +214,12 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		var td = document.getElementById("InferenceHint" + this.id);
 		td.innerHTML = contents;
 	};
-	
+
 	/**
 	 * return the current state
 	 */
 	this.GetValue = function() {
-		return ""+this.errorCount+ "\n" + escapeBTNR(this.currentFeedback);
+		return "" + this.errorCount + "\n" + escapeBTNR(this.currentFeedback);
 	};
 
 	/**
@@ -151,29 +228,30 @@ function InferenceButton(atags, rtags, points, conclusions) {
 
 	this.SetValue = function(contents) {
 		var data = ("" + contents).split("\n");
-		if (data.length == 2) {		
+		if (data.length == 2) {
 			this.errorCount = parseInt(data[0]);
-			
+
 			this.currentFeedback = unescapeBTNR(data[1]);
 
 			this.SetHint(this.currentFeedback);
-			
+
 		}
 	};
-	
-	myStorage.RegisterField(this,"myInferenceButton["+this.id+"]");
+
+	myStorage.RegisterField(this, "myInferenceButton[" + this.id + "]");
 	myInferenceButtons[this.id] = this;
 
 	return this;
 };
 
 /**
- * this function takes care of giving the loaded applets the information they need to operate
+ * this function takes care of giving the loaded applets the information they
+ * need to operate
  */
 
 function FeedInferenceApplets() {
-	for ( var int = 0; int < myInferenceButton.length; int++) {
-		var btn = myInferenceButton[int];
+	for ( var int = 0; int < myInferenceButtons.length; int++) {
+		var btn = myInferenceButtons[int];
 		btn.FeedApplet();
 	}
 }

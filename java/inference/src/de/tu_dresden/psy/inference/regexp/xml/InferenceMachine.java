@@ -34,6 +34,8 @@ import de.tu_dresden.psy.inference.EquivalentAssertions;
 import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
+import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher;
+import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatchers;
 
 /**
  * 
@@ -64,6 +66,13 @@ public class InferenceMachine extends Applet {
 	private Map<String, InferenceMap> inferenceMaps;
 	private Set<ConstrainedAssertionFilter> trivial, invalid, justified;
 	private Map<String, ConstrainedAssertionFilter> lackQualities;
+
+	/**
+	 * contains the set of parsers given with the last parsed xml file
+	 */
+
+	private SubjectPredicateObjectMatchers lastGivenSetOfParsers;
+
 	private float excessTimeLimit;
 
 	/**
@@ -96,6 +105,23 @@ public class InferenceMachine extends Applet {
 				new HashSet<ConstrainedAssertionFilter>(),
 				new HashSet<ConstrainedAssertionFilter>());
 		lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
+		lastGivenSetOfParsers = new SubjectPredicateObjectMatchers(
+				new HashSet<SubjectPredicateObjectMatcher>());
+	}
+
+	/**
+	 * reset the student's state of the machine
+	 */
+
+	public void resetStudentsState() {
+
+		studentArguments = new AssertionEquivalenceClasses();
+		studentConclusions = new AssertionEquivalenceClasses();
+		studentValid = new InferableAssertions(
+				new HashSet<AssertionInterface>(),
+				new HashSet<AssertionInterface>(), new HashSet<InferenceMap>(),
+				new HashSet<ConstrainedAssertionFilter>(),
+				new HashSet<ConstrainedAssertionFilter>());
 	}
 
 	public InferenceMachine() {
@@ -129,6 +155,29 @@ public class InferenceMachine extends Applet {
 			lackQualities.put(key, root.getQualityFilters().get(key));
 		}
 
+		lastGivenSetOfParsers = root.getParsers();
+
+	}
+
+	/**
+	 * feeds inference machine data from the website java script into the applet
+	 * 
+	 * @param food
+	 * @return success-status
+	 */
+
+	public String Feed(String food) {
+		String success = "";
+
+		resetState();
+
+		addXmlString(food);
+
+		success += "assertions: " + closeExpertAssertions();
+
+		success += " ancestors: " + calculateAncestors();
+
+		return success;
 	}
 
 	/**

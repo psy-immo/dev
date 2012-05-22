@@ -1,8 +1,17 @@
 #!/usr/bin/python 
 
-dtd = open("inference.0.0.1.0.dtd","w")
+import sys
 
-dtd.write("\n<!ELEMENT root (parse|assert|expert|implicit|justified|trivial|invalid|rule) >\n")
+
+
+if __name__ == '__main__':
+	dtd = open("inference.0.0.1.0.dtd","w")
+	rootname = "root"
+else:
+	dtd = sys.stdout
+	
+	
+dtd.write("\n<!ELEMENT " + rootname +" (parse|assert|expert|implicit|justified|trivial|invalid|rule) >\n")
 
 dtd.write("\n<!ELEMENT parse (subject|predicate|object)* >\n")
 

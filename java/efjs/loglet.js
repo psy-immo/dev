@@ -26,6 +26,14 @@ document.write("<applet id=\"loglet\" " + "name=\"loglet\""
 		+ "MAYSCRIPT style=\"width: 1px; height: 1px\"></applet>");
 
 /**
+ * this is for bugfixing chromium + icedtea java interop bugs
+ */
+
+function bugfixParam(param) {
+	return "" + param + "\0";
+}
+
+/**
  * try to detect the server side php script base location
  */
 
@@ -65,7 +73,12 @@ if (typeof subjectIdChange == 'undefined') {
 
 if (typeof subjectId == 'undefined') {
 	var keyname = "subject-id-" + studyId;
-	var v = sessionStorage.getItem(keyname);
+	var v = null;
+	try {
+		v = sessionStorage.getItem(keyname);
+	} catch (e) {
+		//firefox doesn't allow local storage for filesystem files
+	}
 
 	if (v !== null) {
 		subjectId = v;
@@ -74,7 +87,11 @@ if (typeof subjectId == 'undefined') {
 		if (v == null)
 			v = "";
 		subjectId = v;
-		sessionStorage.setItem(keyname, subjectId);
+		try {
+			sessionStorage.setItem(keyname, subjectId);
+		} catch (e) {
+			//firefox doesn't allow local storage for filesystem files			
+		}
 	}
 };
 
@@ -119,8 +136,7 @@ function unescapeSome(s) {
 
 function escapeBTNR(s) {
 	return ("" + s).replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/\r/g,
-			"\\r").replace(/\t/g,
-			"\\t");
+			"\\r").replace(/\t/g, "\\t");
 }
 
 /**
@@ -131,8 +147,8 @@ function escapeBTNR(s) {
  */
 
 function unescapeBTNR(s) {
-	return ("" + s).replace(/\\n/g, "\n").replace(/\\r/g, "\r").replace(
-			/\\t/g, "\t").replace(/\\\\/g, "\\");
+	return ("" + s).replace(/\\n/g, "\n").replace(/\\r/g, "\r").replace(/\\t/g,
+			"\t").replace(/\\\\/g, "\\");
 }
 
 /**
@@ -151,8 +167,8 @@ function getServer(id, name, serverurl) {
 	 * zeros....
 	 */
 
-	var val = applet.queryLogger("" + id + "\0", "" + name + "\0", "\0", ""
-			+ serverurl + "\0");
+	var val = applet.queryLogger(bugfixParam(id), bugfixParam(name),
+			bugfixParam(""), bugfixParam(serverurl));
 
 	return unescapeSome(val);
 }
@@ -173,8 +189,8 @@ function setServer(id, name, value, serverurl) {
 	 * zeros....
 	 */
 
-	applet.queryLogger("" + id + "\0", "" + name + "\0", "" + escapeSome(value)
-			+ "\0", "" + serverurl + "\0");
+	applet.queryLogger(bugfixParam(id), bugfixParam(name),
+			bugfixParam(escapeSome(value)), bugfixParam(serverurl));
 }
 
 /**
