@@ -161,7 +161,7 @@ function SniffyButton(text, inform) {
 					+ "name=\"launchSniffy\""
 					+ " archive=\"launcherApplet.jar\" "
 					+ "code=\"de.tu_dresden.psy.util.LauncherApplet\" "
-					+ "MAYSCRIPT style=\"width: 1px; height: 1px\"></applet>");
+					+ "MAYSCRIPT style=\"width: 1px; height: 1px; float:right;\"></applet>");
 		}
 		document.write("<form onsubmit=\"return false;\">");
 		document.write("<input type=\"button\" value=\"" + text

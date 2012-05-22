@@ -45,7 +45,7 @@ function Answer(testfn) {
 		document
 				.write("<br /><table border=0 cellpadding=0 cellspacing=0><tr><td id=\"AnswerHint"
 						+ this.id
-						+ "\" style=\"height: 20; width: 100%\"></td></tr></table>");
+						+ "\" style=\"height: 20px; width: 100%\"></td></tr></table>");
 		document.write("</form>");
 	};
 
