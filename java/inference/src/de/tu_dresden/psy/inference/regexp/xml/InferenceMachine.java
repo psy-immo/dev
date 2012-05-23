@@ -166,7 +166,7 @@ public class InferenceMachine extends Applet {
 	 * @return success-status
 	 */
 
-	public String Feed(String food) {
+	public String feed(String food) {
 		String success = "";
 
 		resetState();
@@ -178,6 +178,27 @@ public class InferenceMachine extends Applet {
 		success += " ancestors: " + calculateAncestors();
 
 		return success;
+	}
+
+	/**
+	 * adds a point
+	 * 
+	 * @param point
+	 */
+
+	public void addPoint(String point) {
+		studentArguments.addNewAssertions(lastGivenSetOfParsers.match(point));
+	}
+
+	/**
+	 * adds a conclusion
+	 * 
+	 * @param conlusion
+	 */
+
+	public void addConclusion(String conclusion) {
+		studentConclusions.addNewAssertions(lastGivenSetOfParsers
+				.match(conclusion));
 	}
 
 	/**

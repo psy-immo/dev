@@ -11,10 +11,10 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <folder path="/inference/jar"/>
         <file path="/inference/.classpath"/>
         <javaElement handleIdentifier="=inference/src"/>
         <file path="/inference/inference.jarexport.jardesc"/>
+        <file path="/inference/inferenceApplet.jardesc"/>
         <file path="/inference/jarexport.jardesc"/>
         <file path="/inference/.project"/>
         <file path="/inference/example.jarexport.jardesc"/>

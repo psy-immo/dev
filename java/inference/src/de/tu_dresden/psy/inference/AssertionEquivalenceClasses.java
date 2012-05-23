@@ -113,7 +113,7 @@ public class AssertionEquivalenceClasses {
 	 * 
 	 * @param newAssertions
 	 */
-	public void addNewAssertions(Set<AssertionInterface> newAssertions) {
+	public void addNewAssertions(Set<? extends AssertionInterface> newAssertions) {
 		System.out.println("\n ~~~~ New assertions: " + newAssertions.size());
 
 		int count = 0;

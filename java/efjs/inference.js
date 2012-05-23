@@ -82,7 +82,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 						+ "\""
 						+ " archive=\"inferenceApplet.jar\" "
 						+ "code=\"de.tu_dresden.psy.inference.regexp.xml.InferenceMachine\" "
-						+ "MAYSCRIPT style=\"width: 1px; height: 1px; float:right;\"></applet>");
+						+ "MAYSCRIPT style=\"width: 1px; height: 1px\"></applet>");
 
 		document.write("<form onsubmit=\"return false;\">");
 		document.write("<input type=\"button\" value=\"" + this.text
@@ -119,7 +119,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		a = applet;
 		
 		if (this.food.length) {
-			var ret = applet.Feed(bugfixParam(decodeString(this.food)));
+			var ret = applet.feed(bugfixParam(decodeString(this.food)));
 			
 			myLogger.Log(this.name +" feed: "+ret);
 		}
