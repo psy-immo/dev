@@ -64,7 +64,8 @@ public class InferenceMachine extends Applet {
 	private AssertionEquivalenceClasses implicit, expert, studentArguments,
 			studentConclusions;
 	private Map<String, InferenceMap> inferenceMaps;
-	private Set<ConstrainedAssertionFilter> trivial, invalid, justified;
+	private Set<ConstrainedAssertionFilter> trivial, invalid, justified,
+			isConclusion;
 	private Map<String, ConstrainedAssertionFilter> lackQualities;
 
 	/**
@@ -94,6 +95,7 @@ public class InferenceMachine extends Applet {
 		trivial = new HashSet<ConstrainedAssertionFilter>();
 		invalid = new HashSet<ConstrainedAssertionFilter>();
 		justified = new HashSet<ConstrainedAssertionFilter>();
+		isConclusion = new HashSet<ConstrainedAssertionFilter>();
 		expertValid = new InferableAssertions(
 				new HashSet<AssertionInterface>(),
 				new HashSet<AssertionInterface>(), new HashSet<InferenceMap>(),
@@ -151,6 +153,8 @@ public class InferenceMachine extends Applet {
 		invalid.addAll(root.getInvalidityFilters());
 		justified.addAll(root.getJustifiedFilters());
 
+		isConclusion.addAll(root.getConclusionFilters());
+
 		for (String key : root.getQualityFilters().keySet()) {
 			lackQualities.put(key, root.getQualityFilters().get(key));
 		}
@@ -199,6 +203,36 @@ public class InferenceMachine extends Applet {
 	public void addConclusion(String conclusion) {
 		studentConclusions.addNewAssertions(lastGivenSetOfParsers
 				.match(conclusion));
+	}
+
+	/**
+	 * 
+	 * @return feedback data for
+	 */
+
+	public String checkAnswerAndFeedback() {
+		String status = "";
+		String feedback = "";
+
+		status += "closing: " + closeStudentAssertions();
+
+		int correct_conclusions = 0;
+
+		String correct_conclusion_list = "";
+
+		for (AssertionInterface conclusion : studentConclusions.getClasses()) {
+			if (expertValid.isInferable(conclusion)) {
+
+				correct_conclusion_list += conclusion.getSubject().toString() + " "
+						+ conclusion.getPredicate().toString() + " "
+						+ conclusion.getObject().toString() + "\n";
+				correct_conclusions++;
+			}
+		}
+
+		feedback += correct_conclusions + "\n" + correct_conclusion_list;
+
+		return status + "\n" + feedback;
 	}
 
 	/**

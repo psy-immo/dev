@@ -7,8 +7,7 @@ import sys
 if __name__ == '__main__':
 	dtd = open("inference.0.0.1.0.dtd","w")
 	rootname = "root"
-else:
-	dtd = sys.stdout
+
 	
 	
 dtd.write("\n<!ELEMENT " + rootname +" (parse|assert|expert|implicit|justified|trivial|invalid|rule) >\n")
@@ -39,7 +38,7 @@ dtd.write("\n<!ATTLIST predicate "+"""
  >
 """)
 
-for tag in ["assert","expert","implicit"]:
+for tag in ["assert","expert","implicit","conclusion"]:
 	dtd.write("\n<!ELEMENT "+tag+" (#PCDATA)* >\n")
 
 
@@ -75,7 +74,7 @@ dtd.write("\n<!ATTLIST out "+"""
  >
 """)
 
-for tag in ["justified","trivial","invalid","quality"]:
+for tag in ["justified","trivial","invalid","quality","conclusions"]:
 	dtd.write("\n<!ELEMENT "+tag+" (subject|predicate|object|constraint)* >\n")
 	
 dtd.write("\n<!ATTLIST quality "+"""

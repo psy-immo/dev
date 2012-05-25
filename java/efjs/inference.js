@@ -204,6 +204,37 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		 * submit inputs
 		 */
 		
+		var log_data = this.name+ " check answer triggered.\nPoints:\n";
+		
+		for (var int=0; int<points.length;++int){
+			log_data += points[int].token + "\n";
+			applet.addPoint(bugfixParam(""+points[int].token));
+			points[int].MarkNeutral();
+		}
+		
+		log_data += "Conlusions:\n";
+		
+		for (var int=0; int<conclusions.length;++int){
+			log_data += conclusions[int].token + "\n";
+			applet.addConclusion(bugfixParam(""+conclusions[int].token));
+			conclusions[int].MarkNeutral();
+		}
+		
+		log_data += "Result:\n";
+		
+		var result = applet.checkAnswerAndFeedback();
+		log_data += result;
+		
+		/**
+		 * decode feedback result
+		 * 
+		 */
+		
+		var lines = result.split("\n");
+		
+		
+		
+		myLogger.Log(log_data);
 		
 	};
 

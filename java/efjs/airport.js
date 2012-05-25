@@ -116,7 +116,7 @@ function Airport(name, tags, accept, reject) {
 			 * padding
 			 */
 
-			contents += "<tr style=\"heigth: 12px;";
+			contents += "<tr style=\"height: 12px;";
 			if (this.width)
 				contents += " width:" + this.width + "; ";
 			contents += "background-color:" + this.colorEmpty + "; \" ";

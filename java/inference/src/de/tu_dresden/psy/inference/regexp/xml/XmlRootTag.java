@@ -67,6 +67,12 @@ public class XmlRootTag extends XmlTag {
 	 * all filters for trivial assertions (e.g. A means A)
 	 */
 	private Set<ConstrainedAssertionFilter> trivial;
+
+	/**
+	 * all filters for conclusive assertions
+	 */
+	private Set<ConstrainedAssertionFilter> conclusion;
+
 	/**
 	 * all filters for assertions, that do not need further justification
 	 */
@@ -102,6 +108,8 @@ public class XmlRootTag extends XmlTag {
 		implicit = new HashSet<String>();
 		expert = new HashSet<String>();
 		conclusions = new HashSet<String>();
+
+		conclusion = new HashSet<ConstrainedAssertionFilter>();
 		lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
 	}
 	
@@ -149,6 +157,16 @@ public class XmlRootTag extends XmlTag {
 
 	public Set<ConstrainedAssertionFilter> getJustifiedFilters() {
 		return justified;
+	}
+
+	/**
+	 * 
+	 * @return a set of filters that filter out assertions that are considered
+	 *         to be conclusions
+	 */
+
+	public Set<ConstrainedAssertionFilter> getConclusionFilters() {
+		return conclusion;
 	}
 
 	/**
@@ -738,5 +756,6 @@ public class XmlRootTag extends XmlTag {
 				+ " expert assertion(s), " + justified.size()
 				+ " justified-assertion filter(s)";
 	}
+
 
 }

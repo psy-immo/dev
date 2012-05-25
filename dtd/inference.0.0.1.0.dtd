@@ -30,6 +30,8 @@
 
 <!ELEMENT implicit (#PCDATA)* >
 
+<!ELEMENT conclusion (#PCDATA)* >
+
 <!ELEMENT rule (premise|constraint|infer)* >
 
 <!ATTLIST rule 
@@ -67,6 +69,8 @@
 <!ELEMENT invalid (subject|predicate|object|constraint)* >
 
 <!ELEMENT quality (subject|predicate|object|constraint)* >
+
+<!ELEMENT conclusions (subject|predicate|object|constraint)* >
 
 <!ATTLIST quality 
         name   CDATA  #IMPLIED

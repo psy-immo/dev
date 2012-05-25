@@ -191,3 +191,88 @@
 
 	name	CDATA			#IMPLIED
  >
+
+<!ELEMENT inference (parse|assert|expert|implicit|justified|trivial|invalid|rule) >
+
+<!ELEMENT parse (subject|predicate|object)* >
+
+<!ELEMENT subject (#PCDATA|rho)* >
+
+<!ATTLIST subject 
+		id	CDATA				#IMPLIED
+		source	(subject|predicate|object)	#IMPLIED
+ >
+
+<!ELEMENT object (#PCDATA|rho)* >
+
+<!ATTLIST object 
+		id	CDATA				#IMPLIED
+		source	(subject|predicate|object)	#IMPLIED
+ >
+
+<!ELEMENT predicate (#PCDATA|rho)* >
+
+<!ATTLIST predicate 
+		id	CDATA				#IMPLIED
+		source	(subject|predicate|object)	#IMPLIED
+ >
+
+<!ELEMENT assert (#PCDATA)* >
+
+<!ELEMENT expert (#PCDATA)* >
+
+<!ELEMENT implicit (#PCDATA)* >
+
+<!ELEMENT conclusion (#PCDATA)* >
+
+<!ELEMENT rule (premise|constraint|infer)* >
+
+<!ATTLIST rule 
+		name	CDATA	#IMPLIED
+ >
+
+<!ELEMENT premise (subject|predicate|object)* >
+
+<!ATTLIST premise 
+		id	CDATA	#IMPLIED
+ >
+
+<!ELEMENT constraint (subject|predicate|object)* >
+
+<!ELEMENT infer (subject|predicate|object)* >
+
+<!ELEMENT rho (in|out)* >
+
+<!ELEMENT in (#PCDATA)* >
+
+<!ELEMENT out (#PCDATA)* >
+
+<!ATTLIST in 
+		id	CDATA	#IMPLIED
+ >
+
+<!ATTLIST out 
+		id	CDATA	#IMPLIED
+ >
+
+<!ELEMENT justified (subject|predicate|object|constraint)* >
+
+<!ELEMENT trivial (subject|predicate|object|constraint)* >
+
+<!ELEMENT invalid (subject|predicate|object|constraint)* >
+
+<!ELEMENT quality (subject|predicate|object|constraint)* >
+
+<!ELEMENT conclusions (subject|predicate|object|constraint)* >
+
+<!ATTLIST quality 
+        name   CDATA  #IMPLIED
+ >
+
+<!ATTLIST inference 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+
+	name	CDATA			#IMPLIED
+ >
