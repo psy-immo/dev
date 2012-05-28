@@ -3,7 +3,9 @@
 dtd = open("efml.0.0.1.0.dtd","w")
 
 html_elements = "i|b|br|p|div|span"
-efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown"
+efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|"+\
+				"phpurl|jsurl|documentid|studyid|subjectprompt|"+\
+				"subjectinfo|subjectchange|airport|template"
 efml_extra = "tables"
 nested_elements = "plain|dropdown"
 
