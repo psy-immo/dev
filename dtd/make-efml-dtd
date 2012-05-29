@@ -107,7 +107,7 @@ for tag in ["phpurl","jsurl","documentid","studyid","subjectprompt","subjectinfo
 	dtd.write("\n<!ELEMENT "+tag+" (#PCDATA)* >\n")
 	#dtd.write("\n<!ATTLIST "+tag+" "+universal_attributes+" >\n")
 
-dtd.write("\n<!ELEMENT template (#PCDATA|"+nested_elements+")* >\n")
+dtd.write("\n<!ELEMENT template ("+nested_elements+")* >\n")
 dtd.write("\n<!ATTLIST template "+universal_attributes+"""
 	name		CDATA				#IMPLIED
 	nonempty	(allow|disallow)	#IMPLIED
@@ -127,6 +127,8 @@ rootname = "inference"
 execfile("make-inference-dtd")
 dtd.write("\n<!ATTLIST "+ rootname + " "+universal_attributes+"""
 	name	CDATA			#IMPLIED
+	pointstag	CDATA		#IMPLIED
+	conclusionstag	CDATA		#IMPLIED
  >
 """)
 

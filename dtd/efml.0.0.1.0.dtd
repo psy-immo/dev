@@ -171,7 +171,7 @@
 
 <!ELEMENT plain (#PCDATA)* >
 
-<!ELEMENT template (#PCDATA|plain|dropdown)* >
+<!ELEMENT template (plain|dropdown)* >
 
 <!ATTLIST template 
 	tags	CDATA	#IMPLIED
@@ -192,7 +192,7 @@
 	name	CDATA			#IMPLIED
  >
 
-<!ELEMENT inference (parse|assert|expert|implicit|justified|trivial|invalid|rule|conclusions|quality) >
+<!ELEMENT inference (parse|assert|expert|conclusion|implicit|justified|trivial|invalid|rule|conclusions|quality) >
 
 <!ELEMENT parse (subject|predicate|object)* >
 
@@ -275,4 +275,6 @@
 	rtags	CDATA	#IMPLIED
 
 	name	CDATA			#IMPLIED
+	pointstag	CDATA		#IMPLIED
+	conclusionstag	CDATA		#IMPLIED
  >

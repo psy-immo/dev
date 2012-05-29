@@ -51,13 +51,13 @@ public class StringEscape {
 	}
 
 	/**
-	 * translate string to java script function call of DecodeString
+	 * translate string to java script array that is decodable by DecodeString
 	 * 
 	 * @param unescaped
 	 * @return escaped
 	 */
 
-	public static String escapeToDecodeInJavaScript(String unescaped) {
+	public static String escapeToDecodableInJavaScript(String unescaped) {
 		/**
 		 * the corresponding java script function looks like this:
 		 */
@@ -98,11 +98,23 @@ public class StringEscape {
 
 		code[0] = code[128] ^ code[0];
 
-		String jsCode = "decodeString([" + code[0];
+		String jsCode = "[" + code[0];
 		for (int i = 1; i < code.length; ++i) {
 			jsCode += ", " + code[i];
 		}
-		return jsCode + "])";
+		return jsCode + "]";
+	}
+
+	/**
+	 * translate string to java script function call of DecodeString
+	 * 
+	 * @param unescaped
+	 * @return escaped
+	 */
+
+	public static String escapeToDecodeInJavaScript(String unescaped) {
+
+		return "decodeString(" + escapeToDecodableInJavaScript(unescaped) + ")";
 	}
 
 	/**

@@ -34,6 +34,7 @@ import javax.naming.OperationNotSupportedException;
 public class TemplateTag implements AnyTag {
 
 	private EfmlTagsAttribute attributes;
+	@SuppressWarnings("unused")
 	private String label;
 
 	private ArrayList<NestedTag> parts;

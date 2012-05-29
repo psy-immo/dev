@@ -165,6 +165,18 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new TemplateTag(this.currentTags.peek()));
 		} else if (qName.equals("airport")) {
 			this.processingTags.push(new AirportTag(this.currentTags.peek()));
+		} else if (qName.equals("parse") || qName.equals("subject")
+				|| qName.equals("object") || qName.equals("predicate")
+				|| qName.equals("assert") || qName.equals("expert")
+				|| qName.equals("implicit") || qName.equals("conclusion")
+				|| qName.equals("rule") || qName.equals("premise")
+				|| qName.equals("constraint") || qName.equals("infer")
+				|| qName.equals("rho") || qName.equals("in")
+				|| qName.equals("out") || qName.equals("justified")
+				|| qName.equals("trivial") || qName.equals("invalid")
+				|| qName.equals("quality") || qName.equals("conclusions")) {
+			this.processingTags.push(new InferenceXmlTag(this.currentTags
+					.peek()));
 		}
 		else {
 			/**

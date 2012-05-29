@@ -71,7 +71,7 @@ public class XmlRootTag extends XmlTag {
 	/**
 	 * all filters for conclusive assertions
 	 */
-	private Set<ConstrainedAssertionFilter> conclusion;
+	private Set<ConstrainedAssertionFilter> conclusiveFilter;
 
 	/**
 	 * all filters for assertions, that do not need further justification
@@ -91,7 +91,7 @@ public class XmlRootTag extends XmlTag {
 	/**
 	 * all given conclusions
 	 */
-	private Set<String> conclusions;
+	private Set<String> conclusionAssertionsGiven;
 	/**
 	 * quality filters for lacking assertions in rationales (e.g. assertions
 	 * that do not need to be given explicitly)
@@ -107,9 +107,9 @@ public class XmlRootTag extends XmlTag {
 		justified = new HashSet<ConstrainedAssertionFilter>();
 		implicit = new HashSet<String>();
 		expert = new HashSet<String>();
-		conclusions = new HashSet<String>();
+		conclusionAssertionsGiven = new HashSet<String>();
 
-		conclusion = new HashSet<ConstrainedAssertionFilter>();
+		conclusiveFilter = new HashSet<ConstrainedAssertionFilter>();
 		lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
 	}
 	
@@ -166,7 +166,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	public Set<ConstrainedAssertionFilter> getConclusionFilters() {
-		return conclusion;
+		return conclusiveFilter;
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class XmlRootTag extends XmlTag {
 		Set<AssertionInterface> given = new HashSet<AssertionInterface>();
 		SubjectPredicateObjectMatchers matcher = getParsers();
 
-		for (String assertion : conclusions) {
+		for (String assertion : conclusionAssertionsGiven) {
 			given.addAll(matcher.match(assertion));
 		}
 
@@ -283,7 +283,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processConclusion(XmlTag child) {
-		conclusions.add(child.contents);
+		conclusionAssertionsGiven.add(child.contents);
 	}
 
 	/**
@@ -327,6 +327,17 @@ public class XmlRootTag extends XmlTag {
 
 	private void processJustified(XmlTag child) throws Exception {
 		justified.add(processConstraintFilter(child));
+	}
+
+	/**
+	 * process a &lt;conclusions>-tag
+	 * 
+	 * @param child
+	 * @throws Exception
+	 */
+
+	private void processConclusions(XmlTag child) throws Exception {
+		conclusiveFilter.add(processConstraintFilter(child));
 	}
 
 	/**
@@ -734,6 +745,8 @@ public class XmlRootTag extends XmlTag {
 			processExpert(child);
 		} else if (child.tagName.equals("CONCLUSION")) {
 			processConclusion(child);
+		} else if (child.tagName.equals("CONCLUSIONS")) {
+			processConclusions(child);
 		} else if (child.tagName.equals("JUSTIFIED")) {
 			processJustified(child);
 		} else if (child.tagName.equals("QUALITY")) {

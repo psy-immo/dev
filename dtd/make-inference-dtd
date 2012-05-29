@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
 	
 	
-dtd.write("\n<!ELEMENT " + rootname +" (parse|assert|expert|implicit|"+\
+dtd.write("\n<!ELEMENT " + rootname +" (parse|assert|expert|conclusion|implicit|"+\
 	"justified|trivial|invalid|rule|conclusions|quality) >\n")
 
 dtd.write("\n<!ELEMENT parse (subject|predicate|object)* >\n")
