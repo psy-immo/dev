@@ -177,6 +177,8 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 				|| qName.equals("quality") || qName.equals("conclusions")) {
 			this.processingTags.push(new InferenceXmlTag(this.currentTags
 					.peek()));
+		}  else if (qName.equals("inference")) {
+			this.processingTags.push(new InferenceTag(this.currentTags.peek()));
 		}
 		else {
 			/**

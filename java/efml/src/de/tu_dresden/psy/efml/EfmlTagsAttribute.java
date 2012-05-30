@@ -18,6 +18,8 @@
 
 package de.tu_dresden.psy.efml;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -232,6 +234,25 @@ public class EfmlTagsAttribute {
 			return attribs.get(attributeName);
 
 		return defaultValue;
+	}
+
+	/**
+	 * 
+	 * writes an attribute with pre- and postfix if it has been given as attribute, otherwise does nothing
+	 * 
+	 * @param writer
+	 * @param prefixIfWritten
+	 * @param attributeName
+	 * @param postfixIfWritten
+	 * @throws IOException
+	 */
+	
+	public void writeIfValueGiven(Writer writer, String prefixIfWritten, String attributeName, String postfixIfWritten) throws IOException {
+		if (attribs.containsKey(attributeName)) {
+			writer.write(prefixIfWritten);
+			writer.write(attribs.get(attributeName));
+			writer.write(postfixIfWritten);
+		}
 	}
 	
 	/**

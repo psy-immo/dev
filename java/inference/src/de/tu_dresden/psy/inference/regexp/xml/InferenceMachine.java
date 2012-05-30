@@ -56,7 +56,7 @@ public class InferenceMachine extends Applet {
 	 * stop inference process after ... seconds
 	 */
 
-	private static final float defaultExcessTimeLimit = 10;
+	private static final float defaultExcessTimeLimit = 45;
 
 	/**
 	 * machine state variables
@@ -213,12 +213,47 @@ public class InferenceMachine extends Applet {
 	public String checkAnswerAndFeedback() {
 		String status = "";
 		String feedback = "";
+		
+		boolean invalid_points = false;
+		boolean invalid_conclusions = false;
+		
+		/**
+		 * check which points are correct
+		 */
+		
+		int correct_points = 0;
 
-		status += "closing: " + closeStudentAssertions();
+		String correct_point_list = "";
+
+		for (AssertionInterface conclusion : studentArguments.getClasses()) {
+			if (expertValid.isInferable(conclusion)) {
+
+				correct_point_list += conclusion.getSubject().toString() + " "
+						+ conclusion.getPredicate().toString() + " "
+						+ conclusion.getObject().toString() + "\n";
+				correct_points++;
+			} else invalid_points = true;
+		}
+
+		feedback += correct_points + "\n" + correct_point_list;
+		
+		/**
+		 * check which conclusions are correct
+		 */
 
 		int correct_conclusions = 0;
 
 		String correct_conclusion_list = "";
+		
+		/**
+		 * and check which given conclusions are correct and considered to be conclusions
+		 */
+
+		int good_conclusions = 0;
+
+		String good_conclusion_list = "";
+		
+		Set<AssertionInterface> singleton = new HashSet<AssertionInterface>();
 
 		for (AssertionInterface conclusion : studentConclusions.getClasses()) {
 			if (expertValid.isInferable(conclusion)) {
@@ -227,10 +262,52 @@ public class InferenceMachine extends Applet {
 						+ conclusion.getPredicate().toString() + " "
 						+ conclusion.getObject().toString() + "\n";
 				correct_conclusions++;
-			}
+				
+				/**
+				 * check whether it is indeed considered to be a conclusion
+				 */
+				
+				boolean good = false;
+				
+				singleton.clear();
+				singleton.add(conclusion);
+				
+				for (ConstrainedAssertionFilter filter : isConclusion) {
+					if (filter.filter(singleton).isEmpty() == false) {
+						good = true;
+						break;
+					}
+				}
+				
+				if (good) {
+					good_conclusion_list += conclusion.getSubject().toString() + " "
+							+ conclusion.getPredicate().toString() + " "
+							+ conclusion.getObject().toString() + "\n";
+					good_conclusions++;
+				}
+				
+				
+			} else invalid_conclusions = true;
 		}
-
+		
 		feedback += correct_conclusions + "\n" + correct_conclusion_list;
+		
+		
+		feedback += good_conclusions + "\n" + good_conclusion_list;
+		
+		/**
+		 * give some qualitative feedback information
+		 */
+	
+		if (invalid_points)
+			status += "invalid points,";
+		else
+			status += ",";
+		
+		if (invalid_conclusions)
+			status += "invalid conclusions,";
+		else
+			status += ",";
 
 		return status + "\n" + feedback;
 	}

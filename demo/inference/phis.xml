@@ -549,6 +549,11 @@
 		<predicate>is smaller than</predicate>
 		<subject>the voltage of bulb (B|C)</subject>
 	 </justified>
+	 
+	 <conclusions>
+		 <subject>the luminosity of.*</subject>
+		 <object>the luminosity of.*</object>
+	 </conclusions>
 
 	<implicit>bulb A is a bulb</implicit>
 	<implicit>bulb B is a bulb</implicit>

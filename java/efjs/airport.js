@@ -44,6 +44,11 @@ function AirportRunway(airport, index, tags) {
 		this.airport.UpdateContents();
 	};
 	
+	this.MarkAsOkay = function() {
+		this.airport.marked[this.index] = "O";
+		this.airport.UpdateContents();
+	};
+	
 	this.MarkAsGood = function() {
 		this.airport.marked[this.index] = "G";
 		this.airport.UpdateContents();
@@ -80,6 +85,7 @@ function Airport(name, tags, accept, reject) {
 	this.colorEmpty = "#CCCCCC";
 	this.colorFilled = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
+	this.colorOkay = "#FFEE00";
 	this.colorAround = "#E8E8E8";
 	this.markedgood = false;
 	this.accept = accept;
@@ -135,6 +141,8 @@ function Airport(name, tags, accept, reject) {
 				contents += " width:" + this.width + "; ";
 			if (this.marked[int] == "G") {
 				contents += "background-color:" + this.colorGood + "; \" >";
+			} else if (this.marked[int] == "O") {
+				contents += "background-color:" + this.colorOkay + "; \" >";
 			} else if (this.content[int])
 				contents += "background-color:" + this.colorFilled + "; \" >";
 			else
@@ -209,6 +217,29 @@ function Airport(name, tags, accept, reject) {
 
 		return this;
 	};
+	
+	/**
+	 * this function sets the parameter
+	 * 
+	 * @returns this
+	 */
+	this.Width = function(width) {
+		this.width = width;
+	
+		return this;
+	};
+
+	/**
+	 * this function sets the parameter
+	 * 
+	 * @returns this
+	 */
+	this.Height = function(height) {
+		this.height = height;
+	
+		return this;
+	};
+	
 
 	/**
 	 * this function unsets/sets the flag that prevents take off from the

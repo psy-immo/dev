@@ -232,7 +232,80 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		
 		var lines = result.split("\n");
 		
+		var status = lines[0].split(",");
 		
+		/**
+		 * get correct points
+		 */
+		
+		var int = 2;
+		var count = parseInt(lines[1]);
+		
+		var correct_points = {};
+		
+		while (count > 0) {
+			--count;
+			
+			correct_points[lines[int]] = 1;
+			++int;
+		}
+		
+		/**
+		 * get correct conclusions
+		 */
+		
+		count = parseInt(lines[int]);
+		int++;
+		
+		var correct_conclusions = {};
+		
+		while (count > 0) {
+			--count;
+			
+			correct_conclusions[lines[int]] = 1;
+			++int;
+		}
+		
+		/**
+		 * get good conclusions
+		 */
+		
+		count = parseInt(lines[int]);
+		int++;
+		
+		var good_conclusions = {};
+		
+		while (count > 0) {
+			--count;
+			
+			good_conclusions[lines[int]] = 1;
+			++int;
+		}
+		
+		/**
+		 * colorize points
+		 */
+		
+		for (var int=0; int<points.length;++int){
+			if ((""+points[int].token) in correct_points) {
+				points[int].MarkAsGood();
+			}
+			
+		}
+		
+		/**
+		 * colorize conclusions
+		 */
+		
+		for (var int=0; int<conclusions.length;++int){
+			if ((""+conclusions[int].token) in good_conclusions) {
+				conclusions[int].MarkAsGood();
+			} else
+			if ((""+conclusions[int].token) in correct_conclusions) {
+				conclusions[int].MarkAsOkay();
+			}
+		}
+				
 		
 		myLogger.Log(log_data);
 		

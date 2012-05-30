@@ -55,6 +55,9 @@ public class AirportTag implements AnyTag {
 
 		writer.write(attributes.getAcceptTags() + ", ");
 		writer.write(attributes.getRejectTags() + ")");
+		
+		attributes.writeIfValueGiven(writer, ".Width(\"", "width", "\")");
+		attributes.writeIfValueGiven(writer, ".Height(\"", "height", "\")");
 
 		writer.write(".WriteHtml();");
 
