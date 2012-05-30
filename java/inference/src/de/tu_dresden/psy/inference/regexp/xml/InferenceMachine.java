@@ -180,6 +180,8 @@ public class InferenceMachine extends Applet {
 		success += "assertions: " + closeExpertAssertions();
 
 		success += " ancestors: " + calculateAncestors();
+		
+		updateExpertJustification();
 
 		return success;
 	}
@@ -212,6 +214,20 @@ public class InferenceMachine extends Applet {
 
 	public String checkAnswerAndFeedback() {
 		String status = "";
+		
+		status += "assertions: "+closeStudentAssertions() + ",";
+		
+		/**
+		 * update justifications
+		 */
+		
+		updateStudentJustification();
+		
+		/**
+		 * calculate feedback data
+		 */
+		
+		
 		String feedback = "";
 		
 		boolean invalid_points = false;
@@ -224,18 +240,49 @@ public class InferenceMachine extends Applet {
 		int correct_points = 0;
 
 		String correct_point_list = "";
+		
+		/**
+		 * and check which points are plain wrong
+		 */
 
-		for (AssertionInterface conclusion : studentArguments.getClasses()) {
-			if (expertValid.isInferable(conclusion)) {
+		int wrong_points = 0;
 
-				correct_point_list += conclusion.getSubject().toString() + " "
-						+ conclusion.getPredicate().toString() + " "
-						+ conclusion.getObject().toString() + "\n";
+		String wrong_point_list = "";
+		
+		/**
+		 * and check which points are plain wrong
+		 */
+
+		int unjustified_points = 0;
+
+		String unjustified_point_list = "";
+
+		for (AssertionInterface assertion : studentArguments.getClasses()) {
+			if (expertValid.isInferable(assertion)) {
+
+				correct_point_list += assertion.getSubject().toString() + " "
+						+ assertion.getPredicate().toString() + " "
+						+ assertion.getObject().toString() + "\n";
 				correct_points++;
-			} else invalid_points = true;
+				
+				if (studentValid.justificationLevel(assertion) == EquivalentAssertions.notJustified) {
+					unjustified_point_list += assertion.getSubject().toString() + " "
+							+ assertion.getPredicate().toString() + " "
+							+ assertion.getObject().toString() + "\n";
+					unjustified_points++;	
+				}
+			} else {
+				invalid_points = true;
+				wrong_point_list += assertion.getSubject().toString() + " "
+						+ assertion.getPredicate().toString() + " "
+						+ assertion.getObject().toString() + "\n";
+				wrong_points++;
+			}
 		}
 
 		feedback += correct_points + "\n" + correct_point_list;
+		feedback += wrong_points + "\n" + wrong_point_list;		
+		feedback += unjustified_points + "\n" + unjustified_point_list;
 		
 		/**
 		 * check which conclusions are correct
@@ -253,14 +300,30 @@ public class InferenceMachine extends Applet {
 
 		String good_conclusion_list = "";
 		
+		/**
+		 * and check which points are plain wrong
+		 */
+
+		int wrong_conclusions = 0;
+
+		String wrong_conclusion_list = "";
+		
+		/**
+		 * and check which conclusions are not justified
+		 */
+
+		int unjustified_conclusions = 0;
+
+		String unjustified_conclusion_list = "";
+		
 		Set<AssertionInterface> singleton = new HashSet<AssertionInterface>();
 
-		for (AssertionInterface conclusion : studentConclusions.getClasses()) {
-			if (expertValid.isInferable(conclusion)) {
+		for (AssertionInterface assertion : studentConclusions.getClasses()) {
+			if (expertValid.isInferable(assertion)) {
 
-				correct_conclusion_list += conclusion.getSubject().toString() + " "
-						+ conclusion.getPredicate().toString() + " "
-						+ conclusion.getObject().toString() + "\n";
+				correct_conclusion_list += assertion.getSubject().toString() + " "
+						+ assertion.getPredicate().toString() + " "
+						+ assertion.getObject().toString() + "\n";
 				correct_conclusions++;
 				
 				/**
@@ -270,7 +333,7 @@ public class InferenceMachine extends Applet {
 				boolean good = false;
 				
 				singleton.clear();
-				singleton.add(conclusion);
+				singleton.add(assertion);
 				
 				for (ConstrainedAssertionFilter filter : isConclusion) {
 					if (filter.filter(singleton).isEmpty() == false) {
@@ -280,20 +343,28 @@ public class InferenceMachine extends Applet {
 				}
 				
 				if (good) {
-					good_conclusion_list += conclusion.getSubject().toString() + " "
-							+ conclusion.getPredicate().toString() + " "
-							+ conclusion.getObject().toString() + "\n";
+					good_conclusion_list += assertion.getSubject().toString() + " "
+							+ assertion.getPredicate().toString() + " "
+							+ assertion.getObject().toString() + "\n";
 					good_conclusions++;
 				}
 				
 				
-			} else invalid_conclusions = true;
+			} else {
+				invalid_conclusions = true;
+				wrong_conclusion_list += assertion.getSubject().toString() + " "
+						+ assertion.getPredicate().toString() + " "
+						+ assertion.getObject().toString() + "\n";
+				wrong_conclusions++;
+			}
 		}
 		
 		feedback += correct_conclusions + "\n" + correct_conclusion_list;
 		
-		
 		feedback += good_conclusions + "\n" + good_conclusion_list;
+		
+		feedback += wrong_conclusions + "\n" + wrong_conclusion_list;
+		feedback += unjustified_conclusions + "\n" + unjustified_conclusion_list;
 		
 		/**
 		 * give some qualitative feedback information

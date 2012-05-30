@@ -49,6 +49,11 @@ function AirportRunway(airport, index, tags) {
 		this.airport.UpdateContents();
 	};
 	
+	this.MarkAsBad = function() {
+		this.airport.marked[this.index] = "B";
+		this.airport.UpdateContents();
+	};
+	
 	this.MarkAsGood = function() {
 		this.airport.marked[this.index] = "G";
 		this.airport.UpdateContents();
@@ -86,6 +91,7 @@ function Airport(name, tags, accept, reject) {
 	this.colorFilled = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
 	this.colorOkay = "#FFEE00";
+	this.colorBad = "#EE6666";
 	this.colorAround = "#E8E8E8";
 	this.markedgood = false;
 	this.accept = accept;
@@ -143,6 +149,8 @@ function Airport(name, tags, accept, reject) {
 				contents += "background-color:" + this.colorGood + "; \" >";
 			} else if (this.marked[int] == "O") {
 				contents += "background-color:" + this.colorOkay + "; \" >";
+			}else if (this.marked[int] == "B") {
+				contents += "background-color:" + this.colorBad + "; \" >";
 			} else if (this.content[int])
 				contents += "background-color:" + this.colorFilled + "; \" >";
 			else

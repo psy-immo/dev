@@ -251,6 +251,38 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		}
 		
 		/**
+		 * get wrong points
+		 */
+		
+		count = parseInt(lines[int]);
+		int++;
+		
+		var wrong_points = {};
+		
+		while (count > 0) {
+			--count;
+			
+			wrong_points[lines[int]] = 1;
+			++int;
+		}
+		
+		/**
+		 * get wrong points
+		 */
+		
+		count = parseInt(lines[int]);
+		int++;
+		
+		var unjustified_points = {};
+		
+		while (count > 0) {
+			--count;
+			
+			unjustified_points[lines[int]] = 1;
+			++int;
+		}
+		
+		/**
 		 * get correct conclusions
 		 */
 		
@@ -283,12 +315,48 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		}
 		
 		/**
+		 * get wrong conclusions
+		 */
+		
+		count = parseInt(lines[int]);
+		int++;
+		
+		var wrong_conclusions = {};
+		
+		while (count > 0) {
+			--count;
+			
+			wrong_conclusions[lines[int]] = 1;
+			++int;
+		}
+		
+		/**
+		 * get unjustified conclusions
+		 */
+		
+		count = parseInt(lines[int]);
+		int++;
+		
+		var unjustified_conclusions = {};
+		
+		while (count > 0) {
+			--count;
+			
+			unjustified_conclusions[lines[int]] = 1;
+			++int;
+		}
+		
+		/**
 		 * colorize points
 		 */
 		
 		for (var int=0; int<points.length;++int){
-			if ((""+points[int].token) in correct_points) {
+			if ((""+points[int].token) in unjustified_points) {
+				points[int].MarkAsOkay();
+			} else if ((""+points[int].token) in correct_points) {
 				points[int].MarkAsGood();
+			} else if ((""+points[int].token) in wrong_points) {
+				points[int].MarkAsBad();
 			}
 			
 		}
@@ -301,8 +369,8 @@ function InferenceButton(atags, rtags, points, conclusions) {
 			if ((""+conclusions[int].token) in good_conclusions) {
 				conclusions[int].MarkAsGood();
 			} else
-			if ((""+conclusions[int].token) in correct_conclusions) {
-				conclusions[int].MarkAsOkay();
+			if ((""+conclusions[int].token) in wrong_conclusions) {
+				conclusions[int].MarkAsBad();					
 			}
 		}
 				
