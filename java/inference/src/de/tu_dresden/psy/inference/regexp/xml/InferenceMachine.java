@@ -215,7 +215,7 @@ public class InferenceMachine extends Applet {
 	public String checkAnswerAndFeedback() {
 		String status = "";
 		
-		status += "assertions: "+closeStudentAssertions() + ",";
+		prepareStudentAssertions();
 		
 		/**
 		 * update justifications
@@ -504,15 +504,23 @@ public class InferenceMachine extends Applet {
 	}
 
 	/**
+	 * join the inter representations of points and conclusions in the field studentValid to be able to process them
+	 */
+	
+	public void prepareStudentAssertions() {
+		studentValid = new InferableAssertions(implicit.getClasses(),
+				studentArguments.getClasses(), inferenceMaps.values(), invalid,
+				trivial);
+	}
+	
+	/**
 	 * close student assertions under given rules
 	 * 
 	 * @return "closed", "invalid" or "excess"
 	 */
 
 	public String closeStudentAssertions() {
-		studentValid = new InferableAssertions(implicit.getClasses(),
-				studentArguments.getClasses(), inferenceMaps.values(), invalid,
-				trivial);
+		prepareStudentAssertions();
 		return studentValid.closeValid(new ExcessLimit(excessTimeLimit)).name();
 	}
 
