@@ -215,7 +215,11 @@ public class InferenceMachine extends Applet {
 	public String checkAnswerAndFeedback() {
 		String status = "";
 		
-		prepareStudentAssertions();
+		/**
+		 * close relations between students given assertions
+		 */
+		
+		status += closeStudentAssertions()+",";
 		
 		/**
 		 * update justifications
@@ -614,7 +618,7 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public void updateStudentJustification() {
-		System.err.println("SJ");
+		
 		studentValid.updateJustification(justified, expertValid.getValid(),
 				false);
 	}
