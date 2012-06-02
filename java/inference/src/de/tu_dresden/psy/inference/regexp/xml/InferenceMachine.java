@@ -619,9 +619,9 @@ public class InferenceMachine extends Applet {
 
 	public void updateStudentJustification() {
 		
-		studentValid.updateJustification(justified, expertValid.getValid(),
-				false);
+		//TODO: write routine that uses expert justification structures to check relative justification of the given points of the student.
 	}
+	
 
 	/**
 	 * 
