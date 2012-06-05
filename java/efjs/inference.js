@@ -16,7 +16,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 myInferenceButtons = [];
 myInferenceId = 0;
 
@@ -42,13 +41,13 @@ function InferenceButton(atags, rtags, points, conclusions) {
 
 	this.acceptTags = atags;
 	this.rejectTags = rtags;
-	
+
 	this.name = "";
 	for ( var i = 0; i < atags.length; ++i) {
 		this.name += atags[i];
 	}
-	this.name += "_"+this.id;
-	
+	this.name += "_" + this.id;
+
 	this.food = [];
 
 	if (typeof points == "undefined") {
@@ -94,15 +93,16 @@ function InferenceButton(atags, rtags, points, conclusions) {
 						+ "\" style=\"height: 20px; width: 100%\"></td></tr></table>");
 		document.write("</form>");
 	};
-	
+
 	/**
-	 * add data that is post-poned to be fed into the applet after the page loaded.
+	 * add data that is post-poned to be fed into the applet after the page
+	 * loaded.
 	 * 
-	 * @returns this 
+	 * @returns this
 	 */
-	
+
 	this.Feed = function(encodedData) {
-		for (var int=0; int<encodedData.length;++int) {
+		for ( var int = 0; int < encodedData.length; ++int) {
 			this.food.push(encodedData[int]);
 		}
 		return this;
@@ -114,14 +114,14 @@ function InferenceButton(atags, rtags, points, conclusions) {
 	 */
 	this.FeedApplet = function() {
 		var applet = document.getElementById("inferenceApplet" + this.id);
-		
+
 		console.log(applet);
 		a = applet;
-		
+
 		if (this.food.length) {
 			var ret = applet.feed(bugfixParam(decodeString(this.food)));
-			
-			myLogger.Log(this.name +" feed: "+ret);
+
+			myLogger.Log(this.name + " feed: " + ret);
 		}
 	};
 
@@ -134,7 +134,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		this.text = text;
 		return this;
 	};
-	
+
 	/**
 	 * this function sets the name of the component
 	 * 
@@ -143,7 +143,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 	this.Name = function(name) {
 		this.name = name;
 		return this;
-	};	
+	};
 
 	/**
 	 * this function adds a waitfor-function of the component, which is called
@@ -175,208 +175,208 @@ function InferenceButton(atags, rtags, points, conclusions) {
 				return;
 			}
 		}
-		
+
 		var applet = document.getElementById("inferenceApplet" + this.id);
-		
+
 		/**
 		 * reset student's state
 		 */
-		
+
 		applet.resetStudentsState();
-		
+
 		/**
 		 * fetch all inputs
 		 */
-		
+
 		this.acceptTags.push(this.points);
-		
-		var points = myTags.AllTagsBut(this.acceptTags,this.rejectTags);
-		
+
+		var points = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
+
 		this.acceptTags.pop();
-		
+
 		this.acceptTags.push(this.conclusions);
-		
-		var conclusions = myTags.AllTagsBut(this.acceptTags,this.rejectTags);
-		
+
+		var conclusions = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
+
 		this.acceptTags.pop();
-		
+
 		/**
 		 * submit inputs
 		 */
-		
-		var log_data = this.name+ " check answer triggered.\nPoints:\n";
-		
-		for (var int=0; int<points.length;++int){
+
+		var log_data = this.name + " check answer triggered.\nPoints:\n";
+
+		for ( var int = 0; int < points.length; ++int) {
 			log_data += points[int].token + "\n";
-			applet.addPoint(bugfixParam(""+points[int].token));
+			applet.addPoint(bugfixParam("" + points[int].token));
 			points[int].MarkNeutral();
 		}
-		
+
 		log_data += "Conlusions:\n";
-		
-		for (var int=0; int<conclusions.length;++int){
+
+		for ( var int = 0; int < conclusions.length; ++int) {
 			log_data += conclusions[int].token + "\n";
-			applet.addConclusion(bugfixParam(""+conclusions[int].token));
+			applet.addConclusion(bugfixParam("" + conclusions[int].token));
 			conclusions[int].MarkNeutral();
 		}
-		
+
 		log_data += "Result:\n";
-		
+
 		var result = applet.checkAnswerAndFeedback();
 		log_data += result;
-		
+
 		/**
 		 * decode feedback result
 		 * 
 		 */
-		
+
 		var lines = result.split("\n");
-		
+
 		var status = lines[0].split(",");
-		
+
 		/**
 		 * get correct points
 		 */
-		
+
 		var int = 2;
 		var count = parseInt(lines[1]);
-		
+
 		var correct_points = {};
-		
+
 		while (count > 0) {
 			--count;
-			
+
 			correct_points[lines[int]] = 1;
 			++int;
 		}
-		
+
 		/**
 		 * get wrong points
 		 */
-		
+
 		count = parseInt(lines[int]);
 		int++;
-		
+
 		var wrong_points = {};
-		
+
 		while (count > 0) {
 			--count;
-			
+
 			wrong_points[lines[int]] = 1;
 			++int;
 		}
-		
+
 		/**
 		 * get wrong points
 		 */
-		
+
 		count = parseInt(lines[int]);
 		int++;
-		
+
 		var unjustified_points = {};
-		
+
 		while (count > 0) {
 			--count;
-			
+
 			unjustified_points[lines[int]] = 1;
 			++int;
 		}
-		
+
 		/**
 		 * get correct conclusions
 		 */
-		
+
 		count = parseInt(lines[int]);
 		int++;
-		
+
 		var correct_conclusions = {};
-		
+
 		while (count > 0) {
 			--count;
-			
+
 			correct_conclusions[lines[int]] = 1;
 			++int;
 		}
-		
+
 		/**
 		 * get good conclusions
 		 */
-		
+
 		count = parseInt(lines[int]);
 		int++;
-		
+
 		var good_conclusions = {};
-		
+
 		while (count > 0) {
 			--count;
-			
+
 			good_conclusions[lines[int]] = 1;
 			++int;
 		}
-		
+
 		/**
 		 * get wrong conclusions
 		 */
-		
+
 		count = parseInt(lines[int]);
 		int++;
-		
+
 		var wrong_conclusions = {};
-		
+
 		while (count > 0) {
 			--count;
-			
+
 			wrong_conclusions[lines[int]] = 1;
 			++int;
 		}
-		
+
 		/**
 		 * get unjustified conclusions
 		 */
-		
+
 		count = parseInt(lines[int]);
 		int++;
-		
+
 		var unjustified_conclusions = {};
-		
+
 		while (count > 0) {
 			--count;
-			
+
 			unjustified_conclusions[lines[int]] = 1;
 			++int;
 		}
-		
+
 		/**
 		 * colorize points
 		 */
-		
-		for (var int=0; int<points.length;++int){
-			if ((""+points[int].token) in unjustified_points) {
+
+		for ( var int = 0; int < points.length; ++int) {
+			if (("" + points[int].token) in unjustified_points) {
 				points[int].MarkAsOkay();
-			} else if ((""+points[int].token) in correct_points) {
+			} else if (("" + points[int].token) in correct_points) {
 				points[int].MarkAsGood();
-			} else if ((""+points[int].token) in wrong_points) {
+			} else if (("" + points[int].token) in wrong_points) {
 				points[int].MarkAsBad();
 			}
-			
+
 		}
-		
+
 		/**
 		 * colorize conclusions
 		 */
-		
-		for (var int=0; int<conclusions.length;++int){
-			if ((""+conclusions[int].token) in good_conclusions) {
+
+		for ( var int = 0; int < conclusions.length; ++int) {
+			if (("" + conclusions[int].token) in unjustified_conclusions) {
+				conclusions[int].MarkAsOkay();
+			} else if (("" + conclusions[int].token) in good_conclusions) {
 				conclusions[int].MarkAsGood();
-			} else
-			if ((""+conclusions[int].token) in wrong_conclusions) {
-				conclusions[int].MarkAsBad();					
+			} else if (("" + conclusions[int].token) in wrong_conclusions) {
+				conclusions[int].MarkAsBad();
 			}
 		}
-				
-		
+
 		myLogger.Log(log_data);
-		
+
 	};
 
 	/**

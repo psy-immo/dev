@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+
 import de.tu_dresden.psy.inference.AssertionEquivalenceClasses;
 import de.tu_dresden.psy.inference.AssertionInterface;
 import de.tu_dresden.psy.inference.EquivalentAssertions;
@@ -357,6 +358,13 @@ public class InferenceMachine extends Applet {
 							+ assertion.getPredicate().toString() + " "
 							+ assertion.getObject().toString() + "\n";
 					good_conclusions++;
+					
+					if (studentValid.justificationLevel(assertion) == EquivalentAssertions.notJustified) {
+						unjustified_conclusion_list += assertion.getSubject().toString() + " "
+								+ assertion.getPredicate().toString() + " "
+								+ assertion.getObject().toString() + "\n";
+						unjustified_conclusions++;	
+					}
 				}
 				
 				
@@ -376,6 +384,18 @@ public class InferenceMachine extends Applet {
 		feedback += wrong_conclusions + "\n" + wrong_conclusion_list;
 		feedback += unjustified_conclusions + "\n" + unjustified_conclusion_list;
 		
+		Set<AssertionInterface> need_more_justification = new HashSet<AssertionInterface>();
+		
+		for (EquivalentAssertions ea : studentValid.getGiven().getEquivalencyClasses()) {
+			if (studentValid.justificationLevel(ea) == EquivalentAssertions.notJustified) {
+				need_more_justification.add(ea);
+			}
+		}
+		
+		
+		
+		
+		
 		/**
 		 * give some qualitative feedback information
 		 */
@@ -389,6 +409,9 @@ public class InferenceMachine extends Applet {
 			status += "invalid conclusions,";
 		else
 			status += ",";
+		
+		status += "lacks:"+ expertValid.getJustificationTips(need_more_justification,
+				studentValid.getGiven().getEquivalencyClasses(), lackQualities, true);
 
 		return status + "\n" + feedback;
 	}
@@ -518,9 +541,17 @@ public class InferenceMachine extends Applet {
 	 */
 	
 	public void prepareStudentAssertions() {
+		
+		Set<AssertionInterface> given = new HashSet<AssertionInterface>();
+		
+		given.addAll(studentArguments.getClasses());
+		//TODO: only add conclusions
+		given.addAll(studentConclusions.getClasses());
+		
 		studentValid = new InferableAssertions(implicit.getClasses(),
-				studentArguments.getClasses(), inferenceMaps.values(), invalid,
+				given, inferenceMaps.values(), invalid,
 				trivial);
+		
 	}
 	
 	/**

@@ -700,11 +700,19 @@ public class InferableAssertions {
 	 * @param otherGivenAssertions
 	 * @return tips for justification
 	 */
-
+	
 	public String getJustificationTips(
 			Set<AssertionInterface> needJustification,
 			Set<EquivalentAssertions> otherGivenAssertions,
 			Map<String, ConstrainedAssertionFilter> qualities) {
+		return getJustificationTips(needJustification, otherGivenAssertions, qualities, false);
+	}
+
+	public String getJustificationTips(
+			Set<AssertionInterface> needJustification,
+			Set<EquivalentAssertions> otherGivenAssertions,
+			Map<String, ConstrainedAssertionFilter> qualities,
+			boolean justQualities) {
 
 		Map<EquivalentAssertions, Set<Set<EquivalentAssertions>>> justified_by = new HashMap<EquivalentAssertions, Set<Set<EquivalentAssertions>>>();
 
@@ -812,6 +820,19 @@ public class InferableAssertions {
 
 		for (String name : qualities_lacking)
 			tips.append("\n     " + name);
+		
+		if (justQualities) {
+			String qs = "";
+			for (String name : qualities_lacking) {
+				if (qs.isEmpty()==false) {
+					qs += "&";
+				}
+				qs += name;
+			}
+			
+			return qs;
+			
+		}
 
 		return tips.toString();
 	}

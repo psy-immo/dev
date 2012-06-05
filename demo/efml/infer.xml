@@ -671,6 +671,14 @@
 			<expert>the resistance of bulb chain BC is bigger than the resistance of bulb C</expert>
 			<expert>the voltage of bulb chain BC is bigger than the voltage of bulb B</expert>
 			<expert>the current through bulb chain BC is as big as the current through bulb B</expert>
+			
+			<quality name="schematic">
+				<predicate>.*connected.*</predicate>
+			</quality>
+			
+			<quality name="parameters">
+				<predicate>means, for bulbs,</predicate>
+			</quality>
 		</inference>
 	
 	</tags>
