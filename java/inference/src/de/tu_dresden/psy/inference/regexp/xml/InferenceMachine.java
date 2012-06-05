@@ -216,11 +216,11 @@ public class InferenceMachine extends Applet {
 		String status = "";
 		
 		/**
-		 * close relations between students given assertions
+		 * prepare studentValid data structure
 		 */
 		
-		status += closeStudentAssertions()+",";
-		
+		prepareStudentAssertions();
+				
 		/**
 		 * update justifications
 		 */
@@ -619,7 +619,8 @@ public class InferenceMachine extends Applet {
 
 	public void updateStudentJustification() {
 		
-		//TODO: write routine that uses expert justification structures to check relative justification of the given points of the student.
+		studentValid.relativeJustification(expertValid);
+		
 	}
 	
 

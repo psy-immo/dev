@@ -201,7 +201,6 @@ public class InferableAssertions {
 		validAssertions.calculateAncestors(excessLimit);
 	}
 
-
 	/**
 	 * 
 	 * @return all inferred assertions
@@ -266,6 +265,8 @@ public class InferableAssertions {
 	 * 
 	 * @param justified
 	 *            filter for justification
+	 * @param valid
+	 *            assertions that are considered valid
 	 * @param useClosure
 	 *            if true, use all validAssertions as justification base,
 	 *            otherwise only given assertions
@@ -274,16 +275,15 @@ public class InferableAssertions {
 	public void updateJustification(Set<ConstrainedAssertionFilter> justified,
 			AssertionEquivalenceClasses valid, boolean useClosure) {
 		for (ConstrainedAssertionFilter filter : justified) {
-			for (AssertionInterface a : filter
-.filter(validAssertions
+			for (AssertionInterface a : filter.filter(validAssertions
 					.getClasses())) {
 				if ((useClosure == true) || (givenAssertions.contains(a)))
-				if (a instanceof EquivalentAssertions) {
-					if (valid.contains(a)) {
-						EquivalentAssertions ea = (EquivalentAssertions) a;
-						ea.considerJustified();
+					if (a instanceof EquivalentAssertions) {
+						if (valid.contains(a)) {
+							EquivalentAssertions ea = (EquivalentAssertions) a;
+							ea.considerJustified();
 						}
-				}
+					}
 			}
 		}
 
@@ -299,6 +299,122 @@ public class InferableAssertions {
 				}
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * calculate the relative justifiedness of given (student) assertions
+	 * 
+	 * @param expert
+	 *            structure containing validness and justifiedness information
+	 *            that is used as comparator for relative justification levels
+	 */
+
+	public void relativeJustification(InferableAssertions expert) {
+
+		/**
+		 * mark all assertions that need no further justification as justified
+		 */
+
+		for (AssertionInterface a : validAssertions.getClasses()) {
+			if (a instanceof EquivalentAssertions) {
+				EquivalentAssertions ea = (EquivalentAssertions) a;
+				if (expert.validAssertions.contains(ea)) {
+					int justification_level = expert.validAssertions
+							.justification(ea);
+					if (justification_level < 1) {
+						/**
+						 * expert level is either 0 which indicates that this
+						 * assertion does not need further justification, or the
+						 * expert didn't justify this (valid) assertion as well,
+						 * so we default that the student does not need to give
+						 * justification for the fact.
+						 * 
+						 */
+						ea.considerJustified();
+					}
+				}
+			}
+		}
+		
+		System.out.println("HERE");
+
+		/**
+		 * keep track of assertions we are asking the student to justify
+		 */
+
+		Set<EquivalentAssertions> ask_for_justification = new HashSet<EquivalentAssertions>();
+
+		boolean keep_going = true;
+		boolean ask_for_more;
+
+		while (keep_going) {
+			keep_going = false;
+			ask_for_more = true;
+
+			/**
+			 * now update all relative justifications
+			 */
+
+			for (AssertionInterface a : validAssertions.getClasses()) {
+				if (a instanceof EquivalentAssertions) {
+					EquivalentAssertions ea = (EquivalentAssertions) a;
+					if ((validAssertions.justification(ea) < 0)
+							&& (expert.validAssertions.contains(ea))) {
+						DisjunctiveNormalForm<EquivalentAssertions> preimages = expert.validAssertions
+								.preimages(ea);
+
+						/**
+						 * check whether there are justified or
+						 * asked-for-justification preimages for ea
+						 */
+
+						for (Set<EquivalentAssertions> cons : preimages
+								.getTerm()) {
+							boolean relative_justified = true;
+
+							for (EquivalentAssertions prea : cons) {
+								if (validAssertions.contains(prea) == false) {
+									relative_justified = false;
+									break;
+								}
+
+								if ((validAssertions.justification(prea) < 0)
+										&& (ask_for_justification
+												.contains(prea) == false)) {
+									relative_justified = false;
+									break;
+								}
+							}
+
+							/**
+							 * found possible justification path, consider ea to
+							 * be relatively justified for now
+							 */
+
+							if (relative_justified) {
+								keep_going = true;
+								ask_for_more = false;
+
+								ea.considerJustified();
+
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			/**
+			 * if we didn't manage to justify another assertion, add another
+			 * assertion to the ask for more pool
+			 */
+			
+			if (ask_for_more) {
+				
+			}
+		}
+
 	}
 
 	/**
@@ -440,18 +556,16 @@ public class InferableAssertions {
 
 	public int countJustificationDelta(AssertionInterface toJustify,
 			Set<EquivalentAssertions> disregard,
-			Set<EquivalentAssertions> forbidden,
-			int currentDepth,
+			Set<EquivalentAssertions> forbidden, int currentDepth,
 			int maximumDepth) {
-		
+
 		if (currentDepth == maximumDepth)
 			return 0;
-		
+
 		Set<Set<EquivalentAssertions>> ways = validAssertions.preimages(
 				toJustify).getTerm();
 
 		int count = 0;
-
 
 		for (Set<EquivalentAssertions> way : ways) {
 			boolean no_way = false;
@@ -472,7 +586,6 @@ public class InferableAssertions {
 
 						forbidden.add(ea);
 
-
 						factor *= countJustificationDelta(ea, disregard,
 								forbidden, currentDepth + 1, maximumDepth);
 
@@ -486,8 +599,6 @@ public class InferableAssertions {
 				count += factor;
 			}
 		}
-		
-
 
 		if (count > highestCount) {
 			highestCount = count;
@@ -502,8 +613,6 @@ public class InferableAssertions {
 					+ (currentDepth + 1));
 		}
 
-
-
 		return count;
 	}
 
@@ -516,7 +625,7 @@ public class InferableAssertions {
 	public int countPossibleJustifications(AssertionInterface assertion) {
 		if (validAssertions.contains(assertion) == false)
 			return 0;
-		
+
 		Set<EquivalentAssertions> disregard = new HashSet<EquivalentAssertions>();
 		Set<EquivalentAssertions> forbidden = new HashSet<EquivalentAssertions>();
 
@@ -569,20 +678,19 @@ public class InferableAssertions {
 			Map<String, ConstrainedAssertionFilter> qualities) {
 
 		Map<EquivalentAssertions, Set<Set<EquivalentAssertions>>> justified_by = new HashMap<EquivalentAssertions, Set<Set<EquivalentAssertions>>>();
-		
+
 		Set<String> qualities_lacking = new TreeSet<String>();
-		
+
 		for (AssertionInterface a : needJustification) {
 			EquivalentAssertions ea = new EquivalentAssertions(a);
-			
+
 			justified_by.put(ea,
 					getMinimalDepthPrecursorSets(ea, otherGivenAssertions));
 		}
 
 		boolean is_closed = false;
 
-		do_again:
-		while (is_closed == false) {
+		do_again: while (is_closed == false) {
 			is_closed = true;
 			for (EquivalentAssertions ea : justified_by.keySet()) {
 				for (Set<EquivalentAssertions> combinations : justified_by
@@ -602,14 +710,14 @@ public class InferableAssertions {
 		}
 
 		Map<String, String> ordered = new TreeMap<String, String>();
-		
+
 		Set<AssertionInterface> filter_input = new HashSet<AssertionInterface>();
 
 		for (EquivalentAssertions ea : justified_by.keySet()) {
 			String justifications = "";
-			
+
 			Set<Set<EquivalentAssertions>> ways = justified_by.get(ea);
-			
+
 			if (ways.isEmpty())
 				continue;
 
@@ -649,7 +757,7 @@ public class InferableAssertions {
 				ordered.put("*" + ea.getSubject() + "·" + ea.getPredicate()
 						+ "·" + ea.getObject(), justifications);
 			}
-			
+
 			for (String name : qualities.keySet()) {
 				if (qualities_lacking.contains(name) == false) {
 					filter_input.clear();
@@ -659,11 +767,8 @@ public class InferableAssertions {
 					}
 				}
 			}
-			
-			
+
 		}
-
-
 
 		StringBuffer tips = new StringBuffer();
 
