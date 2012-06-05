@@ -336,8 +336,6 @@ public class InferableAssertions {
 				}
 			}
 		}
-		
-		System.out.println("HERE");
 
 		/**
 		 * keep track of assertions we are asking the student to justify
@@ -360,6 +358,7 @@ public class InferableAssertions {
 				if (a instanceof EquivalentAssertions) {
 					EquivalentAssertions ea = (EquivalentAssertions) a;
 					if ((validAssertions.justification(ea) < 0)
+							&& (ask_for_justification.contains(ea)==false)
 							&& (expert.validAssertions.contains(ea))) {
 						DisjunctiveNormalForm<EquivalentAssertions> preimages = expert.validAssertions
 								.preimages(ea);
@@ -409,9 +408,39 @@ public class InferableAssertions {
 			 * if we didn't manage to justify another assertion, add another
 			 * assertion to the ask for more pool
 			 */
-			
+
 			if (ask_for_more) {
+				EquivalentAssertions ask_for_this = null;
+				int justification_of_this = -1;
+
+				for (AssertionInterface a : validAssertions.getClasses()) {
+					if (a instanceof EquivalentAssertions) {
+						EquivalentAssertions ea = (EquivalentAssertions) a;
+						if ((validAssertions.justification(ea) < 0)
+								&& (ask_for_justification.contains(ea)==false)
+								&& (expert.validAssertions.contains(ea))) {
+							if (ask_for_this == null) {
+								ask_for_this = ea;
+								justification_of_this = expert.validAssertions.justification(ea);
+							} else {
+								if (expert.validAssertions.justification(ea) < justification_of_this) {
+									ask_for_this = ea;
+									justification_of_this = expert.validAssertions.justification(ea);
+								}
+							}
+						}
+					}
+				}
 				
+				/**
+				 * we found another good assertion that we will go and ask for justification
+				 */
+				
+				if (ask_for_this != null) {
+					keep_going = true;
+					ask_for_justification.add(ask_for_this);
+				}
+
 			}
 		}
 
@@ -789,7 +818,7 @@ public class InferableAssertions {
 
 	/**
 	 * 
-	 * update rule ancestor terms
+	 * update rule ancestor terms, do after calculating justifications
 	 * 
 	 * @param excessLimit
 	 * 

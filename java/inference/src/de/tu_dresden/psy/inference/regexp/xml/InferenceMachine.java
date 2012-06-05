@@ -178,10 +178,16 @@ public class InferenceMachine extends Applet {
 		addXmlString(food);
 
 		success += "assertions: " + closeExpertAssertions();
+		
+		updateExpertJustification();
 
 		success += " ancestors: " + calculateAncestors();
 		
-		updateExpertJustification();
+		
+		
+		success += " preimages: " + calculatePreimages();
+		
+		
 
 		return success;
 	}
@@ -753,6 +759,20 @@ public class InferenceMachine extends Applet {
 	public String calculateAncestors() {
 		ExcessLimit result = new ExcessLimit(excessTimeLimit);
 		expertValid.calculateAncestors(result);
+		if (result.exceeded())
+			return "excess";
+		return "closed";
+	}
+	
+	/**
+	 * calculate all preimage sets for the expert valid assertions
+	 * 
+	 * @return "closed" or "excess"
+	 */
+
+	public String calculatePreimages() {
+		ExcessLimit result = new ExcessLimit(excessTimeLimit);
+		expertValid.calculateRuleAncestors(result);
 		if (result.exceeded())
 			return "excess";
 		return "closed";
