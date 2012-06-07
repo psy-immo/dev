@@ -67,6 +67,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 	 */
 	this.currentFeedback = "";
 	this.text = "Check your answer";
+	
 
 	this.waitfor = [];
 
@@ -374,6 +375,27 @@ function InferenceButton(atags, rtags, points, conclusions) {
 				conclusions[int].MarkAsBad();
 			}
 		}
+		
+		/**
+		 * use status to give additional feedback
+		 */
+		
+		var status_line = "";
+		
+		if (status[0].trim()) {
+			
+			status_line += status[0] + "<br />";
+			
+		}
+		
+		if (status[1].trim()) {
+			status_line += status[1] + "<br />";
+		}
+		if (status[2].trim()) {
+			status_line += status[2] + "<br />";
+		}
+		
+		this.SetHint(status_line);
 
 		myLogger.Log(log_data);
 
