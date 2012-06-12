@@ -116,6 +116,8 @@ public class FeedbackTag implements AnyTag {
 			this.requires.add((RequiredTag) innerTag);
 		else if (innerTag.getClass() == IncompleteTag.class)
 			this.incomplete = (IncompleteTag) innerTag;
+		else if (innerTag.getClass() == IncorrectTag.class)
+			this.incorrect = (IncorrectTag) innerTag;
 		else
 			throw new OperationNotSupportedException(
 					"<feedback> cannot enclose "
