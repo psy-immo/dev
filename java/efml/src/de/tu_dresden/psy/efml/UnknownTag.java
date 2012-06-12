@@ -19,6 +19,7 @@
 package de.tu_dresden.psy.efml;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -66,6 +67,27 @@ public class UnknownTag implements AnyTag {
 
 		closing = "</" + reproduce.getName() + ">";
 
+	}
+	
+	
+	/**
+	 * 
+	 * @return the XML contents of the unknown tag
+	 */
+	
+	public String getContents() {
+		StringWriter w = new StringWriter();
+		
+		try {
+			this.open(w);
+			this.close(w);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return w.toString();
 	}
 
 	@Override

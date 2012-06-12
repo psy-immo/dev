@@ -22,11 +22,14 @@ public class InferenceTag implements AnyTag {
 	 * contains the inference xml data that is embedded with the inference tag
 	 */
 	private ArrayList<InferenceXmlTag> xmlMachineData;
+	
+	private ArrayList<FeedbackTag> feedbackData;
 
 
 	public InferenceTag(EfmlTagsAttribute attributes) {
 		this.attributes = attributes;
 		xmlMachineData = new ArrayList<InferenceXmlTag>();
+		feedbackData = new ArrayList<FeedbackTag>();
 	}
 
 	@Override
@@ -98,9 +101,11 @@ public class InferenceTag implements AnyTag {
 			 */
 		} else if (innerTag.getClass() == InferenceXmlTag.class) {
 			xmlMachineData.add((InferenceXmlTag) innerTag);
+		} else if (innerTag.getClass() == FeedbackTag.class) {
+			feedbackData.add((FeedbackTag) innerTag);
 		} else
 
-			throw new OperationNotSupportedException("<answer> cannot enclose "
+			throw new OperationNotSupportedException("<inference> cannot enclose "
 					+ innerTag.getClass().toString());
 
 	}

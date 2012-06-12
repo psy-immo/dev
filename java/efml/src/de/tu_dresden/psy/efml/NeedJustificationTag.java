@@ -24,16 +24,16 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the &lt;correct>...&lt;/correct> tag for answers
+ * implements the &lt;needjustification> tag for inference feedback
  * @author immanuel
  *
  */
 
-public class CorrectTag implements AnyTag {
+public class NeedJustificationTag implements AnyTag {
 	
 	private String token;
 	
-	public CorrectTag() {
+	public NeedJustificationTag() {
 		this.token = "";
 	}
 	
@@ -63,7 +63,7 @@ public class CorrectTag implements AnyTag {
 		}  else if (innerTag.getClass() == UnknownTag.class) {
 			this.token += ((UnknownTag) innerTag).getContents();
 		} else
-			throw new OperationNotSupportedException("<correct> cannot enclose "
+			throw new OperationNotSupportedException("<needjustification> cannot enclose "
 					+ innerTag.getClass().toString());
 	}
 

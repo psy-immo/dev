@@ -679,6 +679,44 @@
 			<quality name="parameters">
 				<predicate>means, for bulbs,</predicate>
 			</quality>
+			
+			<solves name="AB">
+				<subject>.*bulb A.*</subject>
+				<object>.*bulb B.*</object>
+			</solves>
+			
+			<solves name="AB">
+				<object>.*bulb A.*</object>
+				<subject>.*bulb B.*</subject>
+			</solves>
+			
+			<solves name="AC">
+				<subject>.*bulb A.*</subject>
+				<object>.*bulb C.*</object>
+			</solves>
+			
+			<solves name="AC">
+				<object>.*bulb A.*</object>
+				<subject>.*bulb C.*</subject>
+			</solves>
+			
+			<solves name="BC">
+				<subject>.*bulb B.*</subject>
+				<object>.*bulb C.*</object>
+			</solves>
+			
+			<solves name="BC">
+				<object>.*bulb B.*</object>
+				<subject>.*bulb C.*</subject>
+			</solves>
+			
+			<feedback>
+				<required count="2" />
+				<correct><b>Correct!</b></correct>
+				<hint lack="parameters">How are the parameters related?<br/></hint>
+				<hint lack="schematic">What does the schematic tell you?<br/></hint>
+				<needjustification>Some of your points and/or conclusions need further justification. Look at the yellow sentences! <br/></needjustification>
+			</feedback>
 		</inference>
 	
 	</tags>

@@ -118,9 +118,11 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		} else if (qName.equals("answer")) {
 			this.processingTags.push(new AnswerTag(this.currentTags.peek()));
 		} else if (qName.equals("hint")) {
-			this.processingTags.push(new HintTag());
+			this.processingTags.push(new HintTag(this.currentTags.peek()));
 		} else if (qName.equals("correct")) {
 			this.processingTags.push(new CorrectTag());
+		} else if (qName.equals("needjustification")) {
+			this.processingTags.push(new NeedJustificationTag());
 		} else if (qName.equals("check")) {
 			this.processingTags.push(new CheckTag(this.currentTags.peek()));
 		} else if (qName.equals("includepreamble")) {
@@ -165,6 +167,11 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new TemplateTag(this.currentTags.peek()));
 		} else if (qName.equals("airport")) {
 			this.processingTags.push(new AirportTag(this.currentTags.peek()));
+		} else if (qName.equals("feedback")) {
+			this.processingTags.push(new FeedbackTag());
+		}
+		else if (qName.equals("required")) {
+				this.processingTags.push(new RequiredTag(this.currentTags.peek()));
 		} else if (qName.equals("parse") || qName.equals("subject")
 				|| qName.equals("object") || qName.equals("predicate")
 				|| qName.equals("assert") || qName.equals("expert")
@@ -174,7 +181,8 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 				|| qName.equals("rho") || qName.equals("in")
 				|| qName.equals("out") || qName.equals("justified")
 				|| qName.equals("trivial") || qName.equals("invalid")
-				|| qName.equals("quality") || qName.equals("conclusions")) {
+				|| qName.equals("quality") || qName.equals("conclusions")
+				|| qName.equals("solves")) {
 			this.processingTags.push(new InferenceXmlTag(this.currentTags
 					.peek()));
 		}  else if (qName.equals("inference")) {

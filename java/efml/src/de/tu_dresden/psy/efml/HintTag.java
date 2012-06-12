@@ -25,6 +25,7 @@ import javax.naming.OperationNotSupportedException;
 
 /**
  * implements the &lt;hint>...&lt;/hint> tag for answers
+ * and &lt;feedback>
  * @author immanuel
  *
  */
@@ -33,9 +34,26 @@ public class HintTag implements AnyTag {
 	
 	private String token;
 	
-	public HintTag() {
+	private EfmlTagsAttribute attributes;
+	
+	public HintTag(EfmlTagsAttribute attributes) {
 		this.token = "";
+		this.attributes = attributes;
 	}
+	
+	/**
+	 * 
+	 * @return value of lack attribute that this hint is meant for
+	 */
+	
+	public String getLack() {
+		return this.attributes.getValueOrDefault("lack", "");
+	}
+	
+	/**
+	 * 
+	 * @return the hints html content
+	 */
 	
 	public String getHint() {
 		return this.token;
@@ -60,6 +78,8 @@ public class HintTag implements AnyTag {
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
 			this.token += ((PlainContent) innerTag).getContent();
+		} else if (innerTag.getClass() == UnknownTag.class) {
+			this.token += ((UnknownTag) innerTag).getContents();
 		} else
 			throw new OperationNotSupportedException("<hint> cannot enclose "
 					+ innerTag.getClass().toString());

@@ -218,6 +218,16 @@ public class EfmlTagsAttribute {
 	public final Map<String, String> getAttribs() {
 		return attribs;
 	}
+	
+	/**
+	 * 
+	 * @param attributeName
+	 * @return true, if the requested attribute has been given for the xml tag
+	 */
+	
+	public boolean hasAttribute(String attributeName) {
+		return attribs.containsKey(attributeName);
+	}
 
 	/**
 	 * checks the xml attributes

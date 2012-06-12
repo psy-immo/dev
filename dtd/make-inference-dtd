@@ -7,11 +7,13 @@ import sys
 if __name__ == '__main__':
 	dtd = open("inference.0.0.1.0.dtd","w")
 	rootname = "root"
+	furtherchilds = ""
 
 	
 	
 dtd.write("\n<!ELEMENT " + rootname +" (parse|assert|expert|conclusion|implicit|"+\
-	"justified|trivial|invalid|rule|conclusions|quality) >\n")
+	"justified|trivial|invalid|rule|conclusions|quality|solves"+\
+	furtherchilds+") >\n")
 
 dtd.write("\n<!ELEMENT parse (subject|predicate|object)* >\n")
 
@@ -75,10 +77,11 @@ dtd.write("\n<!ATTLIST out "+"""
  >
 """)
 
-for tag in ["justified","trivial","invalid","quality","conclusions"]:
+for tag in ["justified","trivial","invalid","quality","conclusions","solves"]:
 	dtd.write("\n<!ELEMENT "+tag+" (subject|predicate|object|constraint)* >\n")
 	
-dtd.write("\n<!ATTLIST quality "+"""
+for tag in ["quality","solves"]:
+	dtd.write("\n<!ATTLIST "+ tag +"""
         name   CDATA  #IMPLIED
  >
 """)

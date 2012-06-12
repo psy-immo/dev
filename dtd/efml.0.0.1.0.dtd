@@ -108,6 +108,10 @@
 
 <!ELEMENT hint (#PCDATA|i|b|br|p|div|span)* >
 
+<!ATTLIST hint 
+	lack	CDATA			#IMPLIED
+ >
+
 <!ELEMENT correct (#PCDATA|i|b|br|p|div|span)* >
 
 <!ELEMENT check (#PCDATA)* >
@@ -192,7 +196,18 @@
 	name	CDATA			#IMPLIED
  >
 
-<!ELEMENT inference (parse|assert|expert|conclusion|implicit|justified|trivial|invalid|rule|conclusions|quality) >
+<!ELEMENT feedback (#PCDATA|hint|correct|required|needjustification)* >
+
+<!ELEMENT required (#PCDATA)* >
+
+<!ATTLIST required 
+	count	CDATA			#IMPLIED
+	name	CDATA			#IMPLIED
+ >
+
+<!ELEMENT needjustification (#PCDATA|i|b|br|p|div|span)* >
+
+<!ELEMENT inference (parse|assert|expert|conclusion|implicit|justified|trivial|invalid|rule|conclusions|quality|solves|feedback) >
 
 <!ELEMENT parse (subject|predicate|object)* >
 
@@ -265,7 +280,13 @@
 
 <!ELEMENT conclusions (subject|predicate|object|constraint)* >
 
-<!ATTLIST quality 
+<!ELEMENT solves (subject|predicate|object|constraint)* >
+
+<!ATTLIST quality
+        name   CDATA  #IMPLIED
+ >
+
+<!ATTLIST solves
         name   CDATA  #IMPLIED
  >
 

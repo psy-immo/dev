@@ -1,5 +1,5 @@
 
-<!ELEMENT root (parse|assert|expert|conclusion|implicit|justified|trivial|invalid|rule|conclusions|quality) >
+<!ELEMENT root (parse|assert|expert|conclusion|implicit|justified|trivial|invalid|rule|conclusions|quality|solves) >
 
 <!ELEMENT parse (subject|predicate|object)* >
 
@@ -72,6 +72,12 @@
 
 <!ELEMENT conclusions (subject|predicate|object|constraint)* >
 
-<!ATTLIST quality 
+<!ELEMENT solves (subject|predicate|object|constraint)* >
+
+<!ATTLIST quality
+        name   CDATA  #IMPLIED
+ >
+
+<!ATTLIST solves
         name   CDATA  #IMPLIED
  >
