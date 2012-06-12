@@ -36,12 +36,16 @@ public class FeedbackTag implements AnyTag {
 	private CorrectTag correct;
 	private ArrayList<HintTag> hints;
 	private NeedJustificationTag needjustification;
+	private IncompleteTag incomplete;
+	private IncorrectTag incorrect;
 
 	public FeedbackTag() {
 		requires = new ArrayList<RequiredTag>();
 		hints = new ArrayList<HintTag>();
 		correct = null;
 		needjustification = null;
+		incomplete = null;
+		incorrect = null;
 	}
 
 	/**
@@ -56,6 +60,20 @@ public class FeedbackTag implements AnyTag {
 	 */
 	public CorrectTag getCorrect() {
 		return correct;
+	}
+	
+	/**
+	 * @return the incorrect
+	 */
+	public IncorrectTag getIncorrect() {
+		return incorrect;
+	}
+	
+	/**
+	 * @return the incomplete
+	 */
+	public IncompleteTag getIncomplete() {
+		return incomplete;
 	}
 
 	/**
@@ -96,6 +114,8 @@ public class FeedbackTag implements AnyTag {
 			this.hints.add((HintTag) innerTag);
 		else if (innerTag.getClass() == RequiredTag.class)
 			this.requires.add((RequiredTag) innerTag);
+		else if (innerTag.getClass() == IncompleteTag.class)
+			this.incomplete = (IncompleteTag) innerTag;
 		else
 			throw new OperationNotSupportedException(
 					"<feedback> cannot enclose "

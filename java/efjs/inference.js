@@ -63,10 +63,18 @@ function InferenceButton(atags, rtags, points, conclusions) {
 	}
 
 	/**
-	 * unlike the answer button, the feedback text is given by the applet
+	 * unlike the answer button, the feedback is given by the applet
 	 */
 	this.currentFeedback = "";
 	this.text = "Check your answer";
+	
+	this.incompleteSolution = "Your solution is not complete! <br/>";
+	this.injustifiedSolution = "The yellow sentences need to be further justified! <br/>";
+	this.correctSolution = "Correct!";
+	this.incorrectSolution = "The red points/conclusions are not correct.<br/>";
+	this.lackHints = {};
+	this.requiredParts = [];
+	this.requiredCount = 0;
 	
 
 	this.waitfor = [];
@@ -94,6 +102,50 @@ function InferenceButton(atags, rtags, points, conclusions) {
 						+ "\" style=\"height: 20px; width: 100%\"></td></tr></table>");
 		document.write("</form>");
 	};
+	
+	this.addHint = function(lack, hint) {
+		this.lackHints[lack] = hint;
+		
+		return this;
+	};
+	
+	this.requirePart = function(part) {
+		this.requiredParts.add(part);
+		
+		return this;
+	};
+	
+	this.requireCount = function(count) {
+		
+		this.requiredCount = count;
+		
+		return this;
+	};
+	
+	this.setCorrect = function(text) {
+		this.correctSolution = text;
+		
+		return this;
+	};
+	
+	this.setIncorrect = function(text) {
+		this.incorrectSolution = text;
+		
+		return this;
+	};
+	
+	this.setIncomplete = function(text) {
+		this.incompleteSolution = text;
+		
+		return this;
+	};
+	
+	this.setInjustified = function(text) {
+		this.injustifiedSolution = text;
+		
+		return this;
+	};
+
 
 	/**
 	 * add data that is post-poned to be fed into the applet after the page
@@ -123,7 +175,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 			var ret = applet.feed(bugfixParam(decodeString(this.food)));
 
 			myLogger.Log(this.name + " feed: " + ret);
-		}
+		};
 	};
 
 	/**
@@ -395,7 +447,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 			status_line += status[2] + "<br />";
 		}
 		
-		this.SetHint(status_line);
+		this.SetHint(this.currentFeedback);
 
 		myLogger.Log(log_data);
 

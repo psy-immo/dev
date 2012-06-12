@@ -123,6 +123,10 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new CorrectTag());
 		} else if (qName.equals("needjustification")) {
 			this.processingTags.push(new NeedJustificationTag());
+		} else if (qName.equals("incomplete")) {
+			this.processingTags.push(new IncompleteTag());
+		} else if (qName.equals("incorrect")) {
+				this.processingTags.push(new IncorrectTag());
 		} else if (qName.equals("check")) {
 			this.processingTags.push(new CheckTag(this.currentTags.peek()));
 		} else if (qName.equals("includepreamble")) {

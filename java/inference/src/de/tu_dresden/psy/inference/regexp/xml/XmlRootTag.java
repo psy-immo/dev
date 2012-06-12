@@ -97,6 +97,11 @@ public class XmlRootTag extends XmlTag {
 	 * that do not need to be given explicitly)
 	 */
 	private Map<String, ConstrainedAssertionFilter> lackQualities;
+	
+	/**
+	 * filters that identify different parts of the (compound) solution
+	 */
+	private Map<ConstrainedAssertionFilter,String> solutionParts;
 
 	public XmlRootTag() {
 		rules = new HashSet<InferenceMap>();
@@ -111,6 +116,7 @@ public class XmlRootTag extends XmlTag {
 
 		conclusiveFilter = new HashSet<ConstrainedAssertionFilter>();
 		lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
+		solutionParts = new HashMap<ConstrainedAssertionFilter, String>();
 	}
 	
 	/**
@@ -176,6 +182,15 @@ public class XmlRootTag extends XmlTag {
 
 	public Map<String, ConstrainedAssertionFilter> getQualityFilters() {
 		return lackQualities;
+	}
+	
+	/**
+	 * 
+	 * @return filters for solution parts
+	 */
+
+	public Map<ConstrainedAssertionFilter, String> getPartFilters() {
+		return solutionParts;
 	}
 
 	/**
@@ -351,6 +366,19 @@ public class XmlRootTag extends XmlTag {
 		String name = child.getAttributeOrDefault("name",
 				"Q" + lackQualities.size());
 		lackQualities.put(name, processConstraintFilter(child));
+	}
+	
+	/**
+	 * process a &lt;solves>-tag
+	 * 
+	 * @param child
+	 * @throws Exception
+	 */
+
+	private void processSolves(XmlTag child) throws Exception {
+		String name = child.getAttributeOrDefault("name",
+				"P" + solutionParts.size());
+		solutionParts.put(processConstraintFilter(child),name);
 	}
 
 	/**
@@ -751,6 +779,8 @@ public class XmlRootTag extends XmlTag {
 			processJustified(child);
 		} else if (child.tagName.equals("QUALITY")) {
 			processQuality(child);
+		} else if (child.tagName.equals("SOLVES")) {
+			processSolves(child);
 		}
 
 		/**

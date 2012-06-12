@@ -712,10 +712,13 @@
 			
 			<feedback>
 				<required count="2" />
+				<required name="BC" />
 				<correct><b>Correct!</b></correct>
 				<hint lack="parameters">How are the parameters related?<br/></hint>
 				<hint lack="schematic">What does the schematic tell you?<br/></hint>
 				<needjustification>Some of your points and/or conclusions need further justification. Look at the yellow sentences! <br/></needjustification>
+				<incomplete>Your solution is not complete. Can you relate the luminosities of other bulbs, too? <br/></incomplete>
+				<incorrect>The red sentences are not correct. <br/></incorrect>
 			</feedback>
 		</inference>
 	

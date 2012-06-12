@@ -126,7 +126,7 @@ dtd.write("\n<!ATTLIST airport "+universal_attributes+"""
  >
 """)
 
-dtd.write("\n<!ELEMENT feedback (#PCDATA|hint|correct|required|needjustification)* >\n")
+dtd.write("\n<!ELEMENT feedback (#PCDATA|hint|correct|required|needjustification|incomplete|incorrect)* >\n")
 dtd.write("\n<!ELEMENT required (#PCDATA)* >\n")
 dtd.write("\n<!ATTLIST required "+"""
 	count	CDATA			#IMPLIED
@@ -134,6 +134,8 @@ dtd.write("\n<!ATTLIST required "+"""
  >
 """)
 dtd.write("\n<!ELEMENT needjustification (#PCDATA|"+html_elements+")* >\n")
+dtd.write("\n<!ELEMENT incomplete (#PCDATA|"+html_elements+")* >\n")
+dtd.write("\n<!ELEMENT incorrect (#PCDATA|"+html_elements+")* >\n")
 
 #add embedded inference xml node
 
