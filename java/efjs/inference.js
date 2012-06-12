@@ -110,7 +110,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 	};
 	
 	this.RequirePart = function(part) {
-		this.requiredParts.add(part);
+		this.requiredParts.push(part.toLowerCase());
 		
 		return this;
 	};
@@ -217,6 +217,8 @@ function InferenceButton(atags, rtags, points, conclusions) {
 	 * this is called whenever the button is clicked
 	 */
 	this.OnClick = function() {
+		
+		var unjustified = false;
 
 		/**
 		 * check, whether giving a solution is allowed
@@ -320,7 +322,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		}
 
 		/**
-		 * get wrong points
+		 * get unjustified points
 		 */
 
 		count = parseInt(lines[int]);
@@ -333,6 +335,8 @@ function InferenceButton(atags, rtags, points, conclusions) {
 
 			unjustified_points[lines[int]] = 1;
 			++int;
+			
+			unjustified = true;
 		}
 
 		/**
@@ -397,6 +401,8 @@ function InferenceButton(atags, rtags, points, conclusions) {
 
 			unjustified_conclusions[lines[int]] = 1;
 			++int;
+			
+			unjustified = true;
 		}
 
 		/**
@@ -432,20 +438,43 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		 * use status to give additional feedback
 		 */
 		
-		var status_line = "";
+		this.currentFeedback = "";
 		
-		if (status[0].trim()) {
-			
-			status_line += status[0] + "<br />";
-			
+		var incorrect = (status[0].trim() != "")|| (status[1].trim() != "");
+				
+		if (incorrect) {
+			this.currentFeedback += this.incorrectSolution;
 		}
 		
-		if (status[1].trim()) {
-			status_line += status[1] + "<br />";
+		if (unjustified) {
+		    this.currentFeedback += this.injustifiedSolution;
 		}
-		if (status[2].trim()) {
-			status_line += status[2] + "<br />";
+		
+		var lacks = status[2].trim().substr(6).split("&");
+		
+		for ( var int = 0; int < lacks.length; int++) {
+			if (lacks[int] in this.lackHints) {
+				this.currentFeedback += decodeString(this.lackHints[lacks[int]]);
+			}
 		}
+		
+		var parts  = status[3].trim().substr(6).split("&");
+		
+		var incomplete = parts.length < this.requiredCount;
+		
+		for ( var int = 0; int < this.requiredParts.length; int++) {
+			if (parts.lastIndexOf(this.requiredParts[int]) < 0)
+				incomplete = true;
+		}
+		
+		if (incomplete) {
+			this.currentFeedback += this.incompleteSolution;
+		}
+		
+		if ((!incomplete)&&(!unjustified)&&(!incorrect)) {
+			this.currentFeedback += this.correctSolution;
+		}
+				
 		
 		this.SetHint(this.currentFeedback);
 

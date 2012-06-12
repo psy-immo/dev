@@ -68,6 +68,7 @@ public class InferenceMachine extends Applet {
 	private Set<ConstrainedAssertionFilter> trivial, invalid, justified,
 			isConclusion;
 	private Map<String, ConstrainedAssertionFilter> lackQualities;
+	private Map<ConstrainedAssertionFilter,String> solutionParts;
 
 	/**
 	 * contains the set of parsers given with the last parsed xml file
@@ -108,6 +109,7 @@ public class InferenceMachine extends Applet {
 				new HashSet<ConstrainedAssertionFilter>(),
 				new HashSet<ConstrainedAssertionFilter>());
 		lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
+		solutionParts = new HashMap<ConstrainedAssertionFilter, String>();
 		lastGivenSetOfParsers = new SubjectPredicateObjectMatchers(
 				new HashSet<SubjectPredicateObjectMatcher>());
 	}
@@ -161,6 +163,10 @@ public class InferenceMachine extends Applet {
 		}
 
 		lastGivenSetOfParsers = root.getParsers();
+		
+		for (ConstrainedAssertionFilter key : root.getPartFilters().keySet()) {
+			solutionParts.put(key, root.getPartFilters().get(key));
+		}
 
 	}
 
@@ -328,6 +334,8 @@ public class InferenceMachine extends Applet {
 		String unjustified_conclusion_list = "";
 		
 		Set<AssertionInterface> singleton = new HashSet<AssertionInterface>();
+		
+		Set<String> solution_parts = new HashSet<String>();
 
 		for (AssertionInterface assertion : studentConclusions.getClasses()) {
 			if (expertValid.isInferable(assertion)) {
@@ -358,6 +366,12 @@ public class InferenceMachine extends Applet {
 							+ assertion.getPredicate().toString() + " "
 							+ assertion.getObject().toString() + "\n";
 					good_conclusions++;
+					
+					for (ConstrainedAssertionFilter filter : solutionParts.keySet()) {
+						if (filter.filter(singleton).isEmpty() == false) {
+							solution_parts.add(solutionParts.get(filter));
+						}
+					}
 					
 					if (studentValid.justificationLevel(assertion) == EquivalentAssertions.notJustified) {
 						unjustified_conclusion_list += assertion.getSubject().toString() + " "
@@ -411,7 +425,16 @@ public class InferenceMachine extends Applet {
 			status += ",";
 		
 		status += "lacks:"+ expertValid.getJustificationTips(need_more_justification,
-				studentValid.getGiven().getEquivalencyClasses(), lackQualities, true);
+				studentValid.getGiven().getEquivalencyClasses(), lackQualities, true)+",";
+		
+		status += "parts:";
+		boolean first = true;
+		for (String name : solution_parts) {
+			if (first == false)
+				status += "&";
+			status += name;
+			first = false;
+		}
 
 		return status + "\n" + feedback;
 	}
