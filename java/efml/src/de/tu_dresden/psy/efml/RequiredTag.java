@@ -50,8 +50,8 @@ public class RequiredTag implements AnyTag {
 	 * @return required count of different correct solution parts
 	 */
 	
-	int getCount() {
-		return Integer.parseInt(this.attributes.getValueOrDefault("count", "0"));
+	String getCount() {
+		return this.attributes.getValueOrDefault("count", "0");
 	}
 	
 

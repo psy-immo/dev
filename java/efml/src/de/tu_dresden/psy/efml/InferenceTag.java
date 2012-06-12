@@ -22,9 +22,8 @@ public class InferenceTag implements AnyTag {
 	 * contains the inference xml data that is embedded with the inference tag
 	 */
 	private ArrayList<InferenceXmlTag> xmlMachineData;
-	
-	private ArrayList<FeedbackTag> feedbackData;
 
+	private ArrayList<FeedbackTag> feedbackData;
 
 	public InferenceTag(EfmlTagsAttribute attributes) {
 		this.attributes = attributes;
@@ -78,6 +77,62 @@ public class InferenceTag implements AnyTag {
 				.toString()));
 
 		writer.write(")");
+
+		/**
+		 * write feedback data
+		 */
+
+		for (FeedbackTag feedback : feedbackData) {
+			if (feedback.getCorrect() != null) {
+				writer.write(".SetCorrect(");
+				writer.write(StringEscape.escapeToDecodeInJavaScript((feedback
+						.getCorrect().getFeedback())));
+				writer.write(")");
+			}
+
+			if (feedback.getIncorrect() != null) {
+				writer.write(".SetIncorrect(");
+				writer.write(StringEscape.escapeToDecodeInJavaScript((feedback
+						.getIncorrect().getFeedback())));
+				writer.write(")");
+			}
+
+			if (feedback.getIncomplete() != null) {
+				writer.write(".SetIncomplete(");
+				writer.write(StringEscape.escapeToDecodeInJavaScript((feedback
+						.getIncomplete().getFeedback())));
+				writer.write(")");
+			}
+
+			if (feedback.getNeedjustification() != null) {
+				writer.write(".SetInjustified(");
+				writer.write(StringEscape.escapeToDecodeInJavaScript((feedback
+						.getNeedjustification().getFeedback())));
+				writer.write(")");
+			}
+
+			for (HintTag hint : feedback.getHints()) {
+				writer.write(".AddHint(");
+				writer.write(StringEscape.escapeToDecodeInJavaScript(hint
+						.getLack()));
+				writer.write(",");
+				writer.write(StringEscape.escapeToDecodableInJavaScript(hint
+						.getHint()));
+				writer.write(")");
+			}
+
+			for (RequiredTag require : feedback.getRequires()) {
+				if (require.requiresCount()) {
+					writer.write(".RequireCount(" + require.getCount() + ")");
+				}
+				if (require.requiresPart()) {
+					writer.write(".RequirePart("
+							+ StringEscape.escapeToDecodeInJavaScript(require
+									.getPart()) + ")");
+				}
+			}
+		}
+
 		/**
 		 * let java script create the html contents
 		 */
@@ -105,8 +160,9 @@ public class InferenceTag implements AnyTag {
 			feedbackData.add((FeedbackTag) innerTag);
 		} else
 
-			throw new OperationNotSupportedException("<inference> cannot enclose "
-					+ innerTag.getClass().toString());
+			throw new OperationNotSupportedException(
+					"<inference> cannot enclose "
+							+ innerTag.getClass().toString());
 
 	}
 

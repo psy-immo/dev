@@ -103,44 +103,44 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		document.write("</form>");
 	};
 	
-	this.addHint = function(lack, hint) {
+	this.AddHint = function(lack, hint) {
 		this.lackHints[lack] = hint;
 		
 		return this;
 	};
 	
-	this.requirePart = function(part) {
+	this.RequirePart = function(part) {
 		this.requiredParts.add(part);
 		
 		return this;
 	};
 	
-	this.requireCount = function(count) {
+	this.RequireCount = function(count) {
 		
 		this.requiredCount = count;
 		
 		return this;
 	};
 	
-	this.setCorrect = function(text) {
+	this.SetCorrect = function(text) {
 		this.correctSolution = text;
 		
 		return this;
 	};
 	
-	this.setIncorrect = function(text) {
+	this.SetIncorrect = function(text) {
 		this.incorrectSolution = text;
 		
 		return this;
 	};
 	
-	this.setIncomplete = function(text) {
+	this.SetIncomplete = function(text) {
 		this.incompleteSolution = text;
 		
 		return this;
 	};
 	
-	this.setInjustified = function(text) {
+	this.SetInjustified = function(text) {
 		this.injustifiedSolution = text;
 		
 		return this;
