@@ -65,18 +65,21 @@ public class TemplateTag implements AnyTag {
 		 * write template array of nested objects
 		 */
 
-		boolean first = true;
+		
+		int nested_count = 0;
+		String nested_prefix = attributes.getValueOrDefault(
+				"name", "");
 
 		writer.write("[");
 
 		for (NestedTag part : parts) {
-			if (first == false) {
+			if (nested_count > 0) {
 				writer.write(", ");
 			}
 
-			part.createNew(writer);
-
-			first = false;
+			part.createNew(writer,nested_prefix+"["+nested_count+"]");
+			
+			nested_count++;
 		}
 		writer.write("]");
 

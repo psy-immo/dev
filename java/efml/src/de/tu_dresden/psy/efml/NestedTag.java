@@ -39,6 +39,6 @@ public interface NestedTag {
 	 * @throws IOException
 	 */
 
-	public void createNew(Writer writer) throws IOException;
+	public void createNew(Writer writer, String identificationToken) throws IOException;
 
 }

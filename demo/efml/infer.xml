@@ -2,9 +2,23 @@
 <!DOCTYPE efml SYSTEM "https://raw.github.com/psy-immo/dev/master/dtd/efml.0.0.1.0.dtd">
 <efml>
 	<tags tags="frage1" atags="frage1">
+		
+		<div style="float: left;">
+			<div style="float:left; padding: 4px;">
+				<img src="schematic.gif" />
+			</div>
+			<div style="float:left; width: 320px;">
+				All bulbs in the circuit have indentical specifications. How will the luminosities of the bulbs relate to each other when set up according to the schematic?
+			</div>
+		</div>
+		
+		<div style="clear: both;"></div>
+		<br/>
+		
+		
 
 		<h2>Answer</h2>
-		<template>
+		<template name="pat1">
 			<dropdown>[part]
 				<option>bulb A</option>				
 				<option>bulb B</option>				
@@ -25,7 +39,7 @@
 			</dropdown>
 		</template><br/>
 		
-		<template>
+		<template name="pat2">
 			<dropdown>[parameter]
 				<option>the current through</option>				
 				<option>the voltage of</option>				
@@ -61,7 +75,7 @@
 			</dropdown>
 		</template><br/>
 		
-		<template>
+		<template name="pat3">
 			<plain>a </plain>
 			<dropdown>[quality]
 				<option>smaller</option>				

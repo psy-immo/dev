@@ -141,6 +141,9 @@ public class InferenceMachine extends Applet {
 	 * @param root
 	 */
 	private void addXml(XmlRootTag root) {
+		
+		System.out.println("Adding: "+root.toString());
+		
 		implicit.addNewAssertions(root.getImplicitAssertions());
 		expert.addNewAssertions(root.getExpertAssertions());
 		studentArguments.addNewAssertions(root.getGivenAssertions());
@@ -178,11 +181,14 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public String feed(String food) {
+		
+		System.out.println("fed with: "+food);
+		
 		String success = "";
 
 		resetState();
 
-		addXmlString(food);
+		System.out.println("addXmlString gives: "+addXmlString(food));
 
 		success += "assertions: " + closeExpertAssertions();
 		

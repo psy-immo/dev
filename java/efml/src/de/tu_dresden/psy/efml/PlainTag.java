@@ -60,7 +60,7 @@ public class PlainTag implements AnyTag, NestedTag {
 	}
 
 	@Override
-	public void createNew(Writer writer) throws IOException {
+	public void createNew(Writer writer, String identificationToken) throws IOException {
 		writer.write("\"");
 		writer.write(StringEscape.escapeToJavaScript(unescaped));
 		writer.write("\"");

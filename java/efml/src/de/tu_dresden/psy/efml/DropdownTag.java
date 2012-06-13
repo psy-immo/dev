@@ -35,7 +35,7 @@ public class DropdownTag implements AnyTag, NestedTag {
 		 * create new javascript dropdown object with name, tags, label, token
 		 */
 
-		createNew(writer);
+		createNew(writer,"");
 
 		/**
 		 * finally let javascript create the html code
@@ -43,9 +43,9 @@ public class DropdownTag implements AnyTag, NestedTag {
 
 		writer.write(".WriteHtml();");
 	}
-
+	
 	@Override
-	public void createNew(Writer writer) throws IOException {
+	public void createNew(Writer writer, String identificationToken ) throws IOException {
 		/**
 		 * create new javascript dropdown object with name, tags, label, token
 		 */
@@ -54,7 +54,7 @@ public class DropdownTag implements AnyTag, NestedTag {
 
 		writer.write("\""
 				+ StringEscape.escapeToJavaScript(attributes.getValueOrDefault(
-						"name", "")) + "\", ");
+						"name", identificationToken)) + "\", ");
 		writer.write(attributes.getTags() + ", ");
 
 		writer.write("\"" + StringEscape.escapeToJavaScript(label) + "\", ");
