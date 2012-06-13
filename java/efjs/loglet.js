@@ -253,7 +253,7 @@ function doGetAll() {
 			var line = raw[int].split(' ');
 			if (line.length > 1) {
 				var key = urldecode(line[0]).substr(prefix_length);
-				entries[key] = urldecode(line[1]);
+				entries[key] = unescapeSome(urldecode(line[1]));
 			}
 		}
 		return entries;
