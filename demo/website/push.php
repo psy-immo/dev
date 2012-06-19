@@ -50,18 +50,6 @@ $is_allowed_token or die("id unknown");
 $varname = urlencode($varname);
 $value = urlencode($value);
 
-/*
- *  fetch old value and return, if any
- */
-
-$value_query = mysql_query("SELECT `value` FROM `id-name-value` WHERE (`id`='" . $id . "' AND `name`='" . $varname . "')")
-  or die(mysql_error());  
-
-$value_row = mysql_fetch_assoc($value_query);
-
-if ($value_row) {
-	echo urldecode($value_row['value']);
-}
 
 mysql_query("DELETE FROM `id-name-value` WHERE (`id`='" . $id . "' AND `name`='" . $varname . "')")
   or die(mysql_error());  
@@ -69,6 +57,11 @@ mysql_query("DELETE FROM `id-name-value` WHERE (`id`='" . $id . "' AND `name`='"
 mysql_query("INSERT INTO `id-name-value` VALUES('" . $id . "','" . $varname . "','" . $value . "')")
   or die(mysql_error());  
 
+/*
+ * reflect current change
+ */
+
+echo urldecode($value);
 
 ?>
 
