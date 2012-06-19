@@ -26,6 +26,12 @@ document.write("<applet id=\"loglet\" " + "name=\"loglet\""
 		+ "MAYSCRIPT style=\"width: 1px; height: 1px\"></applet>");
 
 /**
+ * loglet server cache object
+ */
+
+serverDataCache = {};
+
+/**
  * this is for bugfixing chromium + icedtea java interop bugs
  */
 
@@ -169,8 +175,10 @@ function getServer(id, name, serverurl) {
 
 	var val = applet.queryLogger(bugfixParam(id), bugfixParam(name),
 			bugfixParam(""), bugfixParam(serverurl));
+	
+	var unescaped = unescapeSome(val); 
 
-	return unescapeSome(val);
+	return unescaped;
 }
 
 /**
@@ -189,8 +197,10 @@ function setServer(id, name, value, serverurl) {
 	 * zeros....
 	 */
 
-	applet.queryLogger(bugfixParam(id), bugfixParam(name),
+	var result = applet.queryLogger(bugfixParam(id), bugfixParam(name),
 			bugfixParam(escapeSome(value)), bugfixParam(serverurl));
+	
+	return unescapeSome(result);
 }
 
 /**
@@ -218,7 +228,9 @@ function doLog(string) {
 
 function doSet(name, value) {
 	if (logletBaseURL) {
-		setServer(logId, docId + "+" + name, value, logletBaseURL + "push.php");
+		var fullid = docId + "+" + name;
+		var result = setServer(logId, fullid, value, logletBaseURL + "push.php");
+		serverDataCache[fullid] = result;	
 	}
 }
 
@@ -233,7 +245,10 @@ function doSet(name, value) {
 
 function doGet(name) {
 	if (logletBaseURL) {
-		return getServer(logId, docId + "+" + name, logletBaseURL + "pull.php");
+		var fullid = docId + "+" + name;
+		var result = getServer(logId, fullid, logletBaseURL + "pull.php");
+		
+		return result;
 	}
 	return "";
 }
@@ -252,8 +267,11 @@ function doGetAll() {
 		for ( var int = 0; int < raw.length; ++int) {
 			var line = raw[int].split(' ');
 			if (line.length > 1) {
-				var key = urldecode(line[0]).substr(prefix_length);
-				entries[key] = unescapeSome(urldecode(line[1]));
+				var fullid = urldecode(line[0]); 
+				var key = fullid.substr(prefix_length);
+				var result = unescapeSome(urldecode(line[1]));
+				entries[key] = result;
+				serverDataCache[fullid] = result;
 			}
 		}
 		return entries;

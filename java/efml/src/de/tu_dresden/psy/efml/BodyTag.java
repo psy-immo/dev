@@ -253,6 +253,13 @@ public class BodyTag implements AnyTag {
 				+ StringEscape.escapeToJavaScript(idDoc) + "\");"
 				+ "  </script>\n");
 
+		/**
+		 * write initializations that depend on the variables created by the
+		 * html layout
+		 */
+
+		HtmlTag.writeAllStaticInitializations(writer);
+
 		writer.write("</body>");
 	}
 

@@ -113,13 +113,10 @@ public class HtmlTag implements AnyTag {
 
 	@Override
 	public void close(Writer writer) throws IOException {
+
 		/**
-		 * write initializations that depend on the variables created by the
-		 * html layout
+		 * static initializations have been moved to body tags close method
 		 */
-
-		writeAllStaticInitializations(writer);
-
 
 		writer.write("</html>\n");
 	}
