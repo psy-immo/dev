@@ -236,6 +236,27 @@ function doSet(name, value) {
 
 /**
  * 
+ * store a named variable on server, if the to be stored values differ from the local server cache value
+ * 
+ * @param name
+ * @param value
+ * 
+ */
+
+function doSetIfDifferent(name, value) {
+	if (logletBaseURL) {
+		var fullid = docId + "+" + name;
+		if (fullid in serverDataCache) {
+				if (serverDataCache[fullid] == value)
+					return;  
+		} 
+		var result = setServer(logId, fullid, value, logletBaseURL + "push.php");
+		serverDataCache[fullid] = result;
+	}
+}
+
+/**
+ * 
  * retrieve the stored value of a named variable
  * 
  * @param name

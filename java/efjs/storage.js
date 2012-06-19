@@ -25,6 +25,8 @@ function Storage() {
 	this.dataFields = [];
 	this.dataFieldNames = [];
 	this.localOnlyDataFields = [];
+	
+	this.storageInterval = null;
 
 	/**
 	 * return true, if we use the loglet applet to store/retrieve data on the
@@ -116,9 +118,9 @@ function Storage() {
 					 * use server storage too
 					 */
 					if (v === null) {
-						doSet(spacedname, "-null");
+						doSetIfDifferent(spacedname, "-null");
 					} else {
-						doSet(spacedname, "v" + v);
+						doSetIfDifferent(spacedname, "v" + v);
 					}
 				}
 
@@ -193,6 +195,18 @@ function Storage() {
 		};
 
 		myStorage.RestoreFrom(myStorageLocation, myStorageName);
+		
+		/**
+		 * periodically save current page state
+		 */
+		
+		this.storageInterval = setInterval(function(){
+			
+			console.log("autosaving...");
+			
+			myStorage.StoreIn(myStorageLocation, myStorageName);
+			
+		}, 5000+Math.floor(Math.random()*500));
 	};
 
 }
