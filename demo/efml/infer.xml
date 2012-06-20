@@ -472,7 +472,7 @@
 				</infer>
 			</rule>
 				
-			<rule name="phi2to2">
+			<rule name="phi2to2" type="trivial">
 				<premise id="ab">
 					<predicate>is ((small|bigg)er than|as big as)</predicate>
 				</premise>
