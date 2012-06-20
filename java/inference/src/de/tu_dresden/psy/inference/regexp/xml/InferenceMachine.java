@@ -874,4 +874,24 @@ public class InferenceMachine extends Applet {
 		return report;
 	}
 
+	/**
+	 * 
+	 * @return a formatted list of rule names
+	 */
+
+	public String getRuleNames() {
+		String result = "Rules: ";
+		for (String name : inferenceMaps.keySet()) {
+			result += name + " ";
+		}
+
+		result += "\nTrivial: ";
+
+		for (String name : trivialInferenceMaps.keySet()) {
+			result += name + " ";
+		}
+
+		return result;
+	}
+
 }

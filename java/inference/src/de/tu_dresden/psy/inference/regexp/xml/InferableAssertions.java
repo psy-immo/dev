@@ -105,6 +105,7 @@ public class InferableAssertions {
 		}
 
 		givenAssertions.addNewAssertions(given);
+
 		validAssertions = new AssertionEquivalenceClasses(givenAssertions);
 
 		state = State.open;
@@ -406,14 +407,14 @@ public class InferableAssertions {
 
 			/**
 			 * if we didn't manage to justify another assertion, add another
-			 * assertion to the ask for more pool
+			 * given assertion to the ask for more pool
 			 */
 
 			if (ask_for_more) {
 				EquivalentAssertions ask_for_this = null;
 				int justification_of_this = -1;
 
-				for (AssertionInterface a : validAssertions.getClasses()) {
+				for (AssertionInterface a : givenAssertions.getClasses()) {
 					if (a instanceof EquivalentAssertions) {
 						EquivalentAssertions ea = (EquivalentAssertions) a;
 						if ((validAssertions.justification(ea) < 0)
