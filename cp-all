@@ -5,3 +5,12 @@ cd $(dirname $0)
 cd java/efjs
 cp ../launchSniffyApplet/jar/*.jar .
 cp ../loglet/jar/*.jar .
+
+cd ..
+cd ..
+
+cd demo
+cd website
+cp ../../java/efjs/*.js .
+cp ../../java/efjs/*.jar .
+
