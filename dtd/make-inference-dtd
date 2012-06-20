@@ -47,7 +47,8 @@ for tag in ["assert","expert","implicit","conclusion"]:
 
 dtd.write("\n<!ELEMENT rule (premise|constraint|infer)* >\n")
 dtd.write("\n<!ATTLIST rule "+"""
-		name	CDATA	#IMPLIED
+		name	CDATA					#IMPLIED
+		type	(non-trivial|trivial)	#IMPLIED
  >
 """)
 

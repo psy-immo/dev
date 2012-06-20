@@ -515,7 +515,7 @@
 				</infer>
 			</rule>
 			
-			<rule name="phi3to3*">
+			<rule name="phi3to3*" type="trivial">
 				<premise id="ab">
 					
 					<predicate>means, for bulbs,</predicate>
@@ -528,7 +528,7 @@
 				</infer>
 			</rule>
 			
-			<rule name="phi3to-3">
+			<rule name="phi3to-3" type="trivial">
 				<premise id="ab">
 					<subject>a (small|bigg)er .*</subject>
 					<predicate>means, for bulbs,</predicate>
@@ -560,7 +560,7 @@
 			</rule>
 			
 			
-			<rule name="serial/parallel-swap">
+			<rule name="serial/parallel-swap" type="trivial">
 				<premise id="ab">
 					<predicate>is (connected in parallel|serial connected) with</predicate>
 				</premise>

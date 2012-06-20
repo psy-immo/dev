@@ -51,6 +51,12 @@ public class XmlRootTag extends XmlTag {
 	 * all given inference rules
 	 */
 	private Set<InferenceMap> rules;
+
+	/**
+	 * given trivial inference rules
+	 */
+	private Set<InferenceMap> trivialRules;
+
 	/**
 	 * all given parsers
 	 */
@@ -87,7 +93,7 @@ public class XmlRootTag extends XmlTag {
 	 * assertions in context)
 	 */
 	private Set<String> expert;
-	
+
 	/**
 	 * all given conclusions
 	 */
@@ -97,14 +103,15 @@ public class XmlRootTag extends XmlTag {
 	 * that do not need to be given explicitly)
 	 */
 	private Map<String, ConstrainedAssertionFilter> lackQualities;
-	
+
 	/**
 	 * filters that identify different parts of the (compound) solution
 	 */
-	private Map<ConstrainedAssertionFilter,String> solutionParts;
+	private Map<ConstrainedAssertionFilter, String> solutionParts;
 
 	public XmlRootTag() {
 		rules = new HashSet<InferenceMap>();
+		trivialRules = new HashSet<InferenceMap>();
 		parsers = new HashSet<SubjectPredicateObjectMatcher>();
 		assertions = new HashSet<String>();
 		invalid = new HashSet<ConstrainedAssertionFilter>();
@@ -118,23 +125,44 @@ public class XmlRootTag extends XmlTag {
 		lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
 		solutionParts = new HashMap<ConstrainedAssertionFilter, String>();
 	}
-	
+
 	/**
 	 * 
 	 * @return all inference maps by their name
 	 */
 	public Map<String, InferenceMap> getInferenceMapsByName() {
 		Map<String, InferenceMap> by_name = new HashMap<String, InferenceMap>();
-		
+
 		for (InferenceMap map : rules) {
 			if (by_name.containsKey(map.ruleName())) {
-				int c=1;
-				while (by_name.containsKey(map.ruleName()+" ("+c+")")) ++c;
-				by_name.put(map.ruleName()+" ("+c+")", map);
+				int c = 1;
+				while (by_name.containsKey(map.ruleName() + " (" + c + ")"))
+					++c;
+				by_name.put(map.ruleName() + " (" + c + ")", map);
 			} else
 				by_name.put(map.ruleName(), map);
 		}
-		
+
+		return by_name;
+	}
+
+	/**
+	 * 
+	 * @return trivial inference maps by their name
+	 */
+	public Map<String, InferenceMap> getTrivialInferenceMapsByName() {
+		Map<String, InferenceMap> by_name = new HashMap<String, InferenceMap>();
+
+		for (InferenceMap map : trivialRules) {
+			if (by_name.containsKey(map.ruleName())) {
+				int c = 1;
+				while (by_name.containsKey(map.ruleName() + " (" + c + ")"))
+					++c;
+				by_name.put(map.ruleName() + " (" + c + ")", map);
+			} else
+				by_name.put(map.ruleName(), map);
+		}
+
 		return by_name;
 	}
 
@@ -155,7 +183,7 @@ public class XmlRootTag extends XmlTag {
 	public Set<ConstrainedAssertionFilter> getTrivialityFilters() {
 		return trivial;
 	}
-	
+
 	/**
 	 * 
 	 * @return a set of filters that filter out trivial assertions
@@ -183,7 +211,7 @@ public class XmlRootTag extends XmlTag {
 	public Map<String, ConstrainedAssertionFilter> getQualityFilters() {
 		return lackQualities;
 	}
-	
+
 	/**
 	 * 
 	 * @return filters for solution parts
@@ -200,6 +228,15 @@ public class XmlRootTag extends XmlTag {
 
 	public InferenceMaps getMaps() {
 		return new InferenceMaps(rules);
+	}
+
+	/**
+	 * 
+	 * @return a combined inference map of all given trivial inference rules
+	 */
+
+	public InferenceMaps getTrivialMaps() {
+		return new InferenceMaps(trivialRules);
 	}
 
 	/**
@@ -225,7 +262,7 @@ public class XmlRootTag extends XmlTag {
 
 		return given;
 	}
-	
+
 	/**
 	 * 
 	 * @return all assertions given in the xml document
@@ -255,7 +292,7 @@ public class XmlRootTag extends XmlTag {
 
 		return given;
 	}
-	
+
 	/**
 	 * 
 	 * @return all expert assertions given in the xml document
@@ -315,7 +352,7 @@ public class XmlRootTag extends XmlTag {
 	 * process a &lt;trivial>-tag
 	 * 
 	 * @param child
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 
 	private void processTrivial(XmlTag child) throws Exception {
@@ -326,7 +363,7 @@ public class XmlRootTag extends XmlTag {
 	 * process a &lt;invalid>-tag
 	 * 
 	 * @param child
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 
 	private void processInvalid(XmlTag child) throws Exception {
@@ -337,7 +374,7 @@ public class XmlRootTag extends XmlTag {
 	 * process a &lt;justified>-tag
 	 * 
 	 * @param child
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 
 	private void processJustified(XmlTag child) throws Exception {
@@ -367,7 +404,7 @@ public class XmlRootTag extends XmlTag {
 				"Q" + lackQualities.size());
 		lackQualities.put(name, processConstraintFilter(child));
 	}
-	
+
 	/**
 	 * process a &lt;solves>-tag
 	 * 
@@ -378,7 +415,7 @@ public class XmlRootTag extends XmlTag {
 	private void processSolves(XmlTag child) throws Exception {
 		String name = child.getAttributeOrDefault("name",
 				"P" + solutionParts.size());
-		solutionParts.put(processConstraintFilter(child),name);
+		solutionParts.put(processConstraintFilter(child), name);
 	}
 
 	/**
@@ -386,10 +423,11 @@ public class XmlRootTag extends XmlTag {
 	 * 
 	 * @param child
 	 * @return constraint described by child
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 
-	private NonEmptyIntersectionChecker processConstraint(XmlTag child) throws Exception {
+	private NonEmptyIntersectionChecker processConstraint(XmlTag child)
+			throws Exception {
 		NonEmptyIntersectionChecker checker = new NonEmptyIntersectionChecker();
 
 		for (XmlTag t : child.children) {
@@ -425,10 +463,11 @@ public class XmlRootTag extends XmlTag {
 	 * process a &lt;trivial>-tag
 	 * 
 	 * @param child
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 
-	private ConstrainedAssertionFilter processConstraintFilter(XmlTag child) throws Exception {
+	private ConstrainedAssertionFilter processConstraintFilter(XmlTag child)
+			throws Exception {
 		String subject = "";
 		String predicate = "";
 		String object = "";
@@ -468,12 +507,15 @@ public class XmlRootTag extends XmlTag {
 	 * process a &lt;rule>-tag
 	 * 
 	 * @param child
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 
 	private void processRule(XmlTag child) throws Exception {
 		RegExpInferenceMap rule = new RegExpInferenceMap(
 				child.getAttributeOrDefault("name", "#" + rules.size()));
+
+		boolean is_trivial = "trivial".equalsIgnoreCase(child
+				.getAttributeOrDefault("type", "non-trivial"));
 
 		Map<String, Integer> premise_id = new HashMap<String, Integer>();
 		int current_premise = 0;
@@ -499,6 +541,10 @@ public class XmlRootTag extends XmlTag {
 		}
 
 		rules.add(rule);
+
+		if (is_trivial) {
+			trivialRules.add(rule);
+		}
 	}
 
 	/**
@@ -548,9 +594,12 @@ public class XmlRootTag extends XmlTag {
 						if (tag.children.isEmpty() == false) {
 							relation = processRho(tag);
 						}
-						
-						if (premise_id.containsKey((tag.attributes.get("id")))==false) {
-							throw new Exception("Inference rule refers to unknown premise \""+(tag.attributes.get("id"))+"\".");
+
+						if (premise_id.containsKey((tag.attributes.get("id"))) == false) {
+							throw new Exception(
+									"Inference rule refers to unknown premise \""
+											+ (tag.attributes.get("id"))
+											+ "\".");
 						}
 
 						conclusion.addPart(part, relation,
@@ -642,7 +691,7 @@ public class XmlRootTag extends XmlTag {
 	 * @param child
 	 * @param rule
 	 * @param premise_id
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 
 	private void processConstraint(XmlTag child, RegExpInferenceMap rule,
@@ -662,11 +711,13 @@ public class XmlRootTag extends XmlTag {
 
 			if ((part != null) && (t.attributes.containsKey("id"))) {
 				if (t.children.isEmpty() == true) {
-					
-					if (premise_id.containsKey((t.attributes.get("id")))==false) {
-						throw new Exception("Constraint refers to unknown premise \""+(t.attributes.get("id"))+"\".");
+
+					if (premise_id.containsKey((t.attributes.get("id"))) == false) {
+						throw new Exception(
+								"Constraint refers to unknown premise \""
+										+ (t.attributes.get("id")) + "\".");
 					}
-					
+
 					checker.addCheckPart(
 							premise_id.get(t.attributes.get("id")), part);
 				} else {
@@ -675,9 +726,11 @@ public class XmlRootTag extends XmlTag {
 					 */
 
 					StringRelationJoin relation = processRho(t);
-					
-					if (premise_id.containsKey((t.attributes.get("id")))==false) {
-						throw new Exception("Constraint refers to unknown premise \""+(t.attributes.get("id"))+"\".");
+
+					if (premise_id.containsKey((t.attributes.get("id"))) == false) {
+						throw new Exception(
+								"Constraint refers to unknown premise \""
+										+ (t.attributes.get("id")) + "\".");
 					}
 
 					checker.addCheckPart(
@@ -696,7 +749,7 @@ public class XmlRootTag extends XmlTag {
 	 * 
 	 * @param parent
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private StringRelationJoin processRho(XmlTag parent) throws Exception {
 		StringRelationJoin result = new StringRelationJoin();
@@ -732,11 +785,14 @@ public class XmlRootTag extends XmlTag {
 				for (XmlTag outtags : rho.children) {
 					if (outtags.tagName.equals("OUT")) {
 						if (outtags.attributes.containsKey("id")) {
-							
-							if (ids.containsKey((outtags.attributes.get("id")))==false) {
-								throw new Exception("Rho output rule refers to unknown input part \""+(outtags.attributes.get("id"))+"\".");
+
+							if (ids.containsKey((outtags.attributes.get("id"))) == false) {
+								throw new Exception(
+										"Rho output rule refers to unknown input part \""
+												+ (outtags.attributes.get("id"))
+												+ "\".");
 							}
-							
+
 							output.add(new SplittedStringRelation.ProjectionMap(
 									ids.get(outtags.attributes.get("id"))));
 						} else if (outtags.contents.isEmpty() == false) {
@@ -799,6 +855,5 @@ public class XmlRootTag extends XmlTag {
 				+ " expert assertion(s), " + justified.size()
 				+ " justified-assertion filter(s)";
 	}
-
 
 }

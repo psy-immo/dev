@@ -35,7 +35,8 @@
 <!ELEMENT rule (premise|constraint|infer)* >
 
 <!ATTLIST rule 
-		name	CDATA	#IMPLIED
+		name	CDATA					#IMPLIED
+		type	(non-trivial|trivial)	#IMPLIED
  >
 
 <!ELEMENT premise (subject|predicate|object)* >
