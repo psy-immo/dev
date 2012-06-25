@@ -13,4 +13,14 @@ cd demo
 cd website
 cp ../../java/efjs/*.js .
 cp ../../java/efjs/*.jar .
+cp ../../php/loglet/*.php .
 
+cd ..
+cd ..
+
+cd editor
+cd website
+cp ../../java/efjs/*.js .
+cp ../../java/efjs/*.jar .
+cp ../../php/loglet/*.php .
+cp ../../php/editor/*.php .
