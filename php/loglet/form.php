@@ -45,4 +45,12 @@ secret: <input name="secret" type="text" />
 <input type="submit" />
 </form>
 
+Bounce HTML:
+<br/>
+<form action="bounce.php" method="post"> 
+doc: <input name="doc" type="text" /> 
+<input type="submit" />
+</form>
+<br/>
+
 </body></html>
