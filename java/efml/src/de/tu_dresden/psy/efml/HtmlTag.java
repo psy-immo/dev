@@ -60,7 +60,9 @@ public class HtmlTag implements AnyTag {
 				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
 				+ "airport.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "inference.js\"></script>\n");
+				+ "inference.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "efml.js\"></script>\n");
 	}
 
 	/**
@@ -71,15 +73,14 @@ public class HtmlTag implements AnyTag {
 	 */
 	static public void writeAllStaticInitializations(Writer writer)
 			throws IOException {
-		
+
 		/**
 		 * run runway bugfix
 		 */
-		
+
 		writer.write("	<script type=\"text/javascript\">\n"
-				+ "  RunwayDisplayBugfix();"
-				+ "  </script>\n");
-		
+				+ "  RunwayDisplayBugfix();" + "  </script>\n");
+
 		/**
 		 * feed inference applets
 		 */
@@ -88,7 +89,6 @@ public class HtmlTag implements AnyTag {
 				+ "  FeedInferenceApplets();" + "  </script>\n");
 
 	}
-
 
 	@Override
 	public void open(Writer writer) throws IOException {

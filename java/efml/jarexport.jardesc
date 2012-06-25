@@ -11,6 +11,6 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <javaElement handleIdentifier="=efml/src"/>
+        <javaElement handleIdentifier="=efml/src&lt;de.tu_dresden.psy.efml"/>
     </selectedElements>
 </jardesc>
