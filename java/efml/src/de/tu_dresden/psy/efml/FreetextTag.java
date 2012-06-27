@@ -1,5 +1,5 @@
 /**
- * DropdownTag.java, (c) 2012, Immanuel Albrecht; Dresden University of
+ * FreetextTag.java, (c) 2012, Immanuel Albrecht; Dresden University of
  * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -20,29 +20,26 @@ package de.tu_dresden.psy.efml;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the &lt;dropdown>-tag for having a drop down box
+ * implements the &lt;freetext>-tag for having a drop down box
  * 
  * @author immanuel
  * 
  */
 
-public class DropdownTag implements AnyTag, NestedTag {
+public class FreetextTag implements AnyTag, NestedTag {
 
 	private EfmlTagsAttribute attributes;
 	private String label;
 	
-	private ArrayList<OptionTag> options;
 
-	public DropdownTag(EfmlTagsAttribute efmlAttributes) {
+	public FreetextTag(EfmlTagsAttribute efmlAttributes) {
 		this.attributes = efmlAttributes;
 		this.label = "";
-		this.options = new ArrayList<OptionTag>();
+
 	}
 
 	@Override
@@ -65,10 +62,10 @@ public class DropdownTag implements AnyTag, NestedTag {
 	@Override
 	public void createNew(Writer writer, String identificationToken ) throws IOException {
 		/**
-		 * create new javascript dropdown object with name, tags, label, token
+		 * create new javascript freetext object with name, tags, label, token
 		 */
 
-		writer.write(" new Dropdown(");
+		writer.write(" new Freetext(");
 
 		writer.write("\""
 				+ StringEscape.escapeToJavaScript(attributes.getValueOrDefault(
@@ -82,10 +79,8 @@ public class DropdownTag implements AnyTag, NestedTag {
 
 
 		/**
-		 * set the background colors for the drop down box
+		 * set the background colors
 		 * 
-		 * color empty background color filled background color when filled with
-		 * token
 		 */
 
 		if ((attributes.getValueOrDefault("color", null) != null)
@@ -99,7 +94,7 @@ public class DropdownTag implements AnyTag, NestedTag {
 		}
 
 		/**
-		 * set the size parameter for the drop down
+		 * set the size parameter
 		 * 
 		 * width, height (note: give CSS sizes, e.g. 200px)
 		 */
@@ -114,14 +109,6 @@ public class DropdownTag implements AnyTag, NestedTag {
 					+ "\")");
 		}
 		
-		/**
-		 * now add all drop down box options
-		 */
-		
-		Iterator<OptionTag> it;
-		for (it=options.iterator();it.hasNext();){
-			writer.write(it.next().getJsContent());
-		}
 
 	}
 
@@ -135,11 +122,9 @@ public class DropdownTag implements AnyTag, NestedTag {
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
 			this.label += ((PlainContent) innerTag).getPlainContent().trim();
-		} else if (innerTag.getClass() == OptionTag.class) {
-			this.options.add((OptionTag) innerTag);
 		} else
 			throw new OperationNotSupportedException(
-					"<dropdown> cannot enclose "
+					"<freetext> cannot enclose "
 							+ innerTag.getClass().toString());
 	}
 

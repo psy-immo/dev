@@ -149,6 +149,8 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new WaitForTag());			
 		}  else if (qName.equals("dropdown")) {
 			this.processingTags.push(new DropdownTag(this.currentTags.peek()));
+		} else if (qName.equals("freetext")) {
+			this.processingTags.push(new FreetextTag(this.currentTags.peek()));
 		} else if (qName.equals("option")) {
 			this.processingTags.push(new OptionTag(this.currentTags.peek()));
 		} else if (qName.equals("studyid")) {

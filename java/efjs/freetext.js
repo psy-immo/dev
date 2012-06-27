@@ -22,7 +22,7 @@ var freetextArray = [];
 /**
  * creates a free text field object
  */
-function FreeText(name, tags, label, token) {
+function Freetext(name, tags, label, token) {
 	this.id = freetextIdCounter++;
 
 	/**
