@@ -22,7 +22,7 @@ var freetextArray = [];
 /**
  * creates a free text field object
  */
-function FreeText(name, tags, label, token) {
+function Freetext(name, tags, label) {
 	this.id = freetextIdCounter++;
 
 	/**
@@ -39,19 +39,15 @@ function FreeText(name, tags, label, token) {
 	}
 
 	this.tags = tags;
-	if (token === undefined) {
-		this.token = null;
-	} else {
-		this.token = token;
-	}
-	
-	this.emptyToken = this.token;
+		
 	
 	if (label === undefined) {
 		this.label = "";
 	} else {
 		this.label = label;
 	}
+	
+	this.token = this.label;
 
 	
 	this.respawn = null;
@@ -97,7 +93,8 @@ function FreeText(name, tags, label, token) {
 		
 		document.write("<form onsubmit=\"return false;\" style=\"display: inline-block;\">");
 		
-		document.write("<input type=\"text\" name=\""+idstring+ "\" id=\""+idstring+"\" " 
+		document.write("<input type=\"text\" name=\""+idstring+ "\" id=\""+idstring+"\" "
+				+ "value=\""+this.token+"\""
 				+ "style=\"display: inline-block; ");
 		if (this.width) {
 			document.write("width: "+this.width+"; ");
@@ -105,7 +102,14 @@ function FreeText(name, tags, label, token) {
 		if (this.height){
 			document.write("height: "+this.height+"; ");
 		}
-		document.write( "background-color: "+this.colorEmpty+";\" "		
+		
+		var color = this.colorEmpty;
+		
+		if (this.token) {
+			color = this.colorFilled;
+		}
+		
+		document.write( "background-color: "+color+";\" "		
 				+ "onchange=\"freetextArray["+this.id+"].OnChange();\" "
 				+ "/>");
 		document.write("</form>");

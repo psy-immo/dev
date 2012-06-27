@@ -72,10 +72,8 @@ public class FreetextTag implements AnyTag, NestedTag {
 						"name", identificationToken)) + "\", ");
 		writer.write(attributes.getTags() + ", ");
 
-		writer.write("\"" + StringEscape.escapeToJavaScript(label) + "\", ");
+		writer.write("\"" + StringEscape.escapeToJavaScript(label) + "\")");
 
-		writer.write("\"" +StringEscape.escapeToJavaScript(attributes
-				.getValueOrDefault("value", "")) + "\")");
 
 
 		/**
