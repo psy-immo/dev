@@ -89,7 +89,7 @@ if (typeof subjectId == 'undefined') {
 	if (v !== null) {
 		subjectId = v;
 	} else {
-		v = prompt(subjectIdPrompt).toUpperCase();
+		v = prompt(subjectIdPrompt,"").toUpperCase();
 		if (v == null)
 			v = "";
 		subjectId = v;

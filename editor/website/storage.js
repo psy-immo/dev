@@ -26,6 +26,8 @@ function Storage() {
 	this.dataFieldNames = [];
 	this.localOnlyDataFields = [];
 	
+	this.tickingFields = [];
+	
 	this.storageInterval = null;
 
 	/**
@@ -90,6 +92,16 @@ function Storage() {
 			this.localOnlyDataFields.push(datafield);
 		}
 	};
+	
+	/**
+	 * request to be regularly ticked before auto-storage
+	 */
+	
+	this.RequestTicks = function(datafield) {
+		if (this.tickingFields.lastIndexOf(datafield) < 0) {
+			this.tickingFields.push(datafield);
+		}
+	};
 
 	/**
 	 * stores all data in the storage space using name to avoid collisions,
@@ -100,6 +112,14 @@ function Storage() {
 		if (typeof myHover == "object") {
 			if (myHover.CrashDown) {
 				myHover.CrashDown();
+			}
+		}
+		
+		for ( var int = 0; int < this.tickingFields.length; int++) {
+			var obj = this.tickingFields[int];
+			
+			if (obj.Tick) {
+				obj.Tick();
 			}
 		}
 
