@@ -126,7 +126,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		} else if (qName.equals("incomplete")) {
 			this.processingTags.push(new IncompleteTag());
 		} else if (qName.equals("incorrect")) {
-				this.processingTags.push(new IncorrectTag());
+			this.processingTags.push(new IncorrectTag());
 		} else if (qName.equals("check")) {
 			this.processingTags.push(new CheckTag(this.currentTags.peek()));
 		} else if (qName.equals("includepreamble")) {
@@ -144,11 +144,13 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		} else if (qName.equals("instructions")) {
 			this.processingTags.push(new InstructionsTag());
 		} else if (qName.equals("sniffy")) {
-			this.processingTags.push(new SniffyTag());			
+			this.processingTags.push(new SniffyTag());
 		} else if (qName.equals("waitfor")) {
-			this.processingTags.push(new WaitForTag());			
-		}  else if (qName.equals("dropdown")) {
+			this.processingTags.push(new WaitForTag());
+		} else if (qName.equals("dropdown")) {
 			this.processingTags.push(new DropdownTag(this.currentTags.peek()));
+		} else if (qName.equals("checkbox")) {
+			this.processingTags.push(new CheckboxTag(this.currentTags.peek()));
 		} else if (qName.equals("freetext")) {
 			this.processingTags.push(new FreetextTag(this.currentTags.peek()));
 		} else if (qName.equals("option")) {
@@ -175,9 +177,8 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			this.processingTags.push(new AirportTag(this.currentTags.peek()));
 		} else if (qName.equals("feedback")) {
 			this.processingTags.push(new FeedbackTag());
-		}
-		else if (qName.equals("required")) {
-				this.processingTags.push(new RequiredTag(this.currentTags.peek()));
+		} else if (qName.equals("required")) {
+			this.processingTags.push(new RequiredTag(this.currentTags.peek()));
 		} else if (qName.equals("parse") || qName.equals("subject")
 				|| qName.equals("object") || qName.equals("predicate")
 				|| qName.equals("assert") || qName.equals("expert")
@@ -191,10 +192,9 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 				|| qName.equals("solves")) {
 			this.processingTags.push(new InferenceXmlTag(this.currentTags
 					.peek()));
-		}  else if (qName.equals("inference")) {
+		} else if (qName.equals("inference")) {
 			this.processingTags.push(new InferenceTag(this.currentTags.peek()));
-		}
-		else {
+		} else {
 			/**
 			 * the tag is not recognized and thus we use the unknown tag handler
 			 */

@@ -56,6 +56,8 @@ public class HtmlTag implements AnyTag {
 				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
 				+ "dropdown.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "checkbox.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
 				+ "freetext.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
 				+ "sentencepattern.js\"></script>\n"

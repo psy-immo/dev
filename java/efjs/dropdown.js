@@ -54,7 +54,6 @@ function Dropdown(name, tags, label, token) {
 	}
 
 	
-	this.respawn = null;
 	this.width = "";
 	this.height = "";
 	this.colorEmpty = "#CCCCAA";

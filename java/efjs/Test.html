@@ -24,6 +24,7 @@
 	<script type="text/javascript" src="airport.js"></script>
 	<script type="text/javascript" src="inference.js"></script>
 	<script type="text/javascript" src="freetext.js"></script>
+	<script type="text/javascript" src="checkbox.js"></script>	
 	
 	<script type="text/javascript">
 	
@@ -37,6 +38,9 @@
 
 
 	<script type="text/javascript">
+	
+		new Checkbox("box",[],"Check here!!","CHECKED","NOPE").WriteHtml();
+	
 		function TestSolution() {
 			var fail = false;
 			var rows = [ "r1", "r2", "r3" ];
