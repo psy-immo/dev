@@ -82,7 +82,7 @@ public class EditorApplet extends Applet {
 
 			return "";
 
-		} catch (ParserConfigurationException | SAXException | IOException e) {
+		} catch (Exception e) {
 			
 			htmlContent = "";
 			
