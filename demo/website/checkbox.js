@@ -112,7 +112,7 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked) {
 			document.write("height: "+this.height+"; ");
 		}
 		document.write( "background-color: "+this.colorFilled +";\" "		
-				+ "onchange=\"checkboxArray["+this.id+"].OnChange();\" "
+				+ "onclick=\"checkboxArray["+this.id+"].OnClick();\" "
 				+ " />");
 		
 		document.write(this.label);
