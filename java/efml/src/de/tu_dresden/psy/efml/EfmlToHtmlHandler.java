@@ -154,6 +154,8 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 					.push(new RadiobuttonTag(this.currentTags.peek()));
 		} else if (qName.equals("checkbox")) {
 			this.processingTags.push(new CheckboxTag(this.currentTags.peek()));
+		} else if (qName.equals("popuphelp")) {
+			this.processingTags.push(new PopupHelpTag(this.currentTags.peek()));
 		} else if (qName.equals("freetext")) {
 			this.processingTags.push(new FreetextTag(this.currentTags.peek()));
 		} else if (qName.equals("multiline")) {

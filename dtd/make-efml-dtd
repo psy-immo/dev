@@ -6,7 +6,7 @@ html_elements = "i|b|br|p|div|span"
 efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|"+\
 				"phpurl|jsurl|documentid|studyid|subjectprompt|"+\
 				"subjectinfo|subjectchange|airport|template|freetext|"+\
-				"checkbox|radiobutton|multiline"
+				"checkbox|radiobutton|multiline|popuphelp"
 efml_extra = "tables"
 nested_elements = "plain|dropdown|freetext|checkbox|radiobutton|multiline"
 
@@ -85,6 +85,14 @@ dtd.write("\n<!ATTLIST sniffy "+universal_attributes+" >\n")
 
 dtd.write("\n<!ELEMENT unused (#PCDATA)* >\n")
 dtd.write("\n<!ELEMENT label (#PCDATA)* >\n")
+
+dtd.write("\n<!ELEMENT popuphelp (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST popuphelp "+universal_attributes+"""
+	name	CDATA			#IMPLIED
+	text	CDATA			#IMPLIED
+	style	CDATA			#IMPLIED	
+ >
+""")
 
 
 dtd.write("\n<!ELEMENT instructions (#PCDATA|unread|label)* >\n")

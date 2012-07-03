@@ -125,8 +125,12 @@ function EfmlPreviewButton(atags, rtags, text) {
 		/**
 		 * compile
 		 */
-
-		this.lastError = applet.compileEfml(bugfixParam(efml));
+		
+		try {
+			this.lastError = applet.compileEfml(bugfixParam(efml));
+		} catch (err) {
+			this.lastError = "Error invoking compilation applet: "+err;
+		}
 
 		if (this.lastError) {
 			myLogger.Log("EfmlPreviewButton" + this.id + " error:\n"

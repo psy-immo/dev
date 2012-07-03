@@ -328,6 +328,10 @@ function Runway(name, tags, token, accept, reject) {
 		var value = "N";
 		if (this.markedgood)
 			value = "G";
+		
+		if (myHover.GetSourceIfFlying()===this) {
+			return value + myHover.token;
+		}
 
 		if (this.token) {
 			return value + this.token;

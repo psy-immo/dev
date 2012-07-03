@@ -191,6 +191,16 @@ function Hover() {
 	this.DenyTakeOff = function() {
 		this.denyTakeOff = true;
 	};
+	
+	/**
+	 * returns the source of the token, if there is a token hovering around. Otherwise, returns null
+	 */
+	this.GetSourceIfFlying = function() {
+		if (this.flight > 0) {
+			return this.source;
+		}
+		return null;
+	};
 
 	/**
 	 * writes the HTML code that provides the layers used for flights

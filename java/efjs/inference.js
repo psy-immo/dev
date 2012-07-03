@@ -237,7 +237,13 @@ function InferenceButton(atags, rtags, points, conclusions) {
 		 * reset student's state
 		 */
 
-		applet.resetStudentsState();
+		try {
+
+			applet.resetStudentsState();
+		} catch (err) {
+			myLogger.Log("Check answer " + this.id + ": reset failed " + err);
+			return;
+		}
 
 		/**
 		 * fetch all inputs
@@ -263,7 +269,13 @@ function InferenceButton(atags, rtags, points, conclusions) {
 
 		for ( var int = 0; int < points.length; ++int) {
 			log_data += points[int].token + "\n";
-			applet.addPoint(bugfixParam("" + points[int].token));
+			try {
+				applet.addPoint(bugfixParam("" + points[int].token));
+			} catch (err) {
+				myLogger.Log("Check answer " + this.id + ": addPoint failed "
+						+ err);
+				return;
+			}
 			points[int].MarkNeutral();
 		}
 
@@ -271,13 +283,26 @@ function InferenceButton(atags, rtags, points, conclusions) {
 
 		for ( var int = 0; int < conclusions.length; ++int) {
 			log_data += conclusions[int].token + "\n";
-			applet.addConclusion(bugfixParam("" + conclusions[int].token));
+			try {
+				applet.addConclusion(bugfixParam("" + conclusions[int].token));
+			} catch (err) {
+				myLogger.Log("Check answer " + this.id
+						+ ": addConclusion failed " + err);
+				return;
+			}
 			conclusions[int].MarkNeutral();
 		}
 
 		log_data += "Result:\n";
 
-		var result = applet.checkAnswerAndFeedback();
+		var result = "";
+		try {
+			result = applet.checkAnswerAndFeedback();
+		} catch (err) {
+			myLogger.Log("Check answer " + this.id
+					+ ": checkAnswerAndFeedback failed " + err);
+			return;
+		}
 		log_data += result;
 
 		/**
