@@ -36,7 +36,7 @@ function Hover() {
 	/**
 	 * @returns true, if token has been taken off
 	 */
-	this.TakeOff = function(token, source, respawn) {
+	this.TakeOff = function(token, source, respawn, planeHtml) {
 		if (this.denyTakeOff == true) {
 			return false;
 		}
@@ -44,13 +44,21 @@ function Hover() {
 		this.respawn = respawn;
 		this.source = source;
 		this.dontGiveBack = false;
+		
+		var formatted_token = "";
+		
+		if (planeHtml) {
+			formatted_token = planeHtml;
+		} else {
+			formatted_token = '<FONT face="Arial" size="3" color="#FFD6AA"><B>'
+				+ token.replace(/\n/g,"<br/>") + '</B></FONT>';
+		}
 
 		/**
 		 * legacy code
 		 */
 		this.flight = 2;
-		var formatted_token = '<FONT face="Arial" size="3" color="#FFD6AA"><B>'
-				+ token + '</B></FONT>';
+		
 		if (document.layers) {
 			var doc = document.myhoverlplane.document;
 			doc.open();

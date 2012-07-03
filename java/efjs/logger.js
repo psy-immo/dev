@@ -28,7 +28,7 @@ function Logger() {
 	 */
 	
 	this.Log = function(item) {
-		var logstring = ("" + item).replace("\n","<br/>");
+		var logstring = ("" + item);
 		var timestamp = new Date();
 		var logdata = timestamp + " = t0 + "+(timestamp - this.t0) + "ms: "+ logstring;
 		this.events[this.events.length] = logdata;

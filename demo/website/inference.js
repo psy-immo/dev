@@ -67,7 +67,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 	 */
 	this.currentFeedback = "";
 	this.text = "Check your answer";
-	
+
 	this.incompleteSolution = "Your solution is not complete! <br/>";
 	this.injustifiedSolution = "The yellow sentences need to be further justified! <br/>";
 	this.correctSolution = "Correct!";
@@ -75,7 +75,6 @@ function InferenceButton(atags, rtags, points, conclusions) {
 	this.lackHints = {};
 	this.requiredParts = [];
 	this.requiredCount = 0;
-	
 
 	this.waitfor = [];
 
@@ -102,50 +101,49 @@ function InferenceButton(atags, rtags, points, conclusions) {
 						+ "\" style=\"height: 20px; width: 100%\"></td></tr></table>");
 		document.write("</form>");
 	};
-	
+
 	this.AddHint = function(lack, hint) {
 		this.lackHints[lack] = hint;
-		
-		return this;
-	};
-	
-	this.RequirePart = function(part) {
-		this.requiredParts.push(part.toLowerCase());
-		
-		return this;
-	};
-	
-	this.RequireCount = function(count) {
-		
-		this.requiredCount = count;
-		
-		return this;
-	};
-	
-	this.SetCorrect = function(text) {
-		this.correctSolution = text;
-		
-		return this;
-	};
-	
-	this.SetIncorrect = function(text) {
-		this.incorrectSolution = text;
-		
-		return this;
-	};
-	
-	this.SetIncomplete = function(text) {
-		this.incompleteSolution = text;
-		
-		return this;
-	};
-	
-	this.SetInjustified = function(text) {
-		this.injustifiedSolution = text;
-		
+
 		return this;
 	};
 
+	this.RequirePart = function(part) {
+		this.requiredParts.push(part.toLowerCase());
+
+		return this;
+	};
+
+	this.RequireCount = function(count) {
+
+		this.requiredCount = count;
+
+		return this;
+	};
+
+	this.SetCorrect = function(text) {
+		this.correctSolution = text;
+
+		return this;
+	};
+
+	this.SetIncorrect = function(text) {
+		this.incorrectSolution = text;
+
+		return this;
+	};
+
+	this.SetIncomplete = function(text) {
+		this.incompleteSolution = text;
+
+		return this;
+	};
+
+	this.SetInjustified = function(text) {
+		this.injustifiedSolution = text;
+
+		return this;
+	};
 
 	/**
 	 * add data that is post-poned to be fed into the applet after the page
@@ -168,12 +166,16 @@ function InferenceButton(atags, rtags, points, conclusions) {
 	this.FeedApplet = function() {
 		var applet = document.getElementById("inferenceApplet" + this.id);
 
-
 		if (this.food.length) {
-			var ret = applet.feed(bugfixParam(decodeString(this.food)));
+			try {
+				var ret = applet.feed(bugfixParam(decodeString(this.food)));
 
-			myLogger.Log(this.name + " feed: " + ret);
-		};
+				myLogger.Log(this.name + " feed: " + ret);
+			} catch (err) {
+				myLogger.Log(this.name + " feed error: " + err);
+			}
+		}
+		;
 	};
 
 	/**
@@ -215,7 +217,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 	 * this is called whenever the button is clicked
 	 */
 	this.OnClick = function() {
-		
+
 		var unjustified = false;
 
 		/**
@@ -333,7 +335,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 
 			unjustified_points[lines[int]] = 1;
 			++int;
-			
+
 			unjustified = true;
 		}
 
@@ -399,7 +401,7 @@ function InferenceButton(atags, rtags, points, conclusions) {
 
 			unjustified_conclusions[lines[int]] = 1;
 			++int;
-			
+
 			unjustified = true;
 		}
 
@@ -431,49 +433,48 @@ function InferenceButton(atags, rtags, points, conclusions) {
 				conclusions[int].MarkAsBad();
 			}
 		}
-		
+
 		/**
 		 * use status to give additional feedback
 		 */
-		
+
 		this.currentFeedback = "";
-		
-		var incorrect = (status[0].trim() != "")|| (status[1].trim() != "");
-				
+
+		var incorrect = (status[0].trim() != "") || (status[1].trim() != "");
+
 		if (incorrect) {
 			this.currentFeedback += this.incorrectSolution;
 		}
-		
+
 		if (unjustified) {
-		    this.currentFeedback += this.injustifiedSolution;
+			this.currentFeedback += this.injustifiedSolution;
 		}
-		
+
 		var lacks = status[2].trim().substr(6).split("&");
-		
+
 		for ( var int = 0; int < lacks.length; int++) {
 			if (lacks[int] in this.lackHints) {
 				this.currentFeedback += decodeString(this.lackHints[lacks[int]]);
 			}
 		}
-		
-		var parts  = status[3].trim().substr(6).split("&");
-		
+
+		var parts = status[3].trim().substr(6).split("&");
+
 		var incomplete = parts.length < this.requiredCount;
-		
+
 		for ( var int = 0; int < this.requiredParts.length; int++) {
 			if (parts.lastIndexOf(this.requiredParts[int]) < 0)
 				incomplete = true;
 		}
-		
+
 		if (incomplete) {
 			this.currentFeedback += this.incompleteSolution;
 		}
-		
-		if ((!incomplete)&&(!unjustified)&&(!incorrect)) {
+
+		if ((!incomplete) && (!unjustified) && (!incorrect)) {
 			this.currentFeedback += this.correctSolution;
 		}
-				
-		
+
 		this.SetHint(this.currentFeedback);
 
 		myLogger.Log(log_data);

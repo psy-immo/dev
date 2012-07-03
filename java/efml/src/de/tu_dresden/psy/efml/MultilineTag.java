@@ -1,5 +1,5 @@
 /**
- * FreetextTag.java, (c) 2012, Immanuel Albrecht; Dresden University of
+ * MultilineTag.java, (c) 2012, Immanuel Albrecht; Dresden University of
  * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -24,19 +24,19 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the &lt;freetext>-tag for having a free text box
+ * implements the &lt;multiline>-tag for having a multi line input
  * 
  * @author immanuel
  * 
  */
 
-public class FreetextTag implements AnyTag, NestedTag {
+public class MultilineTag implements AnyTag, NestedTag {
 
 	private EfmlTagsAttribute attributes;
 	private String label;
 	
 
-	public FreetextTag(EfmlTagsAttribute efmlAttributes) {
+	public MultilineTag(EfmlTagsAttribute efmlAttributes) {
 		this.attributes = efmlAttributes;
 		this.label = "";
 
@@ -62,10 +62,11 @@ public class FreetextTag implements AnyTag, NestedTag {
 	@Override
 	public void createNew(Writer writer, String identificationToken ) throws IOException {
 		/**
-		 * create new javascript freetext object with name, tags, label, token
+		 * create new javascript multi line object with name, tags, initial
+		 * value
 		 */
 
-		writer.write(" new Freetext(");
+		writer.write(" new Multiline(");
 
 		writer.write("\""
 				+ StringEscape.escapeToJavaScript(attributes.getValueOrDefault(
@@ -119,10 +120,10 @@ public class FreetextTag implements AnyTag, NestedTag {
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
-			this.label += ((PlainContent) innerTag).getPlainContent().trim();
+			this.label += ((PlainContent) innerTag).getPlainContent();
 		} else
 			throw new OperationNotSupportedException(
-					"<freetext> cannot enclose "
+					"<multiline> cannot enclose "
 							+ innerTag.getClass().toString());
 	}
 

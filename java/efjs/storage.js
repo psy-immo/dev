@@ -225,8 +225,6 @@ function Storage() {
 		
 		this.storageInterval = setInterval(function(){
 			
-			console.log("autosaving...");
-			
 			myStorage.StoreIn(myStorageLocation, myStorageName);
 			
 		}, 5000+Math.floor(Math.random()*500));

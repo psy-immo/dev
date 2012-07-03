@@ -26,6 +26,7 @@
 	<script type="text/javascript" src="freetext.js"></script>
 	<script type="text/javascript" src="checkbox.js"></script>
 	<script type="text/javascript" src="radiobutton.js"></script>		
+	<script type="text/javascript" src="multiline.js"></script>
 	
 	<script type="text/javascript">
 	
@@ -238,7 +239,7 @@
 				new SentencePattern("Pattern 1", [ "r1", "c1" ], [
 						"a b ",
 						new Dropdown("", [ "r1", "c1" ]).Size(100, 20).Option(
-								"Option A").Option("Option B"), " c" ], true)
+								"Option A").Option("Option B"), " c",new Multiline("text",[],"Initial content") ], true)
 						.WriteHtml();
 			</script>
 			<br />
@@ -599,7 +600,7 @@
 	<br />
 	
 	<script type="text/javascript">
-		new Freetext("text",[],"Initial content").WriteHtml();
+		new Multiline("text",[],"Initial content").WriteHtml();
 	</script>
 	
 

@@ -1,5 +1,5 @@
 
-<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|tables|i|b|br|p|div|span)* >
+<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline|tables|i|b|br|p|div|span)* >
 
 <!ELEMENT br EMPTY >
 
@@ -53,7 +53,7 @@
 	rtags	CDATA	#IMPLIED
  >
 
-<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|tables|i|b|br|p|div|span)* >
+<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline|tables|i|b|br|p|div|span)* >
 
 <!ATTLIST tags 
 	tags	CDATA	#IMPLIED
@@ -61,7 +61,7 @@
 	rtags	CDATA	#IMPLIED
  >
 
-<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|i|b|br|p|div|span)* >
+<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline|i|b|br|p|div|span)* >
 
 <!ATTLIST tables 
 	tags	CDATA	#IMPLIED
@@ -75,7 +75,7 @@
 
 <!ELEMENT c EMPTY >
 
-<!ELEMENT tie (#PCDATA|i|b|br|p|div|span|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton)* >
+<!ELEMENT tie (#PCDATA|i|b|br|p|div|span|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline)* >
 
 <!ATTLIST tie 
 	tags	CDATA	#IMPLIED
@@ -200,6 +200,21 @@
 	height	CDATA			#IMPLIED
  >
 
+<!ELEMENT multiline (#PCDATA)* >
+
+<!ATTLIST multiline 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+
+	name	CDATA			#IMPLIED
+	value	CDATA			#IMPLIED
+	color	CDATA			#IMPLIED
+	filled	CDATA			#IMPLIED
+	width	CDATA			#IMPLIED
+	height	CDATA			#IMPLIED
+ >
+
 <!ELEMENT option (#PCDATA)* >
 
 <!ATTLIST option 
@@ -222,7 +237,7 @@
 
 <!ELEMENT plain (#PCDATA)* >
 
-<!ELEMENT template (plain|dropdown|freetext|checkbox|radiobutton)* >
+<!ELEMENT template (plain|dropdown|freetext|checkbox|radiobutton|multiline)* >
 
 <!ATTLIST template 
 	tags	CDATA	#IMPLIED

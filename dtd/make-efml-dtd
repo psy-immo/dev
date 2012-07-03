@@ -6,9 +6,9 @@ html_elements = "i|b|br|p|div|span"
 efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|"+\
 				"phpurl|jsurl|documentid|studyid|subjectprompt|"+\
 				"subjectinfo|subjectchange|airport|template|freetext|"+\
-				"checkbox|radiobutton"
+				"checkbox|radiobutton|multiline"
 efml_extra = "tables"
-nested_elements = "plain|dropdown|freetext|checkbox|radiobutton"
+nested_elements = "plain|dropdown|freetext|checkbox|radiobutton|multiline"
 
 
 universal_attributes = r"""
@@ -130,6 +130,17 @@ dtd.write("\n<!ATTLIST checkbox "+universal_attributes+"""
 
 dtd.write("\n<!ELEMENT freetext (#PCDATA)* >\n")
 dtd.write("\n<!ATTLIST freetext "+universal_attributes+"""
+	name	CDATA			#IMPLIED
+	value	CDATA			#IMPLIED
+	color	CDATA			#IMPLIED
+	filled	CDATA			#IMPLIED
+	width	CDATA			#IMPLIED
+	height	CDATA			#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT multiline (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST multiline "+universal_attributes+"""
 	name	CDATA			#IMPLIED
 	value	CDATA			#IMPLIED
 	color	CDATA			#IMPLIED
