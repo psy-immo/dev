@@ -51,7 +51,7 @@ public class PopupHelpTag implements AnyTag {
 						"name", "")) + "\", ");
 
 		writer.write("\"" + StringEscape.escapeToJavaScript(this.url.trim())
-				+ "\") ");
+				+ "\")");
 		
 		attributes.writeIfValueGiven(writer, ".Text(\"", "text", "\")");
 		attributes.writeIfValueGiven(writer, ".Style(\"", "style", "\")");
