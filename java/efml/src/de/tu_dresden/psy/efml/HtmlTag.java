@@ -34,6 +34,8 @@ public class HtmlTag implements AnyTag {
 	static public void writeAllIncludes(Writer writer, String baseUrl)
 			throws IOException {
 		writer.write("	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "cssgraphics.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
 				+ "loglet.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
 				+ "storage.js\"></script>\n"
