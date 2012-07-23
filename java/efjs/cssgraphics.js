@@ -28,6 +28,17 @@ function freshId() {
 };
 
 /**
+ * 
+ * 
+ * 
+ * line primitive
+ * 
+ * 
+ * 
+ * 
+ */
+
+/**
  * return css styled html code for drawing a line (by using the borders of an space-empty div layer)
  */
 
@@ -138,8 +149,166 @@ function Line(left, top, right, bottom, color, style, extension) {
 
 		parent.appendChild(container.firstChild);
 	};
+	
+	/**
+	 * get the associated html element
+	 */
+	
+	this.GetElement = function() {
+		return document.getElementById("grLine"+this.id);
+	};
 
 	graphicsArray[this.id] = this;
 
+	return this;
+};
+
+
+/**
+ * 
+ * 
+ * 
+ * container primitive
+ * 
+ * 
+ * 
+ * 
+ */
+
+/**
+ * return css styled html code for a (overlaying) div container primitive
+ */
+
+function htmlContainerDiv(left, top, right, bottom, layer, style, id, extension,
+		content) {
+	
+	if (layer == undefined) {
+		layer = 3;
+	}
+	
+	if (id == undefined) {
+		id = freshId();
+	}
+
+	if (extension == undefined) {
+		extension = "";
+	}
+
+	if (content == undefined) {
+		content = "";
+	}
+	
+	if (right < left) {
+		var tri = right;
+		right = left;
+		left = tri;
+	}
+	
+	if (bottom < top) {
+		var tri = bottom;
+		bottom = top;
+		top = tri;
+	}
+	
+	var html = "<div id=\"" + id + "\" style=\"";
+	
+	html += "position: absolute;";
+	
+	html += "z-index: "+layer+";";	
+	
+	html += "left: "+left+"px;";
+	html += "top: "+top+"px;";
+	
+	var width = (right-left);
+	var height = (bottom-top);
+	
+	html += "width: "+width+"px;";
+	html += "height: "+height+"px;";
+	html += "min-width: "+width+"px;";
+	html += "min-height: "+height+"px;";
+	html += "max-width: "+width+"px;";
+	html += "max-height: "+height+"px;";
+	
+	html += style;
+	
+	html += "\" " + extension + ">"+content+"</div>";
+	return html;
+};
+
+
+function Container(left, top, right, bottom, style, extension, layer, content) {
+	
+	this.id = graphicsIds++;
+	this.left = left;
+	this.right = right;
+	this.top = top;
+	this.bottom = bottom;
+
+	this.layer = 3;
+	this.style = "";
+	this.extension = "";
+	this.content = "";
+
+	if (layer)
+		this.layer = layer;
+	if (style)
+		this.style = style;
+	if (extension)
+		this.extension = extension;
+	if (content)
+		this.content = content;
+	
+	
+	/**
+	 * write html code that creates the line object
+	 */
+
+	this.WriteHtml = function() {
+		document.write(htmlContainerDiv(this.left, this.top, this.right,
+				this.bottom, this.layer, this.style, "grDiv" + this.id,
+				this.extension,this.content));
+	};
+
+	/**
+	 * remove the graphical object
+	 */
+
+	this.Remove = function() {
+		var elt = document.getElementById("grDiv" + this.id);
+		elt.parentNode.removeChild(elt);
+		graphicsArray[this.id] = undefined;
+	};
+
+	/**
+	 * remove the graphical object
+	 */
+
+	this.AddChild = function(id) {
+		if (id == undefined) {
+			id = "frame";
+		}
+		var html = htmlContainerDiv(this.left, this.top, this.right,
+				this.bottom, this.layer, this.style, "grDiv" + this.id,
+				this.extension,this.content);
+
+		var parent = document.getElementById(id);
+		
+		var container = document.createElement('div');
+	
+		container.innerHTML = html;
+
+		parent.appendChild(container.firstChild);
+	};
+	
+	/**
+	 * get the associated html element
+	 */
+	
+	this.GetElement = function() {
+		return document.getElementById("grDiv"+this.id);
+	};
+
+	graphicsArray[this.id] = this;
+	
 	return this;
 };

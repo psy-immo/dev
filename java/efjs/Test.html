@@ -7,7 +7,8 @@
 <title>Hover.js test file</title>
 </head>
 
-<body id="body">
+<body id="body" onmousemove="if ( document.all && myHover.flight != 0 ) myHover.MovePlane();"
+		onclick="myHover.OnFlight()">
 
 	<script type="text/javascript" src="cssgraphics.js"></script>
 	<script type="text/javascript" src="loglet.js"></script>
@@ -51,6 +52,8 @@
 	</table>
 	
 	<script type="text/javascript">
+		new Runway("box",[],"Hover",[],[]).WriteHtml();
+		
 		new Checkbox("box",[],"Check here!!","CHECKED","NOPE").WriteHtml();
 	
 		function TestSolution() {
@@ -221,8 +224,7 @@
 	</script>
 
 	<div id="frame"
-		onmousemove="if ( document.all && myHover.flight != 0 ) myHover.MovePlane();"
-		onclick="myHover.OnFlight()">
+		>
 		
 			<script type="text/javascript">
 	
