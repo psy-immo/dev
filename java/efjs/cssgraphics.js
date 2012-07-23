@@ -82,6 +82,7 @@ function htmlLineDiv(left, top, right, bottom, color, style, id, extension,
 	html += "transform: rotate(" + angle + "deg);";
 	html += "-webkit-transform: rotate(" + angle + "deg);";
 	html += "-moz-transform: rotate(" + angle + "deg);";
+	html += "-ms-transform: rotate(" + angle + "deg);";
 
 	html += style;
 
