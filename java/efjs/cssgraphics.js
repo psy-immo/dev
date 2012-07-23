@@ -28,7 +28,7 @@ function freshId() {
 };
 
 /**
- * return css styled html code for drawing a line
+ * return css styled html code for drawing a line (by using the borders of an space-empty div layer)
  */
 
 function htmlLineDiv(left, top, right, bottom, color, style, id, extension,
@@ -49,17 +49,6 @@ function htmlLineDiv(left, top, right, bottom, color, style, id, extension,
 		content = "";
 	}
 
-	if (right < left) {
-		var tri = left;
-		left = right;
-		right = tri;
-	}
-	if (bottom < top) {
-		var tri = bottom;
-		bottom = top;
-		top = tri;
-	}
-
 	var width = Math.sqrt((right - left) * (right - left) + (bottom - top)
 			* (bottom - top));
 	var angle = Math.atan2(bottom - top, right - left) * 180.0 / Math.PI;
@@ -71,6 +60,9 @@ function htmlLineDiv(left, top, right, bottom, color, style, id, extension,
 	html += "height: 4px;";
 	html += "width: " + width + "px;";
 	html += "z-index: 2;";
+	
+	html += "left: "+left+"px;";
+	html += "top: "+top+"px;";
 
 	html += "transform-origin: 0% 50%;";
 	html += "-webkit-transform-origin: 0% 50%;";
@@ -124,7 +116,7 @@ function Line(left, top, right, bottom, color, style, extension) {
 	this.Remove = function() {
 		var elt = document.getElementById("grLine" + this.id);
 		elt.parentNode.removeChild(elt);
-		graphicsArray[this.id] = "deleted";
+		graphicsArray[this.id] = undefined;
 	};
 
 	/**
