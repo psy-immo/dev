@@ -19,6 +19,10 @@
 graphicsIds = 0;
 graphicsArray = [];
 
+
+
+
+
 /**
  * return a fresh id
  */
@@ -307,6 +311,118 @@ function Container(left, top, right, bottom, style, extension, layer, content) {
 	
 	this.GetElement = function() {
 		return document.getElementById("grDiv"+this.id);
+	};
+
+	graphicsArray[this.id] = this;
+	
+	return this;
+};
+
+
+/**
+ * 
+ * 
+ * 
+ * hover primitive
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+function htmlHoverDiv(left, top, style, id, extension,
+		content) {
+	
+	if (id == undefined) {
+		id = freshId();
+	}
+
+	if (extension == undefined) {
+		extension = "";
+	}
+
+	if (content == undefined) {
+		content = "";
+	}
+	
+	
+	
+	var html = "<div id=\"" + id + "\" style=\"";
+	
+	html += "position: absolute;";
+	
+	html += "z-index: 100;";	
+	
+	html += "left: "+left+"px;";
+	html += "top: "+top+"px;";
+	
+	html += style;
+	
+	html += "\" " + extension + ">"+content+"</div>";
+	return html;
+};
+
+
+function HoverContainer(left, top, content) {
+	
+	this.id = graphicsIds++;
+	this.left = left;
+	this.top = top;
+
+	this.style = "";
+	this.extension = "";
+	this.content = "";
+
+	if (content)
+		this.content = content;
+	
+	
+	/**
+	 * write html code that creates the line object
+	 */
+
+	this.WriteHtml = function() {
+		document.write(htmlHoverDiv(this.left, this.top, this.style, "grHover" + this.id,
+				this.extension,this.content));
+	};
+
+	/**
+	 * remove the graphical object
+	 */
+
+	this.Remove = function() {
+		var elt = document.getElementById("grHover" + this.id);
+		elt.parentNode.removeChild(elt);
+		graphicsArray[this.id] = undefined;
+	};
+
+	/**
+	 * remove the graphical object
+	 */
+
+	this.AddChild = function(id) {
+		if (id == undefined) {
+			id = "frame";
+		}
+		var html = htmlHoverDiv(this.left, this.top, this.style, "grHover" + this.id,
+				this.extension,this.content);
+
+		var parent = document.getElementById(id);
+		
+		var container = document.createElement('div');
+	
+		container.innerHTML = html;
+
+		parent.appendChild(container.firstChild);
+	};
+	
+	/**
+	 * get the associated html element
+	 */
+	
+	this.GetElement = function() {
+		return document.getElementById("grHover"+this.id);
 	};
 
 	graphicsArray[this.id] = this;

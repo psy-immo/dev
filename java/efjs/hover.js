@@ -31,6 +31,8 @@ function Hover() {
 	this.respawn = null;
 	this.dontGiveBack = false;
 
+	this.hover = null;
+
 	/**
 	 * @returns true, if token has been taken off
 	 */
@@ -57,50 +59,28 @@ function Hover() {
 		 */
 		this.flight = 2;
 
-		{
+		/*{
 			var pl = document.getElementById("myhoverplane");
 			pl.style.zIndex = 100;
 			pl.innerHTML = formatted_token;
-
-			if (source.style) {
-				this.sourceColor = source.style.backgroundColor;
-				source.style.backgroundColor = "#FFD600";
-			}
-
-			document.getElementById("body").style.cursor = "crosshair";
-			window.onmousemove = this.lMovePlane;
-		}
+		}*/
+		
+		this.hover = new HoverContainer(mouseX+1, mouseY+1, formatted_token);
+		this.hover.AddChild();
+				
+		document.getElementById("body").style.cursor = "crosshair";
+		addMouseMoveHook(this.lMovePlane);
+		
+		
 
 		return true;
 	};
 
-	/**
-	 * legacy code
-	 */
-	this.lMovePlane = function(ev) {
+	this.lMovePlane = function() {
+		var pl = myHover.hover.GetElement().style;
 
-		var pl = document.getElementById("myhoverplane").style;
-
-		var posx = 0;
-		var posy = 0;
-		var e = ev;
-
-		if (!ev)
-			e = window.event;
-
-		if (e.pageX || e.pageY) {
-			posx = e.pageX;
-			posy = e.pageY;
-		} else if (e.clientX || e.clientY) {
-			posx = e.clientX + document.body.scrollLeft
-					+ document.documentElement.scrollLeft;
-			posy = e.clientY + document.body.scrollTop
-					+ document.documentElement.scrollTop;
-		}
-
-		pl.left = (posx + 1) + "px";
-		pl.top = (posy + 1) + "px";
-
+		pl.left = (mouseX + 1) + "px";
+		pl.top = (mouseY + 1) + "px";
 	};
 
 	/**
@@ -138,15 +118,11 @@ function Hover() {
 	this.LegacyCrashDown = function() {
 		this.flight = 0;
 
-		var pl = document.getElementById("myhoverplane");
-
-		pl.style.left = -220 + "px";
-		pl.style.top = -220 + "px";
-		if (this.source.style)
-			this.source.style.backgroundColor = this.sourceColor;
-
+		
 		document.getElementById("body").style.cursor = "";
-		window.onmousemove = 0;
+		delMouseMoveHook(this.lMovePlane);
+		
+		this.hover.Remove();
 
 	};
 
