@@ -163,7 +163,7 @@ public class BodyTag implements AnyTag {
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		writer.write("<body id=\"body\">\n");
+		writer.write("<body id=\"body\" onclick=\"myHover.OnFlight();\">\n");
 
 		/**
 		 * write the identification strings & base url & ...
@@ -200,12 +200,10 @@ public class BodyTag implements AnyTag {
 		HtmlTag.writeAllIncludes(writer, scriptUrl);
 
 		/**
-		 * all content will be displayed in the main "myhoverframe"
+		 * all content will be displayed in the "mainframe"
 		 */
 
-		writer.write("<div id=\"myhoverframe\" \n"
-				+ "		onmousemove=\"if ( document.all && myHover.flight != 0 ) myHover.MovePlane();\"\n"
-				+ "		onclick=\"myHover.OnFlight();\">");
+		writer.write("<div id=\"mainframe\" >");
 
 		/**
 		 * print the current subject id token and change button

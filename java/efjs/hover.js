@@ -50,8 +50,7 @@ function Hover() {
 		if (planeHtml) {
 			formatted_token = planeHtml;
 		} else {
-			formatted_token = '<FONT face="Arial" size="3" color="#FFD6AA"><B>'
-					+ token.replace(/\n/g, "<br/>") + '</B></FONT>';
+			formatted_token = token.replace(/\n/g, "<br/>");
 		}
 
 		/**
@@ -87,7 +86,7 @@ function Hover() {
 	 * legacy code
 	 */
 
-	this.OnFlight = function() {
+	this.OnFlight = function(ev) {
 		if (this.flight == 2)
 			this.flight = 1;
 		else if (this.flight == 1)
@@ -162,3 +161,4 @@ function Hover() {
  * generate the myHover object
  */
 myHover = new Hover();
+

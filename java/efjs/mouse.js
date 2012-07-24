@@ -56,16 +56,16 @@ function mouseOnMove(ev) {
  * install mouse hook
  */ 
 
-document.captureEvents(Event.MOUSEMOVE);
+
 /**
  * firefox and chromium would work with this code
  * but IE seems to not work with this one
  */
-
+// document.captureEvents(Event.MOUSEMOVE);
 // window.onmousemove = mouseOnMove;
 
 /**
- * setup observe handler
+ * setup observe handler using prototype.js
  */
 
 document.observe("mousemove",mouseOnMove);

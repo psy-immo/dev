@@ -141,7 +141,7 @@ function Line(left, top, right, bottom, color, style, extension) {
 
 	this.AddChild = function(id) {
 		if (id == undefined) {
-			id = "frame";
+			id = "mainframe";
 		}
 		var html = htmlLineDiv(this.left, this.top, this.right, this.bottom,
 				this.color, this.style, "grLine" + this.id, this.extension);
@@ -290,7 +290,7 @@ function Container(left, top, right, bottom, style, extension, layer, content) {
 
 	this.AddChild = function(id) {
 		if (id == undefined) {
-			id = "frame";
+			id = "mainframe";
 		}
 		var html = htmlContainerDiv(this.left, this.top, this.right,
 				this.bottom, this.layer, this.style, "grDiv" + this.id,
@@ -357,6 +357,11 @@ function htmlHoverDiv(left, top, style, id, extension,
 	html += "left: "+left+"px;";
 	html += "top: "+top+"px;";
 	
+	
+	html += "color: #EEEE44;";
+	html += "background: #000000;";
+	html += "opacity: 0.6;";
+	
 	html += style;
 	
 	html += "\" " + extension + ">"+content+"</div>";
@@ -403,7 +408,7 @@ function HoverContainer(left, top, content) {
 
 	this.AddChild = function(id) {
 		if (id == undefined) {
-			id = "frame";
+			id = "mainframe";
 		}
 		var html = htmlHoverDiv(this.left, this.top, this.style, "grHover" + this.id,
 				this.extension,this.content);
