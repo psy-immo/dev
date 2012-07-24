@@ -67,7 +67,7 @@ function Hover() {
 		this.hover = new HoverContainer(mouseX+1, mouseY+1, formatted_token);
 		this.hover.AddChild();
 				
-		document.getElementById("body").style.cursor = "crosshair";
+		document.getElementById("body").style.cursor = "move";
 		addMouseMoveHook(this.lMovePlane);
 		
 		

@@ -21,15 +21,12 @@ package de.tu_dresden.psy.efml.editor;
 import java.applet.Applet;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 import de.tu_dresden.psy.efml.EfmlToHtmlConverter;
 
