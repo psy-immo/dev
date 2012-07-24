@@ -1,5 +1,5 @@
 /**
- * boxworkspace.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
+ * boxspace.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -19,10 +19,22 @@
 var boxspaceIdCounter = 0;
 var boxspaceArray = [];
 
+
+/**
+ * creates a workspace box that can be moved in a box workspace
+ */
+
+function FloatBox() {
+	
+	//TODO
+
+	return this;
+}
+
 /**
  * creates a box workspace object, that may contain token data, one at a time
  */
-function Boxspace(name, tags, token, accept, reject) {
+function Boxspace(name, tags, accept, reject) {
 	this.id = boxspaceIdCounter++;
 
 	/**
@@ -40,19 +52,21 @@ function Boxspace(name, tags, token, accept, reject) {
 	}
 
 	this.tags = tags;
-	this.token = token;
+	
 	this.respawn = null;
-	this.width = "200px";
-	this.height = "20px";
-	this.colorEmpty = "#CCCCCC";
-	this.colorFilled = "#CCCCFF";
+	this.width = "600px";
+	this.height = "600px";
+	this.colorGround = "#CCCCCC";
+	this.colorBoxes = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
-	this.markedgood = false;
+	
 	this.accept = accept;
 	this.reject = reject;
 	this.doRespawn = null;
-	this.stayFilled = false;
+
 	this.noTakeOff = false;
+	
+	this.contents = [];
 
 	/**
 	 * this function sets the bounding parameters
@@ -111,9 +125,9 @@ function Boxspace(name, tags, token, accept, reject) {
 	 * 
 	 * @returns this
 	 */
-	this.Color = function(colorEmpty, colorFilled) {
-		this.colorEmpty = colorEmpty;
-		this.colorFilled = colorFilled;
+	this.Color = function(colorGround, colorBoxes) {
+		this.colorGround = colorGround;
+		this.colorBoxes = colorBoxes;
 
 		return this;
 	};
@@ -122,75 +136,50 @@ function Boxspace(name, tags, token, accept, reject) {
 	 * write the HTML code that will be used for displaying the box workspace
 	 */
 	this.WriteHtml = function() {
-		document.write("<span id=\"boxspace" + this.id + "\" ");
+		document.write("<div id=\"boxspace" + this.id + "\" ");
 
 		document.write(" style=\" display: inline-block; ");
 
-		if (this.token) {
-			document.write("background-color:" + this.colorFilled + "; ");
-		} else {
-			document.write("background-color:" + this.colorEmpty + "; ");
-		}
+		document.write("background-color:" + this.colorGround + "; ");
+		
 		if (this.width) {
 			document.write("width:" + this.width + "; ");
 		}
 		if (this.height) {
 			document.write("height:" + this.height + "; ");
 		}
+		
+		document.write("overflow: auto; ");
+		
 		document.write("\"");
 		document.write("onClick=\"boxspaceArray[" + this.id + "].OnClick()\">");
-		if (this.token) {
-			document.write(this.token);
-		}
-		document.write("</span>");
+				
+		document.write("</div>");
 
 	};
 
-	/**
-	 * this function sets the objects token
-	 */
-	this.SetToken = function(token) {
-
-		this.token = token;
-		var html_object = document.getElementById("boxspace" + this.id);
-		if (token) {
-			html_object.innerHTML = token;
-			html_object.style.backgroundColor = this.colorFilled;
-		} else {
-			html_object.innerHTML = "&nbsp;";
-			html_object.style.backgroundColor = this.colorEmpty;
-		}
-
-	};
 
 	/**
 	 * this function marks the current box workspace green
 	 */
 	this.MarkAsGood = function() {
-		var html_object = document.getElementById("boxspace" + this.id);
-		html_object.style.backgroundColor = this.colorGood;
-		this.markedgood = true;
+		
 	};
 
 	/**
 	 * this function demarks the current box workspace
 	 */
 	this.MarkNeutral = function() {
-		var html_object = document.getElementById("boxspace" + this.id);
-		if (this.token) {
-
-			html_object.style.backgroundColor = this.colorFilled;
-		} else {
-
-			html_object.style.backgroundColor = this.colorEmpty;
-		}
-		this.markedgood = false;
+		
 	};
 
 	/**
 	 * this function is called, when the box workspace object is clicked
 	 */
 	this.OnClick = function() {
+		
+		//TODO
+		
 		/**
 		 * Allow landing
 		 */
@@ -274,25 +263,7 @@ function Boxspace(name, tags, token, accept, reject) {
 
 			return;
 		}
-		/**
-		 * Allow take off
-		 */
-		if (this.token) {
-			if (true != this.noTakeOff) {
-				if (myHover.TakeOff(this.token, this, this.respawn)) {
-					var log_data = "";
-					if (this.name) {
-						log_data += this.name;
-					}
-					log_data += " take off: " + myHover.token;
-					myLogger.Log(log_data);
 
-					if (this.stayFilled != true) {
-						this.SetToken(null);
-					}
-				}
-			}
-		}
 
 	};
 
@@ -300,31 +271,23 @@ function Boxspace(name, tags, token, accept, reject) {
 	 * this function is called, when a token is given back after a take off
 	 */
 	this.GiveBackToken = function(token) {
-		this.SetToken(token);
-
-		var log_data = "";
-		if (this.name) {
-			log_data += this.name;
-		}
-		log_data += " token returns: " + token;
-		myLogger.Log(log_data);
+		//TODO
 	};
 
 	/**
 	 * this function is called, when a token is taken away after a touch down
 	 */
 	this.TakeAway = function() {
-		if (this.stayFilled) {
-			return;
-		}
-		this.SetToken(null);
-		this.respawn = null;
+		//TODO		
 	};
 
 	/**
 	 * return the current contents of the box workspace as string
 	 */
 	this.GetValue = function() {
+		
+		//TODO
+		
 		var value = "N";
 		if (this.markedgood)
 			value = "G";
@@ -344,6 +307,9 @@ function Boxspace(name, tags, token, accept, reject) {
 	 */
 
 	this.SetValue = function(contents) {
+		
+		//TODO
+		
 		if (contents) {
 			this.SetToken(contents.substr(1));
 			if (contents.charAt(0) == "G")
@@ -358,17 +324,4 @@ function Boxspace(name, tags, token, accept, reject) {
 	myTags.Add(this, this.tags);
 
 	myStorage.RegisterField(this, "boxspaceArray[" + this.id + "]");
-}
-
-/**
- * this function fixes the bug where boxspaces are moving down when filled the
- * first time
- */
-function boxspaceDisplayBugfix() {
-	for ( var int = 0; int < boxspaceArray.length; int++) {
-		var boxspace = boxspaceArray[int];
-		var value = boxspace.GetValue();
-		boxspace.SetValue("Ngxl");
-		boxspace.SetValue(value);
-	}
 }
