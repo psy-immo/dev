@@ -57,7 +57,19 @@ function mouseOnMove(ev) {
  */ 
 
 document.captureEvents(Event.MOUSEMOVE);
-window.onmousemove = mouseOnMove;
+/**
+ * firefox and chromium would work with this code
+ * but IE seems to not work with this one
+ */
+
+// window.onmousemove = mouseOnMove;
+
+/**
+ * setup observe handler
+ */
+
+document.observe("mousemove",mouseOnMove);
+
 
 /**
  * add mouse hook
