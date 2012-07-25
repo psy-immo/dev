@@ -324,6 +324,12 @@ function Airport(name, tags, accept, reject) {
 			document.write(this.token);
 		}
 		document.write("</span>");
+		
+		/**
+		 * ignore default click handlers
+		 */
+		
+		addMouseClickHook("airport" + this.id, 0, null);
 
 	};
 
@@ -406,10 +412,12 @@ function Airport(name, tags, accept, reject) {
 			if (myHover.source.TakeAway) {
 				myHover.source.TakeAway();
 			}
+			
 			/**
-			 * and the bubbling part
+			 * now crash down the plane
 			 */
-			myHover.dontGiveBack = true;
+			
+			myHover.CrashDown(true);
 
 			/**
 			 * now update the airport

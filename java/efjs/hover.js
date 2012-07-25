@@ -58,19 +58,16 @@ function Hover() {
 		 */
 		this.flight = 2;
 
-		/*{
-			var pl = document.getElementById("myhoverplane");
-			pl.style.zIndex = 100;
-			pl.innerHTML = formatted_token;
-		}*/
-		
-		this.hover = new HoverContainer(mouseX+1, mouseY+1, formatted_token);
+		/*
+		 * { var pl = document.getElementById("myhoverplane"); pl.style.zIndex =
+		 * 100; pl.innerHTML = formatted_token; }
+		 */
+
+		this.hover = new HoverContainer(mouseX + 1, mouseY + 1, formatted_token);
 		this.hover.AddChild();
-				
+
 		document.getElementById("body").style.cursor = "move";
 		addMouseMoveHook(this.lMovePlane);
-		
-		
 
 		return true;
 	};
@@ -82,25 +79,18 @@ function Hover() {
 		pl.top = (mouseY + 1) + "px";
 	};
 
-	/**
-	 * legacy code
-	 */
-
-	this.OnFlight = function(ev) {
-		if (this.flight == 2)
-			this.flight = 1;
-		else if (this.flight == 1)
-			this.CrashDown();
-	};
-
+	
 	/**
 	 * function that handles CrashDown by clicking somewhere
 	 */
-	this.CrashDown = function() {
+	this.CrashDown = function(dontGiveBack) {
 		if (this.flight > 0) {
 			this.LegacyCrashDown();
 		}
-
+		
+		if (dontGiveBack)
+			return;
+		
 		if (this.dontGiveBack == false) {
 			if (this.source) {
 				if (this.source.GiveBackToken) {
@@ -117,10 +107,9 @@ function Hover() {
 	this.LegacyCrashDown = function() {
 		this.flight = 0;
 
-		
 		document.getElementById("body").style.cursor = "";
 		delMouseMoveHook(this.lMovePlane);
-		
+
 		this.hover.Remove();
 
 	};
@@ -148,10 +137,10 @@ function Hover() {
 	 */
 	this.WriteHtml = function() {
 
-		document
-				.write("<div id=\"myhoverplane\" style=\"position:absolute; z-index: 100;"
-						+ " top: -220px; left:-220; padding:3px;background-color:#DE6B00;\""
-						+ " onmousemove=\"if ( document.all ) myHover.MovePlane()\"></div>");
+//		document
+//				.write("<div id=\"myhoverplane\" style=\"position:absolute; z-index: 100;"
+//						+ " top: -220px; left:-220; padding:3px;background-color:#DE6B00;\""
+//						+ " onmousemove=\"if ( document.all ) myHover.MovePlane()\"></div>");
 
 	};
 
@@ -161,4 +150,6 @@ function Hover() {
  * generate the myHover object
  */
 myHover = new Hover();
-
+addMouseClickHook(document, 0, function() {
+	myHover.CrashDown();
+});

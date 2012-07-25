@@ -138,11 +138,17 @@ function Runway(name, tags, token, accept, reject) {
 			document.write("height:" + this.height + "; ");
 		}
 		document.write("\"");
-		document.write("onClick=\"runwayArray[" + this.id + "].OnClick()\">");
+		document.write(" onclick=\"runwayArray[" + this.id + "].OnClick()\">");
 		if (this.token) {
 			document.write(this.token);
 		}
 		document.write("</span>");
+		
+		/**
+		 * ignore default click handlers
+		 */
+		
+		addMouseClickHook("runway" + this.id, 0, null);
 
 	};
 
@@ -248,11 +254,14 @@ function Runway(name, tags, token, accept, reject) {
 			if (myHover.source.TakeAway) {
 				myHover.source.TakeAway();
 			}
+			
 			/**
-			 * and the bubbling part
+			 * remove the plane
 			 */
-			myHover.dontGiveBack = true;
-
+			
+			myHover.CrashDown(true);
+			
+			
 			/**
 			 * now update the run way
 			 */

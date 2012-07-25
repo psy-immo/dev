@@ -155,6 +155,12 @@ function Boxspace(name, tags, accept, reject) {
 		document.write("onClick=\"boxspaceArray[" + this.id + "].OnClick()\">");
 				
 		document.write("</div>");
+		
+		/**
+		 * ignore default click handlers
+		 */
+		
+		addMouseClickHook("boxspace" + this.id, 0, null);
 
 	};
 
@@ -177,6 +183,8 @@ function Boxspace(name, tags, accept, reject) {
 	 * this function is called, when the box workspace object is clicked
 	 */
 	this.OnClick = function() {
+		
+		return;
 		
 		//TODO
 		
