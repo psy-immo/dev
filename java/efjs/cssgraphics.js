@@ -133,6 +133,9 @@ function Line(left, top, right, bottom, color, style, extension) {
 		var elt = document.getElementById("grLine" + this.id);
 		elt.parentNode.removeChild(elt);
 		graphicsArray[this.id] = undefined;
+		
+		clearMouseClickHooks("grLine" + this.id);
+		clearMouseClickHooks(elt);
 	};
 
 	/**
@@ -282,6 +285,9 @@ function Container(left, top, right, bottom, style, extension, layer, content) {
 		var elt = document.getElementById("grDiv" + this.id);
 		elt.parentNode.removeChild(elt);
 		graphicsArray[this.id] = undefined;
+		
+		clearMouseClickHooks("grDiv" + this.id);
+		clearMouseClickHooks(elt);
 	};
 
 	/**
@@ -400,6 +406,9 @@ function HoverContainer(left, top, content) {
 		var elt = document.getElementById("grHover" + this.id);
 		elt.parentNode.removeChild(elt);
 		graphicsArray[this.id] = undefined;
+		
+		clearMouseClickHooks("grHover" + this.id);
+		clearMouseClickHooks(elt);
 	};
 
 	/**
