@@ -163,7 +163,7 @@ public class BodyTag implements AnyTag {
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		writer.write("<body id=\"body\" onclick=\"myHover.OnFlight();\">\n");
+		writer.write("<body id=\"body\">\n");
 
 		/**
 		 * write the identification strings & base url & ...
