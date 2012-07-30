@@ -110,13 +110,7 @@ function Storage() {
 
 	this.StoreIn = function(storage, name) {
 		/* forced crash down interferes with auto save feature ! */
-		//TODO: make hover transport feature save-able! (might break some token consistencies when reloaded
-		/**
-		if (typeof myHover == "object") {
-			if (myHover.CrashDown) {
-				myHover.CrashDown(); 
-			}
-		}**/
+		
 		
 		for ( var int = 0; int < this.tickingFields.length; int++) {
 			var obj = this.tickingFields[int];
