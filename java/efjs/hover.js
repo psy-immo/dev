@@ -30,17 +30,23 @@ function Hover() {
 	this.denyTakeOff = false;
 	this.respawn = null;
 	this.dontGiveBack = false;
+	this.tokenType = null;
 
 	this.hover = null;
 
 	/**
 	 * @returns true, if token has been taken off
 	 */
-	this.TakeOff = function(token, source, respawn, planeHtml) {
+	this.TakeOff = function(token, source, respawn, planeHtml, tokenType) {
 		if (this.denyTakeOff == true) {
 			return false;
 		}
 		this.token = token;
+		if (tokenType)
+			this.tokenType = tokenType;
+		else
+			this.tokenType = "text";
+		
 		this.respawn = respawn;
 		this.source = source;
 		this.dontGiveBack = false;
@@ -87,18 +93,25 @@ function Hover() {
 		if (this.flight > 0) {
 			this.LegacyCrashDown();
 		}
-		
-		if (dontGiveBack)
-			return;
-		
-		if (this.dontGiveBack == false) {
+
+		if ((this.dontGiveBack == false)&&(!dontGiveBack)) {
 			if (this.source) {
 				if (this.source.GiveBackToken) {
 					this.source.GiveBackToken(this.token);
 				}
 			}
 		}
+		
+		this.tokenType = null;
 
+	};
+	
+	/**
+	 * returns the type of the current token
+	 */
+	
+	this.GetType = function(){
+		return this.tokenType;
 	};
 
 	/**

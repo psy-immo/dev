@@ -206,6 +206,8 @@ function Runway(name, tags, token, accept, reject) {
 			 * if this run way stays filled, do not allow landing
 			 */
 			if (this.stayFilled) {
+				myHover.CrashDown();
+				
 				return;
 			}
 
@@ -214,6 +216,16 @@ function Runway(name, tags, token, accept, reject) {
 				log_data += myHover.source.name;
 			}
 			log_data += " -> " + this.name + ": " + myHover.token;
+			
+			/**
+			 * check for correct token type
+			 */
+			if (myHover.GetType() != "text") {
+				myHover.CrashDown();
+
+				myLogger.Log(log_data + " rejected");
+				return;
+			}
 
 			/**
 			 * check for acceptance tags
@@ -222,12 +234,14 @@ function Runway(name, tags, token, accept, reject) {
 				if (myHover.source.tags) {
 					for ( var i = 0; i < this.accept.length; i++) {
 						if (myHover.source.tags.indexOf(this.accept[i]) < 0) {
+							myHover.CrashDown();
 							myLogger.Log(log_data + " rejected");
 							return;
 						}
 
 					}
 				} else {
+					myHover.CrashDown();
 					myLogger.Log(log_data + " rejected");
 					return;
 				}
@@ -240,6 +254,7 @@ function Runway(name, tags, token, accept, reject) {
 				if (myHover.source.tags) {
 					for ( var i = 0; i < this.reject.length; i++) {
 						if (myHover.source.tags.indexOf(this.reject[i]) >= 0) {
+							myHover.CrashDown();
 							myLogger.Log(log_data + " rejected");
 							return;
 						}

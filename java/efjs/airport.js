@@ -28,39 +28,39 @@ function AirportRunway(airport, index, tags) {
 	this.airport = airport;
 	this.index = index;
 	this.tags = tags;
-	
+
 	this.token = null;
-	
+
 	this.SetToken = function(token) {
 		this.token = token;
 	};
-	
+
 	this.Delete = function() {
 		myTags.Remove(this);
 	};
-	
+
 	this.MarkNeutral = function() {
 		this.airport.marked[this.index] = "N";
 		this.airport.UpdateContents();
 	};
-	
+
 	this.MarkAsOkay = function() {
 		this.airport.marked[this.index] = "O";
 		this.airport.UpdateContents();
 	};
-	
+
 	this.MarkAsBad = function() {
 		this.airport.marked[this.index] = "B";
 		this.airport.UpdateContents();
 	};
-	
+
 	this.MarkAsGood = function() {
 		this.airport.marked[this.index] = "G";
 		this.airport.UpdateContents();
 	};
-	
+
 	myTags.Add(this, this.tags);
-	myTags.Add(this, ["i"+this.index], true);
+	myTags.Add(this, [ "i" + this.index ], true);
 }
 
 /**
@@ -149,7 +149,7 @@ function Airport(name, tags, accept, reject) {
 				contents += "background-color:" + this.colorGood + "; \" >";
 			} else if (this.marked[int] == "O") {
 				contents += "background-color:" + this.colorOkay + "; \" >";
-			}else if (this.marked[int] == "B") {
+			} else if (this.marked[int] == "B") {
 				contents += "background-color:" + this.colorBad + "; \" >";
 			} else if (this.content[int])
 				contents += "background-color:" + this.colorFilled + "; \" >";
@@ -187,7 +187,7 @@ function Airport(name, tags, accept, reject) {
 		contents += "</table>";
 
 		element.innerHTML = contents;
-		
+
 		/**
 		 * create objects for tag hive
 		 */
@@ -197,18 +197,18 @@ function Airport(name, tags, accept, reject) {
 				this.tokenObjects.push(new AirportRunway(this, int, this.tags));
 			}
 		}
-		
+
 		if (this.tokenObjects.length > this.content.length) {
 			var diff = this.tokenObjects.length - this.content.length;
 			for ( var int = 0; int < diff; ++int) {
 				this.tokenObjects.pop().Delete();
 			}
 		}
-		
+
 		/**
 		 * copy data
 		 */
-		
+
 		for ( var int = 0; int < this.content.length; ++int) {
 			this.tokenObjects[int].token = this.content[int];
 		}
@@ -225,7 +225,7 @@ function Airport(name, tags, accept, reject) {
 
 		return this;
 	};
-	
+
 	/**
 	 * this function sets the parameter
 	 * 
@@ -233,7 +233,7 @@ function Airport(name, tags, accept, reject) {
 	 */
 	this.Width = function(width) {
 		this.width = width;
-	
+
 		return this;
 	};
 
@@ -244,10 +244,9 @@ function Airport(name, tags, accept, reject) {
 	 */
 	this.Height = function(height) {
 		this.height = height;
-	
+
 		return this;
 	};
-	
 
 	/**
 	 * this function unsets/sets the flag that prevents take off from the
@@ -290,11 +289,11 @@ function Airport(name, tags, accept, reject) {
 			document.write("height:" + this.height + "; ");
 		}
 		document.write("\">");
-		
+
 		/**
-		 *  content 
+		 * content
 		 */
-		
+
 		var contents = "<table style=\"  border-spacing: 0px; ";
 
 		if (this.width) {
@@ -310,11 +309,12 @@ function Airport(name, tags, accept, reject) {
 		if (this.width)
 			contents += " width:" + this.width + "; ";
 		contents += "background-color:" + this.colorEmpty + "; \" ";
-		contents += "onClick=\"airportArray[" + this.id + "].OnClickRow(0)\"><td>&nbsp;";
+		contents += "onClick=\"airportArray[" + this.id
+				+ "].OnClickRow(0)\"><td>&nbsp;";
 		contents += "</td><td>&nbsp;</td></tr>";
-		
+
 		contents += "</table>";
-		
+
 		document.write(contents);
 
 		// document.write("onClick=\"airportArray[" + this.id +
@@ -324,11 +324,11 @@ function Airport(name, tags, accept, reject) {
 			document.write(this.token);
 		}
 		document.write("</span>");
-		
+
 		/**
 		 * ignore default click handlers
 		 */
-		
+
 		addMouseClickHook("airport" + this.id, 0, null);
 
 	};
@@ -374,18 +374,31 @@ function Airport(name, tags, accept, reject) {
 					+ myHover.token;
 
 			/**
+			 * check for correct token type
+			 */
+			if (myHover.GetType() != "text") {
+				myHover.CrashDown();
+
+				myLogger.Log(log_data + " rejected");
+				return;
+			}
+
+			/**
 			 * check for acceptance tags
 			 */
 			if (this.accept) {
 				if (myHover.source.tags) {
 					for ( var i = 0; i < this.accept.length; i++) {
 						if (myHover.source.tags.indexOf(this.accept[i]) < 0) {
+							myHover.CrashDown();
+
 							myLogger.Log(log_data + " rejected");
 							return;
 						}
-
 					}
 				} else {
+					myHover.CrashDown();
+
 					myLogger.Log(log_data + " rejected");
 					return;
 				}
@@ -398,6 +411,8 @@ function Airport(name, tags, accept, reject) {
 				if (myHover.source.tags) {
 					for ( var i = 0; i < this.reject.length; i++) {
 						if (myHover.source.tags.indexOf(this.reject[i]) >= 0) {
+							myHover.CrashDown();
+
 							myLogger.Log(log_data + " rejected");
 							return;
 						}
@@ -412,11 +427,11 @@ function Airport(name, tags, accept, reject) {
 			if (myHover.source.TakeAway) {
 				myHover.source.TakeAway();
 			}
-			
+
 			/**
 			 * now crash down the plane
 			 */
-			
+
 			myHover.CrashDown(true);
 
 			/**
@@ -541,7 +556,6 @@ function Airport(name, tags, accept, reject) {
 		this.UpdateContents();
 	};
 
-	
 	/**
 	 * this function is called, when a token is given back after a take off
 	 */
@@ -634,5 +648,5 @@ function Airport(name, tags, accept, reject) {
 	airportArray[this.id] = this;
 
 	myStorage.RegisterField(this, "airportArray[" + this.id + "]");
-	
+
 }

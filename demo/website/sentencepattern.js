@@ -132,6 +132,12 @@ function SentencePattern(name, tags, generators, nonempty) {
 		document.write("Up");
 		document.write("</span>");
 		document.write("</span>");
+		
+		/**
+		 * ignore default click handlers
+		 */
+		
+		addMouseClickHook("sentencePattern" + this.id, 0, null);
 
 	};
 

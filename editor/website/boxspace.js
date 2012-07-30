@@ -1,5 +1,5 @@
 /**
- * runway.js, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
+ * boxspace.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -16,14 +16,67 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var runwayIdCounter = 0;
-var runwayArray = [];
+var boxspaceIdCounter = 0;
+var boxspaceArray = [];
+var floatboxIdCounter = 0;
+var floatboxArray = [];
 
 /**
- * creates a run way object, that may contain token data, one at a time
+ * creates a workspace box that can be moved in a box workspace
  */
-function Runway(name, tags, token, accept, reject) {
-	this.id = runwayIdCounter++;
+
+function FloatBox(style, content) {
+	this.id = floatboxIdCounter++;
+
+	this.parent = null;
+
+	if (style)
+		this.style = style;
+	else
+		this.style = "";
+	if (content)
+		this.content = content;
+	else
+		this.content = "";
+	
+	/**
+	 * set the id of the parent element
+	 * 
+	 * @returns this
+	 */
+	
+	this.SetParentId = function(id) {
+		this.parent = id;
+		return this;
+	};
+
+	/**
+	 * write the HTML code that will be used for displaying the box workspace
+	 */
+	this.WriteHtml = function() {
+		document.write("<div id=\"floatbox" + this.id + "\" ");
+
+		document.write(" style=\" display: inline-block; ");
+
+		document.write(" position: absolute; ");
+
+		document.write(this.style);
+
+		document.write("\" >");
+
+		document.write(this.content + "</div>");
+
+	};
+
+	floatboxArray[this.id] = this;
+	return this;
+}
+
+/**
+ * creates a box workspace object, that may contain token data, one at a time
+ */
+function Boxspace(name, tags, accept, reject) {
+	this.id = boxspaceIdCounter++;
 
 	/**
 	 * Provide automatic name generation: use provided tags
@@ -33,26 +86,43 @@ function Runway(name, tags, token, accept, reject) {
 		this.name = "";
 		for ( var i = 0; i < tags.length; ++i) {
 			this.name += tags[i];
-		}
+		};
 	} else {
 
 		this.name = name;
 	}
 
 	this.tags = tags;
-	this.token = token;
+
 	this.respawn = null;
-	this.width = "200px";
-	this.height = "20px";
-	this.colorEmpty = "#CCCCCC";
-	this.colorFilled = "#CCCCFF";
+	this.width = "600px";
+	this.height = "600px";
+	this.colorGround = "#CCCCCC";
+	this.colorBoxes = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
-	this.markedgood = false;
+
 	this.accept = accept;
 	this.reject = reject;
 	this.doRespawn = null;
-	this.stayFilled = false;
+
 	this.noTakeOff = false;
+
+	this.contents = [];
+
+	/**
+	 * this function adds a box for the box space
+	 * 
+	 * use before writing the boxspace (i.e. will not work in dynamic phase)
+	 * 
+	 * 
+	 * @returns this
+	 */
+	this.AddBox = function(box) {
+		box.SetParentId(this.id);
+		this.contents.push(box);
+
+		return this;
+	};
 
 	/**
 	 * this function sets the bounding parameters
@@ -67,7 +137,8 @@ function Runway(name, tags, token, accept, reject) {
 	};
 
 	/**
-	 * this function unsets/sets the flag that prevents take off from the runway
+	 * this function unsets/sets the flag that prevents take off from the
+	 * boxspace
 	 * 
 	 * @returns this
 	 */
@@ -78,7 +149,7 @@ function Runway(name, tags, token, accept, reject) {
 	};
 
 	/**
-	 * this function sets the run way to be of respawning type
+	 * this function sets the box workspace to be of respawning type
 	 */
 	this.Respawn = function(content) {
 		this.doRespawn = this.token;
@@ -87,7 +158,7 @@ function Runway(name, tags, token, accept, reject) {
 	};
 
 	/**
-	 * this function sets the run way to be of refilling type
+	 * this function sets the box workspace to be of refilling type
 	 */
 	this.Refilling = function(content) {
 		this.stayFilled = true;
@@ -111,103 +182,86 @@ function Runway(name, tags, token, accept, reject) {
 	 * 
 	 * @returns this
 	 */
-	this.Color = function(colorEmpty, colorFilled) {
-		this.colorEmpty = colorEmpty;
-		this.colorFilled = colorFilled;
+	this.Color = function(colorGround, colorBoxes) {
+		this.colorGround = colorGround;
+		this.colorBoxes = colorBoxes;
 
 		return this;
 	};
 
 	/**
-	 * write the HTML code that will be used for displaying the run way
+	 * write the HTML code that will be used for displaying the box workspace
 	 */
 	this.WriteHtml = function() {
-		document.write("<span id=\"runway" + this.id + "\" ");
+		document.write("<div id=\"boxspace" + this.id + "\" ");
 
 		document.write(" style=\" display: inline-block; ");
 
-		if (this.token) {
-			document.write("background-color:" + this.colorFilled + "; ");
-		} else {
-			document.write("background-color:" + this.colorEmpty + "; ");
-		}
+		document.write("background-color:" + this.colorGround + "; ");
+
 		if (this.width) {
 			document.write("width:" + this.width + "; ");
 		}
 		if (this.height) {
 			document.write("height:" + this.height + "; ");
 		}
+
+		/**
+		 * be the reference for children absolute positions
+		 */
+		document.write("position: relative; ");
+
+		document.write("overflow: auto; ");
+
 		document.write("\"");
-		document.write(" onclick=\"runwayArray[" + this.id + "].OnClick()\">");
-		if (this.token) {
-			document.write(this.token);
-		}
-		document.write("</span>");
+		document.write("onClick=\"boxspaceArray[" + this.id + "].OnClick()\">");
 		
+		for (var int=0;int<this.contents.length;int++) {
+			this.contents[int].WriteHtml();
+		}
+
+		document.write("</div>");
+
 		/**
 		 * ignore default click handlers
 		 */
-		
-		addMouseClickHook("runway" + this.id, 0, null);
+
+		addMouseClickHook("boxspace" + this.id, 0, null);
 
 	};
 
 	/**
-	 * this function sets the objects token
-	 */
-	this.SetToken = function(token) {
-
-		this.token = token;
-		var html_object = document.getElementById("runway" + this.id);
-		if (token) {
-			html_object.innerHTML = token;
-			html_object.style.backgroundColor = this.colorFilled;
-		} else {
-			html_object.innerHTML = "&nbsp;";
-			html_object.style.backgroundColor = this.colorEmpty;
-		}
-
-	};
-
-	/**
-	 * this function marks the current run way green
+	 * this function marks the current box workspace green
 	 */
 	this.MarkAsGood = function() {
-		var html_object = document.getElementById("runway" + this.id);
-		html_object.style.backgroundColor = this.colorGood;
-		this.markedgood = true;
+
 	};
 
 	/**
-	 * this function demarks the current run way
+	 * this function demarks the current box workspace
 	 */
 	this.MarkNeutral = function() {
-		var html_object = document.getElementById("runway" + this.id);
-		if (this.token) {
 
-			html_object.style.backgroundColor = this.colorFilled;
-		} else {
-
-			html_object.style.backgroundColor = this.colorEmpty;
-		}
-		this.markedgood = false;
 	};
 
 	/**
-	 * this function is called, when the run way object is clicked
+	 * this function is called, when the box workspace object is clicked
 	 */
 	this.OnClick = function() {
+
+		return;
+
+		// TODO
+
 		/**
 		 * Allow landing
 		 */
 		if (myHover.flight) {
 
 			/**
-			 * if this run way stays filled, do not allow landing
+			 * if this box workspace stays filled, do not allow landing
 			 */
 			if (this.stayFilled) {
-				myHover.CrashDown();
-				
 				return;
 			}
 
@@ -216,16 +270,6 @@ function Runway(name, tags, token, accept, reject) {
 				log_data += myHover.source.name;
 			}
 			log_data += " -> " + this.name + ": " + myHover.token;
-			
-			/**
-			 * check for correct token type
-			 */
-			if (myHover.GetType() != "text") {
-				myHover.CrashDown();
-
-				myLogger.Log(log_data + " rejected");
-				return;
-			}
 
 			/**
 			 * check for acceptance tags
@@ -234,14 +278,12 @@ function Runway(name, tags, token, accept, reject) {
 				if (myHover.source.tags) {
 					for ( var i = 0; i < this.accept.length; i++) {
 						if (myHover.source.tags.indexOf(this.accept[i]) < 0) {
-							myHover.CrashDown();
 							myLogger.Log(log_data + " rejected");
 							return;
 						}
 
 					}
 				} else {
-					myHover.CrashDown();
 					myLogger.Log(log_data + " rejected");
 					return;
 				}
@@ -254,7 +296,6 @@ function Runway(name, tags, token, accept, reject) {
 				if (myHover.source.tags) {
 					for ( var i = 0; i < this.reject.length; i++) {
 						if (myHover.source.tags.indexOf(this.reject[i]) >= 0) {
-							myHover.CrashDown();
 							myLogger.Log(log_data + " rejected");
 							return;
 						}
@@ -269,16 +310,13 @@ function Runway(name, tags, token, accept, reject) {
 			if (myHover.source.TakeAway) {
 				myHover.source.TakeAway();
 			}
-			
 			/**
-			 * remove the plane
+			 * and the bubbling part
 			 */
-			
-			myHover.CrashDown(true);
-			
-			
+			myHover.dontGiveBack = true;
+
 			/**
-			 * now update the run way
+			 * now update the box workspace
 			 */
 			this.SetToken(myHover.token);
 
@@ -298,25 +336,6 @@ function Runway(name, tags, token, accept, reject) {
 
 			return;
 		}
-		/**
-		 * Allow take off
-		 */
-		if (this.token) {
-			if (true != this.noTakeOff) {
-				if (myHover.TakeOff(this.token, this, this.respawn)) {
-					var log_data = "";
-					if (this.name) {
-						log_data += this.name;
-					}
-					log_data += " take off: " + myHover.token;
-					myLogger.Log(log_data);
-
-					if (this.stayFilled != true) {
-						this.SetToken(null);
-					}
-				}
-			}
-		}
 
 	};
 
@@ -324,36 +343,28 @@ function Runway(name, tags, token, accept, reject) {
 	 * this function is called, when a token is given back after a take off
 	 */
 	this.GiveBackToken = function(token) {
-		this.SetToken(token);
-
-		var log_data = "";
-		if (this.name) {
-			log_data += this.name;
-		}
-		log_data += " token returns: " + token;
-		myLogger.Log(log_data);
+		// TODO
 	};
 
 	/**
 	 * this function is called, when a token is taken away after a touch down
 	 */
 	this.TakeAway = function() {
-		if (this.stayFilled) {
-			return;
-		}
-		this.SetToken(null);
-		this.respawn = null;
+		// TODO
 	};
 
 	/**
-	 * return the current contents of the run way as string
+	 * return the current contents of the box workspace as string
 	 */
 	this.GetValue = function() {
+
+		// TODO
+
 		var value = "N";
 		if (this.markedgood)
 			value = "G";
-		
-		if (myHover.GetSourceIfFlying()===this) {
+
+		if (myHover.GetSourceIfFlying() === this) {
 			return value + myHover.token;
 		}
 
@@ -364,10 +375,13 @@ function Runway(name, tags, token, accept, reject) {
 	};
 
 	/**
-	 * restore the run way state from string
+	 * restore the box workspace state from string
 	 */
 
 	this.SetValue = function(contents) {
+
+		// TODO
+
 		if (contents) {
 			this.SetToken(contents.substr(1));
 			if (contents.charAt(0) == "G")
@@ -378,21 +392,8 @@ function Runway(name, tags, token, accept, reject) {
 			this.SetToken(contents);
 	};
 
-	runwayArray[this.id] = this;
+	boxspaceArray[this.id] = this;
 	myTags.Add(this, this.tags);
 
-	myStorage.RegisterField(this, "runwayArray[" + this.id + "]");
-}
-
-/**
- * this function fixes the bug where runways are moving down when filled the
- * first time
- */
-function RunwayDisplayBugfix() {
-	for ( var int = 0; int < runwayArray.length; int++) {
-		var runway = runwayArray[int];
-		var value = runway.GetValue();
-		runway.SetValue("Ngxl");
-		runway.SetValue(value);
-	}
+	myStorage.RegisterField(this, "boxspaceArray[" + this.id + "]");
 }
