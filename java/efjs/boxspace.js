@@ -18,16 +18,57 @@
 
 var boxspaceIdCounter = 0;
 var boxspaceArray = [];
-
+var floatboxIdCounter = 0;
+var floatboxArray = [];
 
 /**
  * creates a workspace box that can be moved in a box workspace
  */
 
-function FloatBox() {
-	
-	//TODO
+function FloatBox(style, content) {
+	this.id = floatboxIdCounter++;
 
+	this.parent = null;
+
+	if (style)
+		this.style = style;
+	else
+		this.style = "";
+	if (content)
+		this.content = content;
+	else
+		this.content = "";
+	
+	/**
+	 * set the id of the parent element
+	 * 
+	 * @returns this
+	 */
+	
+	this.SetParentId = function(id) {
+		this.parent = id;
+		return this;
+	};
+
+	/**
+	 * write the HTML code that will be used for displaying the box workspace
+	 */
+	this.WriteHtml = function() {
+		document.write("<div id=\"floatbox" + this.id + "\" ");
+
+		document.write(" style=\" display: inline-block; ");
+
+		document.write(" position: absolute; ");
+
+		document.write(this.style);
+
+		document.write("\" >");
+
+		document.write(this.content + "</div>");
+
+	};
+
+	floatboxArray[this.id] = this;
 	return this;
 }
 
@@ -45,28 +86,43 @@ function Boxspace(name, tags, accept, reject) {
 		this.name = "";
 		for ( var i = 0; i < tags.length; ++i) {
 			this.name += tags[i];
-		}
+		};
 	} else {
 
 		this.name = name;
 	}
 
 	this.tags = tags;
-	
+
 	this.respawn = null;
 	this.width = "600px";
 	this.height = "600px";
 	this.colorGround = "#CCCCCC";
 	this.colorBoxes = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
-	
+
 	this.accept = accept;
 	this.reject = reject;
 	this.doRespawn = null;
 
 	this.noTakeOff = false;
-	
+
 	this.contents = [];
+
+	/**
+	 * this function adds a box for the box space
+	 * 
+	 * use before writing the boxspace (i.e. will not work in dynamic phase)
+	 * 
+	 * 
+	 * @returns this
+	 */
+	this.AddBox = function(box) {
+		box.SetParentId(this.id);
+		this.contents.push(box);
+
+		return this;
+	};
 
 	/**
 	 * this function sets the bounding parameters
@@ -81,7 +137,8 @@ function Boxspace(name, tags, accept, reject) {
 	};
 
 	/**
-	 * this function unsets/sets the flag that prevents take off from the boxspace
+	 * this function unsets/sets the flag that prevents take off from the
+	 * boxspace
 	 * 
 	 * @returns this
 	 */
@@ -141,53 +198,61 @@ function Boxspace(name, tags, accept, reject) {
 		document.write(" style=\" display: inline-block; ");
 
 		document.write("background-color:" + this.colorGround + "; ");
-		
+
 		if (this.width) {
 			document.write("width:" + this.width + "; ");
 		}
 		if (this.height) {
 			document.write("height:" + this.height + "; ");
 		}
-		
+
+		/**
+		 * be the reference for children absolute positions
+		 */
+		document.write("position: relative; ");
+
 		document.write("overflow: auto; ");
-		
+
 		document.write("\"");
 		document.write("onClick=\"boxspaceArray[" + this.id + "].OnClick()\">");
-				
-		document.write("</div>");
 		
+		for (var int=0;int<this.contents.length;int++) {
+			this.contents[int].WriteHtml();
+		}
+
+		document.write("</div>");
+
 		/**
 		 * ignore default click handlers
 		 */
-		
+
 		addMouseClickHook("boxspace" + this.id, 0, null);
 
 	};
-
 
 	/**
 	 * this function marks the current box workspace green
 	 */
 	this.MarkAsGood = function() {
-		
+
 	};
 
 	/**
 	 * this function demarks the current box workspace
 	 */
 	this.MarkNeutral = function() {
-		
+
 	};
 
 	/**
 	 * this function is called, when the box workspace object is clicked
 	 */
 	this.OnClick = function() {
-		
+
 		return;
-		
-		//TODO
-		
+
+		// TODO
+
 		/**
 		 * Allow landing
 		 */
@@ -272,35 +337,34 @@ function Boxspace(name, tags, accept, reject) {
 			return;
 		}
 
-
 	};
 
 	/**
 	 * this function is called, when a token is given back after a take off
 	 */
 	this.GiveBackToken = function(token) {
-		//TODO
+		// TODO
 	};
 
 	/**
 	 * this function is called, when a token is taken away after a touch down
 	 */
 	this.TakeAway = function() {
-		//TODO		
+		// TODO
 	};
 
 	/**
 	 * return the current contents of the box workspace as string
 	 */
 	this.GetValue = function() {
-		
-		//TODO
-		
+
+		// TODO
+
 		var value = "N";
 		if (this.markedgood)
 			value = "G";
-		
-		if (myHover.GetSourceIfFlying()===this) {
+
+		if (myHover.GetSourceIfFlying() === this) {
 			return value + myHover.token;
 		}
 
@@ -315,9 +379,9 @@ function Boxspace(name, tags, accept, reject) {
 	 */
 
 	this.SetValue = function(contents) {
-		
-		//TODO
-		
+
+		// TODO
+
 		if (contents) {
 			this.SetToken(contents.substr(1));
 			if (contents.charAt(0) == "G")
