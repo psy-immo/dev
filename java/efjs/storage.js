@@ -134,7 +134,11 @@ function Storage() {
 				var spacedname = name + "---" + this.dataFieldNames[int];
 				var keyname = "myStorage" + spacedname;
 
-				storage.setItem(keyname, v);
+				try {
+					storage.setItem(keyname, v);
+				} catch (e) {
+					/** local storage not working */
+				}
 
 				if ((this.useLoglet())&&(this.localOnlyDataFields.lastIndexOf(obj) == -1)) {
 					/**
@@ -189,7 +193,12 @@ function Storage() {
 
 				} else {
 
-					var v = storage.getItem(keyname);
+					var v;
+					try {
+						v = storage.getItem(keyname);
+					} catch (e) {
+						v = null;
+					}
 
 					if (v !== null) {
 						obj.SetValue(v);
