@@ -41,6 +41,8 @@ function FloatBox(style, content) {
 
 	this.allowTakeOff = true;
 	this.takeOffType = "floatbox";
+	
+	this.keepElement = null;
 
 	/**
 	 * set the id of the parent element
@@ -148,7 +150,10 @@ function FloatBox(style, content) {
 			/**
 			 * take off the box
 			 */
-			alert("hui");
+			this.keepElement = document.getElementById("floatbox" + this.id);
+			this.RemoveDiv();
+			
+			myHover.TakeOff(this.content,this,null,null,this.takeOffType);
 		}
 
 	};
@@ -190,12 +195,32 @@ function FloatBox(style, content) {
 	 */
 	this.Remove = function() {
 		var elt = document.getElementById("floatbox" + this.id);
+		
 		clearMouseClickHooks("floatbox" + this.id);
 		clearMouseClickHooks(elt);
 
 		this.RemoveDiv();
 
 		floatboxArray[this.id] = undefined;
+	};
+	
+	/**
+	 * this function is called, when a token is given back after a take off
+	 */
+	this.GiveBackToken = function(token) {
+		var parent = document.getElementById("boxspace"+this.parent);
+		parent.appendChild(this.keepElement);
+		this.keepElement = null;
+	};
+
+	/**
+	 * this function is called, when a token is taken away after a touch down
+	 */
+	this.TakeAway = function() {		
+		clearMouseClickHooks("floatbox" + this.id);
+		clearMouseClickHooks(this.keepElement);
+		floatboxArray[this.id] = undefined;
+		this.keepElement = null;
 	};
 
 	floatboxArray[this.id] = this;
@@ -413,7 +438,7 @@ function Boxspace(name, tags, accept, reject) {
 			 * check for correct token type
 			 */
 			// TODO: add float box landing support
-			if (plane_type != "text") {
+			if ((plane_type != "text")&&(plane_type != "floatbox")) {
 				myHover.CrashDown();
 
 				myLogger.Log(log_data + " rejected");
@@ -486,6 +511,9 @@ function Boxspace(name, tags, accept, reject) {
 				box.SetParentId(this.id);
 				box.Create("boxspace" + this.id);
 				this.contents.push(box);
+			} else if (plane_type == "floatbox") {
+				//TODO
+				
 			}
 
 			myLogger.Log(log_data);
@@ -495,19 +523,7 @@ function Boxspace(name, tags, accept, reject) {
 
 	};
 
-	/**
-	 * this function is called, when a token is given back after a take off
-	 */
-	this.GiveBackToken = function(token) {
-		// TODO
-	};
 
-	/**
-	 * this function is called, when a token is taken away after a touch down
-	 */
-	this.TakeAway = function() {
-		// TODO
-	};
 
 	/**
 	 * return the current contents of the box workspace as string
