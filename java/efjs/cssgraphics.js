@@ -82,11 +82,14 @@ function htmlLineDiv(left, top, right, bottom, color, style, id, extension,
 	html += "transform-origin: 0% 50%;";
 	html += "-webkit-transform-origin: 0% 50%;";
 	html += "-moz-transform-origin: 0% 50%;";
+	html += "-ms-transform-origin: 0% 50%;";
+	html += "-o-transform-origin: 0% 50%;";
 
 	html += "transform: rotate(" + angle + "deg);";
 	html += "-webkit-transform: rotate(" + angle + "deg);";
 	html += "-moz-transform: rotate(" + angle + "deg);";
 	html += "-ms-transform: rotate(" + angle + "deg);";
+	html += "-o-transform: rotate(" + angle + "deg);";
 
 	html += style;
 
@@ -139,7 +142,7 @@ function Line(left, top, right, bottom, color, style, extension) {
 	};
 
 	/**
-	 * remove the graphical object
+	 * add the graphical object
 	 */
 
 	this.AddChild = function(id) {
