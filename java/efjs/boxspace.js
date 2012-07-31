@@ -126,7 +126,7 @@ function FloatBox(style, content) {
 	 */
 	this.Create = function(parent) {
 		this.CreateDiv(parent);
-		
+
 		addMouseClickHook("floatbox" + this.id, 0, function(id) {
 			return function() {
 				floatboxArray[id].OnClick();
@@ -160,7 +160,7 @@ function FloatBox(style, content) {
 	this.GetContent = function() {
 		return this.content;
 	};
-	
+
 	/**
 	 * get the style of the box
 	 */
@@ -168,11 +168,11 @@ function FloatBox(style, content) {
 	this.GetStyle = function() {
 		return this.style;
 	};
-	
+
 	/**
 	 * get the type of the box
 	 */
-	this.GetBoxType = function(){
+	this.GetBoxType = function() {
 		return "FloatBox";
 	};
 
@@ -192,10 +192,8 @@ function FloatBox(style, content) {
 		var elt = document.getElementById("floatbox" + this.id);
 		clearMouseClickHooks("floatbox" + this.id);
 		clearMouseClickHooks(elt);
-		
-		this.RemoveDiv();
 
-		
+		this.RemoveDiv();
 
 		floatboxArray[this.id] = undefined;
 	};
@@ -208,8 +206,8 @@ function FloatBox(style, content) {
  * creates a box of given type
  */
 
-function BoxFactory(type,style,content) {
-	if (type=="FloatBox") {
+function BoxFactory(type, style, content) {
+	if (type == "FloatBox") {
 		return new FloatBox(style, content);
 	}
 };
@@ -356,8 +354,7 @@ function Boxspace(name, tags, accept, reject) {
 
 		document.write("overflow: auto; ");
 
-		document.write("\"");
-		document.write("onClick=\"boxspaceArray[" + this.id + "].OnClick()\">");
+		document.write("\">");
 
 		for ( var int = 0; int < this.contents.length; int++) {
 			this.contents[int].WriteHtml();
@@ -366,10 +363,16 @@ function Boxspace(name, tags, accept, reject) {
 		document.write("</div>");
 
 		/**
-		 * ignore default click handlers
+		 * ignore default click handlers, install own handlers
+		 * 
+		 * with: * another lovely example of java script closure
 		 */
 
-		addMouseClickHook("boxspace" + this.id, 0, null);
+		addMouseClickHook("boxspace" + this.id, 0, function(id) {
+			return function() {
+				boxspaceArray[id].OnClick();
+			};
+		}(this.id));
 
 	};
 
@@ -392,9 +395,103 @@ function Boxspace(name, tags, accept, reject) {
 	 */
 	this.OnClick = function() {
 
-		return;
+		/**
+		 * Allow landing
+		 */
+		if (myHover.flight) {
 
-		// TODO
+			var log_data = "";
+			if (myHover.source.name) {
+				log_data += myHover.source.name;
+			}
+			log_data += " -> " + this.name + ": " + myHover.token;
+
+			var plane_type = myHover.GetType();
+			var plane = myHover.token;
+
+			/**
+			 * check for correct token type
+			 */
+			// TODO: add float box landing support
+			if (plane_type != "text") {
+				myHover.CrashDown();
+
+				myLogger.Log(log_data + " rejected");
+				return;
+			}
+
+			/**
+			 * check for acceptance tags
+			 */
+			if (this.accept) {
+				if (myHover.source.tags) {
+					for ( var i = 0; i < this.accept.length; i++) {
+						if (myHover.source.tags.indexOf(this.accept[i]) < 0) {
+							myHover.CrashDown();
+							myLogger.Log(log_data + " rejected");
+							return;
+						}
+
+					}
+				} else {
+					myHover.CrashDown();
+					myLogger.Log(log_data + " rejected");
+					return;
+				}
+			}
+
+			/**
+			 * check for rejection tags
+			 */
+			if (this.reject) {
+				if (myHover.source.tags) {
+					for ( var i = 0; i < this.reject.length; i++) {
+						if (myHover.source.tags.indexOf(this.reject[i]) >= 0) {
+							myHover.CrashDown();
+							myLogger.Log(log_data + " rejected");
+							return;
+						}
+					}
+				}
+			}
+
+			/**
+			 * the event handlers will be bubbling or capturing, depends on
+			 * browser, so handle it twice, this is the capturing part
+			 */
+			if (myHover.source.TakeAway) {
+				myHover.source.TakeAway();
+			}
+
+			/**
+			 * remove the plane
+			 */
+
+			myHover.CrashDown(true);
+
+			console.log($("boxspace" + this.id).viewportOffset.left);
+			
+			var layout = $("boxspace" + this.id).getLayout();
+			var scrollme = $("boxspace" + this.id).cumulativeScrollOffset();
+			var scrolldaddy = $("boxspace" + this.id).parentNode.cumulativeScrollOffset();
+			var left = mouseX - layout.get("left") + scrollme["left"] - scrolldaddy["left"];
+			var top = mouseY - layout.get("top") + scrollme["top"] - scrolldaddy["top"];
+
+			/**
+			 * now add a float box
+			 */
+			if (plane_type == "text") {
+				var box = new FloatBox("background-color: #EEEEEE;" + "left: "
+						+ left + "px;" + "top: " + top + "px;", plane);
+				box.SetParentId(this.id);
+				box.Create("boxspace" + this.id);
+				this.contents.push(box);
+			}
+
+			myLogger.Log(log_data);
+
+			return;
+		}
 
 	};
 
@@ -438,6 +535,7 @@ function Boxspace(name, tags, accept, reject) {
 			var box = this.contents[int];
 			box.Remove();
 		}
+		this.contents = [];
 	};
 
 	/**
@@ -451,15 +549,17 @@ function Boxspace(name, tags, accept, reject) {
 		this.RemoveAllBoxes();
 
 		var parts = contents.split("\n");
-		var count =  parseInt(parts[0]);
-		for (var int=0;int<count;++int) {
-			var type = unescapeBTNR(parts[1+3*int]);
-			var style = unescapeBTNR(parts[2+3*int]);
-			var content = unescapeBTNR(parts[3+3*int]);
+		var count = parseInt(parts[0]);
+		for ( var int = 0; int < count; ++int) {
+			var type = unescapeBTNR(parts[1 + 3 * int]);
+			var style = unescapeBTNR(parts[2 + 3 * int]);
+			var content = unescapeBTNR(parts[3 + 3 * int]);
 			var box = BoxFactory(type, style, content);
 			box.SetParentId(this.id);
 			box.Create("boxspace" + this.id);
-		};
+			this.contents.push(box);
+		}
+		;
 
 	};
 

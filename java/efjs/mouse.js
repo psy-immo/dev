@@ -483,3 +483,24 @@ function delMouseMoveHook(f) {
 		}
 	}
 };
+
+
+/**
+ * 
+ *  replace target with new one
+ */ 
+
+function mouseTargetReplace(oldone,newone){
+	for (var int=0;int<mouseClickHookTargets.length;int++){
+		if (mouseClickHookTargets[int] == oldone)
+			mouseClickHookTargets[int] = newone;
+	}
+	for (var int=0;int<mouseDownHookTargets.length;int++){
+		if (mouseDownHookTargets[int] == oldone)
+			mouseDownHookTargets[int] = newone;
+	}
+	for (var int=0;int<mouseUpHookTargets.length;int++){
+		if (mouseUpHookTargets[int] == oldone)
+			mouseUpHookTargets[int] = newone;
+	}
+};

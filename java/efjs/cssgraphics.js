@@ -168,6 +168,35 @@ function Line(left, top, right, bottom, color, style, extension) {
 	this.GetElement = function() {
 		return document.getElementById("grLine"+this.id);
 	};
+	
+	/**
+	 * change the line coordinates
+	 */
+	
+	this.SetCoords = function(left, top, right, bottom) {
+		this.left = left;
+		this.right = right;
+		this.top = top;
+		this.bottom = bottom;
+		
+		var elt = document.getElementById("grLine"+this.id);
+		var parent = elt.parentNode;
+		
+		parent.removeChild(elt);
+		
+		var html = htmlLineDiv(this.left, this.top, this.right, this.bottom,
+				this.color, this.style, "grLine" + this.id, this.extension);
+		
+		var container = document.createElement('div');
+		
+		container.innerHTML = html;
+
+		var newelt = container.firstChild;
+		
+		parent.appendChild(newelt);
+		
+		mouseTargetReplace(elt, newelt);
+	};
 
 	graphicsArray[this.id] = this;
 
