@@ -40,9 +40,12 @@ function FloatBox(style, content) {
 		this.content = "";
 
 	this.allowTakeOff = true;
-	this.takeOffType = "floatbox";
-	
+	this.takeOffType = "box";
+
 	this.keepElement = null;
+
+	this.name = "";
+	this.tags = [];
 
 	/**
 	 * set the id of the parent element
@@ -53,6 +56,14 @@ function FloatBox(style, content) {
 	this.SetParentId = function(id) {
 		this.parent = id;
 		return this;
+	};
+
+	/**
+	 * return the parent box space id
+	 */
+
+	this.GetParentId = function() {
+		return this.parent;
 	};
 
 	/**
@@ -152,8 +163,11 @@ function FloatBox(style, content) {
 			 */
 			this.keepElement = document.getElementById("floatbox" + this.id);
 			this.RemoveDiv();
-			
-			myHover.TakeOff(this.content,this,null,null,this.takeOffType);
+
+			this.name = boxspaceArray[this.parent].name;
+			this.tags = boxspaceArray[this.parent].tags;
+
+			myHover.TakeOff(this.content, this, null, null, this.takeOffType);
 		}
 
 	};
@@ -171,6 +185,11 @@ function FloatBox(style, content) {
 	 */
 
 	this.GetStyle = function() {
+		var elt = document.getElementById("floatbox" + this.id);
+		if (elt) {
+			return removeCss(/^\s*(left|top)\s*/, this.style) + "left: "
+					+ elt.style.left + ";" + "top: " + elt.style.top + ";";
+		}
 		return this.style;
 	};
 
@@ -191,11 +210,19 @@ function FloatBox(style, content) {
 	};
 
 	/**
+	 * give the div element
+	 */
+
+	this.GetElement = function() {
+		return document.getElementById("floatbox" + this.id);
+	};
+
+	/**
 	 * also remove the java script object that represents this box
 	 */
 	this.Remove = function() {
 		var elt = document.getElementById("floatbox" + this.id);
-		
+
 		clearMouseClickHooks("floatbox" + this.id);
 		clearMouseClickHooks(elt);
 
@@ -203,12 +230,12 @@ function FloatBox(style, content) {
 
 		floatboxArray[this.id] = undefined;
 	};
-	
+
 	/**
 	 * this function is called, when a token is given back after a take off
 	 */
 	this.GiveBackToken = function(token) {
-		var parent = document.getElementById("boxspace"+this.parent);
+		var parent = document.getElementById("boxspace" + this.parent);
 		parent.appendChild(this.keepElement);
 		this.keepElement = null;
 	};
@@ -216,11 +243,12 @@ function FloatBox(style, content) {
 	/**
 	 * this function is called, when a token is taken away after a touch down
 	 */
-	this.TakeAway = function() {		
+	this.TakeAway = function() {
 		clearMouseClickHooks("floatbox" + this.id);
 		clearMouseClickHooks(this.keepElement);
 		floatboxArray[this.id] = undefined;
 		this.keepElement = null;
+		boxspaceArray[this.parent].DelBox(this);
 	};
 
 	floatboxArray[this.id] = this;
@@ -288,6 +316,22 @@ function Boxspace(name, tags, accept, reject) {
 		this.contents.push(box);
 
 		return this;
+	};
+
+	/**
+	 * this function removes a box from the box space
+	 */
+	this.DelBox = function(box, dontRemove) {
+		if (!dontRemove) {
+			box.Remove();
+		}
+		var idx = this.contents.lastIndexOf(box);
+		if (idx >= 0) {
+			var last_element = this.contents.pop();
+			if (idx < this.contents.length) {
+				this.contents[idx] = last_element;
+			}
+		}
 	};
 
 	/**
@@ -438,10 +482,11 @@ function Boxspace(name, tags, accept, reject) {
 			 * check for correct token type
 			 */
 			// TODO: add float box landing support
-			if ((plane_type != "text")&&(plane_type != "floatbox")) {
+			if ((plane_type != "text") && (plane_type != "box")) {
 				myHover.CrashDown();
 
-				myLogger.Log(log_data + " rejected");
+				myLogger.Log(log_data + " rejected (wrong type:" + plane_type
+						+ ")");
 				return;
 			}
 
@@ -484,9 +529,10 @@ function Boxspace(name, tags, accept, reject) {
 			 * the event handlers will be bubbling or capturing, depends on
 			 * browser, so handle it twice, this is the capturing part
 			 */
-			if (myHover.source.TakeAway) {
-				myHover.source.TakeAway();
-			}
+			if (plane_type == "text")
+				if (myHover.source.TakeAway) {
+					myHover.source.TakeAway();
+				}
 
 			/**
 			 * remove the plane
@@ -494,13 +540,14 @@ function Boxspace(name, tags, accept, reject) {
 
 			myHover.CrashDown(true);
 
-			console.log($("boxspace" + this.id).viewportOffset.left);
-			
 			var layout = $("boxspace" + this.id).getLayout();
 			var scrollme = $("boxspace" + this.id).cumulativeScrollOffset();
-			var scrolldaddy = $("boxspace" + this.id).parentNode.cumulativeScrollOffset();
-			var left = mouseX - layout.get("left") + scrollme["left"] - scrolldaddy["left"];
-			var top = mouseY - layout.get("top") + scrollme["top"] - scrolldaddy["top"];
+			var scrolldaddy = $("boxspace" + this.id).parentNode
+					.cumulativeScrollOffset();
+			var left = mouseX - layout.get("left") + scrollme["left"]
+					- scrolldaddy["left"];
+			var top = mouseY - layout.get("top") + scrollme["top"]
+					- scrolldaddy["top"];
 
 			/**
 			 * now add a float box
@@ -511,9 +558,38 @@ function Boxspace(name, tags, accept, reject) {
 				box.SetParentId(this.id);
 				box.Create("boxspace" + this.id);
 				this.contents.push(box);
-			} else if (plane_type == "floatbox") {
-				//TODO
-				
+			} else if (plane_type == "box") {
+				var box = myHover.source;
+				if (box.GetParentId() == this.id) {
+					/**
+					 * own box
+					 */
+					box.GiveBackToken();
+					/**
+					 * move box
+					 */
+					box.GetElement().style.left = left + "px";
+					box.GetElement().style.top = top + "px";
+				} else {
+					/**
+					 * different box space
+					 */
+					var content = box.GetContent();
+					var style = box.GetStyle();
+					var type = box.GetBoxType();
+
+					box.TakeAway();
+					
+					box = BoxFactory(type,
+							removeCss(/^\s*(left|top)\s*/, style) + "left: "
+									+ left + "px;" + "top: " + top + "px;",
+							content);
+
+					box.SetParentId(this.id);
+					box.Create("boxspace" + this.id);
+					this.contents.push(box);
+				}
+
 			}
 
 			myLogger.Log(log_data);
@@ -522,8 +598,6 @@ function Boxspace(name, tags, accept, reject) {
 		}
 
 	};
-
-
 
 	/**
 	 * return the current contents of the box workspace as string

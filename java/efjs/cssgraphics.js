@@ -97,6 +97,19 @@ function htmlLineDiv(left, top, right, bottom, color, style, id, extension,
 	return html;
 };
 
+function removeCss(regexp,css) {
+	var new_css = "";
+	var old = css.split(";");
+	for (var int=0;int<old.length;++int) {
+		var line = old[int];
+		if (!line.match(regexp)) {
+			if (line.trim())
+				new_css += line + ";";
+		}
+	}
+	return new_css;
+}
+
 /**
  * creates a line object
  */
