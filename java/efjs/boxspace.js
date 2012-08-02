@@ -362,9 +362,6 @@ function Boxspace(name, tags, accept, reject) {
 		return this;
 	};
 
-
-	
-
 	/**
 	 * this function sets the color parameters
 	 * 
@@ -520,8 +517,20 @@ function Boxspace(name, tags, accept, reject) {
 
 			var layout = $("boxspace" + this.id).getLayout();
 			var scrollme = $("boxspace" + this.id).cumulativeScrollOffset();
-			var scrolldaddy = $("boxspace" + this.id).parentNode
-					.cumulativeScrollOffset();
+
+			var scrolldaddy = {};
+			try {
+				scrolldaddy = $("boxspace" + this.id).parentNode
+						.cumulativeScrollOffset();
+			} catch (e) {
+				/**
+				 * fall back, if containing object has no
+				 * .cumulativeScrollOffset method
+				 */
+				scrolldaddy["left"] = 0;
+				scrolldaddy["top"] = 0;
+			}
+
 			var left = mouseX - layout.get("left") + scrollme["left"]
 					- scrolldaddy["left"];
 			var top = mouseY - layout.get("top") + scrollme["top"]
@@ -557,7 +566,7 @@ function Boxspace(name, tags, accept, reject) {
 					var type = box.GetBoxType();
 
 					box.TakeAway();
-					
+
 					box = BoxFactory(type,
 							removeCss(/^\s*(left|top)\s*/, style) + "left: "
 									+ left + "px;" + "top: " + top + "px;",
@@ -567,12 +576,12 @@ function Boxspace(name, tags, accept, reject) {
 					box.Create("boxspace" + this.id);
 					this.contents.push(box);
 				}
-				
+
 				var div = box.GetElement();
 				var box_width = div.getWidth();
 				var box_height = div.getHeight();
-				div.style.left = (left-box_width/2) + "px";
-				div.style.top = (top-box_height/2) + "px";
+				div.style.left = (left - box_width / 2) + "px";
+				div.style.top = (top - box_height / 2) + "px";
 
 			}
 
