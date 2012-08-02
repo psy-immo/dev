@@ -358,34 +358,8 @@ function Boxspace(name, tags, accept, reject) {
 		return this;
 	};
 
-	/**
-	 * this function sets the box workspace to be of respawning type
-	 */
-	this.Respawn = function(content) {
-		this.doRespawn = this.token;
-		this.respawn = this;
-		return this;
-	};
 
-	/**
-	 * this function sets the box workspace to be of refilling type
-	 */
-	this.Refilling = function(content) {
-		this.stayFilled = true;
-
-		return this;
-	};
-
-	/**
-	 * this function provides the respawning
-	 */
-	this.DoRespawn = function() {
-		if (this.respawn) {
-			this.respawn.DoRespawn();
-		}
-		this.SetToken(this.doRespawn);
-		this.respawn = this;
-	};
+	
 
 	/**
 	 * this function sets the color parameters
@@ -481,7 +455,7 @@ function Boxspace(name, tags, accept, reject) {
 			/**
 			 * check for correct token type
 			 */
-			// TODO: add float box landing support
+
 			if ((plane_type != "text") && (plane_type != "box")) {
 				myHover.CrashDown();
 

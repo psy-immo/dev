@@ -292,7 +292,7 @@ function delMouseClickHook(f) {
  */
 
 function clearMouseClickHooks(target) {
-	for ( var idx = mouseClickHooks.indexOf(target); idx >= 0; idx = mouseClickHooks
+	for ( var idx = mouseClickHookTargets.indexOf(target); idx >= 0; idx = mouseClickHookTargets
 			.indexOf(target, idx + 1)) {
 		var last = mouseClickHooks.pop();
 		if (idx < mouseClickHooks.length) {
@@ -364,7 +364,7 @@ function delMouseUpHook(f) {
  */
 
 function clearMouseUpHooks(target) {
-	for ( var idx = mouseUpHooks.indexOf(target); idx >= 0; idx = mouseUpHooks
+	for ( var idx = mouseUpHookTargets.indexOf(target); idx >= 0; idx = mouseUpHookTargets
 			.indexOf(target, idx + 1)) {
 		var last = mouseUpHooks.pop();
 		if (idx < mouseUpHooks.length) {
@@ -436,7 +436,7 @@ function delMouseDownHook(f) {
  */
 
 function clearMouseDownHooks(target) {
-	for ( var idx = mouseDownHooks.indexOf(target); idx >= 0; idx = mouseDownHooks
+	for ( var idx = mouseDownHookTargets.indexOf(target); idx >= 0; idx = mouseDownHookTargets
 			.indexOf(target, idx + 1)) {
 		var last = mouseDownHooks.pop();
 		if (idx < mouseDownHooks.length) {

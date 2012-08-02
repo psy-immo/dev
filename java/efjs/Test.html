@@ -31,6 +31,7 @@
 	<script type="text/javascript" src="radiobutton.js"></script>		
 	<script type="text/javascript" src="multiline.js"></script>
 	<script type="text/javascript" src="boxspace.js"></script>
+	<script type="text/javascript" src="trashcan.js"></script>
 	
 	<script type="text/javascript">
 	
@@ -56,10 +57,13 @@
 	<script type="text/javascript">
 		new Runway("box",[],"Hover",[],[]).WriteHtml();
 		
+		
 		new Boxspace("box",[],[],[]).Size("400px","400px").AddBox(new FloatBox("left:220px;top:400px;background-color:white;","Test")).WriteHtml();
 		new Boxspace("box2",[],[],[]).Size("400px","400px").AddBox(new FloatBox("left:220px;top:400px;background-color:white;","Test")).WriteHtml();
 		
 		new Checkbox("box",[],"Check here!!","CHECKED","NOPE").WriteHtml();
+		
+		new Trashcan("trash",[],[],[]).WriteHtml();
 	
 		function TestSolution() {
 			var fail = false;
