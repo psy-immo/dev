@@ -37,6 +37,8 @@ public class HtmlTag implements AnyTag {
 				"	<script type=\"text/javascript\" src=\"" + baseUrl
 				+ "prototype.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "crosscompat.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
 				+ "mouse.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
 				+ "cssgraphics.js\"></script>\n" 
