@@ -86,6 +86,10 @@ function FloatBox(style, content) {
 
 		html += " style=\" display: inline-block; ";
 		html += " position: absolute; ";
+		html += " border-style: solid; ";
+		html += " padding: 6px; ";
+		html += " border-color: #000000; ";
+		html += " zIndex: 50; ";
 		html += this.style;
 		html += "\" >";
 		html += this.content;
@@ -563,6 +567,12 @@ function Boxspace(name, tags, accept, reject) {
 					box.Create("boxspace" + this.id);
 					this.contents.push(box);
 				}
+				
+				var div = box.GetElement();
+				var box_width = div.getWidth();
+				var box_height = div.getHeight();
+				div.style.left = (left-box_width/2) + "px";
+				div.style.top = (top-box_height/2) + "px";
 
 			}
 
