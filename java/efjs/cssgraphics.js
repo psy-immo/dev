@@ -488,3 +488,139 @@ function HoverContainer(left, top, content) {
 	
 	return this;
 };
+
+/**
+ * 
+ * 
+ * 
+ * 
+ * arrow primitive
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * */
+
+/**
+ * creates an arrow object
+ */
+function Arrow(left, top, right, bottom, color, style, extension) {
+	this.id = graphicsIds++;
+	this.left = left;
+	this.right = right;
+	this.top = top;
+	this.bottom = bottom;
+	
+	var angle = Math.atan2(bottom - top, right - left);
+	var tail = 15;
+	var rotate = 0.3;
+	
+	this.arrowX1 = this.right-Math.cos(angle+rotate)*tail;
+	this.arrowY1 = this.bottom-Math.sin(angle+rotate)*tail;
+	this.arrowX2 = this.right-Math.cos(angle-rotate)*tail;
+	this.arrowY2 = this.bottom-Math.sin(angle-rotate)*tail;
+
+	this.color = "#888888";
+	this.style = "";
+	this.extension = "";
+
+	if (color)
+		this.color = color;
+	if (style)
+		this.style = style;
+	if (extension)
+		this.extension = extension;
+
+	/**
+	 * write html code that creates the line object
+	 */
+
+	this.WriteHtml = function() {
+		document.write(htmlLineDiv(this.left, this.top, this.right,
+				this.bottom, this.color, this.style, "grArrow0." + this.id,
+				this.extension));
+		document.write(htmlLineDiv(this.arrowX1, this.arrowY1, this.right,
+				this.bottom, this.color, this.style, "grArrow1." + this.id,
+				this.extension));
+		document.write(htmlLineDiv(this.arrowX2, this.arrowY2, this.right,
+				this.bottom, this.color, this.style, "grArrow2." + this.id,
+				this.extension));
+	};
+
+	/**
+	 * remove the graphical object
+	 */
+
+	this.Remove = function() {
+		var elt = document.getElementById("grLine" + this.id);
+		elt.parentNode.removeChild(elt);
+		graphicsArray[this.id] = undefined;
+		
+		clearMouseClickHooks("grLine" + this.id);
+		clearMouseClickHooks(elt);
+	};
+
+	/**
+	 * add the graphical object
+	 */
+
+	this.AddChild = function(id) {
+		if (id == undefined) {
+			id = "mainframe";
+		}
+		var html = htmlLineDiv(this.left, this.top, this.right, this.bottom,
+				this.color, this.style, "grLine" + this.id, this.extension);
+
+		var parent = document.getElementById(id);
+		
+		var container = document.createElement('div');
+	
+		container.innerHTML = html;
+
+		parent.appendChild(container.firstChild);
+	};
+	
+	/**
+	 * get the associated html element
+	 */
+	
+	this.GetElement = function() {
+		return document.getElementById("grLine"+this.id);
+	};
+	
+	/**
+	 * change the line coordinates
+	 */
+	
+	this.SetCoords = function(left, top, right, bottom) {
+		this.left = left;
+		this.right = right;
+		this.top = top;
+		this.bottom = bottom;
+		
+		var elt = document.getElementById("grLine"+this.id);
+		var parent = elt.parentNode;
+		
+		parent.removeChild(elt);
+		
+		var html = htmlLineDiv(this.left, this.top, this.right, this.bottom,
+				this.color, this.style, "grLine" + this.id, this.extension);
+		
+		var container = document.createElement('div');
+		
+		container.innerHTML = html;
+
+		var newelt = container.firstChild;
+		
+		parent.appendChild(newelt);
+		
+		mouseTargetReplace(elt, newelt);
+	};
+
+	graphicsArray[this.id] = this;
+
+	return this;
+};
+

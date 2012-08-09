@@ -535,6 +535,8 @@ function Boxspace(name, tags, accept, reject) {
 					- scrolldaddy["left"];
 			var top = mouseY - layout.get("top") + scrollme["top"]
 					- scrolldaddy["top"];
+			
+			log_data += " ["+left+" "+top+"]";
 
 			/**
 			 * now add a float box
