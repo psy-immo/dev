@@ -117,6 +117,18 @@ function FloatBox(style, content) {
 				floatboxArray[id].OnClick();
 			};
 		}(this.id));
+
+		addMouseDownHook("floatbox" + this.id, 0, function(id) {
+			return function() {
+				floatboxArray[id].OnDown();
+			};
+		}(this.id));
+
+		addMouseUpHook("floatbox" + this.id, 0, function(id) {
+			return function() {
+				floatboxArray[id].OnUp();
+			};
+		}(this.id));
 	};
 
 	/**
@@ -149,6 +161,18 @@ function FloatBox(style, content) {
 				floatboxArray[id].OnClick();
 			};
 		}(this.id));
+
+		addMouseDownHook("floatbox" + this.id, 0, function(id) {
+			return function() {
+				floatboxArray[id].OnDown();
+			};
+		}(this.id));
+
+		addMouseUpHook("floatbox" + this.id, 0, function(id) {
+			return function() {
+				floatboxArray[id].OnUp();
+			};
+		}(this.id));
 	};
 
 	/**
@@ -174,6 +198,22 @@ function FloatBox(style, content) {
 			myHover.TakeOff(this.content, this, null, null, this.takeOffType);
 		}
 
+	};
+
+	/**
+	 * called when the mouse button is pressed when over the box
+	 */
+
+	this.OnDown = function() {
+		boxspaceArray[this.parent].StartDragging(this);
+		console.log("Down.");
+	};
+
+	/**
+	 * called when the mouse button is released when over the box
+	 */
+	this.OnUp = function() {
+		console.log("Up.");
 	};
 
 	/**
@@ -230,6 +270,12 @@ function FloatBox(style, content) {
 		clearMouseClickHooks("floatbox" + this.id);
 		clearMouseClickHooks(elt);
 
+		clearMouseDownHooks("floatbox" + this.id);
+		clearMouseDownHooks(elt);
+
+		clearMouseUpHooks("floatbox" + this.id);
+		clearMouseUpHooks(elt);
+
 		this.RemoveDiv();
 
 		floatboxArray[this.id] = undefined;
@@ -240,6 +286,14 @@ function FloatBox(style, content) {
 	 */
 	this.GiveBackToken = function(token) {
 		var parent = document.getElementById("boxspace" + this.parent);
+		/*
+		 * Problem?
+		 * 
+		 * Uncaught Error: NOT_FOUND_ERR: DOM Exception 8 boxspace.js:289
+		 * FloatBox.GiveBackToken boxspace.js:289 Hover.CrashDown hover.js:100
+		 * (anonymous function) hover.js:162 mouseOnClick mouse.js:219
+		 * _createResponder.responder
+		 */
 		parent.appendChild(this.keepElement);
 		this.keepElement = null;
 	};
@@ -433,6 +487,36 @@ function Boxspace(name, tags, accept, reject) {
 	this.MarkNeutral = function() {
 
 	};
+	
+	this.CancelDrag = function(){
+		delMouseMoveHook(this.dragHandler);
+	};
+	
+
+	/**
+	 * this function is called by OnDown of boxes
+	 */
+	this.StartDragging = function(sourceBox) {
+		var fn = function(me) {
+			return function() {
+				me.OnDrag();
+			};
+		}(this);
+		
+		addMouseMoveHook(fn);
+		
+		this.dragHandler = fn;
+		
+		addMouseUpOnce(function(me) {
+			return function() {
+				me.CancelDrag();
+			};
+		}(this));
+	};
+
+	this.OnDrag = function() {
+		console.log("drag" + mouseX);
+	};
 
 	/**
 	 * this function is called, when the box workspace object is clicked
@@ -535,8 +619,8 @@ function Boxspace(name, tags, accept, reject) {
 					- scrolldaddy["left"];
 			var top = mouseY - layout.get("top") + scrollme["top"]
 					- scrolldaddy["top"];
-			
-			log_data += " ["+left+" "+top+"]";
+
+			log_data += " [" + left + " " + top + "]";
 
 			/**
 			 * now add a float box
@@ -554,6 +638,7 @@ function Boxspace(name, tags, accept, reject) {
 					 * own box
 					 */
 					box.GiveBackToken();
+
 					/**
 					 * move box
 					 */

@@ -33,6 +33,8 @@ mouseUpHooks = [];
 mouseUpHookPriorities = [];
 mouseUpHookTargets = [];
 
+mouseAfterNextUpHandler = [];
+
 /**
  * capture mouse pointer position / call hooks
  */
@@ -111,7 +113,6 @@ function mouseOnDown(e) {
 
 }
 
-
 /**
  * capture mouse button up globally
  */
@@ -164,8 +165,13 @@ function mouseOnUp(e) {
 		handler();
 	}
 
-}
+	for ( var int = 0; int < mouseAfterNextUpHandler.length; int++) {
+		mouseAfterNextUpHandler[int]();
+	}
+	;
 
+	mouseAfterNextUpHandler.clear();
+}
 
 /**
  * capture mouse clicks globally
@@ -311,7 +317,6 @@ function clearMouseClickHooks(target) {
 	}
 };
 
-
 /**
  * add mouse hook
  * 
@@ -327,6 +332,18 @@ function addMouseUpHook(target, priority, f) {
 	mouseUpHookTargets.push(target);
 	mouseUpHookPriorities.push(priority);
 	mouseUpHooks.push(f);
+};
+
+/**
+ * add mouse hook, called after the next up event after processing the
+ * determined up handler
+ * 
+ * @param f
+ *            function to be called
+ */
+
+function addMouseUpOnce(f) {
+	mouseAfterNextUpHandler.push(f);
 };
 
 /**
@@ -382,7 +399,6 @@ function clearMouseUpHooks(target) {
 		}
 	}
 };
-
 
 /**
  * add mouse hook
@@ -484,22 +500,21 @@ function delMouseMoveHook(f) {
 	}
 };
 
-
 /**
  * 
- *  replace target with new one
- */ 
+ * replace target with new one
+ */
 
-function mouseTargetReplace(oldone,newone){
-	for (var int=0;int<mouseClickHookTargets.length;int++){
+function mouseTargetReplace(oldone, newone) {
+	for ( var int = 0; int < mouseClickHookTargets.length; int++) {
 		if (mouseClickHookTargets[int] == oldone)
 			mouseClickHookTargets[int] = newone;
 	}
-	for (var int=0;int<mouseDownHookTargets.length;int++){
+	for ( var int = 0; int < mouseDownHookTargets.length; int++) {
 		if (mouseDownHookTargets[int] == oldone)
 			mouseDownHookTargets[int] = newone;
 	}
-	for (var int=0;int<mouseUpHookTargets.length;int++){
+	for ( var int = 0; int < mouseUpHookTargets.length; int++) {
 		if (mouseUpHookTargets[int] == oldone)
 			mouseUpHookTargets[int] = newone;
 	}
