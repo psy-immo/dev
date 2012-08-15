@@ -206,14 +206,15 @@ function FloatBox(style, content) {
 
 	this.OnDown = function() {
 		boxspaceArray[this.parent].StartDragging(this);
-		console.log("Down.");
+		
 	};
 
 	/**
 	 * called when the mouse button is released when over the box
 	 */
 	this.OnUp = function() {
-		console.log("Up.");
+		boxspaceArray[this.parent].EndDragging(this);
+		
 	};
 
 	/**
@@ -358,6 +359,8 @@ function Boxspace(name, tags, accept, reject) {
 	this.doRespawn = null;
 
 	this.noTakeOff = false;
+	
+	this.draggingArrows = false;
 
 	this.contents = [];
 
@@ -488,15 +491,17 @@ function Boxspace(name, tags, accept, reject) {
 
 	};
 	
-	this.CancelDrag = function(){
-		delMouseMoveHook(this.dragHandler);
-	};
-	
+		
 
 	/**
 	 * this function is called by OnDown of boxes
 	 */
 	this.StartDragging = function(sourceBox) {
+		
+		this.dragSource = sourceBox;
+		
+		this.draggingArrows = true;
+		
 		var fn = function(me) {
 			return function() {
 				me.OnDrag();
@@ -513,9 +518,38 @@ function Boxspace(name, tags, accept, reject) {
 			};
 		}(this));
 	};
+	
+	/**
+	 * this function is called by OnUp of boxes
+	 */
+	this.EndDragging = function(targetBox) {
+		if (this.draggingArrows == false)
+			return;
+		
+		if (this.dragSource == targetBox)
+			return;
+		
+		var src = this.contents.lastIndexOf(this.dragSource);
+		var tar = this.contents.lastIndexOf(targetBox);
+		
+		console.log("Add relation: "+src+" to "+tar);
+	};
+	
+	/**
+	 * this function is called while dragging when the mouse position changes
+	 */
 
 	this.OnDrag = function() {
 		console.log("drag" + mouseX);
+	};
+	
+	/**
+	 * this function is called when dragging ends to clean up after a possible EndDragging
+	 */
+	
+	this.CancelDrag = function(){
+		delMouseMoveHook(this.dragHandler);
+		this.draggingArrows = false;
 	};
 
 	/**
