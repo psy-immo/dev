@@ -35,6 +35,8 @@ public class HtmlTag implements AnyTag {
 			throws IOException {
 		writer.write(
 				"	<script type=\"text/javascript\" src=\"" + baseUrl
+				+ "jquery-1.8.0.min.js\"></script>\n"
+				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
 				+ "prototype.js\"></script>\n"
 				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
 				+ "crosscompat.js\"></script>\n"
