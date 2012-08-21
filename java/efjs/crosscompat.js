@@ -34,3 +34,17 @@ Prototype.Browser.IE6 = Prototype.Browser.IE && parseInt(navigator.userAgent.sub
 Prototype.Browser.IE7 = Prototype.Browser.IE && parseInt(navigator.userAgent.substring(navigator.userAgent.indexOf("MSIE")+5)) == 7;
 Prototype.Browser.IE8 = Prototype.Browser.IE && parseInt(navigator.userAgent.substring(navigator.userAgent.indexOf("MSIE")+5)) == 8;
 Prototype.Browser.IE9 = Prototype.Browser.IE && !Prototype.Browser.IE6 && !Prototype.Browser.IE7 && !Prototype.Browser.IE8;
+
+/**
+ * deselect all text
+ */
+
+if (Prototype.Browser.IE6 || Prototype.Browser.IE7 || Prototype.Browser.IE8) {
+	DeselectAllText = function() {
+		document.selection.empty();
+	};
+} else {
+	DeselectAllText = function() {
+		window.getSelection().removeAllRanges();
+	};
+}

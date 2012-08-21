@@ -516,6 +516,16 @@ function Boxspace(name, tags, accept, reject) {
 	 */
 	this.StartDragging = function(sourceBox) {
 		
+		/**
+		 * cancel text selection
+		 */
+		
+		DeselectAllText();
+	
+		/**
+		 * actual code
+		 */
+		
 		this.dragSource = sourceBox;
 		
 		this.draggingArrows = true;
