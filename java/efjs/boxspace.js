@@ -652,26 +652,44 @@ function Boxspace(name, tags, accept, reject) {
 
 			myHover.CrashDown(true);
 
-			var layout = $("boxspace" + this.id).getLayout();
-			var scrollme = $("boxspace" + this.id).cumulativeScrollOffset();
-
-			var scrolldaddy = {};
-			try {
-				scrolldaddy = $("boxspace" + this.id).parentNode
-						.cumulativeScrollOffset();
-			} catch (e) {
-				/**
-				 * fall back, if containing object has no
-				 * .cumulativeScrollOffset method
-				 */
-				scrolldaddy["left"] = 0;
-				scrolldaddy["top"] = 0;
-			}
-
-			var left = mouseX - layout.get("left") + scrollme["left"]
-					- scrolldaddy["left"];
-			var top = mouseY - layout.get("top") + scrollme["top"]
-					- scrolldaddy["top"];
+			
+			/**
+			 * old prototype.js way
+			 */
+//			var layout = $("boxspace" + this.id).getLayout();
+//			var scrollme = $("boxspace" + this.id).cumulativeScrollOffset();
+//
+//			var scrolldaddy = {};
+//			try {
+//				scrolldaddy = $("boxspace" + this.id).parentNode
+//						.cumulativeScrollOffset();
+//			} catch (e) {
+//				/**
+//				 * fall back, if containing object has no
+//				 * .cumulativeScrollOffset method
+//				 */
+//				scrolldaddy["left"] = 0;
+//				scrolldaddy["top"] = 0;
+//			}
+//
+//			var left = mouseX - layout.get("left") + scrollme["left"]
+//					- scrolldaddy["left"];
+//			var top = mouseY - layout.get("top") + scrollme["top"]
+//					- scrolldaddy["top"];
+			
+			/**
+			 * new jQuery way
+			 */
+			
+			var boxspace_div = jQuery("#boxspace"+this.id);
+			var layout = boxspace_div.offset();
+			var scrollstate = {};
+			scrollstate["left"] = boxspace_div.scrollLeft();
+			scrollstate["top"] = boxspace_div.scrollTop();
+			
+			var left = mouseX - layout.left + scrollstate["left"];
+			var top = mouseY - layout.top + scrollstate["top"];
+			
 
 			log_data += " [" + left + " " + top + "]";
 
