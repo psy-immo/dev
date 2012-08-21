@@ -212,7 +212,7 @@ function FloatBox(style, content) {
 
 	this.OnDown = function() {
 		boxspaceArray[this.parent].StartDragging(this);
-		
+
 	};
 
 	/**
@@ -220,7 +220,7 @@ function FloatBox(style, content) {
 	 */
 	this.OnUp = function() {
 		boxspaceArray[this.parent].EndDragging(this);
-		
+
 	};
 
 	/**
@@ -316,6 +316,100 @@ function FloatBox(style, content) {
 		boxspaceArray[this.parent].DelBox(this);
 	};
 
+	/**
+	 * calculates the set on-point of the bounding box of the float box towards
+	 * another point
+	 */
+
+	this.GetLineStartTo = function(x, y) {
+		var jq_div = jQuery("#floatbox" + this.id);
+		var position = jq_div.position();
+		var left = position.left;
+		var top = position.top;
+		var right = left + jq_div.outerWidth();
+		var bottom = top + jq_div.outerHeight();
+
+		var mid_x = (left + right) / 2;
+		var mid_y = (top + bottom) / 2;
+
+		var angle = Math.atan2(y - mid_y, x - mid_x);
+		var angle_tl = Math.atan2(top - mid_y, left - mid_x);
+		var angle_tr = Math.atan2(top - mid_y, right - mid_x);
+		var angle_bl = Math.atan2(bottom - mid_y, left - mid_x);
+		var angle_br = Math.atan2(bottom - mid_y, right - mid_x);
+
+		/**
+		 * note 1: atan2(...) = 0 if the point (x,y) is straight to the right
+		 * from the middle of the box
+		 * 
+		 * note 2: atan2(...) grows in clockwise orientation
+		 */
+
+		console.log(angle + " vs " + angle_tl + ", " + angle_tr + ", "
+				+ angle_br + ", " + angle_bl);
+
+		var border_x1 = 0;
+		var border_y1 = 1;
+		var border_x2 = 1;
+		var border_y2 = 0;
+
+		if ((angle < angle_tl) || (angle >= angle_bl)) {
+			/**
+			 * intersect with left border
+			 */
+			border_x1 = left;
+			border_y1 = top;
+			border_x2 = left;
+			border_y2 = bottom;
+		} else if ((angle_tl <= angle) && (angle < angle_tr)) {
+			/**
+			 * intersect with top border
+			 */
+			border_x1 = left;
+			border_y1 = top;
+			border_x2 = right;
+			border_y2 = top;
+		} else if ((angle_tr <= angle) && (angle < angle_br)) {
+			/**
+			 * intersect with right border
+			 */
+			border_x1 = right;
+			border_y1 = top;
+			border_x2 = right;
+			border_y2 = bottom;
+		} else {
+			/**
+			 * intersect with bottom border
+			 */
+			border_x1 = left;
+			border_y1 = bottom;
+			border_x2 = right;
+			border_y2 = bottom;
+		}
+
+		/**
+		 * now just intersect the border line and the line from the mid point to
+		 * (x,y)
+		 * 
+		 * P1 = border_x1,border_y1
+		 * P2 = border_x2,border_y2
+		 * P3 = x,y
+		 * P4 = mid_x,mid_y  
+		 */
+		
+		var alpha = ((mid_x-x)*(border_y1-y) - (mid_y-y)*(border_x1-x))/
+					((mid_y-y)*(border_x2-border_x1) - (mid_x-x)*(border_y2-border_y1));
+		
+		var r_left = border_x1 + alpha*(border_x2-border_x1);
+		var r_top = border_y1 + alpha*(border_y2-border_y1);
+
+		var result = {};
+		result["left"] = r_left;
+		result["top"] = r_top;
+
+		return result;
+	};
+
 	floatboxArray[this.id] = this;
 	return this;
 }
@@ -365,7 +459,7 @@ function Boxspace(name, tags, accept, reject) {
 	this.doRespawn = null;
 
 	this.noTakeOff = false;
-	
+
 	this.draggingArrows = false;
 
 	this.contents = [];
@@ -444,18 +538,17 @@ function Boxspace(name, tags, accept, reject) {
 		document.write("<div id=\"boxspace" + this.id + "\" ");
 
 		document.write(" style=\" display: inline-block; ");
-		
+
 		/**
 		 * disable text selection (interferes with dragging)
 		 */
-		
+
 		document.write(" -webkit-touch-callout: none;");
 		document.write(" -webkit-user-select: none;");
 		document.write(" -khtml-user-select: none;");
 		document.write(" -moz-user-select: none;");
 		document.write(" -ms-user-select: none;");
 		document.write(" user-select: none;");
-		
 
 		document.write("background-color:" + this.colorGround + "; ");
 
@@ -508,75 +601,74 @@ function Boxspace(name, tags, accept, reject) {
 	this.MarkNeutral = function() {
 
 	};
-	
-		
 
 	/**
 	 * this function is called by OnDown of boxes
 	 */
 	this.StartDragging = function(sourceBox) {
-		
+
 		/**
 		 * cancel text selection
 		 */
-		
+
 		DeselectAllText();
-	
+
 		/**
 		 * actual code
 		 */
-		
+
 		this.dragSource = sourceBox;
-		
+
 		this.draggingArrows = true;
-		
+
 		var fn = function(me) {
 			return function() {
 				me.OnDrag();
 			};
 		}(this);
-		
+
 		addMouseMoveHook(fn);
-		
+
 		this.dragHandler = fn;
-		
+
 		addMouseUpOnce(function(me) {
 			return function() {
 				me.CancelDrag();
 			};
 		}(this));
 	};
-	
+
 	/**
 	 * this function is called by OnUp of boxes
 	 */
 	this.EndDragging = function(targetBox) {
 		if (this.draggingArrows == false)
 			return;
-		
+
 		if (this.dragSource == targetBox)
 			return;
-		
+
 		var src = this.contents.lastIndexOf(this.dragSource);
 		var tar = this.contents.lastIndexOf(targetBox);
-		
-		console.log("Add relation: "+src+" to "+tar);
+
+		console.log("Add relation: " + src + " to " + tar);
 	};
-	
+
 	/**
 	 * this function is called while dragging when the mouse position changes
 	 */
 
 	this.OnDrag = function() {
 		console.log("drag" + mouseX);
-		
+
 	};
-	
+
 	/**
-	 * this function is called when dragging ends to clean up after a possible EndDragging
+	 * this function is called when dragging ends to clean up after a possible
+	 * EndDragging
 	 */
-	
-	this.CancelDrag = function(){
+
+	this.CancelDrag = function() {
 		delMouseMoveHook(this.dragHandler);
 		this.draggingArrows = false;
 	};
@@ -662,44 +754,41 @@ function Boxspace(name, tags, accept, reject) {
 
 			myHover.CrashDown(true);
 
-			
 			/**
 			 * old prototype.js way
 			 */
-//			var layout = $("boxspace" + this.id).getLayout();
-//			var scrollme = $("boxspace" + this.id).cumulativeScrollOffset();
-//
-//			var scrolldaddy = {};
-//			try {
-//				scrolldaddy = $("boxspace" + this.id).parentNode
-//						.cumulativeScrollOffset();
-//			} catch (e) {
-//				/**
-//				 * fall back, if containing object has no
-//				 * .cumulativeScrollOffset method
-//				 */
-//				scrolldaddy["left"] = 0;
-//				scrolldaddy["top"] = 0;
-//			}
-//
-//			var left = mouseX - layout.get("left") + scrollme["left"]
-//					- scrolldaddy["left"];
-//			var top = mouseY - layout.get("top") + scrollme["top"]
-//					- scrolldaddy["top"];
-			
+			// var layout = $("boxspace" + this.id).getLayout();
+			// var scrollme = $("boxspace" + this.id).cumulativeScrollOffset();
+			//
+			// var scrolldaddy = {};
+			// try {
+			// scrolldaddy = $("boxspace" + this.id).parentNode
+			// .cumulativeScrollOffset();
+			// } catch (e) {
+			// /**
+			// * fall back, if containing object has no
+			// * .cumulativeScrollOffset method
+			// */
+			// scrolldaddy["left"] = 0;
+			// scrolldaddy["top"] = 0;
+			// }
+			//
+			// var left = mouseX - layout.get("left") + scrollme["left"]
+			// - scrolldaddy["left"];
+			// var top = mouseY - layout.get("top") + scrollme["top"]
+			// - scrolldaddy["top"];
 			/**
 			 * new jQuery way
 			 */
-			
-			var boxspace_div = jQuery("#boxspace"+this.id);
+
+			var boxspace_div = jQuery("#boxspace" + this.id);
 			var layout = boxspace_div.offset();
 			var scrollstate = {};
 			scrollstate["left"] = boxspace_div.scrollLeft();
 			scrollstate["top"] = boxspace_div.scrollTop();
-			
+
 			var left = mouseX - layout.left + scrollstate["left"];
 			var top = mouseY - layout.top + scrollstate["top"];
-			
 
 			log_data += " [" + left + " " + top + "]";
 
