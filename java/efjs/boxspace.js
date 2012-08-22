@@ -345,8 +345,6 @@ function FloatBox(style, content) {
 		 * note 2: atan2(...) grows in clockwise orientation
 		 */
 
-		console.log(angle + " vs " + angle_tl + ", " + angle_tr + ", "
-				+ angle_br + ", " + angle_bl);
 
 		var border_x1 = 0;
 		var border_y1 = 1;
@@ -601,6 +599,54 @@ function Boxspace(name, tags, accept, reject) {
 	this.MarkNeutral = function() {
 
 	};
+	
+	/**
+	 * calculates the current mouse coordinates relative to the boxspace
+	 */
+	
+	this.CurrentMouseCoordinates = function() {
+			/**
+			 * old prototype.js way
+			 */
+			// var layout = $("boxspace" + this.id).getLayout();
+			// var scrollme = $("boxspace" + this.id).cumulativeScrollOffset();
+			//
+			// var scrolldaddy = {};
+			// try {
+			// scrolldaddy = $("boxspace" + this.id).parentNode
+			// .cumulativeScrollOffset();
+			// } catch (e) {
+			// /**
+			// * fall back, if containing object has no
+			// * .cumulativeScrollOffset method
+			// */
+			// scrolldaddy["left"] = 0;
+			// scrolldaddy["top"] = 0;
+			// }
+			//
+			// var left = mouseX - layout.get("left") + scrollme["left"]
+			// - scrolldaddy["left"];
+			// var top = mouseY - layout.get("top") + scrollme["top"]
+			// - scrolldaddy["top"];
+			/**
+			 * new jQuery way
+			 */
+
+			var boxspace_div = jQuery("#boxspace" + this.id);
+			var layout = boxspace_div.offset();
+			var scrollstate = {};
+			scrollstate["left"] = boxspace_div.scrollLeft();
+			scrollstate["top"] = boxspace_div.scrollTop();
+
+			var left = mouseX - layout.left + scrollstate["left"];
+			var top = mouseY - layout.top + scrollstate["top"];
+
+			var o = {};
+			o["left"] = left;
+			o["top"] = top;
+			
+			return o;
+	};
 
 	/**
 	 * this function is called by OnDown of boxes
@@ -612,12 +658,24 @@ function Boxspace(name, tags, accept, reject) {
 		 */
 
 		DeselectAllText();
-
+				  
+		
 		/**
 		 * actual code
 		 */
 
 		this.dragSource = sourceBox;
+		
+		var mouse_coords = this.CurrentMouseCoordinates();
+		var right = mouse_coords["left"];
+		var bottom = mouse_coords["top"];
+
+	    var box_coords = this.dragSource.GetLineStartTo(right,bottom);
+	    var left = box_coords["left"];
+	    var top = box_coords["top"];
+		
+		this.dragArrow = new Arrow(left,top,right,bottom,"#FFAA33","zIndex: -100;");
+		this.dragArrow.AddChild("boxspace"+this.id);
 
 		this.draggingArrows = true;
 
@@ -659,7 +717,17 @@ function Boxspace(name, tags, accept, reject) {
 	 */
 
 	this.OnDrag = function() {
-		console.log("drag" + mouseX);
+		var mouse_coords = this.CurrentMouseCoordinates();
+		var right = mouse_coords["left"];
+		var bottom = mouse_coords["top"];
+
+	    var box_coords = this.dragSource.GetLineStartTo(right,bottom);
+	    var left = box_coords["left"];
+	    var top = box_coords["top"];
+	    
+	    this.dragArrow.SetCoords(left,top,right,bottom);
+	    
+	    DeselectAllText();
 
 	};
 
@@ -671,6 +739,8 @@ function Boxspace(name, tags, accept, reject) {
 	this.CancelDrag = function() {
 		delMouseMoveHook(this.dragHandler);
 		this.draggingArrows = false;
+		this.dragArrow.Remove();
+		this.dragArrow = null;
 	};
 
 	/**
@@ -753,43 +823,12 @@ function Boxspace(name, tags, accept, reject) {
 			 */
 
 			myHover.CrashDown(true);
+			
+			var mouse_coords = this.CurrentMouseCoordinates();
+			var left = mouse_coords["left"];
+			var top = mouse_coords["top"];
 
-			/**
-			 * old prototype.js way
-			 */
-			// var layout = $("boxspace" + this.id).getLayout();
-			// var scrollme = $("boxspace" + this.id).cumulativeScrollOffset();
-			//
-			// var scrolldaddy = {};
-			// try {
-			// scrolldaddy = $("boxspace" + this.id).parentNode
-			// .cumulativeScrollOffset();
-			// } catch (e) {
-			// /**
-			// * fall back, if containing object has no
-			// * .cumulativeScrollOffset method
-			// */
-			// scrolldaddy["left"] = 0;
-			// scrolldaddy["top"] = 0;
-			// }
-			//
-			// var left = mouseX - layout.get("left") + scrollme["left"]
-			// - scrolldaddy["left"];
-			// var top = mouseY - layout.get("top") + scrollme["top"]
-			// - scrolldaddy["top"];
-			/**
-			 * new jQuery way
-			 */
-
-			var boxspace_div = jQuery("#boxspace" + this.id);
-			var layout = boxspace_div.offset();
-			var scrollstate = {};
-			scrollstate["left"] = boxspace_div.scrollLeft();
-			scrollstate["top"] = boxspace_div.scrollTop();
-
-			var left = mouseX - layout.left + scrollstate["left"];
-			var top = mouseY - layout.top + scrollstate["top"];
-
+			
 			log_data += " [" + left + " " + top + "]";
 
 			/**
