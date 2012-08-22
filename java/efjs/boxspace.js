@@ -202,6 +202,16 @@ function FloatBox(style, content) {
 			this.tags = boxspaceArray[this.parent].tags;
 
 			myHover.TakeOff(this.content, this, null, null, this.takeOffType);
+			
+			var log_data = "";
+			if (myHover.source.name) {
+				log_data += myHover.source.name;
+			}
+			log_data += " take off: " + myHover.token;
+			
+
+			myLogger.Log(log_data);
+			
 		}
 
 	};
@@ -292,17 +302,20 @@ function FloatBox(style, content) {
 	 * this function is called, when a token is given back after a take off
 	 */
 	this.GiveBackToken = function(token) {
+		var log_data = "";
+		if (myHover.source.name) {
+			log_data += myHover.source.name;
+		}
+		log_data += " <- token returns: " + myHover.token;
+		
 		var parent = document.getElementById("boxspace" + this.parent);
-		/*
-		 * Problem?
-		 * 
-		 * Uncaught Error: NOT_FOUND_ERR: DOM Exception 8 boxspace.js:289
-		 * FloatBox.GiveBackToken boxspace.js:289 Hover.CrashDown hover.js:100
-		 * (anonymous function) hover.js:162 mouseOnClick mouse.js:219
-		 * _createResponder.responder
-		 */
+
 		parent.appendChild(this.keepElement);
 		this.keepElement = null;
+		myHover.source = null;
+		
+		
+		myLogger.Log(log_data);
 	};
 
 	/**
