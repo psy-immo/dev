@@ -432,6 +432,26 @@ function FloatBox(style, content) {
 
 		return true;
 	};
+	
+	/**
+	 * returns the mid point of the box
+	 */
+
+	this.Midpoint = function() {
+		var layout = $("floatbox" + this.id).getLayout();
+		var jq_div = jQuery("#floatbox" + this.id);
+		
+		var left = layout.get("left");
+		var top = layout.get("top");
+		var right = left + jq_div.outerWidth();
+		var bottom = top + jq_div.outerHeight();
+
+		var p = {};
+		p["left"] = (left+right)/2;
+		p["top"] = (top+bottom)/2;
+
+		return p;
+	};
 
 	floatboxArray[this.id] = this;
 	return this;
@@ -738,21 +758,29 @@ function Boxspace(name, tags, accept, reject) {
 		var right = mouse_coords["left"];
 		var bottom = mouse_coords["top"];
 		
+		var box_coords = this.dragSource.GetLineStartTo(right, bottom);
+		var left = box_coords["left"];
+		var top = box_coords["top"];
+		
+		for (var int=0;int<this.contents.length;++int) {
+			var box = this.contents[int];
+			if (box.Contains(right,bottom)) {
+				var mid = this.dragSource.Midpoint();
+				var alternative = box.GetLineStartTo(mid["left"], mid["top"]);
+				right = alternative["left"];
+				bottom = alternative["top"];
+				break;
+			}
+		}
+		
 		if (this.dragArrow) {	
 
-			var box_coords = this.dragSource.GetLineStartTo(right, bottom);
-			var left = box_coords["left"];
-			var top = box_coords["top"];
+			
 					
 
 			this.dragArrow.SetCoords(left, top, right, bottom);
 			
 		} else if (this.dragSource.Contains(right,bottom) == false) {
-			
-
-			var box_coords = this.dragSource.GetLineStartTo(right, bottom);
-			var left = box_coords["left"];
-			var top = box_coords["top"];
 			
 
 			this.dragArrow = new Arrow(left, top, right, bottom, "#FFAA33",
