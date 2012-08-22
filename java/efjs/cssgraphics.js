@@ -19,10 +19,6 @@
 graphicsIds = 0;
 graphicsArray = [];
 
-
-
-
-
 /**
  * return a fresh id
  */
@@ -43,7 +39,8 @@ function freshId() {
  */
 
 /**
- * return css styled html code for drawing a line (by using the borders of an space-empty div layer)
+ * return css styled html code for drawing a line (by using the borders of an
+ * space-empty div layer)
  */
 
 function htmlLineDiv(left, top, right, bottom, color, style, id, extension,
@@ -75,9 +72,9 @@ function htmlLineDiv(left, top, right, bottom, color, style, id, extension,
 	html += "height: 4px;";
 	html += "width: " + width + "px;";
 	html += "z-index: 2;";
-	
-	html += "left: "+left+"px;";
-	html += "top: "+top+"px;";
+
+	html += "left: " + left + "px;";
+	html += "top: " + top + "px;";
 
 	html += "transform-origin: 0% 50%;";
 	html += "-webkit-transform-origin: 0% 50%;";
@@ -97,10 +94,10 @@ function htmlLineDiv(left, top, right, bottom, color, style, id, extension,
 	return html;
 };
 
-function removeCss(regexp,css) {
+function removeCss(regexp, css) {
 	var new_css = "";
 	var old = css.split(";");
-	for (var int=0;int<old.length;++int) {
+	for ( var int = 0; int < old.length; ++int) {
 		var line = old[int];
 		if (!line.match(regexp)) {
 			if (line.trim())
@@ -149,7 +146,7 @@ function Line(left, top, right, bottom, color, style, extension) {
 		var elt = document.getElementById("grLine" + this.id);
 		elt.parentNode.removeChild(elt);
 		graphicsArray[this.id] = undefined;
-		
+
 		clearMouseClickHooks("grLine" + this.id);
 		clearMouseClickHooks(elt);
 	};
@@ -166,48 +163,48 @@ function Line(left, top, right, bottom, color, style, extension) {
 				this.color, this.style, "grLine" + this.id, this.extension);
 
 		var parent = document.getElementById(id);
-		
+
 		var container = document.createElement('div');
-	
+
 		container.innerHTML = html;
 
 		parent.appendChild(container.firstChild);
 	};
-	
+
 	/**
 	 * get the associated html element
 	 */
-	
+
 	this.GetElement = function() {
-		return document.getElementById("grLine"+this.id);
+		return document.getElementById("grLine" + this.id);
 	};
-	
+
 	/**
 	 * change the line coordinates
 	 */
-	
+
 	this.SetCoords = function(left, top, right, bottom) {
 		this.left = left;
 		this.right = right;
 		this.top = top;
 		this.bottom = bottom;
-		
-		var elt = document.getElementById("grLine"+this.id);
+
+		var elt = document.getElementById("grLine" + this.id);
 		var parent = elt.parentNode;
-		
+
 		parent.removeChild(elt);
-		
+
 		var html = htmlLineDiv(this.left, this.top, this.right, this.bottom,
 				this.color, this.style, "grLine" + this.id, this.extension);
-		
+
 		var container = document.createElement('div');
-		
+
 		container.innerHTML = html;
 
 		var newelt = container.firstChild;
-		
+
 		parent.appendChild(newelt);
-		
+
 		mouseTargetReplace(elt, newelt);
 	};
 
@@ -215,7 +212,6 @@ function Line(left, top, right, bottom, color, style, extension) {
 
 	return this;
 };
-
 
 /**
  * 
@@ -232,13 +228,13 @@ function Line(left, top, right, bottom, color, style, extension) {
  * return css styled html code for a (overlaying) div container primitive
  */
 
-function htmlContainerDiv(left, top, right, bottom, layer, style, id, extension,
-		content) {
-	
+function htmlContainerDiv(left, top, right, bottom, layer, style, id,
+		extension, content) {
+
 	if (layer == undefined) {
 		layer = 3;
 	}
-	
+
 	if (id == undefined) {
 		id = freshId();
 	}
@@ -250,47 +246,46 @@ function htmlContainerDiv(left, top, right, bottom, layer, style, id, extension,
 	if (content == undefined) {
 		content = "";
 	}
-	
+
 	if (right < left) {
 		var tri = right;
 		right = left;
 		left = tri;
 	}
-	
+
 	if (bottom < top) {
 		var tri = bottom;
 		bottom = top;
 		top = tri;
 	}
-	
+
 	var html = "<div id=\"" + id + "\" style=\"";
-	
+
 	html += "position: absolute;";
-	
-	html += "z-index: "+layer+";";	
-	
-	html += "left: "+left+"px;";
-	html += "top: "+top+"px;";
-	
-	var width = (right-left);
-	var height = (bottom-top);
-	
-	html += "width: "+width+"px;";
-	html += "height: "+height+"px;";
-	html += "min-width: "+width+"px;";
-	html += "min-height: "+height+"px;";
-	html += "max-width: "+width+"px;";
-	html += "max-height: "+height+"px;";
-	
+
+	html += "z-index: " + layer + ";";
+
+	html += "left: " + left + "px;";
+	html += "top: " + top + "px;";
+
+	var width = (right - left);
+	var height = (bottom - top);
+
+	html += "width: " + width + "px;";
+	html += "height: " + height + "px;";
+	html += "min-width: " + width + "px;";
+	html += "min-height: " + height + "px;";
+	html += "max-width: " + width + "px;";
+	html += "max-height: " + height + "px;";
+
 	html += style;
-	
-	html += "\" " + extension + ">"+content+"</div>";
+
+	html += "\" " + extension + ">" + content + "</div>";
 	return html;
 };
 
-
 function Container(left, top, right, bottom, style, extension, layer, content) {
-	
+
 	this.id = graphicsIds++;
 	this.left = left;
 	this.right = right;
@@ -310,8 +305,7 @@ function Container(left, top, right, bottom, style, extension, layer, content) {
 		this.extension = extension;
 	if (content)
 		this.content = content;
-	
-	
+
 	/**
 	 * write html code that creates the line object
 	 */
@@ -319,7 +313,7 @@ function Container(left, top, right, bottom, style, extension, layer, content) {
 	this.WriteHtml = function() {
 		document.write(htmlContainerDiv(this.left, this.top, this.right,
 				this.bottom, this.layer, this.style, "grDiv" + this.id,
-				this.extension,this.content));
+				this.extension, this.content));
 	};
 
 	/**
@@ -330,7 +324,7 @@ function Container(left, top, right, bottom, style, extension, layer, content) {
 		var elt = document.getElementById("grDiv" + this.id);
 		elt.parentNode.removeChild(elt);
 		graphicsArray[this.id] = undefined;
-		
+
 		clearMouseClickHooks("grDiv" + this.id);
 		clearMouseClickHooks(elt);
 	};
@@ -345,30 +339,29 @@ function Container(left, top, right, bottom, style, extension, layer, content) {
 		}
 		var html = htmlContainerDiv(this.left, this.top, this.right,
 				this.bottom, this.layer, this.style, "grDiv" + this.id,
-				this.extension,this.content);
+				this.extension, this.content);
 
 		var parent = document.getElementById(id);
-		
+
 		var container = document.createElement('div');
-	
+
 		container.innerHTML = html;
 
 		parent.appendChild(container.firstChild);
 	};
-	
+
 	/**
 	 * get the associated html element
 	 */
-	
+
 	this.GetElement = function() {
-		return document.getElementById("grDiv"+this.id);
+		return document.getElementById("grDiv" + this.id);
 	};
 
 	graphicsArray[this.id] = this;
-	
+
 	return this;
 };
-
 
 /**
  * 
@@ -381,10 +374,8 @@ function Container(left, top, right, bottom, style, extension, layer, content) {
  * 
  */
 
+function htmlHoverDiv(left, top, style, id, extension, content) {
 
-function htmlHoverDiv(left, top, style, id, extension,
-		content) {
-	
 	if (id == undefined) {
 		id = freshId();
 	}
@@ -396,32 +387,28 @@ function htmlHoverDiv(left, top, style, id, extension,
 	if (content == undefined) {
 		content = "";
 	}
-	
-	
-	
+
 	var html = "<div id=\"" + id + "\" style=\"";
-	
+
 	html += "position: absolute;";
-	
-	html += "z-index: 100;";	
-	
-	html += "left: "+left+"px;";
-	html += "top: "+top+"px;";
-	
-	
+
+	html += "z-index: 100;";
+
+	html += "left: " + left + "px;";
+	html += "top: " + top + "px;";
+
 	html += "color: #EEEE44;";
 	html += "background: #000000;";
 	html += "opacity: 0.6;";
-	
+
 	html += style;
-	
-	html += "\" " + extension + ">"+content+"</div>";
+
+	html += "\" " + extension + ">" + content + "</div>";
 	return html;
 };
 
-
 function HoverContainer(left, top, content) {
-	
+
 	this.id = graphicsIds++;
 	this.left = left;
 	this.top = top;
@@ -432,15 +419,14 @@ function HoverContainer(left, top, content) {
 
 	if (content)
 		this.content = content;
-	
-	
+
 	/**
 	 * write html code that creates the line object
 	 */
 
 	this.WriteHtml = function() {
-		document.write(htmlHoverDiv(this.left, this.top, this.style, "grHover" + this.id,
-				this.extension,this.content));
+		document.write(htmlHoverDiv(this.left, this.top, this.style, "grHover"
+				+ this.id, this.extension, this.content));
 	};
 
 	/**
@@ -451,7 +437,7 @@ function HoverContainer(left, top, content) {
 		var elt = document.getElementById("grHover" + this.id);
 		elt.parentNode.removeChild(elt);
 		graphicsArray[this.id] = undefined;
-		
+
 		clearMouseClickHooks("grHover" + this.id);
 		clearMouseClickHooks(elt);
 	};
@@ -464,28 +450,28 @@ function HoverContainer(left, top, content) {
 		if (id == undefined) {
 			id = "mainframe";
 		}
-		var html = htmlHoverDiv(this.left, this.top, this.style, "grHover" + this.id,
-				this.extension,this.content);
+		var html = htmlHoverDiv(this.left, this.top, this.style, "grHover"
+				+ this.id, this.extension, this.content);
 
 		var parent = document.getElementById(id);
-		
+
 		var container = document.createElement('div');
-	
+
 		container.innerHTML = html;
 
 		parent.appendChild(container.firstChild);
 	};
-	
+
 	/**
 	 * get the associated html element
 	 */
-	
+
 	this.GetElement = function() {
-		return document.getElementById("grHover"+this.id);
+		return document.getElementById("grHover" + this.id);
 	};
 
 	graphicsArray[this.id] = this;
-	
+
 	return this;
 };
 
@@ -501,7 +487,7 @@ function HoverContainer(left, top, content) {
  * 
  * 
  * 
- * */
+ */
 
 /**
  * creates an arrow object
@@ -512,15 +498,15 @@ function Arrow(left, top, right, bottom, color, style, extension) {
 	this.right = right;
 	this.top = top;
 	this.bottom = bottom;
-	
+
 	var angle = Math.atan2(bottom - top, right - left);
 	var tail = 15;
 	var rotate = 0.3;
-	
-	this.arrowX1 = this.right-Math.cos(angle+rotate)*tail;
-	this.arrowY1 = this.bottom-Math.sin(angle+rotate)*tail;
-	this.arrowX2 = this.right-Math.cos(angle-rotate)*tail;
-	this.arrowY2 = this.bottom-Math.sin(angle-rotate)*tail;
+
+	this.arrowX1 = this.right - Math.cos(angle + rotate) * tail;
+	this.arrowY1 = this.bottom - Math.sin(angle + rotate) * tail;
+	this.arrowX2 = this.right - Math.cos(angle - rotate) * tail;
+	this.arrowY2 = this.bottom - Math.sin(angle - rotate) * tail;
 
 	this.color = "#888888";
 	this.style = "";
@@ -555,28 +541,28 @@ function Arrow(left, top, right, bottom, color, style, extension) {
 
 	this.Remove = function() {
 		{
-		var elt = document.getElementById("grArrow0." + this.id);
-		elt.parentNode.removeChild(elt);
-		graphicsArray[this.id] = undefined;
-		
-		clearMouseClickHooks("grArrow0." + this.id);
-		clearMouseClickHooks(elt);
+			var elt = document.getElementById("grArrow0." + this.id);
+			elt.parentNode.removeChild(elt);
+			graphicsArray[this.id] = undefined;
+
+			clearMouseClickHooks("grArrow0." + this.id);
+			clearMouseClickHooks(elt);
 		}
 		{
-		var elt = document.getElementById("grArrow1." + this.id);
-		elt.parentNode.removeChild(elt);
-		graphicsArray[this.id] = undefined;
-		
-		clearMouseClickHooks("grArrow1." + this.id);
-		clearMouseClickHooks(elt);
+			var elt = document.getElementById("grArrow1." + this.id);
+			elt.parentNode.removeChild(elt);
+			graphicsArray[this.id] = undefined;
+
+			clearMouseClickHooks("grArrow1." + this.id);
+			clearMouseClickHooks(elt);
 		}
 		{
-		var elt = document.getElementById("grArrow2." + this.id);
-		elt.parentNode.removeChild(elt);
-		graphicsArray[this.id] = undefined;
-		
-		clearMouseClickHooks("grArrow2." + this.id);
-		clearMouseClickHooks(elt);
+			var elt = document.getElementById("grArrow2." + this.id);
+			elt.parentNode.removeChild(elt);
+			graphicsArray[this.id] = undefined;
+
+			clearMouseClickHooks("grArrow2." + this.id);
+			clearMouseClickHooks(elt);
 		}
 	};
 
@@ -588,144 +574,140 @@ function Arrow(left, top, right, bottom, color, style, extension) {
 		if (id == undefined) {
 			id = "mainframe";
 		}
-		
+
 		var parent = document.getElementById(id);
-		
-	{
-		var html = htmlLineDiv(this.left, this.top, this.right,
-				this.bottom, this.color, this.style, "grArrow0." + this.id,
-				this.extension);
 
-		
-		
-		var container = document.createElement('div');
-	
-		container.innerHTML = html;
+		{
+			var html = htmlLineDiv(this.left, this.top, this.right,
+					this.bottom, this.color, this.style, "grArrow0." + this.id,
+					this.extension);
 
-		parent.appendChild(container.firstChild);
-	}
-	
-	{
-		var html = htmlLineDiv(this.arrowX1, this.arrowY1, this.right,
-				this.bottom, this.color, this.style, "grArrow1." + this.id,
-				this.extension);
+			var container = document.createElement('div');
 
-				
-		var container = document.createElement('div');
-	
-		container.innerHTML = html;
+			container.innerHTML = html;
 
-		parent.appendChild(container.firstChild);
-	}
-	
-	{
-		var html = htmlLineDiv(this.arrowX2, this.arrowY2, this.right,
-				this.bottom, this.color, this.style, "grArrow2." + this.id,
-				this.extension);
+			parent.appendChild(container.firstChild);
+		}
 
-				
-		var container = document.createElement('div');
-	
-		container.innerHTML = html;
+		{
+			var html = htmlLineDiv(this.arrowX1, this.arrowY1, this.right,
+					this.bottom, this.color, this.style, "grArrow1." + this.id,
+					this.extension);
 
-		parent.appendChild(container.firstChild);
-	}
+			var container = document.createElement('div');
+
+			container.innerHTML = html;
+
+			parent.appendChild(container.firstChild);
+		}
+
+		{
+			var html = htmlLineDiv(this.arrowX2, this.arrowY2, this.right,
+					this.bottom, this.color, this.style, "grArrow2." + this.id,
+					this.extension);
+
+			var container = document.createElement('div');
+
+			container.innerHTML = html;
+
+			parent.appendChild(container.firstChild);
+		}
 	};
-	
+
 	/**
 	 * get the associated html element
 	 */
-	
+
 	this.GetElement = function() {
-		return document.getElementById("grArrow0."+this.id);
+		return document.getElementById("grArrow0." + this.id);
 	};
-	
+
 	/**
 	 * change the line coordinates
 	 */
-	
+
 	this.SetCoords = function(left, top, right, bottom) {
 		this.left = left;
 		this.right = right;
 		this.top = top;
 		this.bottom = bottom;
-		
+
 		var angle = Math.atan2(bottom - top, right - left);
-	var tail = 15;
-	var rotate = 0.3;
-	
-	this.arrowX1 = this.right-Math.cos(angle+rotate)*tail;
-	this.arrowY1 = this.bottom-Math.sin(angle+rotate)*tail;
-	this.arrowX2 = this.right-Math.cos(angle-rotate)*tail;
-	this.arrowY2 = this.bottom-Math.sin(angle-rotate)*tail;
-		
-		{
-		
-		var elt = document.getElementById("grArrow0."+this.id);
-		var parent = elt.parentNode;
-		
-		parent.removeChild(elt);
-		
-		var html = htmlLineDiv(this.left, this.top, this.right,
-				this.bottom, this.color, this.style, "grArrow0." + this.id,
-				this.extension);
-				
-		var container = document.createElement('div');
-		
-		container.innerHTML = html;
+		var tail = 15;
+		var rotate = 0.3;
 
-		var newelt = container.firstChild;
-		
-		parent.appendChild(newelt);
-		
-		mouseTargetReplace(elt, newelt);
-		
+		this.arrowX1 = this.right - Math.cos(angle + rotate) * tail;
+		this.arrowY1 = this.bottom - Math.sin(angle + rotate) * tail;
+		this.arrowX2 = this.right - Math.cos(angle - rotate) * tail;
+		this.arrowY2 = this.bottom - Math.sin(angle - rotate) * tail;
+
+		{
+
+			var elt = document.getElementById("grArrow0." + this.id);
+			var parent = elt.parentNode;
+
+			parent.removeChild(elt);
+
+			var html = htmlLineDiv(this.left, this.top, this.right,
+					this.bottom, this.color, this.style, "grArrow0." + this.id,
+					this.extension);
+
+			var container = document.createElement('div');
+
+			container.innerHTML = html;
+
+			var newelt = container.firstChild;
+
+			parent.appendChild(newelt);
+
+			mouseTargetReplace(elt, newelt);
+
 		}
-		
-		{
-		
-		var elt = document.getElementById("grArrow1."+this.id);
-		var parent = elt.parentNode;
-		
-		parent.removeChild(elt);
-		
-		var html = htmlLineDiv(this.arrowX1, this.arrowY1, this.right,
-				this.bottom, this.color, this.style, "grArrow1." + this.id,
-				this.extension);
-						
-		var container = document.createElement('div');
-		
-		container.innerHTML = html;
 
-		var newelt = container.firstChild;
-		
-		parent.appendChild(newelt);
-		
-		mouseTargetReplace(elt, newelt);
-		
+		{
+
+			var elt = document.getElementById("grArrow1." + this.id);
+			var parent = elt.parentNode;
+
+			parent.removeChild(elt);
+
+			var html = htmlLineDiv(this.arrowX1, this.arrowY1, this.right,
+					this.bottom, this.color, this.style, "grArrow1." + this.id,
+					this.extension);
+
+			var container = document.createElement('div');
+
+			container.innerHTML = html;
+
+			var newelt = container.firstChild;
+
+			parent.appendChild(newelt);
+
+			mouseTargetReplace(elt, newelt);
+
 		}
-		
-		{
-		
-		var elt = document.getElementById("grArrow2."+this.id);
-		var parent = elt.parentNode;
-		
-		parent.removeChild(elt);
-		
-		var html = htmlLineDiv(this.arrowX2, this.arrowY2, this.right,
-				this.bottom, this.color, this.style, "grArrow2." + this.id,
-				this.extension);
-		
-		var container = document.createElement('div');
-		
-		container.innerHTML = html;
 
-		var newelt = container.firstChild;
-		
-		parent.appendChild(newelt);
-		
-		mouseTargetReplace(elt, newelt);
-		
+		{
+
+			var elt = document.getElementById("grArrow2." + this.id);
+			var parent = elt.parentNode;
+
+			parent.removeChild(elt);
+
+			var html = htmlLineDiv(this.arrowX2, this.arrowY2, this.right,
+					this.bottom, this.color, this.style, "grArrow2." + this.id,
+					this.extension);
+
+			var container = document.createElement('div');
+
+			container.innerHTML = html;
+
+			var newelt = container.firstChild;
+
+			parent.appendChild(newelt);
+
+			mouseTargetReplace(elt, newelt);
+
 		}
 	};
 

@@ -322,12 +322,13 @@ function FloatBox(style, content) {
 	 */
 
 	this.GetLineStartTo = function(x, y) {
+		var layout = $("floatbox" + this.id).getLayout();
 		var jq_div = jQuery("#floatbox" + this.id);
-		var position = jq_div.position();
-		var left = position.left;
-		var top = position.top;
-		var right = left + jq_div.outerWidth();
-		var bottom = top + jq_div.outerHeight();
+		
+		var left = layout.get("left") - 1;
+		var top = layout.get("top") - 1;
+		var right = left + jq_div.outerWidth() + 1;
+		var bottom = top + jq_div.outerHeight() + 1;
 
 		var mid_x = (left + right) / 2;
 		var mid_y = (top + bottom) / 2;
@@ -344,7 +345,6 @@ function FloatBox(style, content) {
 		 * 
 		 * note 2: atan2(...) grows in clockwise orientation
 		 */
-
 
 		var border_x1 = 0;
 		var border_y1 = 1;
@@ -389,23 +389,48 @@ function FloatBox(style, content) {
 		 * now just intersect the border line and the line from the mid point to
 		 * (x,y)
 		 * 
-		 * P1 = border_x1,border_y1
-		 * P2 = border_x2,border_y2
-		 * P3 = x,y
-		 * P4 = mid_x,mid_y  
+		 * P1 = border_x1,border_y1 P2 = border_x2,border_y2 P3 = x,y P4 =
+		 * mid_x,mid_y
 		 */
-		
-		var alpha = ((mid_x-x)*(border_y1-y) - (mid_y-y)*(border_x1-x))/
-					((mid_y-y)*(border_x2-border_x1) - (mid_x-x)*(border_y2-border_y1));
-		
-		var r_left = border_x1 + alpha*(border_x2-border_x1);
-		var r_top = border_y1 + alpha*(border_y2-border_y1);
+
+		var alpha = ((mid_x - x) * (border_y1 - y) - (mid_y - y)
+				* (border_x1 - x))
+				/ ((mid_y - y) * (border_x2 - border_x1) - (mid_x - x)
+						* (border_y2 - border_y1));
+
+		var r_left = border_x1 + alpha * (border_x2 - border_x1);
+		var r_top = border_y1 + alpha * (border_y2 - border_y1);
 
 		var result = {};
 		result["left"] = r_left;
 		result["top"] = r_top;
 
 		return result;
+	};
+
+	/**
+	 * checks whether the given coordinates are within some box
+	 */
+
+	this.Contains = function(x, y) {
+		var layout = $("floatbox" + this.id).getLayout();
+		var jq_div = jQuery("#floatbox" + this.id);
+		
+		var left = layout.get("left");
+		var top = layout.get("top");
+		var right = left + jq_div.outerWidth();
+		var bottom = top + jq_div.outerHeight();
+
+		if (x < left)
+			return false;
+		if (right <= x)
+			return false;
+		if (y < top)
+			return false;
+		if (bottom <= y)
+			return false;
+
+		return true;
 	};
 
 	floatboxArray[this.id] = this;
@@ -599,53 +624,54 @@ function Boxspace(name, tags, accept, reject) {
 	this.MarkNeutral = function() {
 
 	};
-	
+
 	/**
 	 * calculates the current mouse coordinates relative to the boxspace
 	 */
-	
+
 	this.CurrentMouseCoordinates = function() {
-			/**
-			 * old prototype.js way
-			 */
-			// var layout = $("boxspace" + this.id).getLayout();
-			// var scrollme = $("boxspace" + this.id).cumulativeScrollOffset();
-			//
-			// var scrolldaddy = {};
-			// try {
-			// scrolldaddy = $("boxspace" + this.id).parentNode
-			// .cumulativeScrollOffset();
-			// } catch (e) {
-			// /**
-			// * fall back, if containing object has no
-			// * .cumulativeScrollOffset method
-			// */
-			// scrolldaddy["left"] = 0;
-			// scrolldaddy["top"] = 0;
-			// }
-			//
-			// var left = mouseX - layout.get("left") + scrollme["left"]
-			// - scrolldaddy["left"];
-			// var top = mouseY - layout.get("top") + scrollme["top"]
-			// - scrolldaddy["top"];
-			/**
-			 * new jQuery way
-			 */
+		/**
+		 * old prototype.js way
+		 */
+		// var layout = $("boxspace" + this.id).getLayout();
+		// var scrollme = $("boxspace" + this.id).cumulativeScrollOffset();
+		//
+		// var scrolldaddy = {};
+		// try {
+		// scrolldaddy = $("boxspace" + this.id).parentNode
+		// .cumulativeScrollOffset();
+		// } catch (e) {
+		// /**
+		// * fall back, if containing object has no
+		// * .cumulativeScrollOffset method
+		// */
+		// scrolldaddy["left"] = 0;
+		// scrolldaddy["top"] = 0;
+		// }
+		//
+		// var left = mouseX - layout.get("left") + scrollme["left"]
+		// - scrolldaddy["left"];
+		// var top = mouseY - layout.get("top") + scrollme["top"]
+		// - scrolldaddy["top"];
+		/**
+		 * new jQuery way
+		 */
 
-			var boxspace_div = jQuery("#boxspace" + this.id);
-			var layout = boxspace_div.offset();
-			var scrollstate = {};
-			scrollstate["left"] = boxspace_div.scrollLeft();
-			scrollstate["top"] = boxspace_div.scrollTop();
+		var boxspace_div = jQuery("#boxspace" + this.id);
+		var layout = boxspace_div.offset();
+		var scrollstate = {};
+		scrollstate["left"] = boxspace_div.scrollLeft();
+		scrollstate["top"] = boxspace_div.scrollTop();
 
-			var left = mouseX - layout.left + scrollstate["left"];
-			var top = mouseY - layout.top + scrollstate["top"];
+		var left = mouseX - layout.left + scrollstate["left"];
+		var top = mouseY - layout.top + scrollstate["top"];
 
-			var o = {};
-			o["left"] = left;
-			o["top"] = top;
-			
-			return o;
+
+		var o = {};
+		o["left"] = left;
+		o["top"] = top;
+
+		return o;
 	};
 
 	/**
@@ -658,24 +684,14 @@ function Boxspace(name, tags, accept, reject) {
 		 */
 
 		DeselectAllText();
-				  
-		
+
 		/**
 		 * actual code
 		 */
 
 		this.dragSource = sourceBox;
-		
-		var mouse_coords = this.CurrentMouseCoordinates();
-		var right = mouse_coords["left"];
-		var bottom = mouse_coords["top"];
 
-	    var box_coords = this.dragSource.GetLineStartTo(right,bottom);
-	    var left = box_coords["left"];
-	    var top = box_coords["top"];
-		
-		this.dragArrow = new Arrow(left,top,right,bottom,"#FFAA33","zIndex: -100;");
-		this.dragArrow.AddChild("boxspace"+this.id);
+		this.dragArrow = null;
 
 		this.draggingArrows = true;
 
@@ -717,17 +733,34 @@ function Boxspace(name, tags, accept, reject) {
 	 */
 
 	this.OnDrag = function() {
+
 		var mouse_coords = this.CurrentMouseCoordinates();
 		var right = mouse_coords["left"];
 		var bottom = mouse_coords["top"];
+		
+		if (this.dragArrow) {	
 
-	    var box_coords = this.dragSource.GetLineStartTo(right,bottom);
-	    var left = box_coords["left"];
-	    var top = box_coords["top"];
-	    
-	    this.dragArrow.SetCoords(left,top,right,bottom);
-	    
-	    DeselectAllText();
+			var box_coords = this.dragSource.GetLineStartTo(right, bottom);
+			var left = box_coords["left"];
+			var top = box_coords["top"];
+					
+
+			this.dragArrow.SetCoords(left, top, right, bottom);
+			
+		} else if (this.dragSource.Contains(right,bottom) == false) {
+			
+
+			var box_coords = this.dragSource.GetLineStartTo(right, bottom);
+			var left = box_coords["left"];
+			var top = box_coords["top"];
+			
+
+			this.dragArrow = new Arrow(left, top, right, bottom, "#FFAA33",
+					"zIndex: -100;");
+			this.dragArrow.AddChild("boxspace" + this.id);
+		}
+
+		DeselectAllText();
 
 	};
 
@@ -739,7 +772,8 @@ function Boxspace(name, tags, accept, reject) {
 	this.CancelDrag = function() {
 		delMouseMoveHook(this.dragHandler);
 		this.draggingArrows = false;
-		this.dragArrow.Remove();
+		if (this.dragArrow) 
+			this.dragArrow.Remove();
 		this.dragArrow = null;
 	};
 
@@ -823,12 +857,11 @@ function Boxspace(name, tags, accept, reject) {
 			 */
 
 			myHover.CrashDown(true);
-			
+
 			var mouse_coords = this.CurrentMouseCoordinates();
 			var left = mouse_coords["left"];
 			var top = mouse_coords["top"];
 
-			
 			log_data += " [" + left + " " + top + "]";
 
 			/**
