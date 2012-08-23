@@ -48,3 +48,32 @@ if (Prototype.Browser.IE6 || Prototype.Browser.IE7 || Prototype.Browser.IE8) {
 		window.getSelection().removeAllRanges();
 	};
 }
+
+/**
+ * return browser information string
+ */
+
+function BrowserName() {
+	var b = Prototype.Browser;
+	
+	if (b.IE6)
+		return "IE6";
+	if (b.IE7)
+		return "IE7";
+	if (b.IE8)
+		return "IE8";
+	if (b.IE9)
+		return "IE9";
+	if (b.IE)
+		return "IE?";
+	if (b.Gecko)
+		return "Gecko";
+	if (b.MobileSafari)
+		return "MobileSafari";
+	if (b.Opera)
+		return "Opera";
+	if (b.WebKit)
+		return "WebKit";
+	
+	return "UnknownBrowser";
+};
