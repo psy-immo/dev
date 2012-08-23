@@ -74,7 +74,7 @@ var cssSandpaper = new function(){
 		setChromaOverrides();
 		fixTransforms();
 		
-		fixTextShadows();
+		//fixTextShadows();
 		
         
         fixBoxShadow();

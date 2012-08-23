@@ -81,12 +81,14 @@ function htmlLineDiv(left, top, right, bottom, color, style, id, extension,
 	html += "-moz-transform-origin: 0% 50%;";
 	html += "-ms-transform-origin: 0% 50%;";
 	html += "-o-transform-origin: 0% 50%;";
+	html += "-sand-transform-origin: 0% 50%;";
 
 	html += "transform: rotate(" + angle + "deg);";
 	html += "-webkit-transform: rotate(" + angle + "deg);";
 	html += "-moz-transform: rotate(" + angle + "deg);";
 	html += "-ms-transform: rotate(" + angle + "deg);";
 	html += "-o-transform: rotate(" + angle + "deg);";
+	html += "-sand-transform: rotate(" + angle + "deg);";
 
 	html += style;
 
