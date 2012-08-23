@@ -63,6 +63,26 @@ function Logger() {
 		this.Log("Site reloaded: "+window.location.href);
 	};
 	
+	/**
+	 * print to console (good for debugging purposes):
+	 * last  __ optionally print only the last elements
+	 */
+	
+	this.Last = function(last) {
+		var start = 0;
+		if (last) {
+			start = this.events.length - last;
+			if (start < 0)
+				start = 0;
+		}
+		
+		
+		for (var int=start;int<this.events.length;++int) {
+			console.log(this.events[int]);
+		}
+		return start;
+	};
+	
 	
 	myStorage.RegisterField(this,"Logger",true);
 	

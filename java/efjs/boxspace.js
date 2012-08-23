@@ -207,6 +207,7 @@ function FloatBox(style, content) {
 			if (myHover.source.name) {
 				log_data += myHover.source.name;
 			}
+			log_data += " [" + boxspaceArray[this.parent].BoxIndex(this) + "]";
 			log_data += " take off: " + myHover.token;
 			
 
@@ -306,6 +307,9 @@ function FloatBox(style, content) {
 		if (myHover.source.name) {
 			log_data += myHover.source.name;
 		}
+		
+		log_data += " [" + boxspaceArray[this.parent].BoxIndex(this) + "]";
+		
 		log_data += " <- token returns: " + myHover.token;
 		
 		var parent = document.getElementById("boxspace" + this.parent);
@@ -903,7 +907,7 @@ function Boxspace(name, tags, accept, reject) {
 			var left = mouse_coords["left"];
 			var top = mouse_coords["top"];
 
-			log_data += " [" + left + " " + top + "]";
+			var box_idx = -1;
 
 			/**
 			 * now add a float box
@@ -913,7 +917,9 @@ function Boxspace(name, tags, accept, reject) {
 						+ left + "px;" + "top: " + top + "px;", plane);
 				box.SetParentId(this.id);
 				box.Create("boxspace" + this.id);
+				
 				this.contents.push(box);
+				box_idx = this.contents.length -1;
 			} else if (plane_type == "box") {
 				var box = myHover.source;
 				if (box.GetParentId() == this.id) {
@@ -927,6 +933,7 @@ function Boxspace(name, tags, accept, reject) {
 					 */
 					box.GetElement().style.left = left + "px";
 					box.GetElement().style.top = top + "px";
+					box_idx = this.BoxIndex(box);
 				} else {
 					/**
 					 * different box space
@@ -945,6 +952,7 @@ function Boxspace(name, tags, accept, reject) {
 					box.SetParentId(this.id);
 					box.Create("boxspace" + this.id);
 					this.contents.push(box);
+					box_idx = this.contents.length -1;
 				}
 
 				var div = box.GetElement();
@@ -954,6 +962,8 @@ function Boxspace(name, tags, accept, reject) {
 				div.style.top = (top - box_height / 2) + "px";
 
 			}
+			
+			log_data += " [ " + box_idx + " @ " + left + " " + top + "]";
 
 			myLogger.Log(log_data);
 
@@ -989,6 +999,14 @@ function Boxspace(name, tags, accept, reject) {
 			box.Remove();
 		}
 		this.contents = [];
+	};
+	
+	/**
+	 * returns the list index of a given box
+	 */
+	
+	this.BoxIndex = function(box) {
+		return this.contents.lastIndexOf(box);
 	};
 
 	/**
