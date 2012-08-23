@@ -202,17 +202,16 @@ function FloatBox(style, content) {
 			this.tags = boxspaceArray[this.parent].tags;
 
 			myHover.TakeOff(this.content, this, null, null, this.takeOffType);
-			
+
 			var log_data = "";
 			if (myHover.source.name) {
 				log_data += myHover.source.name;
 			}
 			log_data += " [" + boxspaceArray[this.parent].BoxIndex(this) + "]";
 			log_data += " take off: " + myHover.token;
-			
 
 			myLogger.Log(log_data);
-			
+
 		}
 
 	};
@@ -307,18 +306,17 @@ function FloatBox(style, content) {
 		if (myHover.source.name) {
 			log_data += myHover.source.name;
 		}
-		
+
 		log_data += " [" + boxspaceArray[this.parent].BoxIndex(this) + "]";
-		
+
 		log_data += " <- token returns: " + myHover.token;
-		
+
 		var parent = document.getElementById("boxspace" + this.parent);
 
 		parent.appendChild(this.keepElement);
 		this.keepElement = null;
 		myHover.source = null;
-		
-		
+
 		myLogger.Log(log_data);
 	};
 
@@ -341,7 +339,7 @@ function FloatBox(style, content) {
 	this.GetLineStartTo = function(x, y) {
 		var layout = $("floatbox" + this.id).getLayout();
 		var jq_div = jQuery("#floatbox" + this.id);
-		
+
 		var left = layout.get("left") - 1;
 		var top = layout.get("top") - 1;
 		var right = left + jq_div.outerWidth() + 1;
@@ -432,7 +430,7 @@ function FloatBox(style, content) {
 	this.Contains = function(x, y) {
 		var layout = $("floatbox" + this.id).getLayout();
 		var jq_div = jQuery("#floatbox" + this.id);
-		
+
 		var left = layout.get("left");
 		var top = layout.get("top");
 		var right = left + jq_div.outerWidth();
@@ -449,7 +447,7 @@ function FloatBox(style, content) {
 
 		return true;
 	};
-	
+
 	/**
 	 * returns the mid point of the box
 	 */
@@ -457,15 +455,15 @@ function FloatBox(style, content) {
 	this.Midpoint = function() {
 		var layout = $("floatbox" + this.id).getLayout();
 		var jq_div = jQuery("#floatbox" + this.id);
-		
+
 		var left = layout.get("left");
 		var top = layout.get("top");
 		var right = left + jq_div.outerWidth();
 		var bottom = top + jq_div.outerHeight();
 
 		var p = {};
-		p["left"] = (left+right)/2;
-		p["top"] = (top+bottom)/2;
+		p["left"] = (left + right) / 2;
+		p["top"] = (top + bottom) / 2;
 
 		return p;
 	};
@@ -703,7 +701,6 @@ function Boxspace(name, tags, accept, reject) {
 		var left = mouseX - layout.left + scrollstate["left"];
 		var top = mouseY - layout.top + scrollstate["top"];
 
-
 		var o = {};
 		o["left"] = left;
 		o["top"] = top;
@@ -759,10 +756,16 @@ function Boxspace(name, tags, accept, reject) {
 		if (this.dragSource == targetBox)
 			return;
 
-		var src = this.contents.lastIndexOf(this.dragSource);
-		var tar = this.contents.lastIndexOf(targetBox);
+		var src = this.BoxIndex(this.dragSource);
+		var tar = this.BoxIndex(targetBox);
 
-		console.log("Add relation: " + src + " to " + tar);
+		var log_data = this.name;
+
+		log_data += " add relation " + src + " -> " + tar + ": "
+				+ escapeBTNR(this.contents[src].content) + " before "
+				+  escapeBTNR(this.contents[tar].content); 
+
+		myLogger.Log(log_data);
 	};
 
 	/**
@@ -774,14 +777,14 @@ function Boxspace(name, tags, accept, reject) {
 		var mouse_coords = this.CurrentMouseCoordinates();
 		var right = mouse_coords["left"];
 		var bottom = mouse_coords["top"];
-		
+
 		var box_coords = this.dragSource.GetLineStartTo(right, bottom);
 		var left = box_coords["left"];
 		var top = box_coords["top"];
-		
-		for (var int=0;int<this.contents.length;++int) {
+
+		for ( var int = 0; int < this.contents.length; ++int) {
 			var box = this.contents[int];
-			if (box.Contains(right,bottom)) {
+			if (box.Contains(right, bottom)) {
 				var mid = this.dragSource.Midpoint();
 				var alternative = box.GetLineStartTo(mid["left"], mid["top"]);
 				right = alternative["left"];
@@ -789,16 +792,12 @@ function Boxspace(name, tags, accept, reject) {
 				break;
 			}
 		}
-		
-		if (this.dragArrow) {	
 
-			
-					
+		if (this.dragArrow) {
 
 			this.dragArrow.SetCoords(left, top, right, bottom);
-			
-		} else if (this.dragSource.Contains(right,bottom) == false) {
-			
+
+		} else if (this.dragSource.Contains(right, bottom) == false) {
 
 			this.dragArrow = new Arrow(left, top, right, bottom, "#FFAA33",
 					"zIndex: -100;");
@@ -817,7 +816,7 @@ function Boxspace(name, tags, accept, reject) {
 	this.CancelDrag = function() {
 		delMouseMoveHook(this.dragHandler);
 		this.draggingArrows = false;
-		if (this.dragArrow) 
+		if (this.dragArrow)
 			this.dragArrow.Remove();
 		this.dragArrow = null;
 	};
@@ -917,9 +916,9 @@ function Boxspace(name, tags, accept, reject) {
 						+ left + "px;" + "top: " + top + "px;", plane);
 				box.SetParentId(this.id);
 				box.Create("boxspace" + this.id);
-				
+
 				this.contents.push(box);
-				box_idx = this.contents.length -1;
+				box_idx = this.contents.length - 1;
 			} else if (plane_type == "box") {
 				var box = myHover.source;
 				if (box.GetParentId() == this.id) {
@@ -952,7 +951,7 @@ function Boxspace(name, tags, accept, reject) {
 					box.SetParentId(this.id);
 					box.Create("boxspace" + this.id);
 					this.contents.push(box);
-					box_idx = this.contents.length -1;
+					box_idx = this.contents.length - 1;
 				}
 
 				var div = box.GetElement();
@@ -962,8 +961,8 @@ function Boxspace(name, tags, accept, reject) {
 				div.style.top = (top - box_height / 2) + "px";
 
 			}
-			
-			log_data += " [ " + box_idx + " @ " + left + " " + top + "]";
+
+			log_data += " [" + box_idx + " @ " + left + " " + top + "]";
 
 			myLogger.Log(log_data);
 
@@ -1000,11 +999,11 @@ function Boxspace(name, tags, accept, reject) {
 		}
 		this.contents = [];
 	};
-	
+
 	/**
 	 * returns the list index of a given box
 	 */
-	
+
 	this.BoxIndex = function(box) {
 		return this.contents.lastIndexOf(box);
 	};
