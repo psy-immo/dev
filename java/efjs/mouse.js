@@ -40,6 +40,8 @@ mouseAfterNextUpHandler = [];
  */
 
 function mouseOnMove(e) {
+	
+	mouseEvent = e;
 
 	if (e.pageX || e.pageY) {
 		mouseX = e.pageX;

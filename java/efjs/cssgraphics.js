@@ -81,14 +81,14 @@ function htmlLineDiv(left, top, right, bottom, color, style, id, extension,
 	html += "-moz-transform-origin: 0% 50%;";
 	html += "-ms-transform-origin: 0% 50%;";
 	html += "-o-transform-origin: 0% 50%;";
-	html += "-sand-transform-origin: 0% 50%;";
+//	html += "-sand-transform-origin: 0% 50%;";
 
 	html += "transform: rotate(" + angle + "deg);";
 	html += "-webkit-transform: rotate(" + angle + "deg);";
 	html += "-moz-transform: rotate(" + angle + "deg);";
 	html += "-ms-transform: rotate(" + angle + "deg);";
 	html += "-o-transform: rotate(" + angle + "deg);";
-	html += "-sand-transform: rotate(" + angle + "deg);";
+//	html += "-sand-transform: rotate(" + angle + "deg);";
 
 	html += style;
 
@@ -520,6 +520,34 @@ function Arrow(left, top, right, bottom, color, style, extension) {
 		this.style = style;
 	if (extension)
 		this.extension = extension;
+	
+	/**
+	 * add mouse click hooks
+	 */
+	
+	this.AddMouseClickHooks = function(){
+		var fn = function(o) { 
+			return function() {
+				o.OnClick();
+			};
+		}(this);
+		
+		addMouseClickHook("grArrow0."+this.id, 0, fn);
+		addMouseClickHook("grArrow1."+this.id, 0, fn);
+		addMouseClickHook("grArrow2."+this.id, 0, fn);
+	};
+	
+	/**
+	 * sets the color of the arrow
+	 */
+	this.SetColor = function(color) {
+		var elt = document.getElementById("grArrow0." + this.id);
+		elt.style.background = color;
+		elt = document.getElementById("grArrow1." + this.id);
+		elt.style.background = color;
+		elt = document.getElementById("grArrow2." + this.id);
+		elt.style.background = color;
+	};
 
 	/**
 	 * write html code that creates the line object
@@ -535,6 +563,9 @@ function Arrow(left, top, right, bottom, color, style, extension) {
 		document.write(htmlLineDiv(this.arrowX2, this.arrowY2, this.right,
 				this.bottom, this.color, this.style, "grArrow2." + this.id,
 				this.extension));
+		
+		this.AddMouseClickHooks();
+		
 	};
 
 	/**
@@ -566,6 +597,15 @@ function Arrow(left, top, right, bottom, color, style, extension) {
 			clearMouseClickHooks("grArrow2." + this.id);
 			clearMouseClickHooks(elt);
 		}
+	};
+	
+	/**
+	 * called when the arrow object has been clicked
+	 *
+	 */
+	
+	this.OnClick = function(){
+		
 	};
 
 	/**
@@ -614,6 +654,8 @@ function Arrow(left, top, right, bottom, color, style, extension) {
 
 			parent.appendChild(container.firstChild);
 		}
+		
+		this.AddMouseClickHooks();
 	};
 
 	/**

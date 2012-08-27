@@ -427,14 +427,27 @@ function FloatBox(style, content) {
 	 * checks whether the given coordinates are within some box
 	 */
 
-	this.Contains = function(x, y) {
+	this.Contains = function(x, y, absolute) {
 		var layout = $("floatbox" + this.id).getLayout();
 		var jq_div = jQuery("#floatbox" + this.id);
 
-		var left = layout.get("left");
-		var top = layout.get("top");
+		var left = 0;
+		var top = 0;
+
+		if (absolute) {
+			left = jq_div.offset().left;
+			top = jq_div.offset().top;
+		} else {
+			left = layout.get("left");
+			top = layout.get("top");
+		}
+
 		var right = left + jq_div.outerWidth();
 		var bottom = top + jq_div.outerHeight();
+
+		console.log("left: " + left + " top:" + top + " right:" + right
+				+ " bottom:" + bottom);
+		console.log("x:" + x + " y:" + y);
 
 		if (x < left)
 			return false;
@@ -521,6 +534,8 @@ function Boxspace(name, tags, accept, reject) {
 	this.draggingArrows = false;
 
 	this.contents = [];
+	this.arrows = [];
+	this.relation = [];
 
 	/**
 	 * this function adds a box for the box space
@@ -538,6 +553,24 @@ function Boxspace(name, tags, accept, reject) {
 	};
 
 	/**
+	 * this function adds a relation between boxes
+	 */
+	this.AddRel = function(src, tar) {
+		if (typeof src != "number") {
+			src = this.BoxIndex(src);
+		}
+		if (typeof tar != "number") {
+			tar = this.BoxIndex(tar);
+		}
+
+		var pair = src + "," + tar;
+		if (this.relation.lastIndexOf(pair) < 0)
+			this.relation.push(pair);
+
+		return this;
+	};
+
+	/**
 	 * this function removes a box from the box space
 	 */
 	this.DelBox = function(box, dontRemove) {
@@ -545,12 +578,38 @@ function Boxspace(name, tags, accept, reject) {
 			box.Remove();
 		}
 		var idx = this.contents.lastIndexOf(box);
+		var last_idx = this.contents.length - 1;
 		if (idx >= 0) {
 			var last_element = this.contents.pop();
 			if (idx < this.contents.length) {
 				this.contents[idx] = last_element;
 			}
 		}
+
+		/**
+		 * the numbers for the relation between the boxes must be adjusted to
+		 * the changes
+		 */
+
+		var new_relation = [];
+		for ( var int = 0; int < this.relation.length; ++int) {
+			var parts = this.relation[int].split(",");
+			var src = parseInt(parts[0]);
+			var tar = parseInt(parts[1]);
+			if (src == idx)
+				continue;
+			if (tar == idx)
+				continue;
+			if (src == last_idx) {
+				src = idx;
+			}
+			if (tar == last_idx) {
+				tar = idx;
+			}
+			new_relation.push(src + "," + tar);
+		}
+		this.relation = new_relation;
+		this.UpdateArrows();
 	};
 
 	/**
@@ -763,7 +822,10 @@ function Boxspace(name, tags, accept, reject) {
 
 		log_data += " add relation " + src + " -> " + tar + ": "
 				+ escapeBTNR(this.contents[src].content) + " before "
-				+  escapeBTNR(this.contents[tar].content); 
+				+ escapeBTNR(this.contents[tar].content);
+
+		this.AddRel(src, tar);
+		this.UpdateArrows();
 
 		myLogger.Log(log_data);
 	};
@@ -907,6 +969,8 @@ function Boxspace(name, tags, accept, reject) {
 			var top = mouse_coords["top"];
 
 			var box_idx = -1;
+			
+			var update_arrows = false;
 
 			/**
 			 * now add a float box
@@ -933,6 +997,13 @@ function Boxspace(name, tags, accept, reject) {
 					box.GetElement().style.left = left + "px";
 					box.GetElement().style.top = top + "px";
 					box_idx = this.BoxIndex(box);
+					
+					/**
+					 * trigger arrow update
+					 */
+					
+					update_arrows = true;
+					
 				} else {
 					/**
 					 * different box space
@@ -965,6 +1036,9 @@ function Boxspace(name, tags, accept, reject) {
 			log_data += " [" + box_idx + " @ " + left + " " + top + "]";
 
 			myLogger.Log(log_data);
+			
+			if (update_arrows)
+				this.UpdateArrows();
 
 			return;
 		}
@@ -984,6 +1058,13 @@ function Boxspace(name, tags, accept, reject) {
 			data += "\n" + escapeBTNR(box.GetStyle());
 			data += "\n" + escapeBTNR(box.GetContent());
 		}
+		
+		data += "\n";
+		for (var int=0;int<this.relation.length;int++){
+			if (int)
+				data += ";";
+			data += this.relation[int];
+		}
 
 		return data;
 	};
@@ -998,6 +1079,9 @@ function Boxspace(name, tags, accept, reject) {
 			box.Remove();
 		}
 		this.contents = [];
+
+		this.relation = [];
+		this.UpdateArrows();
 	};
 
 	/**
@@ -1029,8 +1113,33 @@ function Boxspace(name, tags, accept, reject) {
 			box.Create("boxspace" + this.id);
 			this.contents.push(box);
 		}
-		;
+		
+		this.relation = parts[1+3*count].split(";");
+		this.UpdateArrows();
 
+	};
+
+	/**
+	 * update the arrow display
+	 */
+
+	this.UpdateArrows = function() {
+		for ( var int = 0; int < this.arrows.length; ++int)
+			this.arrows[int].Remove();
+		this.arrows = [];
+		for ( var int = 0; int < this.relation.length; ++int) {
+			var parts = this.relation[int].split(",");
+			var src = this.contents[parseInt(parts[0])];
+			var tar = this.contents[parseInt(parts[1])];
+			var p1 = src.Midpoint();
+			var p2 = tar.Midpoint();
+			var q1 = src.GetLineStartTo(p2["left"],p2["top"]);
+			var q2 = tar.GetLineStartTo(p1["left"],p1["top"]);
+			var arrow = new Arrow(q1["left"],q1["top"],q2["left"],q2["top"],"#000000");
+			
+			arrow.AddChild("boxspace"+this.id);
+			this.arrows.push(arrow);
+		}
 	};
 
 	boxspaceArray[this.id] = this;
