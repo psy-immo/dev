@@ -605,7 +605,6 @@ function Arrow(left, top, right, bottom, color, style, extension) {
 	 */
 	
 	this.OnClick = function(){
-		
 	};
 
 	/**

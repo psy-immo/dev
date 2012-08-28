@@ -613,6 +613,29 @@ function Boxspace(name, tags, accept, reject) {
 	};
 
 	/**
+	 * this function adds a relation between boxes
+	 */
+	this.DelRel = function(src, tar) {
+		if (typeof src != "number") {
+			src = this.BoxIndex(src);
+		}
+		if (typeof tar != "number") {
+			tar = this.BoxIndex(tar);
+		}
+
+		var pair = src + "," + tar;
+		var idx = this.relation.lastIndexOf(pair);
+		
+		if (idx >= 0) {
+			this.relation[idx] = this.relation[this.relation.length - 1];
+			this.relation.pop();
+
+			this.UpdateArrows();
+		}
+
+	};
+
+	/**
 	 * this function sets the bounding parameters
 	 * 
 	 * @returns this
@@ -969,7 +992,7 @@ function Boxspace(name, tags, accept, reject) {
 			var top = mouse_coords["top"];
 
 			var box_idx = -1;
-			
+
 			var update_arrows = false;
 
 			/**
@@ -997,13 +1020,13 @@ function Boxspace(name, tags, accept, reject) {
 					box.GetElement().style.left = left + "px";
 					box.GetElement().style.top = top + "px";
 					box_idx = this.BoxIndex(box);
-					
+
 					/**
 					 * trigger arrow update
 					 */
-					
+
 					update_arrows = true;
-					
+
 				} else {
 					/**
 					 * different box space
@@ -1036,7 +1059,7 @@ function Boxspace(name, tags, accept, reject) {
 			log_data += " [" + box_idx + " @ " + left + " " + top + "]";
 
 			myLogger.Log(log_data);
-			
+
 			if (update_arrows)
 				this.UpdateArrows();
 
@@ -1058,9 +1081,9 @@ function Boxspace(name, tags, accept, reject) {
 			data += "\n" + escapeBTNR(box.GetStyle());
 			data += "\n" + escapeBTNR(box.GetContent());
 		}
-		
+
 		data += "\n";
-		for (var int=0;int<this.relation.length;int++){
+		for ( var int = 0; int < this.relation.length; int++) {
 			if (int)
 				data += ";";
 			data += this.relation[int];
@@ -1113,8 +1136,8 @@ function Boxspace(name, tags, accept, reject) {
 			box.Create("boxspace" + this.id);
 			this.contents.push(box);
 		}
-		
-		this.relation = parts[1+3*count].split(";");
+
+		this.relation = parts[1 + 3 * count].split(";");
 		this.UpdateArrows();
 
 	};
@@ -1133,11 +1156,34 @@ function Boxspace(name, tags, accept, reject) {
 			var tar = this.contents[parseInt(parts[1])];
 			var p1 = src.Midpoint();
 			var p2 = tar.Midpoint();
-			var q1 = src.GetLineStartTo(p2["left"],p2["top"]);
-			var q2 = tar.GetLineStartTo(p1["left"],p1["top"]);
-			var arrow = new Arrow(q1["left"],q1["top"],q2["left"],q2["top"],"#000000");
+			var q1 = src.GetLineStartTo(p2["left"], p2["top"]);
+			var q2 = tar.GetLineStartTo(p1["left"], p1["top"]);
+			var arrow = new Arrow(q1["left"], q1["top"], q2["left"], q2["top"],
+					"#000000");
+
+			arrow.AddChild("boxspace" + this.id);
 			
-			arrow.AddChild("boxspace"+this.id);
+			/**
+			 * remove the arrow if clicked at
+			 */
+			
+			var click_fn = function(bspace, from, to) {
+				return function() {
+					
+					var log_data = bspace.name;
+
+					log_data += " delete relation " + bspace.BoxIndex(from) + " -> " + bspace.BoxIndex(to) + ": "
+							+ escapeBTNR(from.content) + " before "
+							+ escapeBTNR(to.content);
+					
+					myLogger.Log(log_data);
+					
+					bspace.DelRel(from, to);
+				}; 
+			}(this, src, tar);
+			
+			arrow.OnClick = click_fn;
+			
 			this.arrows.push(arrow);
 		}
 	};
