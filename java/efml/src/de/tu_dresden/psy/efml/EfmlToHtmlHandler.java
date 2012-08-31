@@ -18,6 +18,7 @@
 
 package de.tu_dresden.psy.efml;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Stack;
 
 import javax.naming.OperationNotSupportedException;
@@ -61,6 +62,294 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 
 	private Stack<AnyTag> processingTags;
 
+	/**
+	 * interface for constructing other classes
+	 */
+
+	static interface TagObjectConstructor {
+		/**
+		 * 
+		 * @param body
+		 *            TODO
+		 * @return a new tag-handling object
+		 */
+		AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body);
+	};
+
+	/**
+	 * implements interface for constructing other classes
+	 */
+
+	static class SimpleObjectConstructor implements TagObjectConstructor {
+
+		/**
+		 * create new instances of this class
+		 */
+		private Class t;
+
+		public SimpleObjectConstructor(Class t) {
+			this.t = t;
+		}
+
+		@Override
+		public AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body) {
+			try {
+				return (AnyTag) t.newInstance();
+			} catch (InstantiationException e) {
+
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+	};
+
+	/**
+	 * implements interface for constructing other classes
+	 */
+
+	static class AttributeObjectConstructor implements TagObjectConstructor {
+
+		/**
+		 * create new instances of this class
+		 */
+		private Class t;
+
+		private static Class[] parameters = { EfmlTagsAttribute.class };
+
+		public AttributeObjectConstructor(Class t) {
+			this.t = t;
+
+			try {
+				Object cons = t.getConstructor(parameters);
+			} catch (NoSuchMethodException | SecurityException e) {
+
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body) {
+			try {
+				return (AnyTag) t.getConstructor(parameters).newInstance(tags);
+			} catch (InstantiationException e) {
+
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+
+				e.printStackTrace();
+			} catch (SecurityException e) {
+
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+	};
+
+	/**
+	 * implements interface for constructing other classes
+	 */
+
+	static class ParentObjectConstructor implements TagObjectConstructor {
+
+		/**
+		 * create new instances of this class
+		 */
+		@SuppressWarnings("rawtypes")
+		private Class t;
+
+		@SuppressWarnings({ "rawtypes" })
+		private static Class[] parameters = { AnyTag.class };
+
+		@SuppressWarnings("rawtypes")
+		public ParentObjectConstructor(Class t) {
+			this.t = t;
+
+			try {
+				@SuppressWarnings({ "unchecked", "unused" })
+				Object cons = t.getConstructor(parameters);
+			} catch (NoSuchMethodException | SecurityException e) {
+
+				e.printStackTrace();
+			}
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body) {
+			try {
+				return (AnyTag) t.getConstructor(parameters)
+						.newInstance(parent);
+			} catch (InstantiationException e) {
+
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+
+				e.printStackTrace();
+			} catch (SecurityException e) {
+
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+	};
+
+	/**
+	 * implements interface for constructing other classes
+	 */
+
+	static class BodyObjectConstructor implements TagObjectConstructor {
+
+		/**
+		 * create new instances of this class
+		 */
+		private Class t;
+
+		private static Class[] parameters = { BodyTag.class };
+
+		public BodyObjectConstructor(Class t) {
+			this.t = t;
+
+			try {
+				Object cons = t.getConstructor(parameters);
+			} catch (NoSuchMethodException | SecurityException e) {
+
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body) {
+			try {
+				return (AnyTag) t.getConstructor(parameters).newInstance(body);
+			} catch (InstantiationException e) {
+
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+
+				e.printStackTrace();
+			} catch (SecurityException e) {
+
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+	};
+
+	/**
+	 * tag name/handler class list
+	 * 
+	 */
+
+	private static Object[] tagClasses = { "title",
+			new SimpleObjectConstructor(TitleTag.class), "tags",
+			new SimpleObjectConstructor(TagsTag.class), "efml",
+			new SimpleObjectConstructor(TagsTag.class), "tie",
+			new SimpleObjectConstructor(TieTag.class), "tables",
+			new AttributeObjectConstructor(TablesTag.class), "r",
+			new SimpleObjectConstructor(RTag.class), "c",
+			new ParentObjectConstructor(CTag.class), "runway",
+			new AttributeObjectConstructor(RunwayTag.class), "answer",
+			new AttributeObjectConstructor(AnswerTag.class), "hint",
+			new AttributeObjectConstructor(HintTag.class), "correct",
+			new SimpleObjectConstructor(CorrectTag.class), "needjustification",
+			new SimpleObjectConstructor(NeedJustificationTag.class),
+			"incomplete", new SimpleObjectConstructor(IncompleteTag.class),
+			"incorrect", new SimpleObjectConstructor(IncorrectTag.class),
+			"check", new AttributeObjectConstructor(CheckTag.class),
+			"includepreamble",
+			new SimpleObjectConstructor(IncludePreambleTag.class),
+			"includeaddendum",
+			new SimpleObjectConstructor(IncludeAddendumTag.class), "label",
+			new SimpleObjectConstructor(LabelTag.class), "unread",
+			new SimpleObjectConstructor(UnreadTag.class), "unused",
+			new SimpleObjectConstructor(UnusedTag.class), "instructions",
+			new SimpleObjectConstructor(InstructionsTag.class), "sniffy",
+			new SimpleObjectConstructor(SniffyTag.class), "waitfor",
+			new SimpleObjectConstructor(WaitForTag.class), "dropdown",
+			new AttributeObjectConstructor(DropdownTag.class), "radiobutton",
+			new AttributeObjectConstructor(RadiobuttonTag.class), "checkbox",
+			new AttributeObjectConstructor(CheckboxTag.class), "popuphelp",
+			new AttributeObjectConstructor(PopupHelpTag.class), "freetext",
+			new AttributeObjectConstructor(FreetextTag.class), "multiline",
+			new AttributeObjectConstructor(MultilineTag.class), "option",
+			new AttributeObjectConstructor(OptionTag.class), "studyid",
+			new BodyObjectConstructor(StudyIdTag.class), "documentid",
+			new BodyObjectConstructor(DocumentIdTag.class), "jsurl",
+			new BodyObjectConstructor(JsUrlTag.class), "phpurl",
+			new BodyObjectConstructor(PhpUrlTag.class), "subjectinfo",
+			new BodyObjectConstructor(SubjectInfoTag.class), "subjectprompt",
+			new BodyObjectConstructor(SubjectPromptTag.class), "subjectchange",
+			new BodyObjectConstructor(SubjectChangeTag.class), "plain",
+			new SimpleObjectConstructor(PlainTag.class), "template",
+			new AttributeObjectConstructor(TemplateTag.class), "airport",
+			new AttributeObjectConstructor(AirportTag.class), "feedback",
+			new SimpleObjectConstructor(FeedbackTag.class), "required",
+			new AttributeObjectConstructor(RequiredTag.class), "parse",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "subject",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "object",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "predicate",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "expert",
+			new AttributeObjectConstructor(InferenceXmlTag.class),
+			"conclusion",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "premise",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "infer",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "in",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "assert",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "implicit",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "rule",
+			new AttributeObjectConstructor(InferenceXmlTag.class),
+			"constraint",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "rho",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "out",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "justified",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "trivial",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "invalid",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "quality",
+			new AttributeObjectConstructor(InferenceXmlTag.class),
+			"conclusions",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "solves",
+			new AttributeObjectConstructor(InferenceXmlTag.class), "inference",
+			new AttributeObjectConstructor(InferenceTag.class),
+
+	};
+
 	public EfmlToHtmlHandler() {
 		this.currentTags = new Stack<EfmlTagsAttribute>();
 		this.root = new EfmlTagsAttribute("", null, null);
@@ -101,112 +390,29 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		this.currentTags.push(new EfmlTagsAttribute(qName, attributes,
 				this.currentTags.peek()));
 
-		if (qName.equals("title")) {
-			this.processingTags.push(new TitleTag());
-		} else if ((qName.equals("tags")) || (qName.equals("efml"))) {
-			this.processingTags.push(new TagsTag());
-		} else if (qName.equals("tie")) {
-			this.processingTags.push(new TieTag());
-		} else if (qName.equals("tables")) {
-			this.processingTags.push(new TablesTag(this.currentTags.peek()));
-		} else if (qName.equals("r")) {
-			this.processingTags.push(new RTag());
-		} else if (qName.equals("c")) {
-			this.processingTags.push(new CTag(this.processingTags.peek()));
-		} else if (qName.equals("runway")) {
-			this.processingTags.push(new RunwayTag(this.currentTags.peek()));
-		} else if (qName.equals("answer")) {
-			this.processingTags.push(new AnswerTag(this.currentTags.peek()));
-		} else if (qName.equals("hint")) {
-			this.processingTags.push(new HintTag(this.currentTags.peek()));
-		} else if (qName.equals("correct")) {
-			this.processingTags.push(new CorrectTag());
-		} else if (qName.equals("needjustification")) {
-			this.processingTags.push(new NeedJustificationTag());
-		} else if (qName.equals("incomplete")) {
-			this.processingTags.push(new IncompleteTag());
-		} else if (qName.equals("incorrect")) {
-			this.processingTags.push(new IncorrectTag());
-		} else if (qName.equals("check")) {
-			this.processingTags.push(new CheckTag(this.currentTags.peek()));
-		} else if (qName.equals("includepreamble")) {
-			this.processingTags.push(new IncludePreambleTag());
-		} else if (qName.equals("includehover")) {
-			this.processingTags.push(new IncludeHoverTag());
-		} else if (qName.equals("includeaddendum")) {
-			this.processingTags.push(new IncludeAddendumTag());
-		} else if (qName.equals("label")) {
-			this.processingTags.push(new LabelTag());
-		} else if (qName.equals("unread")) {
-			this.processingTags.push(new UnreadTag());
-		} else if (qName.equals("unused")) {
-			this.processingTags.push(new UnusedTag());
-		} else if (qName.equals("instructions")) {
-			this.processingTags.push(new InstructionsTag());
-		} else if (qName.equals("sniffy")) {
-			this.processingTags.push(new SniffyTag());
-		} else if (qName.equals("waitfor")) {
-			this.processingTags.push(new WaitForTag());
-		} else if (qName.equals("dropdown")) {
-			this.processingTags.push(new DropdownTag(this.currentTags.peek()));
-		} else if (qName.equals("radiobutton")) {
-			this.processingTags
-					.push(new RadiobuttonTag(this.currentTags.peek()));
-		} else if (qName.equals("checkbox")) {
-			this.processingTags.push(new CheckboxTag(this.currentTags.peek()));
-		} else if (qName.equals("popuphelp")) {
-			this.processingTags.push(new PopupHelpTag(this.currentTags.peek()));
-		} else if (qName.equals("freetext")) {
-			this.processingTags.push(new FreetextTag(this.currentTags.peek()));
-		} else if (qName.equals("multiline")) {
-			this.processingTags.push(new MultilineTag(this.currentTags.peek()));
-		} else if (qName.equals("option")) {
-			this.processingTags.push(new OptionTag(this.currentTags.peek()));
-		} else if (qName.equals("studyid")) {
-			this.processingTags.push(new StudyIdTag(body));
-		} else if (qName.equals("documentid")) {
-			this.processingTags.push(new DocumentIdTag(body));
-		} else if (qName.equals("jsurl")) {
-			this.processingTags.push(new JsUrlTag(body));
-		} else if (qName.equals("phpurl")) {
-			this.processingTags.push(new PhpUrlTag(body));
-		} else if (qName.equals("subjectinfo")) {
-			this.processingTags.push(new SubjectInfoTag(body));
-		} else if (qName.equals("subjectprompt")) {
-			this.processingTags.push(new SubjectPromptTag(body));
-		} else if (qName.equals("subjectchange")) {
-			this.processingTags.push(new SubjectChangeTag(body));
-		} else if (qName.equals("plain")) {
-			this.processingTags.push(new PlainTag());
-		} else if (qName.equals("template")) {
-			this.processingTags.push(new TemplateTag(this.currentTags.peek()));
-		} else if (qName.equals("airport")) {
-			this.processingTags.push(new AirportTag(this.currentTags.peek()));
-		} else if (qName.equals("feedback")) {
-			this.processingTags.push(new FeedbackTag());
-		} else if (qName.equals("required")) {
-			this.processingTags.push(new RequiredTag(this.currentTags.peek()));
-		} else if (qName.equals("parse") || qName.equals("subject")
-				|| qName.equals("object") || qName.equals("predicate")
-				|| qName.equals("assert") || qName.equals("expert")
-				|| qName.equals("implicit") || qName.equals("conclusion")
-				|| qName.equals("rule") || qName.equals("premise")
-				|| qName.equals("constraint") || qName.equals("infer")
-				|| qName.equals("rho") || qName.equals("in")
-				|| qName.equals("out") || qName.equals("justified")
-				|| qName.equals("trivial") || qName.equals("invalid")
-				|| qName.equals("quality") || qName.equals("conclusions")
-				|| qName.equals("solves")) {
-			this.processingTags.push(new InferenceXmlTag(this.currentTags
-					.peek()));
-		} else if (qName.equals("inference")) {
-			this.processingTags.push(new InferenceTag(this.currentTags.peek()));
-		} else {
+		boolean found = false;
+
+		for (int idx = 0; idx < tagClasses.length; idx += 2) {
+			String name = (String) tagClasses[idx];
+			TagObjectConstructor cons = (TagObjectConstructor) tagClasses[idx + 1];
+
+			if (qName.equals(name)) {
+
+				this.processingTags.push(cons.New(this.currentTags.peek(),
+						this.processingTags.peek(), body));
+				found = true;
+				break;
+			}
+
+		}
+
+		if (found == false) {
 			/**
 			 * the tag is not recognized and thus we use the unknown tag handler
 			 */
 
 			this.processingTags.push(new UnknownTag(this.currentTags.peek()));
+
 		}
 	}
 
@@ -220,7 +426,10 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		AnyTag closing_tag = this.processingTags.pop();
 
 		try {
-			this.processingTags.peek().encloseTag(closing_tag);
+			if (closing_tag instanceof TitleTag) {
+				this.head.encloseTag(closing_tag);
+			} else
+				this.processingTags.peek().encloseTag(closing_tag);
 		} catch (OperationNotSupportedException e) {
 
 			e.printStackTrace();
