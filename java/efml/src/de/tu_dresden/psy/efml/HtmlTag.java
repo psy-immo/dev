@@ -33,70 +33,36 @@ public class HtmlTag implements AnyTag {
 	 */
 	static public void writeAllIncludes(Writer writer, String baseUrl)
 			throws IOException {
-		writer.write(
 
-				"	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "EventHelpers.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "cssQuery-p.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "jcoglan.com.sylvester.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "cssSandpaper.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "jquery-1.8.0.min.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "prototype.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "crosscompat.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "mouse.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "cssgraphics.js\"></script>\n" 
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "loglet.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "storage.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "logger.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "tags.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "logic.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "hover.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "endecoder.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "runway.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "answer.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "sniffybutton.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "dropdown.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "checkbox.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "radiobutton.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "popupbutton.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "freetext.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "multiline.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "boxspace.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "trashcan.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "sentencepattern.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "airport.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "inference.js\"></script>\n"
-				+ "	<script type=\"text/javascript\" src=\"" + baseUrl
-				+ "efml.js\"></script>\n");
+		String[] javascript_includes = {
+		/**
+		 * cssSandpaper
+		 */
+		"EventHelpers.js", "cssQuery-p.js", "jcoglan.com.sylvester.js",
+				"cssSandpaper.js",
+				/**
+				 * jQuery
+				 */
+				"jquery-1.8.0.min.js",
+				/**
+				 * prototypejs
+				 */
+				"prototype.js",
+				/**
+				 * efjs scripts
+				 */
+				"crosscompat.js", "mouse.js", "cssgraphics.js", "loglet.js",
+				"storage.js", "logger.js", "tags.js", "logic.js", "hover.js",
+				"endecoder.js", "runway.js", "answer.js", "sniffybutton.js",
+				"dropdown.js", "checkbox.js", "radiobutton.js",
+				"popupbutton.js", "freetext.js", "boxspace.js", "trashcan.js",
+				"sentencepattern.js", "airport.js", "inference.js", "efml.js" };
+
+		for (int i = 0; i < javascript_includes.length; i++) {
+			writer.write("	<script type=\"text/javascript\" src=\"" + baseUrl
+					+ javascript_includes[i] + "\"></script>\n");
+		}
+
 	}
 
 	/**
