@@ -85,8 +85,10 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		/**
 		 * create new instances of this class
 		 */
+		@SuppressWarnings("rawtypes")
 		private Class t;
 
+		@SuppressWarnings("rawtypes")
 		public SimpleObjectConstructor(Class t) {
 			this.t = t;
 		}
@@ -116,10 +118,13 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		/**
 		 * create new instances of this class
 		 */
+		@SuppressWarnings("rawtypes")
 		private Class t;
 
+		@SuppressWarnings("rawtypes")
 		private static Class[] parameters = { EfmlTagsAttribute.class };
 
+		@SuppressWarnings({ "rawtypes", "unused", "unchecked" })
 		public AttributeObjectConstructor(Class t) {
 			this.t = t;
 
@@ -131,6 +136,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			}
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body) {
 			try {
@@ -228,10 +234,13 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		/**
 		 * create new instances of this class
 		 */
+		@SuppressWarnings("rawtypes")
 		private Class t;
 
+		@SuppressWarnings("rawtypes")
 		private static Class[] parameters = { BodyTag.class };
 
+		@SuppressWarnings({ "rawtypes", "unused", "unchecked" })
 		public BodyObjectConstructor(Class t) {
 			this.t = t;
 
@@ -243,6 +252,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			}
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body) {
 			try {
