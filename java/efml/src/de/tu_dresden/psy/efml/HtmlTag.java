@@ -82,6 +82,13 @@ public class HtmlTag implements AnyTag {
 				+ "  RunwayDisplayBugfix();" + "  </script>\n");
 
 		/**
+		 * add initial arrows to boxspace
+		 */
+
+		writer.write("	<script type=\"text/javascript\">\n"
+				+ "  BoxspaceUpdateAllArrows();" + "  </script>\n");
+
+		/**
 		 * feed inference applets
 		 */
 

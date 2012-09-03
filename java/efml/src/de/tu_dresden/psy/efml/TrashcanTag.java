@@ -1,5 +1,5 @@
 /**
- * AirportTag.java, (c) 2012, Immanuel Albrecht; Dresden University of
+ * TrashcanTag.java, (c) 2012, Immanuel Albrecht; Dresden University of
  * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -24,28 +24,27 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the &lt;airport>-tag for landing several strings in a row
+ * implements the &lt;trashcan>-tag for deleting the landing token
  * 
  * @author albrecht
  * 
  */
 
-public class AirportTag implements AnyTag {
+public class TrashcanTag implements AnyTag {
 
 	private EfmlTagsAttribute attributes;
-	@SuppressWarnings("unused")
-	private String label;
 
-	public AirportTag(EfmlTagsAttribute efmlAttributes) {
+
+	public TrashcanTag(EfmlTagsAttribute efmlAttributes) {
 		this.attributes = efmlAttributes;
-		this.label = "";
+
 	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
 		writer.write("<script type=\"text/javascript\">");
 
-		writer.write("new Airport(");
+		writer.write("new Trashcan(");
 
 		writer.write("\""
 				+ StringEscape.escapeToJavaScript(attributes.getValueOrDefault(
@@ -89,12 +88,10 @@ public class AirportTag implements AnyTag {
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
-		if (innerTag.getClass() == PlainContent.class) {
-			this.label += ((PlainContent) innerTag).getPlainContent();
-		} else
+
 			throw new OperationNotSupportedException(
-					"<airport> cannot enclose "
-							+ innerTag.getClass().toString());
+				"<trashcan> cannot enclose tags ("
+						+ innerTag.getClass().toString() + ")");
 
 	}
 

@@ -356,7 +356,11 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			"conclusions",
 			new AttributeObjectConstructor(InferenceXmlTag.class), "solves",
 			new AttributeObjectConstructor(InferenceXmlTag.class), "inference",
-			new AttributeObjectConstructor(InferenceTag.class),
+			new AttributeObjectConstructor(InferenceTag.class), "trashcan",
+			new AttributeObjectConstructor(TrashcanTag.class), "boxspace",
+			new AttributeObjectConstructor(BoxspaceTag.class), "floatbox",
+			new AttributeObjectConstructor(FloatboxTag.class), "arrow",
+			new AttributeObjectConstructor(ArrowTag.class),
 
 	};
 

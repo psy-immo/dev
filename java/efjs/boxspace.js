@@ -554,6 +554,11 @@ function Boxspace(name, tags, accept, reject) {
 
 	/**
 	 * this function adds a relation between boxes
+	 * 
+	 * use before writing the boxspace (i.e. will not work in dynamic phase)
+	 * 
+	 * 
+	 * @returns this  
 	 */
 	this.AddRel = function(src, tar) {
 		if (typeof src != "number") {
@@ -625,7 +630,7 @@ function Boxspace(name, tags, accept, reject) {
 
 		var pair = src + "," + tar;
 		var idx = this.relation.lastIndexOf(pair);
-		
+
 		if (idx >= 0) {
 			this.relation[idx] = this.relation[this.relation.length - 1];
 			this.relation.pop();
@@ -1162,28 +1167,29 @@ function Boxspace(name, tags, accept, reject) {
 					"#000000");
 
 			arrow.AddChild("boxspace" + this.id);
-			
+
 			/**
 			 * remove the arrow if clicked at
 			 */
-			
+
 			var click_fn = function(bspace, from, to) {
 				return function() {
-					
+
 					var log_data = bspace.name;
 
-					log_data += " delete relation " + bspace.BoxIndex(from) + " -> " + bspace.BoxIndex(to) + ": "
+					log_data += " delete relation " + bspace.BoxIndex(from)
+							+ " -> " + bspace.BoxIndex(to) + ": "
 							+ escapeBTNR(from.content) + " before "
 							+ escapeBTNR(to.content);
-					
+
 					myLogger.Log(log_data);
-					
+
 					bspace.DelRel(from, to);
-				}; 
+				};
 			}(this, src, tar);
-			
+
 			arrow.OnClick = click_fn;
-			
+
 			this.arrows.push(arrow);
 		}
 	};
@@ -1192,4 +1198,15 @@ function Boxspace(name, tags, accept, reject) {
 	myTags.Add(this, this.tags);
 
 	myStorage.RegisterField(this, "boxspaceArray[" + this.id + "]");
+}
+
+/**
+ * 
+ */
+function BoxspaceUpdateAllArrows() {
+	for ( var int = 0; int < boxspaceArray.length; int++) {
+		var boxspace = boxspaceArray[int];
+
+		boxspace.UpdateArrows();
+	}
 }

@@ -149,12 +149,7 @@ function Hover() {
 	 * writes the HTML code that provides the layers used for flights
 	 */
 	this.WriteHtml = function() {
-
-//		document
-//				.write("<div id=\"myhoverplane\" style=\"position:absolute; z-index: 100;"
-//						+ " top: -220px; left:-220; padding:3px;background-color:#DE6B00;\""
-//						+ " onmousemove=\"if ( document.all ) myHover.MovePlane()\"></div>");
-
+		/** nothing more to do here ... */
 	};
 
 }

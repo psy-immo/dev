@@ -137,18 +137,22 @@ function Runway(name, tags, token, accept, reject) {
 		if (this.height) {
 			document.write("height:" + this.height + "; ");
 		}
-		document.write("\"");
-		document.write(" onclick=\"runwayArray[" + this.id + "].OnClick()\">");
+		document.write("\">");
+
 		if (this.token) {
 			document.write(this.token);
 		}
 		document.write("</span>");
-		
+
 		/**
 		 * ignore default click handlers
 		 */
-		
-		addMouseClickHook("runway" + this.id, 0, null);
+
+		addMouseClickHook("runway" + this.id, 0, function(id) {
+			return function() {
+				runwayArray[id].OnClick();
+			};
+		}(this.id));
 
 	};
 
@@ -207,7 +211,7 @@ function Runway(name, tags, token, accept, reject) {
 			 */
 			if (this.stayFilled) {
 				myHover.CrashDown();
-				
+
 				return;
 			}
 
@@ -216,7 +220,7 @@ function Runway(name, tags, token, accept, reject) {
 				log_data += myHover.source.name;
 			}
 			log_data += " -> " + this.name + ": " + myHover.token;
-			
+
 			/**
 			 * check for correct token type
 			 */
@@ -269,14 +273,13 @@ function Runway(name, tags, token, accept, reject) {
 			if (myHover.source.TakeAway) {
 				myHover.source.TakeAway();
 			}
-			
+
 			/**
 			 * remove the plane
 			 */
-			
+
 			myHover.CrashDown(true);
-			
-			
+
 			/**
 			 * now update the run way
 			 */
@@ -352,8 +355,8 @@ function Runway(name, tags, token, accept, reject) {
 		var value = "N";
 		if (this.markedgood)
 			value = "G";
-		
-		if (myHover.GetSourceIfFlying()===this) {
+
+		if (myHover.GetSourceIfFlying() === this) {
 			return value + myHover.token;
 		}
 

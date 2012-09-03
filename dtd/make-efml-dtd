@@ -6,7 +6,8 @@ html_elements = "i|b|br|p|div|span"
 efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|"+\
 				"phpurl|jsurl|documentid|studyid|subjectprompt|"+\
 				"subjectinfo|subjectchange|airport|template|freetext|"+\
-				"checkbox|radiobutton|multiline|popuphelp"
+				"checkbox|radiobutton|multiline|popuphelp|"+\
+				"trashcan|boxspace"
 efml_extra = "tables"
 nested_elements = "plain|dropdown|freetext|checkbox|radiobutton|multiline"
 
@@ -179,6 +180,43 @@ dtd.write("\n<!ATTLIST template "+universal_attributes+"""
 dtd.write("\n<!ELEMENT airport (#PCDATA)* >\n")
 dtd.write("\n<!ATTLIST airport "+universal_attributes+"""
 	name	CDATA			#IMPLIED
+	width	CDATA			#IMPLIED
+	height	CDATA			#IMPLIED
+	color	CDATA			#IMPLIED
+	filled	CDATA			#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT trashcan EMPTY >\n")
+dtd.write("\n<!ATTLIST trashcan "+universal_attributes+"""
+	name	CDATA			#IMPLIED
+	width	CDATA			#IMPLIED
+	height	CDATA			#IMPLIED
+	color	CDATA			#IMPLIED	
+	filled	CDATA			#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT boxspace (floatbox|arrow) >\n")
+dtd.write("\n<!ATTLIST boxspace "+universal_attributes+"""
+	name	CDATA			#IMPLIED
+	width	CDATA			#IMPLIED
+	height	CDATA			#IMPLIED
+	color	CDATA			#IMPLIED	
+	filled	CDATA			#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT floatbox (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST floatbox "+"""
+	style	CDATA			#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT arrow EMPTY >\n")
+dtd.write("\n<!ATTLIST arrow "+"""
+	source	CDATA			#REQUIRED
+	target	CDATA			#REQUIRED	
  >
 """)
 

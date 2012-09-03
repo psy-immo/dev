@@ -1,5 +1,5 @@
 /**
- * AirportTag.java, (c) 2012, Immanuel Albrecht; Dresden University of
+ * BoxspaceTag.java, (c) 2012, Immanuel Albrecht; Dresden University of
  * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -20,32 +20,49 @@ package de.tu_dresden.psy.efml;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the &lt;airport>-tag for landing several strings in a row
+ * implements the &lt;boxspace>-tag for landing several strings in a row
  * 
  * @author albrecht
  * 
  */
 
-public class AirportTag implements AnyTag {
+public class BoxspaceTag implements AnyTag {
 
 	private EfmlTagsAttribute attributes;
 	@SuppressWarnings("unused")
 	private String label;
 
-	public AirportTag(EfmlTagsAttribute efmlAttributes) {
+	/**
+	 * initial boxes on workspace
+	 */
+
+	private ArrayList<FloatboxTag> boxes;
+
+	/**
+	 * initial arrows
+	 * 
+	 */
+
+	private ArrayList<ArrowTag> arrows;
+
+	public BoxspaceTag(EfmlTagsAttribute efmlAttributes) {
 		this.attributes = efmlAttributes;
 		this.label = "";
+		this.boxes = new ArrayList<FloatboxTag>();
+		this.arrows = new ArrayList<ArrowTag>();
 	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
 		writer.write("<script type=\"text/javascript\">");
 
-		writer.write("new Airport(");
+		writer.write("new Boxspace(");
 
 		writer.write("\""
 				+ StringEscape.escapeToJavaScript(attributes.getValueOrDefault(
@@ -77,6 +94,30 @@ public class AirportTag implements AnyTag {
 					+ "\")");
 		}
 
+		/**
+		 * boxes
+		 */
+
+		for (Iterator<FloatboxTag> it = boxes.iterator(); it.hasNext();) {
+			FloatboxTag box = it.next();
+
+			writer.write(".AddBox(");
+			box.createNew(writer, "");
+			writer.write(")");
+		}
+
+		/**
+		 * arrows
+		 */
+
+		for (Iterator<ArrowTag> it = arrows.iterator(); it.hasNext();) {
+			ArrowTag arrow = it.next();
+
+			writer.write(".AddRel(" + arrow.getSource() + ","
+					+ arrow.getTarget() + ")");
+
+		}
+
 		writer.write(".WriteHtml();");
 
 	}
@@ -91,9 +132,13 @@ public class AirportTag implements AnyTag {
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
 			this.label += ((PlainContent) innerTag).getPlainContent();
+		} else if (innerTag.getClass() == FloatboxTag.class) {
+			this.boxes.add((FloatboxTag) innerTag);
+		} else if (innerTag.getClass() == ArrowTag.class) {
+			this.arrows.add((ArrowTag) innerTag);
 		} else
 			throw new OperationNotSupportedException(
-					"<airport> cannot enclose "
+					"<boxspace> cannot enclose "
 							+ innerTag.getClass().toString());
 
 	}

@@ -1,6 +1,6 @@
 /**
- * PlainTag.java, (c) 2012, Immanuel Albrecht; Dresden University of
- * Technology, Professur für die Psychologie des Lernen und Lehrens
+ * ArrowTag.java, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
+ * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -24,59 +24,55 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements &lt;plain> tag for java script strings / plain content
+ * implements the &lt;arrow> tag for boxspaces
  * 
  * @author immanuel
  * 
  */
 
-public class PlainTag implements AnyTag, NestedTag {
-
-	private String content;
-	private String unescaped;
+public class ArrowTag implements AnyTag {
 	
-	public PlainTag() {
-		this.content = "";
-		this.unescaped = "";
+	@SuppressWarnings("unused")
+	private String token;
+	
+	private EfmlTagsAttribute attributes;
+	
+	public ArrowTag(EfmlTagsAttribute attributes) {
+		this.token = "";
+		this.attributes = attributes;
 	}
 	
-	public final String getContent() {
-		return content;
-	}
-	
-	public final String getPlainContent() {
-		return unescaped;
-	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		writer.write(content);
+		/**
+		 * noop
+		 */
 	}
 
 	@Override
 	public void close(Writer writer) throws IOException {
-
-
+		/**
+		 * noop
+		 */
 	}
 
-	@Override
-	public void createNew(Writer writer, String identificationToken) throws IOException {
-		writer.write("\"");
-		writer.write(StringEscape.escapeToJavaScript(unescaped));
-		writer.write("\"");
+	public String getSource() {
+		return attributes.getValueOrDefault("source", "");
+	}
 
+	public String getTarget() {
+		return attributes.getValueOrDefault("target", "");
 	}
 
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
-			this.unescaped += ((PlainContent) innerTag).getPlainContent();
-			this.content += ((PlainContent) innerTag).getContent();
+			this.token += ((PlainContent) innerTag).getContent();
 		} else
-			throw new OperationNotSupportedException(
-					"<plain> cannot enclose tags");
+			throw new OperationNotSupportedException("<arrow> cannot enclose "
+					+ innerTag.getClass().toString());
 	}
-
 
 }
