@@ -1,6 +1,6 @@
 /**
- * efmlboard.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
- * Professur für die Psychologie des Lernen und Lehrens
+ * efmlbuttons.js, (c) 2012, Immanuel Albrecht; Dresden University of
+ * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -16,52 +16,36 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-efmlBoardCounter = 0;
-efmlBoardArray = [];
+efmlButtonCounter = 0;
+efmlButtonArray = [];
 
 /**
- * creates an EfmlBoard object that can take efml code objects as children...
+ * creates an EfmlButton object
  */
 
-function EfmlBoard(name, tags, accept, reject) {
-	this.id = efmlBoardCounter++;
+function EfmlButton(contents, parent, fn) {
 
-	/**
-	 * Provide automatic name generation: use provided tags
-	 */
+	this.id = efmlButtonCounter++;
 
-	if ((name === undefined) || (name === "") || (name === false)) {
-		this.name = "";
-		for ( var i = 0; i < tags.length; ++i) {
-			this.name += tags[i];
-		}
-	} else {
+	this.width = null;
+	this.height = null;
 
-		this.name = name;
-	}
-
-	this.tags = tags;
-
-	this.width = "600px";
-	this.height = "800px";
-
-	this.accept = accept;
-	this.reject = reject;
-
-	this.buttons = [ new EfmlButton("Copy", this),
-			new EfmlButton("Paste", this), new EfmlButton("Export", this),
-			new EfmlButton("Import", this) ];
+	this.parent = parent;
 
 	/**
 	 * returns html code that represents this board
 	 */
 
 	this.GetHtmlCode = function() {
-		var html = "<div id=\"efmlBoard" + this.id + "\" ";
+		var html = "<div id=\"efmlButton" + this.id + "\" ";
 
 		html += " style=\"";
 		html += " display: inline-block;";
-		html += " background: #338866;";
+		html += " background: #EEEEEE;";
+		html += " border-style: solid; ";
+		html += " padding: 2px;";
+		html += " border-color: #000000;";
+
 		if (this.width)
 			html += " width: " + this.width + ";";
 		if (this.height)
@@ -69,16 +53,7 @@ function EfmlBoard(name, tags, accept, reject) {
 		html += "\"";
 		html += ">";
 
-		/**
-		 * control elements
-		 */
-
-		for ( var int = 0; int < this.buttons.length; int++) {
-			var button = this.buttons[int];
-			html += button.GetHtmlCode() + " ";
-		}
-
-		html += "<br />";
+		html += contents;
 
 		html += "</div>";
 		return html;
@@ -133,7 +108,7 @@ function EfmlBoard(name, tags, accept, reject) {
 	 */
 
 	this.GetElement = function() {
-		return document.getElementById("efmlBoard" + this.id);
+		return document.getElementById("efmlButton" + this.id);
 	};
 
 	/**
@@ -142,10 +117,12 @@ function EfmlBoard(name, tags, accept, reject) {
 
 	this.RegisterMouse = function() {
 
-		for ( var int = 0; int < this.buttons.length; int++) {
-			var button = this.buttons[int];
-			button.RegisterMouse();
-		}
+		addMouseClickHook("efmlButton" + this.id, 0, function(me) {
+			return function() {
+				me.OnClick();
+			};
+		}(this));
+
 	};
 
 	/**
@@ -153,24 +130,28 @@ function EfmlBoard(name, tags, accept, reject) {
 	 */
 
 	this.UnregisterMouse = function() {
-
-		for ( var int = 0; int < this.buttons.length; int++) {
-			var button = this.buttons[int];
-			button.UnregisterMouse();
-		}
-
 		var elt = this.GetElement();
 
-		clearMouseClickHooks("efmlBoard" + this.id);
+		clearMouseClickHooks("efmlButton" + this.id);
 		clearMouseClickHooks(elt);
 
-		clearMouseDownHooks("efmlBoard" + this.id);
+		clearMouseDownHooks("efmlButton" + this.id);
 		clearMouseDownHooks(elt);
 
-		clearMouseUpHooks("efmlBoard" + this.id);
+		clearMouseUpHooks("efmlButton" + this.id);
 		clearMouseUpHooks(elt);
 	};
 
-	efmlBoardArray[this.id] = this;
+	if (fn)
+		this.OnClick = fn;
+	else
+		/**
+		 * empty default click handler
+		 */
+		this.OnClick = function() {
+			alert("Pressed!!");
+		};
+
+	efmlButtonArray[this.id] = this;
 	return this;
-}
+};

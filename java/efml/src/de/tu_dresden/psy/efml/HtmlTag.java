@@ -57,7 +57,7 @@ public class HtmlTag implements AnyTag {
 				"dropdown.js", "checkbox.js", "radiobutton.js",
 				"popupbutton.js", "freetext.js", "boxspace.js", "trashcan.js",
 				"sentencepattern.js", "airport.js", "inference.js", "efml.js",
-				"efmlboard.js" };
+				"efmlbuttons.js", "efmlboard.js" };
 
 		for (int i = 0; i < javascript_includes.length; i++) {
 			writer.write("	<script type=\"text/javascript\" src=\"" + baseUrl
