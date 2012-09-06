@@ -48,9 +48,27 @@ function EfmlBoard(name, tags, accept, reject) {
 	this.accept = accept;
 	this.reject = reject;
 
-	this.buttons = [ new EfmlButton("Copy", this),
-			new EfmlButton("Paste", this), new EfmlButton("Export", this),
-			new EfmlButton("Import", this) ];
+	this.buttons = [ new EfmlButton("Copy", function(me) {
+		return function() {
+			me.Copy();
+		};
+	}(this)), new EfmlButton("Paste", function(me) {
+		return function() {
+			me.Paste();
+		};
+	}(this)), new EfmlButton("Cut", function(me) {
+		return function() {
+			me.Cut();
+		};
+	}(this)), new EfmlButton("Export", function(me) {
+		return function() {
+			me.Export();
+		};
+	}(this)), new EfmlButton("Import", function(me) {
+		return function() {
+			me.Import();
+		};
+	}(this)) ];
 
 	/**
 	 * returns html code that represents this board
@@ -170,6 +188,50 @@ function EfmlBoard(name, tags, accept, reject) {
 		clearMouseUpHooks("efmlBoard" + this.id);
 		clearMouseUpHooks(elt);
 	};
+	
+	/**
+	 * copy selected elements to clip board
+	 */
+	
+	this.Copy = function(){
+		//TODO
+	};
+	
+	/**
+	 * cut selected elements to clip board
+	 */
+	
+	this.Cut = function(){
+		this.Copy();
+		
+		//TODO
+	};
+	
+	/**
+	 * paste clip board elements at cursor position
+	 */
+	
+	this.Paste = function(){
+		//TODO
+	};
+	
+	/**
+	 * import elements (from file)
+	 */
+	
+	this.Import = function(){
+		//TODO
+	};
+	
+	/**
+	 * export selected elements (to file)
+	 */
+	
+	this.Export = function(){
+		//TODO
+	};
+	
+	
 
 	efmlBoardArray[this.id] = this;
 	return this;

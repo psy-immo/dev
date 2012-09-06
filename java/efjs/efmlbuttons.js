@@ -23,14 +23,14 @@ efmlButtonArray = [];
  * creates an EfmlButton object
  */
 
-function EfmlButton(contents, parent, fn) {
+function EfmlButton(contents, fn) {
 
 	this.id = efmlButtonCounter++;
 
 	this.width = null;
 	this.height = null;
 
-	this.parent = parent;
+	this.fn = fn;
 
 	/**
 	 * returns html code that represents this board
@@ -45,6 +45,14 @@ function EfmlButton(contents, parent, fn) {
 		html += " border-style: solid; ";
 		html += " padding: 2px;";
 		html += " border-color: #000000;";
+		html += " cursor:default;";
+		html += " -webkit-touch-callout: none;";
+		html += " -webkit-user-select: none;";
+		html += " -khtml-user-select: none;";
+		html += " -moz-user-select: none;";
+		html += " -ms-user-select: none;";
+		html += " user-select: none;";
+		
 
 		if (this.width)
 			html += " width: " + this.width + ";";
@@ -142,15 +150,14 @@ function EfmlButton(contents, parent, fn) {
 		clearMouseUpHooks(elt);
 	};
 
-	if (fn)
-		this.OnClick = fn;
-	else
-		/**
-		 * empty default click handler
-		 */
-		this.OnClick = function() {
-			alert("Pressed!!");
-		};
+	/**
+	 * click handler
+	 */
+	this.OnClick = function() {
+		DeselectAllText();
+		if (this.fn)
+			this.fn();
+	};
 
 	efmlButtonArray[this.id] = this;
 	return this;

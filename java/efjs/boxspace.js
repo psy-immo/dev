@@ -96,6 +96,8 @@ function FloatBox(style, content) {
 		html += " -moz-user-select: none;";
 		html += " -ms-user-select: none;";
 		html += " user-select: none;";
+		
+		html += " cursor:default;";
 		html += this.style;
 		html += "\" >";
 		html += this.content;
