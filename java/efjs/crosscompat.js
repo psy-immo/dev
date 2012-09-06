@@ -26,6 +26,18 @@ if (typeof String.prototype.trim !== 'function') {
   };
 }
 
+if (typeof String.prototype.trimLeft !== 'function') {
+	  String.prototype.trimLeft = function() {
+	    return this.replace(/^\s+/g, ''); 
+	  };
+	}
+
+if (typeof String.prototype.startsWith != 'function') {
+	  String.prototype.startsWith = function (str){
+	    return this.slice(0, str.length) == str;
+	  };
+	}
+
 /**
  * browser detection tweak
  */

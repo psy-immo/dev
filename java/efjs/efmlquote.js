@@ -1,5 +1,5 @@
 /**
- * efmltag.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
+ * efmlquote.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -16,30 +16,31 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-efmlTagCounter = 0;
-efmlTagArray = [];
-
 /**
- * common efml tag constructor
+ * creates a new efml quote string object
  */
-function EfmlTagConstructor(me) {
-	me.id = efmlTagCounter++;
+
+function EfmlQuote(efmlcode) {
+	EfmlTagConstructor(this);
+	
+	this.efmlcode = efmlcode;
 	
 	/**
 	 * @returns efml code of this tag
 	 */
 	
-	me.GetEfml = function() {
-		return "";
+	this.GetEfml = function(){
+		return this.efmlcode;
 	};
 	
 	/**
 	 * @returns string that can be used to factor another instance of this object
 	 */
+		
 	
-	me.GetDescription = function() {
-		return "";
+	this.GetDescription = function(){
+		return "EfmlQuote "+escapeBTNR(this.efmlcode);
 	};
 	
-	efmlTagArray[me.id] = me;	
-}
+	return this;	
+};

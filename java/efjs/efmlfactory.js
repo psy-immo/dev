@@ -21,5 +21,10 @@
  */
 
 function NewEfmlTag(description) {
+	var trimmed = description.trimLeft();
+	if (trimmed.startsWith("EfmlQuote ")) {
+		return new EfmlQuote(unescapeBTNR(trimmed.substr(10)));
+	}
 	
+	return null;
 };
