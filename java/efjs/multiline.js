@@ -22,7 +22,7 @@ var multilineArray = [];
 /**
  * creates a free text field object
  */
-function Multiline(name, tags, label) {
+function Multiline(name, tags, label, embeddedMode) {
 	this.id = multilineIdCounter++;
 
 	/**
@@ -31,7 +31,7 @@ function Multiline(name, tags, label) {
 
 	if ((name === undefined) || (name === "") || (name === false)) {
 		this.name = "";
-		for (var i = 0; i < tags.length; ++i) {
+		for ( var i = 0; i < tags.length; ++i) {
 			this.name += tags[i];
 		}
 	} else {
@@ -39,25 +39,21 @@ function Multiline(name, tags, label) {
 	}
 
 	this.tags = tags;
-		
-	
+
 	if (label === undefined) {
 		this.label = "";
 	} else {
 		this.label = label;
 	}
-	
+
 	this.token = this.label;
 
-	
 	this.respawn = null;
 	this.width = "";
 	this.height = "";
 	this.colorEmpty = "#CCCCAA";
 	this.colorFilled = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
-	
-
 
 	/**
 	 * this function sets the bounding parameters
@@ -70,8 +66,6 @@ function Multiline(name, tags, label) {
 
 		return this;
 	};
-
-
 
 	/**
 	 * this function sets the color parameters
@@ -89,62 +83,61 @@ function Multiline(name, tags, label) {
 	 * write the HTML code that will be used for displaying the drop down
 	 */
 	this.WriteHtml = function() {
-		var idstring = "multiline"+this.id;
-		
-		document.write("<form onsubmit=\"return false;\" style=\"display: inline-block;\">");
-		
-		document.write("<textarea name=\""+idstring+ "\" id=\""+idstring+"\" "
-				+ "style=\"display: inline-block; ");
+		var idstring = "multiline" + this.id;
+
+		document
+				.write("<form onsubmit=\"return false;\" style=\"display: inline-block;\">");
+
+		document.write("<textarea name=\"" + idstring + "\" id=\"" + idstring
+				+ "\" " + "style=\"display: inline-block; ");
 		if (this.width) {
-			document.write("width: "+this.width+"; ");
+			document.write("width: " + this.width + "; ");
 		}
-		if (this.height){
-			document.write("height: "+this.height+"; ");
+		if (this.height) {
+			document.write("height: " + this.height + "; ");
 		}
-		
-		
-		
+
 		var color = this.colorEmpty;
-		
+
 		if (this.token) {
 			color = this.colorFilled;
 		}
-		
-		document.write( "background-color: "+color+";\" "		
-				+ "onchange=\"multilineArray["+this.id+"].OnChange();\" "
+
+		document.write("background-color: " + color + ";\" "
+				+ "onchange=\"multilineArray[" + this.id + "].OnChange();\" "
 				+ "/>");
-		
+
 		document.write(this.token);
 		document.write("</textarea>");
 		document.write("</form>");
 	};
-	
+
 	/**
 	 * this function is called when the input field changed its contents
 	 */
 	this.OnChange = function() {
-		var element = document.getElementById("multiline"+this.id);
-		
+		var element = document.getElementById("multiline" + this.id);
+
 		var old = this.token;
-		
+
 		this.token = element.value;
-		
+
 		if (old != this.token) {
 			myLogger.Log(this.name + " <- " + this.token);
-			
+
 			/**
 			 * also update the coloring
 			 */
-			
+
 			this.MarkNeutral();
 		}
 	};
-	
+
 	/**
 	 * this function is called on each myStorage.StoreIn run
 	 */
 	this.Tick = function() {
-		var element = document.getElementById("multiline"+this.id);
+		var element = document.getElementById("multiline" + this.id);
 		var value = element.value;
 		if (this.token != value)
 			this.OnChange();
@@ -169,42 +162,49 @@ function Multiline(name, tags, label) {
 			element.style.backgroundColor = this.colorEmpty;
 		}
 	};
-	
+
 	/**
 	 * return the current contents of the input field as string
 	 */
 	this.GetValue = function() {
-		
+
 		return this.token;
 	};
-	
+
 	/**
 	 * restore the input field from string
 	 */
-	
+
 	this.SetValue = function(contents) {
-		var element = document.getElementById("multiline"+this.id);
-		
+		var element = document.getElementById("multiline" + this.id);
+
 		if (contents === undefined) {
 			contents = "";
 		}
-		
-		element.value = contents;		
+
+		element.value = contents;
 		this.token = contents;
-		
+
 		/**
 		 * also update the coloring
 		 */
-		
+
 		this.MarkNeutral();
 	};
 
 	multilineArray[this.id] = this;
-	myTags.Add(this, this.tags);
-	
-	myStorage.RegisterField(this,"multilineArray["+this.id+"]");
-	myStorage.RequestTicks(this);
-	
+
+	/**
+	 * if we use this control as part of another control we may want to be able
+	 * to override the save method and tag stuff
+	 */
+
+	if (!emdebbedMode) {
+		myTags.Add(this, this.tags);
+
+		myStorage.RegisterField(this, "multilineArray[" + this.id + "]");
+		myStorage.RequestTicks(this);
+	}
+
 	return this;
 }
-

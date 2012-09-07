@@ -23,7 +23,7 @@ efmlBoardArray = [];
  * creates an EfmlBoard object that can take efml code objects as children...
  */
 
-function EfmlBoard(name, tags, accept, reject) {
+function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	this.id = efmlBoardCounter++;
 
 	/**
@@ -188,51 +188,108 @@ function EfmlBoard(name, tags, accept, reject) {
 		clearMouseUpHooks("efmlBoard" + this.id);
 		clearMouseUpHooks(elt);
 	};
-	
+
 	/**
 	 * copy selected elements to clip board
 	 */
-	
-	this.Copy = function(){
-		//TODO
+
+	this.Copy = function() {
+		// TODO
 	};
-	
+
 	/**
 	 * cut selected elements to clip board
 	 */
-	
-	this.Cut = function(){
+
+	this.Cut = function() {
 		this.Copy();
-		
-		//TODO
+
+		// TODO
 	};
-	
+
 	/**
 	 * paste clip board elements at cursor position
 	 */
-	
-	this.Paste = function(){
-		//TODO
+
+	this.Paste = function() {
+		// TODO
 	};
-	
+
 	/**
 	 * import elements (from file)
 	 */
-	
-	this.Import = function(){
-		//TODO
+
+	this.Import = function() {
+		// TODO
 	};
-	
+
 	/**
 	 * export selected elements (to file)
 	 */
+
+	this.Export = function() {
+		// TODO
+	};
 	
-	this.Export = function(){
-		//TODO
+	/**
+	 * @returns efml code of this tag
+	 */
+
+	me.GetEfml = function() {
+		return "";
+	};
+	
+	/**
+	 * return the current contents as string
+	 */
+	this.GetValue = function() {
+		return escapeBTNR(this.GetDescription());
+	};
+
+	/**
+	 * restore from string
+	 */
+
+	this.SetValue = function(contents) {
+		var description = unescapeBTNR(contents);
+		
+		//TODO cntn here
+		
+		this.token = this.GetEfml();
+	};
+	
+	
+	
+	/**
+	 * this function is called on each myStorage.StoreIn run
+	 */
+	this.Tick = function() {
+		this.token = this.GetEfml();
+		this.UpdateVolatile();
 	};
 	
 	
 
+	
+
 	efmlBoardArray[this.id] = this;
+
+	/**
+	 * if we use this control as part of another control we may want to be able
+	 * to override the save method and tag stuff
+	 */
+
+	if (!emdebbedMode) {
+		myTags.Add(this, this.tags);
+
+		myStorage.RegisterField(this, "efmlBoardArray[" + this.id + "]");
+
+		/**
+		 * we might embed freetext or multiline controls and thus request auto
+		 * save ticks
+		 */
+		myStorage.RequestTicks(this);
+	}
+
 	return this;
 }

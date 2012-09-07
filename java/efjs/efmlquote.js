@@ -18,10 +18,14 @@
 
 /**
  * creates a new efml quote string object
+ *
+ * accept and reject tags are ignored
  */
 
-function EfmlQuote(efmlcode) {
+function EfmlQuote(efmlcode, tags, accept, reject) {
 	EfmlTagConstructor(this);
+	
+	this.tags = tags;
 	
 	this.efmlcode = efmlcode;
 	

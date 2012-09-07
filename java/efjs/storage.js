@@ -25,9 +25,9 @@ function Storage() {
 	this.dataFields = [];
 	this.dataFieldNames = [];
 	this.localOnlyDataFields = [];
-	
+
 	this.tickingFields = [];
-	
+
 	this.storageInterval = null;
 
 	/**
@@ -87,16 +87,16 @@ function Storage() {
 
 		this.dataFields.push(datafield);
 		this.dataFieldNames.push(good_name);
-		
+
 		if (onlylocal) {
 			this.localOnlyDataFields.push(datafield);
 		}
 	};
-	
+
 	/**
 	 * request to be regularly ticked before auto-storage
 	 */
-	
+
 	this.RequestTicks = function(datafield) {
 		if (this.tickingFields.lastIndexOf(datafield) < 0) {
 			this.tickingFields.push(datafield);
@@ -109,16 +109,22 @@ function Storage() {
 	 */
 
 	this.StoreIn = function(storage, name) {
-		/* forced crash down interferes with auto save feature ! */
 		
-		
+		/**
+		 * update "volatile" input elements
+		 */
+
 		for ( var int = 0; int < this.tickingFields.length; int++) {
 			var obj = this.tickingFields[int];
-			
+
 			if (obj.Tick) {
 				obj.Tick();
 			}
 		}
+		
+		/**
+		 * store in database and/or locally
+		 */
 
 		for ( var int = 0; int < this.dataFieldNames.length; int++) {
 			var obj = this.dataFields[int];
@@ -134,7 +140,8 @@ function Storage() {
 					/** local storage not working */
 				}
 
-				if ((this.useLoglet())&&(this.localOnlyDataFields.lastIndexOf(obj) == -1)) {
+				if ((this.useLoglet())
+						&& (this.localOnlyDataFields.lastIndexOf(obj) == -1)) {
 					/**
 					 * use server storage too
 					 */
@@ -175,7 +182,8 @@ function Storage() {
 				var spacedname = name + "---" + this.dataFieldNames[int];
 				var keyname = "myStorage" + spacedname;
 
-				if (this.useLoglet()&&(this.localOnlyDataFields.lastIndexOf(obj) == -1)) {
+				if (this.useLoglet()
+						&& (this.localOnlyDataFields.lastIndexOf(obj) == -1)) {
 
 					if (spacedname in server_entries) {
 						var v = server_entries[spacedname];
@@ -204,6 +212,16 @@ function Storage() {
 	};
 
 	/**
+	 * this is called periodically and before answer checking...
+	 */
+
+	this.AutoUpdateAndStore = function() {
+
+		myStorage.StoreIn(myStorageLocation, myStorageName);
+
+	};
+
+	/**
 	 * set up automatic storage and restoring of contents
 	 */
 	this.SetupAutoRestore = function(storage, name) {
@@ -221,16 +239,13 @@ function Storage() {
 		};
 
 		myStorage.RestoreFrom(myStorageLocation, myStorageName);
-		
+
 		/**
 		 * periodically save current page state
 		 */
-		
-		this.storageInterval = setInterval(function(){
-			
-			myStorage.StoreIn(myStorageLocation, myStorageName);
-			
-		}, 5000+Math.floor(Math.random()*500));
+
+		this.storageInterval = setInterval(this.AutoUpdateAndStore, 5000 + Math
+				.floor(Math.random() * 500));
 	};
 
 }

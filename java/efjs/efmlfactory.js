@@ -17,13 +17,14 @@
  */
 
 /**
- * creates a new efml tag object according to the description string
+ * creates a new efml tag object according to the description string,
+ * tags, accept and reject are given to propagate
  */
 
-function NewEfmlTag(description) {
+function NewEfmlTag(description, tags, accept, reject) {
 	var trimmed = description.trimLeft();
 	if (trimmed.startsWith("EfmlQuote ")) {
-		return new EfmlQuote(unescapeBTNR(trimmed.substr(10)));
+		return new EfmlQuote(unescapeBTNR(trimmed.substr(10)),tags);
 	}
 	
 	return null;

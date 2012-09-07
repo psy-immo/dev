@@ -24,22 +24,24 @@ efmlTagArray = [];
  */
 function EfmlTagConstructor(me) {
 	me.id = efmlTagCounter++;
-	
+
 	/**
 	 * @returns efml code of this tag
 	 */
-	
+
 	me.GetEfml = function() {
 		return "";
 	};
-	
+
 	/**
-	 * @returns string that can be used to factor another instance of this object
+	 * @returns string that can be used to factor another instance of this
+	 *          object
 	 */
-	
+
 	me.GetDescription = function() {
 		return "";
 	};
-	
-	efmlTagArray[me.id] = me;	
+
+
+	efmlTagArray[me.id] = me;
 }
