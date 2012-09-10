@@ -70,6 +70,38 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		};
 	}(this)) ];
 
+	this.html_created = false;
+
+	this.contents = [];
+
+	this.cursor = 0.5;
+	this.selected = [];
+
+	/**
+	 * sets the contents
+	 */
+
+	this.SetContents = function(data) {
+		this.contents = [];
+		this.selected = [];
+
+		var elements = data.split("\n");
+
+		for ( var int = 0; int < elements.length; int++) {
+			var content_block = elements[int];
+
+			this.contents.push(NewEfmlTag(content_block, this.name + "[" + int
+					+ "]", this.tags, this.accept, this.reject));
+			this.selected.push(false);
+		}
+
+		this.cursor = this.contents.length - 0.5;
+
+		this.token = this.GetEfml();
+
+		return this;
+	};
+
 	/**
 	 * returns html code that represents this board
 	 */
@@ -110,6 +142,8 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		document.write(this.GetHtmlCode());
 
 		this.RegisterMouse();
+
+		this.html_created = true;
 	};
 
 	/**
@@ -194,7 +228,19 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 
 	this.Copy = function() {
-		// TODO
+		var data = "";
+
+		for ( var int = 0; int < this.contents.length; int++) {
+			var block = this.contents[int];
+
+			if (this.selected[int]) {
+
+				if (data)
+					data += "\n";
+
+				data += block.GetDescription();
+			}
+		}
 	};
 
 	/**
@@ -230,20 +276,51 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	this.Export = function() {
 		// TODO
 	};
-	
+
 	/**
 	 * @returns efml code of this tag
 	 */
 
-	me.GetEfml = function() {
-		return "";
+	this.GetEfml = function() {
+		var data = "";
+
+		for ( var int = 0; int < this.contents.length; int++) {
+			var block = this.contents[int];
+
+			if (data)
+				data += "\n";
+
+			data += block.GetEfml();
+		}
+
+		return data;
 	};
-	
+
+	/**
+	 * @returns string that can be used to factor another instance of this
+	 *          object
+	 */
+
+	this.GetDescription = function() {
+		var data = "";
+
+		for ( var int = 0; int < this.contents.length; int++) {
+			var block = this.contents[int];
+
+			if (data)
+				data += "\n";
+
+			data += block.GetDescription();
+		}
+
+		return "EfmlBoard " + escapeBTNR(data);
+	};
+
 	/**
 	 * return the current contents as string
 	 */
 	this.GetValue = function() {
-		return escapeBTNR(this.GetDescription());
+		return this.GetDescription().substr(10);
 	};
 
 	/**
@@ -252,14 +329,10 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 	this.SetValue = function(contents) {
 		var description = unescapeBTNR(contents);
-		
-		//TODO cntn here
-		
-		this.token = this.GetEfml();
+
+		this.SetContents(description);
 	};
-	
-	
-	
+
 	/**
 	 * this function is called on each myStorage.StoreIn run
 	 */
@@ -267,10 +340,6 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		this.token = this.GetEfml();
 		this.UpdateVolatile();
 	};
-	
-	
-
-	
 
 	efmlBoardArray[this.id] = this;
 
@@ -279,7 +348,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 * to override the save method and tag stuff
 	 */
 
-	if (!emdebbedMode) {
+	if (!embeddedMode) {
 		myTags.Add(this, this.tags);
 
 		myStorage.RegisterField(this, "efmlBoardArray[" + this.id + "]");

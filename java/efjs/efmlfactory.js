@@ -21,10 +21,14 @@
  * tags, accept and reject are given to propagate
  */
 
-function NewEfmlTag(description, tags, accept, reject) {
+function NewEfmlTag(description, name, tags, accept, reject) {
 	var trimmed = description.trimLeft();
 	if (trimmed.startsWith("EfmlQuote ")) {
 		return new EfmlQuote(unescapeBTNR(trimmed.substr(10)),tags);
+	}
+	if (trimmed.startsWith("EfmlBoard ")) {
+		var block = new EfmlBlock(name,tags,accept,reject,true);
+		return block.SetContents(unescapeBTNR(trimmed.substr(10)));
 	}
 	
 	return null;
