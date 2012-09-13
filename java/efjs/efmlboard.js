@@ -70,8 +70,6 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		};
 	}(this)) ];
 
-	this.html_created = false;
-
 	this.contents = [];
 
 	this.cursor = 0.5;
@@ -103,6 +101,34 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	};
 
 	/**
+	 * returns the html code for the contents
+	 */
+
+	this.GetContentsHtmlCode = function() {
+		var html = "";
+
+		html += "<table id=\"efmlBoardContents" + this.id + "\"";
+		html += "style=\"";
+		html += "\">";
+
+		for ( var int = 0; int < this.contents.length; int++) {
+			var object = this.contents[int];
+
+			html += "<tr id=\"efmlBoardContents" + this.id + "[" + int + "]\">";
+			html += "<td>";
+
+			html += object.GetHtmlCode();
+
+			html += "</td>";
+			html += "</tr>";
+		}
+
+		html += "</table>";
+
+		return html;
+	};
+
+	/**
 	 * returns html code that represents this board
 	 */
 
@@ -129,6 +155,8 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		}
 
 		html += "<br />";
+
+		html += this.GetContentsHtmlCode();
 
 		html += "</div>";
 		return html;
@@ -198,6 +226,12 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			var button = this.buttons[int];
 			button.RegisterMouse();
 		}
+
+		for ( var int = 0; int < this.contents.length; int++) {
+			var object = this.contents[int];
+
+			object.RegisterMouse();
+		}
 	};
 
 	/**
@@ -210,6 +244,13 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			var button = this.buttons[int];
 			button.UnregisterMouse();
 		}
+		
+		for ( var int = 0; int < this.contents.length; int++) {
+			var object = this.contents[int];
+
+			object.UnregisterMouse();
+		}
+		
 
 		var elt = this.GetElement();
 

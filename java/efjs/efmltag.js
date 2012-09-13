@@ -42,6 +42,27 @@ function EfmlTagConstructor(me) {
 		return "";
 	};
 
+	/**
+	 * @returns control html code
+	 */
+
+	me.GetHtmlCode = function() {
+		return "<div>EfmlTag</div>";
+	};
+
+	/**
+	 * this function registers the mouse hooks for this object
+	 */
+
+	this.RegisterMouse = function() {
+	};
+
+	/**
+	 * this function removes the mouse hooks for this object
+	 */
+
+	this.UnregisterMouse = function() {
+	};
 
 	efmlTagArray[me.id] = me;
 }
