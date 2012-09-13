@@ -88,8 +88,9 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		for ( var int = 0; int < elements.length; int++) {
 			var content_block = elements[int];
 
-			this.contents.push(NewEfmlTag(content_block, this.name + "[" + int
-					+ "]", this.tags, this.accept, this.reject));
+			this.contents.push(NewEfmlTag(content_block, this.name
+					+ ".contents[" + int + "]", this.tags, this.accept,
+					this.reject));
 			this.selected.push(false);
 		}
 
@@ -109,6 +110,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 		html += "<table id=\"efmlBoardContents" + this.id + "\"";
 		html += "style=\"";
+		html += " width: 100%;";
 		html += "\">";
 
 		for ( var int = 0; int < this.contents.length; int++) {
@@ -244,13 +246,12 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			var button = this.buttons[int];
 			button.UnregisterMouse();
 		}
-		
+
 		for ( var int = 0; int < this.contents.length; int++) {
 			var object = this.contents[int];
 
 			object.UnregisterMouse();
 		}
-		
 
 		var elt = this.GetElement();
 
@@ -394,11 +395,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 		myStorage.RegisterField(this, "efmlBoardArray[" + this.id + "]");
 
-		/**
-		 * we might embed freetext or multiline controls and thus request auto
-		 * save ticks
-		 */
-		myStorage.RequestTicks(this);
+		
 	}
 
 	return this;

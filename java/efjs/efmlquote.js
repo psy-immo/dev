@@ -46,5 +46,35 @@ function EfmlQuote(efmlcode, tags, accept, reject) {
 		return "EfmlQuote "+escapeBTNR(this.efmlcode);
 	};
 	
+	/**
+	 * @returns control html code
+	 */
+
+	this.GetHtmlCode = function() {
+		var html = "<div style=\"";
+		//html += " display: inline-block;";
+		html += " background: #FFFFFF;";
+		html += " font-family: 'Courier New', Courier, monospace;";
+		html += " color: #0000FF;";
+		html += "\">";
+		html += "<span style=\"color: #222222;";
+		html += " background: #DDDDDD;";
+		html += " font-family: 'Times New Roman', Times, serif;";
+		html += " font-size: 70%;";
+		html += "\">";
+		
+		html += "efml code";
+		
+		html += "</span>";
+		html += "<br/>";
+		
+		html += escapeSome(this.efmlcode);
+			
+		html += "</div>";
+		
+		return html;
+	};
+
+	
 	return this;	
 };

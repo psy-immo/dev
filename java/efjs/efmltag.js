@@ -54,14 +54,14 @@ function EfmlTagConstructor(me) {
 	 * this function registers the mouse hooks for this object
 	 */
 
-	this.RegisterMouse = function() {
+	me.RegisterMouse = function() {
 	};
 
 	/**
 	 * this function removes the mouse hooks for this object
 	 */
 
-	this.UnregisterMouse = function() {
+	me.UnregisterMouse = function() {
 	};
 
 	efmlTagArray[me.id] = me;
