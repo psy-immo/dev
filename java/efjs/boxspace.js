@@ -1142,6 +1142,16 @@ function Boxspace(name, tags, accept, reject) {
 		}
 
 		this.relation = parts[1 + 3 * count].split(";");
+		
+		if (this.relation[0] == "") {
+			/**
+			 * no arrows, thus this.relation == [""]
+			 * 
+			 * remove artefact
+			 */
+			this.relation = [];
+		}
+		
 		this.UpdateArrows();
 
 	};
@@ -1156,7 +1166,6 @@ function Boxspace(name, tags, accept, reject) {
 		this.arrows = [];
 		for ( var int = 0; int < this.relation.length; ++int) {
 			
-			console.log("at"+this.relation[int]);
 			
 			var parts = this.relation[int].split(",");
 			var src = this.contents[parseInt(parts[0])];
