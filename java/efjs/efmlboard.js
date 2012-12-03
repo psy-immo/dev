@@ -26,6 +26,8 @@ efmlBoardArray = [];
 function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	this.id = efmlBoardCounter++;
 
+	this.html_created = false;
+
 	/**
 	 * Provide automatic name generation: use provided tags
 	 */
@@ -106,6 +108,48 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	};
 
 	/**
+	 * updates the display of the selection status
+	 */
+
+	this.UpdateSelectionHighlighting = function() {
+		if (this.html_created) {
+			for ( var int = 0; int < this.selected.length; int++) {
+				var is_selected = this.selected[int];
+
+				var marker_element = document
+						.getElementById("efmlBoardContents" + this.id + "["
+								+ int + "].selected");
+
+				if (is_selected)
+					marker_element.style.background = "#88FFDD";
+				else
+					marker_element.style.background = "#338866";
+			}
+		}
+	};
+
+	/**
+	 * updates the display of the cursor position
+	 */
+
+	this.UpdateCursorHighlighting = function() {
+		if (this.html_created) {
+			for ( var int = 0; int < this.selected.length + 1; int++) {
+				var is_selected = int == this.cursor;
+
+				var marker_element = document
+						.getElementById("efmlBoardContents" + this.id + ".Gap["
+								+ int + "]");
+
+				if (is_selected)
+					marker_element.style.background = "#88FFDD";
+				else
+					marker_element.style.background = "#338866";
+			}
+		}
+	};
+
+	/**
 	 * returns the html code for the contents
 	 */
 
@@ -116,8 +160,9 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		html += "style=\"";
 		html += " width: 100%;";
 		html += "\">";
-		
-		html += "<tr id=\"efmlBoardContents" + this.id + ".Gap[0]\" style=\"height: 4px;";
+
+		html += "<tr id=\"efmlBoardContents" + this.id
+				+ ".Gap[0]\" style=\"height: 4px;";
 		if (this.cursor == 0)
 			html += " background: #88FFDD;";
 		else
@@ -142,9 +187,9 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			if (is_selected)
 				html += " background: #88FFDD;";
 			else
-				html += " background: #338866;";				
+				html += " background: #338866;";
 			html += "\">";
-			
+
 			html += "</td>";
 
 			/** the object itself */
@@ -155,10 +200,10 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 			html += "</td>";
 			html += "</tr>";
-			
-			
-			html += "<tr id=\"efmlBoardContents" + this.id + ".Gap["+(int+1)+"]\" style=\"height: 4px;";
-			if (this.cursor == int+1)
+
+			html += "<tr id=\"efmlBoardContents" + this.id + ".Gap["
+					+ (int + 1) + "]\" style=\"height: 4px;";
+			if (this.cursor == int + 1)
 				html += " background: #88FFDD;";
 			else
 				html += " background: #338866;";
