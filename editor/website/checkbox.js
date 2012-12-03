@@ -22,7 +22,7 @@ var checkboxArray = [];
 /**
  * creates a check box object, that represents a check box list
  */
-function Checkbox(name, tags, label, tokenChecked, tokenUnchecked) {
+function Checkbox(name, tags, label, tokenChecked, tokenUnchecked, embeddedMode) {
 	this.id = checkboxIdCounter++;
 
 	/**
@@ -31,7 +31,7 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked) {
 
 	if ((name === undefined) || (name === "") || (name === false)) {
 		this.name = "";
-		for (var i = 0; i < tags.length; ++i) {
+		for ( var i = 0; i < tags.length; ++i) {
 			this.name += tags[i];
 		}
 	} else {
@@ -44,29 +44,27 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked) {
 	} else {
 		this.tokenChecked = tokenChecked;
 	}
-	
+
 	if (tokenUnchecked === undefined) {
 		this.tokenUnchecked = "";
 	} else {
 		this.tokenUnchecked = tokenUnchecked;
 	}
-	
+
 	this.token = this.tokenUnchecked;
-	
+
 	if (label === undefined) {
 		this.label = "";
 	} else {
 		this.label = label;
 	}
-	
+
 	this.width = "";
 	this.height = "";
 	this.colorEmpty = "#CCCCAA";
 	this.colorFilled = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
-	
 
-	
 	/**
 	 * this function sets the bounding parameters
 	 * 
@@ -78,8 +76,6 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked) {
 
 		return this;
 	};
-
-
 
 	/**
 	 * this function sets the color parameters
@@ -97,51 +93,56 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked) {
 	 * write the HTML code that will be used for displaying the check box
 	 */
 	this.WriteHtml = function() {
-		var idstring = "checkbox"+this.id;
-		
-		document.write("<form id=\"checkboxForm"+this.id+"\" onsubmit=\"return false;\" style=\"display: inline-block;"+
-				"background-color: "+this.colorFilled +";"+
-				"\" onclick=\"checkboxArray["+this.id+"].OnClick();\">");
-		
-		document.write("<input type=\"checkbox\" name=\""+idstring+ "\" id=\""+idstring+"\" " 
+		var idstring = "checkbox" + this.id;
+
+		document
+				.write("<form id=\"checkboxForm"
+						+ this.id
+						+ "\" onsubmit=\"return false;\" style=\"display: inline-block;"
+						+ "background-color: " + this.colorFilled + ";"
+						+ "\" onclick=\"checkboxArray[" + this.id
+						+ "].OnClick();\">");
+
+		document.write("<input type=\"checkbox\" name=\"" + idstring
+				+ "\" id=\"" + idstring + "\" "
 				+ "style=\"display: inline-block; ");
 		if (this.width) {
-			document.write("width: "+this.width+"; ");
+			document.write("width: " + this.width + "; ");
 		}
-		if (this.height){
-			document.write("height: "+this.height+"; ");
+		if (this.height) {
+			document.write("height: " + this.height + "; ");
 		}
-		document.write( "background-color: "+this.colorFilled +";\" "		
-				+ "onclick=\"checkboxArray["+this.id+"].OnClick();\" "
+		document.write("background-color: " + this.colorFilled + ";\" "
+				+ "onclick=\"checkboxArray[" + this.id + "].OnClick();\" "
 				+ " />");
-		
+
 		document.write(this.label);
-		
+
 		document.write("</form>");
 	};
-	
+
 	/**
 	 * this function is called when the check box box changes its contents
 	 */
 	this.OnChange = function() {
-		var element = document.getElementById("checkbox"+this.id);
+		var element = document.getElementById("checkbox" + this.id);
 		var checked = element.checked;
-		
+
 		if (checked) {
 			this.token = this.tokenChecked;
 		} else {
 			this.token = this.tokenUnchecked;
 		}
-				
+
 		this.MarkNeutral();
 		myLogger.Log(this.name + " <- " + this.token);
 	};
-	
+
 	/**
 	 * this function is called when the check box is clicked
 	 */
 	this.OnClick = function() {
-		var element = document.getElementById("checkbox"+this.id);
+		var element = document.getElementById("checkbox" + this.id);
 		element.checked = !element.checked;
 		this.OnChange();
 	};
@@ -160,25 +161,25 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked) {
 	this.MarkNeutral = function() {
 		var element = document.getElementById("checkboxForm" + this.id);
 		element.style.backgroundColor = this.colorFilled;
-		
+
 	};
-	
+
 	/**
 	 * return the current contents of the check box as string
 	 */
 	this.GetValue = function() {
-		var element = document.getElementById("checkbox"+this.id);
+		var element = document.getElementById("checkbox" + this.id);
 		if (element.checked)
 			return "X";
 		return "";
 	};
-	
+
 	/**
 	 * restore the check box state from string
 	 */
-	
+
 	this.SetValue = function(contents) {
-		var element = document.getElementById("checkbox"+this.id);
+		var element = document.getElementById("checkbox" + this.id);
 		if (contents == "") {
 			element.checked = false;
 			this.token = this.tokenUnchecked;
@@ -186,13 +187,20 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked) {
 			element.checked = true;
 			this.token = this.tokenChecked;
 		}
-			
-	
+
 	};
 
 	checkboxArray[this.id] = this;
-	myTags.Add(this, this.tags);
-	
-	myStorage.RegisterField(this,"checkboxArray["+this.id+"]");
-}
 
+	/**
+	 * if we use this control as part of another control we may want to be able
+	 * to override the save method and tag stuff
+	 */
+	if (!embeddedMode) {
+		myTags.Add(this, this.tags);
+
+		myStorage.RegisterField(this, "checkboxArray[" + this.id + "]");
+	}
+
+	return this;
+}

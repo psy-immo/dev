@@ -96,6 +96,8 @@ function FloatBox(style, content) {
 		html += " -moz-user-select: none;";
 		html += " -ms-user-select: none;";
 		html += " user-select: none;";
+		
+		html += " cursor:default;";
 		html += this.style;
 		html += "\" >";
 		html += this.content;
@@ -445,9 +447,6 @@ function FloatBox(style, content) {
 		var right = left + jq_div.outerWidth();
 		var bottom = top + jq_div.outerHeight();
 
-		console.log("left: " + left + " top:" + top + " right:" + right
-				+ " bottom:" + bottom);
-		console.log("x:" + x + " y:" + y);
 
 		if (x < left)
 			return false;
@@ -1143,6 +1142,16 @@ function Boxspace(name, tags, accept, reject) {
 		}
 
 		this.relation = parts[1 + 3 * count].split(";");
+		
+		if (this.relation[0] == "") {
+			/**
+			 * no arrows, thus this.relation == [""]
+			 * 
+			 * remove artefact
+			 */
+			this.relation = [];
+		}
+		
 		this.UpdateArrows();
 
 	};
@@ -1156,6 +1165,8 @@ function Boxspace(name, tags, accept, reject) {
 			this.arrows[int].Remove();
 		this.arrows = [];
 		for ( var int = 0; int < this.relation.length; ++int) {
+			
+			
 			var parts = this.relation[int].split(",");
 			var src = this.contents[parseInt(parts[0])];
 			var tar = this.contents[parseInt(parts[1])];

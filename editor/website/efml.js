@@ -102,11 +102,25 @@ function EfmlPreviewButton(atags, rtags, text) {
 	 */
 
 	this.UpdateContents = function() {
+		
+		
+		/**
+		 * update / save user input values
+		 */
+		
+		myStorage.AutoUpdateAndStore();
+		
+
+		/**
+		 * ..and now preview & compile
+		 */
+		
 		var applet = document.getElementById("efmlApplet");
 
 		/**
 		 * grab efml data
 		 */
+		
 		var efml_parts = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
 
 		var efml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"

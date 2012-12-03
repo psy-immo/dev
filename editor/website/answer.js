@@ -109,6 +109,16 @@ function Answer(testfn) {
 				return;
 			}
 		}
+		
+		/**
+		 * update / save user input values
+		 */
+		
+		myStorage.AutoUpdateAndStore();
+		
+		/**
+		 * check the answer
+		 */
 
 		if (this.testfn()) {
 

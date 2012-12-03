@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd $(dirname $0)
+
+cd java
+ant -f javadoc.xml

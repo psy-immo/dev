@@ -22,7 +22,7 @@ var radiobuttonArray = [];
 /**
  * creates a radio button object, that represents a radio button list
  */
-function RadioButton(name, tags, type, token) {
+function RadioButton(name, tags, type, token, embeddedMode) {
 	this.id = radiobuttonIdCounter++;
 
 	/**
@@ -144,7 +144,7 @@ function RadioButton(name, tags, type, token) {
 			if (this.type == "form") {
 				document.write(this.label + "<br />");
 			} else {
-				document.write("<td>"+this.label + "</td>");
+				document.write("<td>" + this.label + "</td>");
 			}
 		}
 
@@ -259,7 +259,16 @@ function RadioButton(name, tags, type, token) {
 	};
 
 	radiobuttonArray[this.id] = this;
-	myTags.Add(this, this.tags);
+	
+	/**
+	 * if we use this control as part of another control we may want to be able
+	 * to override the save method and tag stuff
+	 */
+	if (!embeddedMode) {
+		myTags.Add(this, this.tags);
 
-	myStorage.RegisterField(this, "radiobuttonArray[" + this.id + "]");
+		myStorage.RegisterField(this, "radiobuttonArray[" + this.id + "]");
+	}
+	
+	return this;
 }

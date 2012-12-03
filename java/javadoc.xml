@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" author="true" classpath="." destdir="/home/immo/git/psyCode/doc/javadoc" doctitle="EFML with Inference JavaDoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="de.tu_dresden.psy.inference.regexp.xml,de.tu_dresden.psy.inference.regexp,de.tu_dresden.psy.inference.forms,de.tu_dresden.psy.inference.example,de.tu_dresden.psy.efml.editor,de.tu_dresden.psy.inference,de.tu_dresden.psy.regexp,de.tu_dresden.psy.efml" source="1.7" sourcepath="/home/immo/git/psyCode/java/efml/src:/home/immo/git/psyCode/java/inference/src" splitindex="true" use="true" version="true">
+            <link href="file:/home/albrecht/git/psyCode/doc/javadoc/"/>
+        </javadoc>
+    </target>
+</project>

@@ -81,8 +81,8 @@ function Hover() {
 	this.lMovePlane = function() {
 		var pl = myHover.hover.GetElement().style;
 
-		pl.left = (mouseX + 1) + "px";
-		pl.top = (mouseY + 1) + "px";
+		pl.left = (mouseX + 5) + "px";
+		pl.top = (mouseY + 3) + "px";
 	};
 
 	

@@ -87,6 +87,8 @@ function Logger() {
 	myStorage.RegisterField(this,"Logger",true);
 	
 	this.Log("Site loaded: " + window.location.href + " on " + BrowserName());
+	
+	return this;
 }
 
 /**
