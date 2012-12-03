@@ -72,7 +72,11 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 	this.contents = [];
 
-	this.cursor = 0.5;
+	/**
+	 * we interpret the cursor position to point at the gap before the array
+	 * element that is referenced by its integer value
+	 */
+	this.cursor = 0;
 	this.selected = [];
 
 	/**
@@ -94,7 +98,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			this.selected.push(false);
 		}
 
-		this.cursor = this.contents.length - 0.5;
+		this.cursor = this.contents.length;
 
 		this.token = this.GetEfml();
 
@@ -112,15 +116,57 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		html += "style=\"";
 		html += " width: 100%;";
 		html += "\">";
+		
+		html += "<tr id=\"efmlBoardContents" + this.id + ".Gap[0]\" style=\"height: 4px;";
+		html += "  width: 1em;";
+		if (this.cursor == 0)
+			html += " background: #88FFDD;";
+		else
+			html += " background: #338866;";
+		html += "\">";
+		html += "<td>";
+		html += "</td>";
+		html += "</tr>";
 
 		for ( var int = 0; int < this.contents.length; int++) {
 			var object = this.contents[int];
+			var is_selected = this.selected[int];
 
 			html += "<tr id=\"efmlBoardContents" + this.id + "[" + int + "]\">";
+
+			/** the object marker/selector */
+			html += "<td id=\"efmlBoardContents" + this.id + "[" + int
+					+ "].selected\" style=\"";
+			html += "  width: 1em;";
+			if (is_selected)
+				html += " background: #88FFDD;";
+			else
+				html += " background: #338866;";				
+			html += "\">";
+			if (is_selected)
+				html += "&nbsp;";
+			else
+				html += "&nbsp;";
+			html += "</td>";
+
+			/** the object itself */
+
 			html += "<td>";
 
 			html += object.GetHtmlCode();
 
+			html += "</td>";
+			html += "</tr>";
+			
+			
+			html += "<tr id=\"efmlBoardContents" + this.id + ".Gap["+(int+1)+"]\" style=\"height: 4px;";
+			html += "  width: 1em;";
+			if (this.cursor == int+1)
+				html += " background: #88FFDD;";
+			else
+				html += " background: #338866;";
+			html += "\">";
+			html += "<td>";
 			html += "</td>";
 			html += "</tr>";
 		}
@@ -395,7 +441,6 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 		myStorage.RegisterField(this, "efmlBoardArray[" + this.id + "]");
 
-		
 	}
 
 	return this;
