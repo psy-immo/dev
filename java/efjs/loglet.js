@@ -182,6 +182,46 @@ function getServer(id, name, serverurl) {
 }
 
 /**
+ * copy data to clipboard
+ * 
+ * @param contents   new contents of the clipboard
+ */
+
+
+function setClipboardContents(contents) {
+	var applet = document.getElementById("loglet");
+
+	/**
+	 * java script to java interaction is buggy so add string termination
+	 * zeros....
+	 */
+
+	var val = applet.setClipboardContents(bugfixParam(contents));
+	return val;
+}
+
+
+/**
+ * copy data from clipboard
+ * 
+ * @returns contents   contents of the clipboard
+ */
+
+
+function getClipboardContents(contents) {
+	var applet = document.getElementById("loglet");
+
+	/**
+	 * java script to java interaction is buggy so add string termination
+	 * zeros....
+	 */
+
+	var val = applet.getClipboardContents();
+	
+	return val;
+}
+
+/**
  * query server for stored value
  * 
  * @param id
