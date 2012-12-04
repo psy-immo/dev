@@ -324,6 +324,103 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 			object.RegisterMouse();
 		}
+
+		this.RegisterCursorHooks();
+		this.RegisterSelectionHooks();
+
+		addMouseClickHook("efmlBoard" + this.id, 0, function(me) {
+			return function() {
+				me.HandleEmptyWorkspaceClick();
+			};
+		}(this));
+	};
+
+	/** default click handler */
+
+	this.HandleEmptyWorkspaceClick = function() {
+		this.HandleCursor(this.contents.length);
+	};
+
+	/***************************************************************************
+	 * someone clicked on some selection area
+	 */
+
+	this.HandleSelection = function(index) {
+		if (mouseEvent.ctrlKey) {
+			this.selected[index] = !this.selected[index];
+
+		} else
+			for ( var int = 0; int < this.selected.length; int++) {
+				this.selected[int] = int == index;
+			}
+
+		this.UpdateSelectionHighlighting();
+
+		this.cursor = index;
+		this.UpdateCursorHighlighting();
+	};
+
+	/***************************************************************************
+	 * someone clicked on some cursor gap
+	 */
+
+	this.HandleCursor = function(before) {
+		this.cursor = before;
+
+		this.UpdateCursorHighlighting();
+
+	};
+
+	/** this function registers the cursor mouse hooks */
+
+	this.RegisterCursorHooks = function() {
+
+		for ( var int = 0; int < this.contents.length + 1; int++) {
+			addMouseClickHook("efmlBoardContents" + this.id + ".Gap[" + int
+					+ "]", 0, function(me, number) {
+				return function() {
+					me.HandleCursor(number);
+				};
+			}(this, int));
+		}
+
+	};
+
+	/** this function registers the selection mouse hooks */
+
+	this.RegisterSelectionHooks = function() {
+
+		for ( var int = 0; int < this.contents.length; int++) {
+			addMouseClickHook("efmlBoardContents" + this.id + "[" + int
+					+ "].selected", 0, function(me, number) {
+				return function() {
+					me.HandleSelection(number);
+				};
+			}(this, int));
+		}
+
+	};
+
+	/** this function unregisters the cursor mouse hooks */
+
+	this.UnregisterCursorHooks = function() {
+
+		for ( var int = 0; int < this.contents.length + 1; int++) {
+			clearMouseClickHooks("efmlBoardContents" + this.id + ".Gap[" + int
+					+ "]");
+		}
+
+	};
+
+	/** this function unregisters the selection mouse hooks */
+
+	this.UnregisterSelectionHooks = function() {
+
+		for ( var int = 0; int < this.contents.length; int++) {
+			clearMouseClickHooks("efmlBoardContents" + this.id + "[" + int
+					+ "].selected");
+		}
+
 	};
 
 	/**
@@ -342,6 +439,9 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 			object.UnregisterMouse();
 		}
+
+		this.UnregisterCursorHooks();
+		this.UnregisterSelectionHooks();
 
 		var elt = this.GetElement();
 

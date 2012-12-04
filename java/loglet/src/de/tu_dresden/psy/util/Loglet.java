@@ -1,6 +1,12 @@
 package de.tu_dresden.psy.util;
 
 import java.applet.Applet;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -12,10 +18,12 @@ import java.security.PrivilegedAction;
 
 public class Loglet extends Applet {
 
-	private static final class GetPrivs implements PrivilegedAction<String> {
+	private static final class GetWebPageData implements
+			PrivilegedAction<String> {
 		private String id, varname, value, url;
-		
-		public GetPrivs(String id, String varname, String value, String url) {
+
+		public GetWebPageData(String id, String varname, String value,
+				String url) {
 			this.id = id;
 			this.varname = varname;
 			this.value = value;
@@ -66,10 +74,104 @@ public class Loglet extends Applet {
 		}
 	}
 
+	private static final class CopyToClipboard implements
+			PrivilegedAction<String>, ClipboardOwner {
+		private String data;
+
+		public CopyToClipboard(String data) {
+			this.data = data;
+		}
+
+		@Override
+		public String run() {
+			String result = "";
+
+			try {
+				StringSelection stringSelection = new StringSelection(this.data);
+				Clipboard clipboard = Toolkit.getDefaultToolkit()
+						.getSystemClipboard();
+				clipboard.setContents(stringSelection, this);
+			} catch (Exception e) {
+				result = "!!" + e.getMessage() + "\n";
+			}
+
+			return result;
+		}
+
+		@Override
+		public void lostOwnership(Clipboard clipboard, Transferable contents) {
+		}
+	}
+
+	private static final class PasteFromClipboard implements
+			PrivilegedAction<String>, ClipboardOwner {
+
+		public PasteFromClipboard() {
+		}
+
+		@Override
+		public String run() {
+			String result = "";
+
+			try {
+
+				Clipboard clipboard = Toolkit.getDefaultToolkit()
+						.getSystemClipboard();
+				// odd: the Object param of getContents is not currently used
+				Transferable contents = clipboard.getContents(null);
+				boolean hasTransferableText = (contents != null)
+						&& contents
+								.isDataFlavorSupported(DataFlavor.stringFlavor);
+				if (hasTransferableText)
+
+					result = (String) contents
+							.getTransferData(DataFlavor.stringFlavor);
+
+			} catch (Exception e) {
+				result = "!!" + e.getMessage() + "\n";
+			}
+
+			return result;
+		}
+
+		@Override
+		public void lostOwnership(Clipboard clipboard, Transferable contents) {
+		}
+	}
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1967856937952632546L;
+
+	/**
+	 * 
+	 * @param data
+	 *            new clipboard data
+	 * @return error messages
+	 */
+
+	public String setClipboardContents(String data) {
+
+		/**
+		 * we need this to escape from the JavaScript security context denying
+		 * file permissions!
+		 */
+		return AccessController.doPrivileged(new CopyToClipboard(data));
+	}
+
+	/**
+	 * @return clipboard contents or error messages
+	 */
+
+	public String getClipboardContents(String data) {
+
+		/**
+		 * we need this to escape from the JavaScript security context denying
+		 * file permissions!
+		 */
+		return AccessController.doPrivileged(new PasteFromClipboard());
+	}
 
 	/**
 	 * 
@@ -91,7 +193,7 @@ public class Loglet extends Applet {
 		 * we need this to escape from the JavaScript security context denying
 		 * file permissions!
 		 */
-		return AccessController.doPrivileged(new GetPrivs(id, varname, value,
-				url));
+		return AccessController.doPrivileged(new GetWebPageData(id, varname,
+				value, url));
 	}
 }

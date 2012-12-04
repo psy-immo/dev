@@ -26,6 +26,8 @@ efmlBoardArray = [];
 function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	this.id = efmlBoardCounter++;
 
+	this.html_created = false;
+
 	/**
 	 * Provide automatic name generation: use provided tags
 	 */
@@ -72,7 +74,11 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 	this.contents = [];
 
-	this.cursor = 0.5;
+	/**
+	 * we interpret the cursor position to point at the gap before the array
+	 * element that is referenced by its integer value
+	 */
+	this.cursor = 0;
 	this.selected = [];
 
 	/**
@@ -94,11 +100,53 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			this.selected.push(false);
 		}
 
-		this.cursor = this.contents.length - 0.5;
+		this.cursor = this.contents.length;
 
 		this.token = this.GetEfml();
 
 		return this;
+	};
+
+	/**
+	 * updates the display of the selection status
+	 */
+
+	this.UpdateSelectionHighlighting = function() {
+		if (this.html_created) {
+			for ( var int = 0; int < this.selected.length; int++) {
+				var is_selected = this.selected[int];
+
+				var marker_element = document
+						.getElementById("efmlBoardContents" + this.id + "["
+								+ int + "].selected");
+
+				if (is_selected)
+					marker_element.style.background = "#88FFDD";
+				else
+					marker_element.style.background = "#338866";
+			}
+		}
+	};
+
+	/**
+	 * updates the display of the cursor position
+	 */
+
+	this.UpdateCursorHighlighting = function() {
+		if (this.html_created) {
+			for ( var int = 0; int < this.selected.length + 1; int++) {
+				var is_selected = int == this.cursor;
+
+				var marker_element = document
+						.getElementById("efmlBoardContents" + this.id + ".Gap["
+								+ int + "]");
+
+				if (is_selected)
+					marker_element.style.background = "#88FFDD";
+				else
+					marker_element.style.background = "#338866";
+			}
+		}
 	};
 
 	/**
@@ -113,14 +161,56 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		html += " width: 100%;";
 		html += "\">";
 
+		html += "<tr id=\"efmlBoardContents" + this.id
+				+ ".Gap[0]\" style=\"height: 4px;";
+		if (this.cursor == 0)
+			html += " background: #88FFDD;";
+		else
+			html += " background: #338866;";
+		html += "\">";
+		html += "<td style=\"width: 1em;\">";
+		html += "</td>";
+		html += "<td style=\"width: 1em;\">";
+		html += "</td>";
+		html += "</tr>";
+
 		for ( var int = 0; int < this.contents.length; int++) {
 			var object = this.contents[int];
+			var is_selected = this.selected[int];
 
 			html += "<tr id=\"efmlBoardContents" + this.id + "[" + int + "]\">";
+
+			/** the object marker/selector */
+			html += "<td id=\"efmlBoardContents" + this.id + "[" + int
+					+ "].selected\" style=\"";
+			html += "  width: 1em;";
+			if (is_selected)
+				html += " background: #88FFDD;";
+			else
+				html += " background: #338866;";
+			html += "\">";
+
+			html += "</td>";
+
+			/** the object itself */
+
 			html += "<td>";
 
 			html += object.GetHtmlCode();
 
+			html += "</td>";
+			html += "</tr>";
+
+			html += "<tr id=\"efmlBoardContents" + this.id + ".Gap["
+					+ (int + 1) + "]\" style=\"height: 4px;";
+			if (this.cursor == int + 1)
+				html += " background: #88FFDD;";
+			else
+				html += " background: #338866;";
+			html += "\">";
+			html += "<td style=\"width: 1em;\">";
+			html += "</td>";
+			html += "<td style=\"width: 1em;\">";
 			html += "</td>";
 			html += "</tr>";
 		}
@@ -234,6 +324,103 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 			object.RegisterMouse();
 		}
+
+		this.RegisterCursorHooks();
+		this.RegisterSelectionHooks();
+
+		addMouseClickHook("efmlBoard" + this.id, 0, function(me) {
+			return function() {
+				me.HandleEmptyWorkspaceClick();
+			};
+		}(this));
+	};
+
+	/** default click handler */
+
+	this.HandleEmptyWorkspaceClick = function() {
+		this.HandleCursor(this.contents.length);
+	};
+
+	/***************************************************************************
+	 * someone clicked on some selection area
+	 */
+
+	this.HandleSelection = function(index) {
+		if (mouseEvent.ctrlKey) {
+			this.selected[index] = !this.selected[index];
+
+		} else
+			for ( var int = 0; int < this.selected.length; int++) {
+				this.selected[int] = int == index;
+			}
+
+		this.UpdateSelectionHighlighting();
+
+		this.cursor = index;
+		this.UpdateCursorHighlighting();
+	};
+
+	/***************************************************************************
+	 * someone clicked on some cursor gap
+	 */
+
+	this.HandleCursor = function(before) {
+		this.cursor = before;
+
+		this.UpdateCursorHighlighting();
+
+	};
+
+	/** this function registers the cursor mouse hooks */
+
+	this.RegisterCursorHooks = function() {
+
+		for ( var int = 0; int < this.contents.length + 1; int++) {
+			addMouseClickHook("efmlBoardContents" + this.id + ".Gap[" + int
+					+ "]", 0, function(me, number) {
+				return function() {
+					me.HandleCursor(number);
+				};
+			}(this, int));
+		}
+
+	};
+
+	/** this function registers the selection mouse hooks */
+
+	this.RegisterSelectionHooks = function() {
+
+		for ( var int = 0; int < this.contents.length; int++) {
+			addMouseClickHook("efmlBoardContents" + this.id + "[" + int
+					+ "].selected", 0, function(me, number) {
+				return function() {
+					me.HandleSelection(number);
+				};
+			}(this, int));
+		}
+
+	};
+
+	/** this function unregisters the cursor mouse hooks */
+
+	this.UnregisterCursorHooks = function() {
+
+		for ( var int = 0; int < this.contents.length + 1; int++) {
+			clearMouseClickHooks("efmlBoardContents" + this.id + ".Gap[" + int
+					+ "]");
+		}
+
+	};
+
+	/** this function unregisters the selection mouse hooks */
+
+	this.UnregisterSelectionHooks = function() {
+
+		for ( var int = 0; int < this.contents.length; int++) {
+			clearMouseClickHooks("efmlBoardContents" + this.id + "[" + int
+					+ "].selected");
+		}
+
 	};
 
 	/**
@@ -252,6 +439,9 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 			object.UnregisterMouse();
 		}
+
+		this.UnregisterCursorHooks();
+		this.UnregisterSelectionHooks();
 
 		var elt = this.GetElement();
 
@@ -395,7 +585,6 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 		myStorage.RegisterField(this, "efmlBoardArray[" + this.id + "]");
 
-		
 	}
 
 	return this;
