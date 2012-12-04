@@ -473,6 +473,8 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 				data += block.GetDescription();
 			}
 		}
+		
+		setClipboardContents(data);
 	};
 
 	/**
