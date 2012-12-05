@@ -73,6 +73,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	}(this)) ];
 
 	this.contents = [];
+	this.content_id = 0;
 
 	/**
 	 * we interpret the cursor position to point at the gap before the array
@@ -103,8 +104,87 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		this.cursor = this.contents.length;
 
 		this.token = this.GetEfml();
+		
+		this.content_id = this.contents.length;
 
 		return this;
+	};
+	
+	/** insert contents
+	 * 
+	 * @param where  index where the new content is inserted in the contents array
+	 * @param what   newline-separated efml tag descriptions
+	 * @returns number of inserted elements
+	 */
+	
+	this.InsertContents = function(where, what) {
+		
+		/** generate new objects */
+		var new_contents = [];
+		var elements = what.split("\n");
+		
+		for ( var int = 0; int < elements.length; int++) {
+			var data = elements[int];
+			if (data) {
+				new_contents.push(NewEfmlTag(data, this.name
+					+ ".contents[" + this.content_id + "]", this.tags, this.accept,
+					this.reject));
+				this.content_id += 1;
+			}
+		}
+		
+		/** add new objects at the appropriate position */
+		
+		var this_contents = [];
+		var this_selected = [];
+		
+		for ( var int2 = 0; int2 < this.contents.length; int2++) {
+			if (int2 == where) {
+				for ( var int3 = 0; int3 < new_contents.length; int3++) {
+					this_contents.push(new_contents[int3]);
+					this_selected.push(false);
+				}
+			}
+			this_contents.push(this.contents[int2]);
+			this_selected.push(this.selected[int2]);
+		}
+		
+		/** unregister mouse handlers */
+		
+		this.UnregisterMouse();
+		
+		/** remove old html content representation */
+		
+		var html_contents = document.getElementById("efmlBoardContents" + this.id);
+		var html_parent = html_contents.parentNode;
+		html_parent.removeChild(html_contents);
+		
+		/** use new contents now */
+		
+		this.contents = this_contents;
+		this.selected = this_selected;
+				
+		/** add new html content representation */
+		
+		var html = this.GetContentsHtmlCode();
+
+		var container = document.createElement('div');
+
+		container.innerHTML = html;
+
+		html_parent.appendChild(container.firstChild);		
+		
+		/** register mouse handlers */
+		
+		this.RegisterMouse();
+		
+		/** update cursor */
+		
+		if (this.cursor >= where) {
+			this.cursor += new_contents.length;
+		}
+		
+		return new_contents.length;
 	};
 
 	/**
