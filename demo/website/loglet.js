@@ -208,7 +208,7 @@ function setClipboardContents(contents) {
  */
 
 
-function getClipboardContents(contents) {
+function getClipboardContents() {
 	var applet = document.getElementById("loglet");
 
 	/**

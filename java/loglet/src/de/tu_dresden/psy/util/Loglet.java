@@ -164,7 +164,7 @@ public class Loglet extends Applet {
 	 * @return clipboard contents or error messages
 	 */
 
-	public String getClipboardContents(String data) {
+	public String getClipboardContents() {
 
 		/**
 		 * we need this to escape from the JavaScript security context denying
