@@ -8,15 +8,61 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import javax.swing.JFileChooser;
+
 public class Loglet extends Applet {
+
+	private static final class GetFileContents implements
+			PrivilegedAction<String> {
+
+		public GetFileContents() {
+		}
+
+		@Override
+		public String run() {
+			String result = "";
+
+			try {
+				final JFileChooser fc = new JFileChooser();
+				int returnVal = fc.showOpenDialog(null);
+
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+
+					BufferedReader reader = new BufferedReader(new FileReader(
+							file));
+					String line = null;
+					StringBuilder stringBuilder = new StringBuilder();
+					String ls = System.getProperty("line.separator");
+
+					while ((line = reader.readLine()) != null) {
+						stringBuilder.append(line);
+						stringBuilder.append(ls);
+					}
+
+					result = stringBuilder.toString();
+				}
+
+			} catch (Exception e) {
+				result = "!!" + e.getMessage() + "\n";
+			}
+
+			return result;
+		}
+
+	}
 
 	private static final class GetWebPageData implements
 			PrivilegedAction<String> {
@@ -139,6 +185,44 @@ public class Loglet extends Applet {
 		}
 	}
 
+	private static final class SetLocalFileContents implements
+			PrivilegedAction<String> {
+		private String data;
+	
+		public SetLocalFileContents(String data) {
+			this.data = data;
+		}
+	
+		@Override
+		public String run() {
+			String result = "";
+
+			try {
+				final JFileChooser fc = new JFileChooser();
+				int returnVal = fc.showSaveDialog(null);
+
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					PrintStream out = null;
+
+					try {
+						out = new PrintStream(new FileOutputStream(file));
+						out.print(this.data);
+					} finally {
+						if (out != null)
+							out.close();
+					}
+				}
+
+			} catch (Exception e) {
+				result = "!!" + e.getMessage() + "\n";
+			}
+	
+			return result;
+		}
+	
+	}
+
 	/**
 	 * 
 	 */
@@ -159,6 +243,41 @@ public class Loglet extends Applet {
 		 */
 		return AccessController.doPrivileged(new CopyToClipboard(data));
 	}
+
+	/**
+	 * opens a file open dialog, opens the file and returns its contents as
+	 * string
+	 * 
+	 * @return file contents, error message or empty string if cancelled
+	 */
+
+	public String getLocalFileContents() {
+
+		/**
+		 * we need this to escape from the JavaScript security context denying
+		 * file permissions!
+		 */
+		return AccessController.doPrivileged(new GetFileContents());
+	}
+	
+	/**
+	 * 
+	 * opens a file open dialog, opens the file and saves the data
+	 * 
+	 * @param data
+	 *            new file contents
+	 * @return error messages
+	 */
+
+	public String setLocalFileContents(String data) {
+
+		/**
+		 * we need this to escape from the JavaScript security context denying
+		 * file permissions!
+		 */
+		return AccessController.doPrivileged(new SetLocalFileContents(data));
+	}
+
 
 	/**
 	 * @return clipboard contents or error messages

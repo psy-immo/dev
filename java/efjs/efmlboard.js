@@ -154,13 +154,12 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 				this_selected.push(this.selected[int2]);
 			}
 		}
-		
+
 		/** update cursor */
 
 		if (this.cursor >= where) {
 			this.cursor += new_contents.length;
 		}
-
 
 		/** unregister mouse handlers */
 
@@ -193,9 +192,16 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		this.RegisterMouse();
 
 		/** update efml token */
-		
+
 		this.token = this.GetEfml();
-		
+
+		/** log */
+
+		var log_data = this.name + ": InsertContents: " + where + " through "
+				+ (where + new_contents.length - 1) + ": " + escapeBTNR(what);
+
+		myLogger.Log(log_data);
+
 		return new_contents.length;
 	};
 
@@ -574,23 +580,27 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 
 	this.Cut = function() {
-		this.Copy();
 		
+		var log_data = this.name+ ": Cut objects: ";
+		
+		this.Copy();
+
 		/** filter non-selected content objects */
 		var contents = [];
 		var selected = [];
-		
+
 		for ( var int = 0; int < this.contents.length; int++) {
 			if (!this.selected[int]) {
 				contents.push(this.contents[int]);
 				selected.push(false);
 			} else {
+				log_data += " " + int;
 				if (int < this.cursor) {
 					this.cursor -= 1;
 				}
 			}
 		}
-		
+
 		/** unregister mouse handlers */
 
 		this.UnregisterMouse();
@@ -620,10 +630,14 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		/** register mouse handlers */
 
 		this.RegisterMouse();
-		
+
 		/** update efml token */
-		
+
 		this.token = this.GetEfml();
+		
+		/** log */
+		
+		myLogger.Log(log_data);
 
 	};
 
@@ -704,8 +718,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 
 	this.SetValue = function(contents) {
-		
-		
+
 		/** unregister mouse handlers */
 
 		this.UnregisterMouse();
@@ -716,7 +729,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 				+ this.id);
 		var html_parent = html_contents.parentNode;
 		html_parent.removeChild(html_contents);
-		
+
 		/** use new contents now */
 
 		var description = unescapeBTNR(contents);

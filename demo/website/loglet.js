@@ -182,6 +182,27 @@ function getServer(id, name, serverurl) {
 }
 
 /**
+ * save data to local file
+ * 
+ * @param contents   file contents
+ */
+
+
+function writeLocalFile(contents) {
+	var applet = document.getElementById("loglet");
+
+	/**
+	 * java script to java interaction is buggy so add string termination
+	 * zeros....
+	 */
+
+	var val = applet.setLocalFileContents(bugfixParam(contents));
+	return val;
+}
+
+
+
+/**
  * copy data to clipboard
  * 
  * @param contents   new contents of the clipboard
@@ -217,6 +238,26 @@ function getClipboardContents() {
 	 */
 
 	var val = applet.getClipboardContents();
+	
+	return val;
+}
+
+/**
+ * read data from local file
+ * 
+ * @returns contents   contents of the file
+ */
+
+
+function readLocalFile() {
+	var applet = document.getElementById("loglet");
+
+	/**
+	 * java script to java interaction is buggy so add string termination
+	 * zeros....
+	 */
+
+	var val = applet.getLocalFileContents();
 	
 	return val;
 }

@@ -155,6 +155,12 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			}
 		}
 
+		/** update cursor */
+
+		if (this.cursor >= where) {
+			this.cursor += new_contents.length;
+		}
+
 		/** unregister mouse handlers */
 
 		this.UnregisterMouse();
@@ -185,11 +191,16 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 		this.RegisterMouse();
 
-		/** update cursor */
+		/** update efml token */
 
-		if (this.cursor >= where) {
-			this.cursor += new_contents.length;
-		}
+		this.token = this.GetEfml();
+
+		/** log */
+
+		var log_data = this.name + ": InsertContents: " + where + " through "
+				+ (where + new_contents.length - 1) + ": " + escapeBTNR(what);
+
+		myLogger.Log(log_data);
 
 		return new_contents.length;
 	};
@@ -569,9 +580,65 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 
 	this.Cut = function() {
+		
+		var log_data = this.name+ ": Cut objects: ";
+		
 		this.Copy();
 
-		// TODO
+		/** filter non-selected content objects */
+		var contents = [];
+		var selected = [];
+
+		for ( var int = 0; int < this.contents.length; int++) {
+			if (!this.selected[int]) {
+				contents.push(this.contents[int]);
+				selected.push(false);
+			} else {
+				log_data += " " + int;
+				if (int < this.cursor) {
+					this.cursor -= 1;
+				}
+			}
+		}
+
+		/** unregister mouse handlers */
+
+		this.UnregisterMouse();
+
+		/** remove old html content representation */
+
+		var html_contents = document.getElementById("efmlBoardContents"
+				+ this.id);
+		var html_parent = html_contents.parentNode;
+		html_parent.removeChild(html_contents);
+
+		/** use new contents now */
+
+		this.contents = contents;
+		this.selected = selected;
+
+		/** add new html content representation */
+
+		var html = this.GetContentsHtmlCode();
+
+		var container = document.createElement('div');
+
+		container.innerHTML = html;
+
+		html_parent.appendChild(container.firstChild);
+
+		/** register mouse handlers */
+
+		this.RegisterMouse();
+
+		/** update efml token */
+
+		this.token = this.GetEfml();
+		
+		/** log */
+		
+		myLogger.Log(log_data);
+
 	};
 
 	/**
@@ -651,9 +718,37 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 
 	this.SetValue = function(contents) {
-		var description = unescapeBTNR(contents);
 
+		/** unregister mouse handlers */
+
+		this.UnregisterMouse();
+
+		/** remove old html content representation */
+
+		var html_contents = document.getElementById("efmlBoardContents"
+				+ this.id);
+		var html_parent = html_contents.parentNode;
+		html_parent.removeChild(html_contents);
+
+		/** use new contents now */
+
+		var description = unescapeBTNR(contents);
 		this.SetContents(description);
+
+		/** add new html content representation */
+
+		var html = this.GetContentsHtmlCode();
+
+		var container = document.createElement('div');
+
+		container.innerHTML = html;
+
+		html_parent.appendChild(container.firstChild);
+
+		/** register mouse handlers */
+
+		this.RegisterMouse();
+
 	};
 
 	/**
