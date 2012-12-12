@@ -1,5 +1,5 @@
 
-<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|tables|i|b|br|p|div|span)* >
+<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|tables|i|b|br|p|div|span)* >
 
 <!ELEMENT br EMPTY >
 
@@ -53,7 +53,7 @@
 	rtags	CDATA	#IMPLIED
  >
 
-<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|tables|i|b|br|p|div|span)* >
+<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|tables|i|b|br|p|div|span)* >
 
 <!ATTLIST tags 
 	tags	CDATA	#IMPLIED
@@ -61,7 +61,7 @@
 	rtags	CDATA	#IMPLIED
  >
 
-<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|i|b|br|p|div|span)* >
+<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|i|b|br|p|div|span)* >
 
 <!ATTLIST tables 
 	tags	CDATA	#IMPLIED
@@ -75,7 +75,7 @@
 
 <!ELEMENT c EMPTY >
 
-<!ELEMENT tie (#PCDATA|i|b|br|p|div|span|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard)* >
+<!ELEMENT tie (#PCDATA|i|b|br|p|div|span|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview)* >
 
 <!ATTLIST tie 
 	tags	CDATA	#IMPLIED
@@ -284,6 +284,15 @@
 	name	CDATA			#IMPLIED
 	width	CDATA			#IMPLIED
 	height	CDATA			#IMPLIED
+ >
+
+<!ELEMENT efmlpreview (#PCDATA)* >
+
+<!ATTLIST efmlpreview 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+
  >
 
 <!ELEMENT trashcan EMPTY >

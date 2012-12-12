@@ -1,52 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE efml SYSTEM "https://raw.github.com/psy-immo/dev/master/dtd/efml.0.0.1.0.dtd">
 <efml>
-	<tags tags="frage1" atags="frage1">
-	
-	<div>
-	  <p>
-	<tables height="75px">
-	<r/>Eine<r/><c/><r/>Versuchsbedingung<r/><c/><r/>mit<r/>	
-	
-	<c/><runway tags="r1,c1"/><r/><runway tags="r2,c1"/><r/><runway tags="r3,c1"/><c/> 
-	
-	<r/>Intensität<r/><c/><r/>des<r/><c/><r/>CS<r/><c/><r/>führt<r/><c/><r/>im<r/><c/><r/>
-	Gegensatz<r/><c/><r/>zu<r/><c/><r/>einer<r/><c/><r/>Versuchsbedingung<r/><c/><r/>mit<r/>
-	
-	<c/><runway tags="r1,c2"/><r/><runway tags="r2,c2"/><r/><runway tags="r3,c2"/><c/> 
-	<r/>Intensität<r/><c/><r/>des<r/><c/><r/>CS<r/><c/><r/>bei<r/><c/><r/>mittlerer<r/><c/><r/>
-	Intensität<r/><c/><r/>des<r/><c/><r/>US<r/><c/><r/>schneller<r/><c/><r/>zu<r/><c/><r/>einer
-	<r/><c/><r/>erhöhten<r/><c/><r/>Lernrate.<r/>
-	
-      
-	</tables> 
-	</p>
-	<table style="width: 1000px; " border="0" cellpadding="0" cellspacing="0"><tr><td>
-	  <tables height="75px"><runway content="refilling">geringer</runway> 
-	  <r/><runway content="refilling">mittlerer</runway> 
-	  <r/><runway content="refilling">hoher</runway>
-	  </tables>
-	</td><td>
-	  <table style="width: 400px; " border="0" cellpadding="0" cellspacing="0"><tr><td>
-	
-	<answer>Antwort prüfen<hint>Das ist leider noch nicht richtig.
-	  Versuche es noch einmal!</hint><hint>Das ist leider noch nicht richtig.
-	    Lies noch einmal in den Lerntexten nach!</hint><hint>Das ist leider noch nicht richtig.
-	     Tipp: Beim klassischen Konditionieren findet Assoziationslernen dadurch statt,
-	     dass ein NS mit einem US gepaart wird. Der NS wird so zu einem CS.
-	       Daher ist es notwendig, dass der CS nicht zu schwach ist.</hint><correct>Richtig!
-	       </correct><check>tag t in "r1" "r2" "r3": field x with t "c1": field y with t "c2":
-		 (x = "mittlerer") and (y = "geringer")</check><check>
-		   tag t in "r1" "r2" "r3": field x with t "c1": field y with t "c2":
-		     (x = "hoher") and (y = "mittlerer")</check><check>
-		   tag t in "r1" "r2" "r3": field x with t "c1": field y with t "c2":
-		     (x = "hoher") and (y = "geringer")
-		 </check></answer>
-	       </td></tr></table>
-	     </td></tr></table>
-	</div>
-      
-	
-	
-	</tags>
+	<efmlboard width="800px" height="1000px"/>
 </efml>

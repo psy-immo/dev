@@ -361,7 +361,8 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			new AttributeObjectConstructor(BoxspaceTag.class), "floatbox",
 			new AttributeObjectConstructor(FloatboxTag.class), "arrow",
 			new AttributeObjectConstructor(ArrowTag.class), "efmlboard",
-			new AttributeObjectConstructor(EfmlBoardTag.class)
+			new AttributeObjectConstructor(EfmlBoardTag.class), "efmlpreview",
+			new AttributeObjectConstructor(EfmlPreviewButtonTag.class)
 	};
 
 	public EfmlToHtmlHandler() {
