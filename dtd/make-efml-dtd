@@ -7,7 +7,7 @@ efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|"+\
 				"phpurl|jsurl|documentid|studyid|subjectprompt|"+\
 				"subjectinfo|subjectchange|airport|template|freetext|"+\
 				"checkbox|radiobutton|multiline|popuphelp|"+\
-				"trashcan|boxspace"
+				"trashcan|boxspace|efmlboard"
 efml_extra = "tables"
 nested_elements = "plain|dropdown|freetext|checkbox|radiobutton|multiline"
 
@@ -186,6 +186,15 @@ dtd.write("\n<!ATTLIST airport "+universal_attributes+"""
 	filled	CDATA			#IMPLIED
  >
 """)
+
+dtd.write("\n<!ELEMENT efmlboard (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST efmlboard "+universal_attributes+"""
+	name	CDATA			#IMPLIED
+	width	CDATA			#IMPLIED
+	height	CDATA			#IMPLIED
+ >
+""")
+
 
 dtd.write("\n<!ELEMENT trashcan EMPTY >\n")
 dtd.write("\n<!ATTLIST trashcan "+universal_attributes+"""
