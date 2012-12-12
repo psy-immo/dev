@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE efml SYSTEM "https://raw.github.com/psy-immo/dev/master/dtd/efml.0.0.1.0.dtd">
 <efml>
+	<efmlpreview>Compile!</efmlpreview> <br />
 	<efmlboard width="800px" height="1000px"/>
+
 </efml>
