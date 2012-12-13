@@ -12,5 +12,6 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <javaElement handleIdentifier="=efml/src"/>
+        <javaElement handleIdentifier="=loglet/src"/>
     </selectedElements>
 </jardesc>

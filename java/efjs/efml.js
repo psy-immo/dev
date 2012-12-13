@@ -117,11 +117,15 @@ function EfmlPreviewButton(atags, rtags, text) {
 		 * ..and now preview & compile
 		 */
 
+		myLogger.Log("EfmlPreviewButton" + this.id + " applet");
+		
 		var applet = document.getElementById("efmlApplet");
 
 		/**
 		 * grab efml data
 		 */
+		
+		myLogger.Log("EfmlPreviewButton" + this.id + " tags");
 
 		var efml_parts = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
 		
