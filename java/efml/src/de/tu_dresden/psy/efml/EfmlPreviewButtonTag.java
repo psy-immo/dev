@@ -34,9 +34,10 @@ public class EfmlPreviewButtonTag implements AnyTag {
 	private EfmlTagsAttribute attributes;
 	private String token;
 
-	public EfmlPreviewButtonTag(EfmlTagsAttribute efmlAttributes) {
+	public EfmlPreviewButtonTag(EfmlTagsAttribute efmlAttributes, BodyTag body) {
 		this.attributes = efmlAttributes;
 		this.token = "";
+		body.requireEfml();
 	}
 
 	@Override

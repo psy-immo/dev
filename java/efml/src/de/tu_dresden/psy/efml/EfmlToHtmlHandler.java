@@ -170,6 +170,65 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	 * implements interface for constructing other classes
 	 */
 
+	static class AttributeBodyObjectConstructor implements TagObjectConstructor {
+
+		/**
+		 * create new instances of this class
+		 */
+		@SuppressWarnings("rawtypes")
+		private Class t;
+
+		@SuppressWarnings("rawtypes")
+		private static Class[] parameters = { EfmlTagsAttribute.class,
+				BodyTag.class };
+
+		@SuppressWarnings({ "rawtypes", "unused", "unchecked" })
+		public AttributeBodyObjectConstructor(Class t) {
+			this.t = t;
+
+			try {
+				Object cons = t.getConstructor(parameters);
+			} catch (NoSuchMethodException | SecurityException e) {
+
+				e.printStackTrace();
+			}
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body) {
+			try {
+				return (AnyTag) t.getConstructor(parameters).newInstance(tags,
+						body);
+			} catch (InstantiationException e) {
+
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+
+				e.printStackTrace();
+			} catch (SecurityException e) {
+
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+	};
+
+	/**
+	 * implements interface for constructing other classes
+	 */
+
 	static class ParentObjectConstructor implements TagObjectConstructor {
 
 		/**
@@ -362,8 +421,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			new AttributeObjectConstructor(FloatboxTag.class), "arrow",
 			new AttributeObjectConstructor(ArrowTag.class), "efmlboard",
 			new AttributeObjectConstructor(EfmlBoardTag.class), "efmlpreview",
-			new AttributeObjectConstructor(EfmlPreviewButtonTag.class)
-	};
+			new AttributeBodyObjectConstructor(EfmlPreviewButtonTag.class) };
 
 	public EfmlToHtmlHandler() {
 		this.currentTags = new Stack<EfmlTagsAttribute>();

@@ -102,16 +102,12 @@ function EfmlPreviewButton(atags, rtags, text) {
 	 */
 
 	this.UpdateContents = function() {
-		
-		myLogger.Log("EfmlPreviewButton" + this.id + " click");
 
 		/**
 		 * update / save user input values
 		 */
 
 		myStorage.AutoUpdateAndStore();
-		
-		myLogger.Log("EfmlPreviewButton" + this.id + " store");
 
 		/**
 		 * ..and now preview & compile
@@ -124,16 +120,13 @@ function EfmlPreviewButton(atags, rtags, text) {
 		 */
 
 		var efml_parts = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
-		
-		myLogger.Log("EfmlPreviewButton" + this.id + " gathering");
 
 		var efml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<efml>\n";
 
 		for ( var int = 0; int < efml_parts.length; int++) {
 			var part = efml_parts[int];
-			
-			if (part.token)
-				efml += part.token + "\n";
+
+			efml += part.token + "\n";
 		}
 
 		efml += "</efml>";

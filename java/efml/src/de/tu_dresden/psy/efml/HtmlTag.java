@@ -18,10 +18,15 @@ public class HtmlTag implements AnyTag {
 
 	private ArrayList<AnyTag> innerTags;
 
+
+
 	public HtmlTag() {
 		innerTags = new ArrayList<AnyTag>();
 
+
 	}
+
+
 
 	/**
 	 * write the code needed to include the js containing general code

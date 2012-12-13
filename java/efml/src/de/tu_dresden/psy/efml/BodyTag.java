@@ -79,6 +79,12 @@ public class BodyTag implements AnyTag {
 
 	private String subjectChange;
 
+	/**
+	 * include efml applet
+	 * */
+
+	private boolean include_efml_applet;
+
 	public BodyTag() {
 		innerTags = new ArrayList<AnyTag>();
 
@@ -89,7 +95,38 @@ public class BodyTag implements AnyTag {
 		subjectChange = null;
 		subjectInfo = null;
 		subjectPrompt = null;
+
+		include_efml_applet = false;
 	}
+
+	/**
+	 * write the code needed to include the needed java applets
+	 * 
+	 * @param writer
+	 * @param baseUrl
+	 *            base Url for scripts
+	 * @throws IOException
+	 */
+	public void writeAllApplets(Writer writer, String baseUrl)
+			throws IOException {
+		/**
+		 * add loglet applet
+		 */
+
+		writer.write("  <applet id=\"loglet\" name=\"loglet\" archive=\""
+				+ baseUrl + "loglet.jar\""
+				+ " code=\"de.tu_dresden.psy.util.Loglet\" mayscript=\"\" "
+				+ "style=\"width: 1px; height: 1px\"></applet>\n");
+
+		if (include_efml_applet) {
+			writer.write("  <applet id=\"efmlApplet\" name=\"efmlApplet\" archive=\""
+					+ baseUrl
+					+ "efmlApplet.jar\" "
+					+ "code=\"de.tu_dresden.psy.efml.editor.EditorApplet\" mayscript=\"\""
+					+ " style=\"width: 1px; height: 1px\"></applet>\n");
+		}
+
+	};
 
 	/**
 	 * 
@@ -164,6 +201,8 @@ public class BodyTag implements AnyTag {
 	@Override
 	public void open(Writer writer) throws IOException {
 		writer.write("<body id=\"body\">\n");
+
+		writeAllApplets(writer, scriptUrl);
 
 		/**
 		 * write the identification strings & base url & ...
@@ -277,6 +316,14 @@ public class BodyTag implements AnyTag {
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		innerTags.add(innerTag);
+	}
+
+	/**
+	 * require to include efml applet
+	 */
+
+	public void requireEfml() {
+		this.include_efml_applet = true;
 	}
 
 }
