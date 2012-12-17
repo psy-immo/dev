@@ -27,6 +27,25 @@ if (!$('loglet')) {
 			+ "MAYSCRIPT style=\"width: 1px; height: 1px\"></applet>");
 }
 
+/** 
+ * check whether we are in preview mode
+ */
+
+if (window.location.toString().toQueryParams()["preview"]) {
+	efmlPreview = true;
+	
+
+	/**
+	 * change setup for preview mode
+	 */
+
+	studyId = "preview";
+	subjectId = "preview";
+		
+} else {
+	efmlPreview = false;
+}
+
 /**
  * loglet server cache object
  */
