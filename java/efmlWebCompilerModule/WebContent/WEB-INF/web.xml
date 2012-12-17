@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app>
+  <servlet>
+    <servlet-name>EfmlCompiler</servlet-name>
+    <servlet-class>de.tu_dresden.psy.efml.web.CompilerServlet
+      </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EfmlCompiler</servlet-name>
+    <url-pattern>/EfmlCompiler/*</url-pattern>
+  </servlet-mapping>
+</web-app>

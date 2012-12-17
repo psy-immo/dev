@@ -19,14 +19,6 @@
 package de.tu_dresden.psy.efml.editor;
 
 import java.applet.Applet;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-
-import de.tu_dresden.psy.efml.EfmlToHtmlConverter;
 
 /**
  * implements an interface to the webbrowser that exhibits the compiler to the
@@ -43,17 +35,7 @@ public class EditorApplet extends Applet {
 	 */
 	private static final long serialVersionUID = 2929417487951462196L;
 
-	/**
-	 * save the html content of the last compiled code
-	 */
-
-	private String htmlContent;
-
-	/**
-	 * save the efml data of the last compiled code
-	 */
-
-	private String efmlContent;
+	private StringCompiler compiler;
 
 	/**
 	 * Compile some efml code, to be done before content retrieval
@@ -64,37 +46,15 @@ public class EditorApplet extends Applet {
 	 */
 
 	public String compileEfml(String efml) {
-		efmlContent = efml;
-
-		ByteArrayOutputStream html_stream = new ByteArrayOutputStream();
-		PrintStream ps = new PrintStream(html_stream);
-
-		try {
-			EfmlToHtmlConverter.transformStream(new ByteArrayInputStream(
-					efmlContent.getBytes("UTF-8")), ps);
-
-			htmlContent = html_stream.toString();
-
-			return "";
-
-		} catch (Exception e) {
-			
-			htmlContent = "";
-			
-			Writer result = new StringWriter();
-			PrintWriter printWriter = new PrintWriter(result);
-			e.printStackTrace(printWriter);
-			return result.toString();
-		}
+		return compiler.compileEfml(efml);
 	}
-	
+
 	/**
 	 * 
 	 * @return previously generated html content
 	 */
 
 	public String getHtml() {
-		return htmlContent;
+		return compiler.getHtml();
 	}
-
 }
