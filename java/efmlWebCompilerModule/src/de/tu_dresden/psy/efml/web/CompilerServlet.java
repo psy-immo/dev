@@ -26,7 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//import de.tu_dresden.psy.efml.editor.StringCompiler;
+import de.tu_dresden.psy.efml.StringEscape;
+import de.tu_dresden.psy.efml.editor.StringCompiler;
 
 public class CompilerServlet extends HttpServlet {
 
@@ -36,27 +37,45 @@ public class CompilerServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
-		//StringCompiler compiler = new StringCompiler();
-
-		//String errors = compiler.compileEfml("");
-
-		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
+		response.setContentType("text/html");
 
-		//if (errors.isEmpty()) {
-		//	out.println(compiler.getHtml());
-		//} else {
+		String efml = request.getParameter("efml");
 
+		if (efml == null) {
 			out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 "
 					+ "Transitional//EN\">\n" + "<HTML>\n"
 					+ "<HEAD><TITLE>EFML compilation error</TITLE></HEAD>\n"
 					+ "<BODY>\n"
-					+ "<H1>Error occured during compilation</H1>\n" + "<pre>"
-					//+ errors 
-					+ "</pre>" + "</BODY></HTML>");
-		//}
+					+ "<H1>There was no EFML data submitted!</H1>\n"
+					+ "</BODY></HTML>");
 
+			return;
+		}
+
+		StringCompiler compiler = new StringCompiler();
+
+		String errors = compiler.compileEfml(efml);
+
+		if (errors.isEmpty()) {
+			out.println(compiler.getHtml());
+		} else {
+			out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 "
+					+ "Transitional//EN\">\n" + "<HTML>\n"
+					+ "<HEAD><TITLE></TITLE></HEAD>\n" + "<BODY>\n"
+					+ "<H1>EFML compilation errors</H1>\n<pre>" + errors
+					+ "</pre>" + "<br/>" + "<H1>Compiled EFML data</H1><pre>"
+					+ StringEscape.escapeToHtml(compiler.getEfml()) + "</pre>"
+					+ "<br/>" + "<H1>Submitted EFML data</H1><pre>"
+					+ StringEscape.escapeToHtml(efml) + "</pre></BODY></HTML>");
+		}
+
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		doGet(req, resp);
 	}
 
 }

@@ -54,7 +54,10 @@ public class StringCompiler {
 	 */
 
 	public String compileEfml(String efml) {
-		efmlContent = efml;
+		if (efml.startsWith("<?xml") == false)
+			efmlContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + efml;
+		else
+			efmlContent = efml;
 
 		ByteArrayOutputStream html_stream = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(html_stream);
@@ -85,6 +88,15 @@ public class StringCompiler {
 
 	public String getHtml() {
 		return htmlContent;
+	}
+	
+	/**
+	 * 
+	 * @return efml data that was sent into the engine
+	 */
+	
+	public String getEfml() {
+		return efmlContent;
 	}
 
 }
