@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.tu_dresden.psy.efml.editor.StringCompiler;
+//import de.tu_dresden.psy.efml.editor.StringCompiler;
 
 public class CompilerServlet extends HttpServlet {
 
@@ -37,24 +37,25 @@ public class CompilerServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		StringCompiler compiler = new StringCompiler();
+		//StringCompiler compiler = new StringCompiler();
 
-		String errors = compiler.compileEfml("");
+		//String errors = compiler.compileEfml("");
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 
-		if (errors.isEmpty()) {
-			out.println(compiler.getHtml());
-		} else {
+		//if (errors.isEmpty()) {
+		//	out.println(compiler.getHtml());
+		//} else {
 
 			out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 "
 					+ "Transitional//EN\">\n" + "<HTML>\n"
 					+ "<HEAD><TITLE>EFML compilation error</TITLE></HEAD>\n"
 					+ "<BODY>\n"
 					+ "<H1>Error occured during compilation</H1>\n" + "<pre>"
-					+ errors + "</pre>" + "</BODY></HTML>");
-		}
+					//+ errors 
+					+ "</pre>" + "</BODY></HTML>");
+		//}
 
 	}
 
