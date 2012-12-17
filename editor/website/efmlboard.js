@@ -95,10 +95,14 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		for ( var int = 0; int < elements.length; int++) {
 			var content_block = elements[int];
 
-			this.contents.push(NewEfmlTag(content_block, this.name
-					+ ".contents[" + int + "]", this.tags, this.accept,
-					this.reject));
-			this.selected.push(false);
+			if (content_block) {
+
+				this.contents.push(NewEfmlTag(content_block, this.name
+						+ ".contents[" + int + "]", this.tags, this.accept,
+						this.reject));
+				this.selected.push(false);
+				
+			}
 		}
 
 		this.cursor = this.contents.length;
@@ -580,9 +584,9 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 
 	this.Cut = function() {
-		
-		var log_data = this.name+ ": Cut objects: ";
-		
+
+		var log_data = this.name + ": Cut objects: ";
+
 		this.Copy();
 
 		/** filter non-selected content objects */
@@ -634,9 +638,9 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		/** update efml token */
 
 		this.token = this.GetEfml();
-		
+
 		/** log */
-		
+
 		myLogger.Log(log_data);
 
 	};

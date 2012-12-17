@@ -20,7 +20,7 @@
  * load the efml compiler applet
  */
 
-myEfmlAppletIncluded = false;
+
 myEfmlPreviewButtonId = 0;
 myEfmlPreviewButtons = [];
 
@@ -29,7 +29,7 @@ myEfmlPreviewButtons = [];
  */
 
 function myEfmlAppletInclude() {
-	if (myEfmlAppletIncluded == false) {
+	/**if (!$('efmlApplet')) {
 
 		document.write("<applet id=\"efmlApplet\" " + "name=\"efmlApplet\""
 				+ " archive=\"" + logletBaseURL + "efmlApplet.jar\" "
@@ -37,7 +37,7 @@ function myEfmlAppletInclude() {
 				+ "MAYSCRIPT style=\"width: 1px; height: 1px\"></applet>");
 
 		myEfmlAppletIncluded = true;
-	}
+	}*/
 }
 
 /**
@@ -103,17 +103,21 @@ function EfmlPreviewButton(atags, rtags, text) {
 
 	this.UpdateContents = function() {
 		
-		
+		myLogger.Log("EfmlPreviewButton" + this.id + " click");
+
 		/**
 		 * update / save user input values
 		 */
-		
+
 		myStorage.AutoUpdateAndStore();
 		
+		myLogger.Log("EfmlPreviewButton" + this.id + " store");
 
 		/**
 		 * ..and now preview & compile
 		 */
+
+		myLogger.Log("EfmlPreviewButton" + this.id + " applet");
 		
 		var applet = document.getElementById("efmlApplet");
 
@@ -121,17 +125,21 @@ function EfmlPreviewButton(atags, rtags, text) {
 		 * grab efml data
 		 */
 		
-		var efml_parts = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
+		myLogger.Log("EfmlPreviewButton" + this.id + " tags");
 
-		var efml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-				+				"<efml>\n";
+		var efml_parts = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
+		
+		myLogger.Log("EfmlPreviewButton" + this.id + " gathering");
+
+		var efml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<efml>\n";
 
 		for ( var int = 0; int < efml_parts.length; int++) {
 			var part = efml_parts[int];
-
-			efml += part.token + "\n";
+			
+			if (part.token)
+				efml += part.token + "\n";
 		}
-		
+
 		efml += "</efml>";
 
 		myLogger.Log("EfmlPreviewButton" + this.id + " compile:\n" + efml);
@@ -139,11 +147,11 @@ function EfmlPreviewButton(atags, rtags, text) {
 		/**
 		 * compile
 		 */
-		
+
 		try {
 			this.lastError = applet.compileEfml(bugfixParam(efml));
 		} catch (err) {
-			this.lastError = "Error invoking compilation applet: "+err;
+			this.lastError = "Error invoking compilation applet: " + err;
 		}
 
 		if (this.lastError) {

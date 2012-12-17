@@ -17,13 +17,15 @@
  */
 
 /**
- * load the server communication applet
+ * load the server communication applet, if not present
  */
 
-document.write("<applet id=\"loglet\" " + "name=\"loglet\""
-		+ " archive=\"loglet.jar\" "
-		+ "code=\"de.tu_dresden.psy.util.Loglet\" "
-		+ "MAYSCRIPT style=\"width: 1px; height: 1px\"></applet>");
+if (!$('loglet')) {
+	document.write("<applet id=\"loglet\" " + "name=\"loglet\""
+			+ " archive=\"loglet.jar\" "
+			+ "code=\"de.tu_dresden.psy.util.Loglet\" "
+			+ "MAYSCRIPT style=\"width: 1px; height: 1px\"></applet>");
+}
 
 /**
  * loglet server cache object
@@ -83,20 +85,20 @@ if (typeof subjectId == 'undefined') {
 	try {
 		v = sessionStorage.getItem(keyname);
 	} catch (e) {
-		//firefox doesn't allow local storage for filesystem files
+		// firefox doesn't allow local storage for filesystem files
 	}
 
 	if (v !== null) {
 		subjectId = v;
 	} else {
-		v = prompt(subjectIdPrompt,"").toUpperCase();
+		v = prompt(subjectIdPrompt, "").toUpperCase();
 		if (v == null)
 			v = "";
 		subjectId = v;
 		try {
 			sessionStorage.setItem(keyname, subjectId);
 		} catch (e) {
-			//firefox doesn't allow local storage for filesystem files			
+			// firefox doesn't allow local storage for filesystem files
 		}
 	}
 };
@@ -175,8 +177,8 @@ function getServer(id, name, serverurl) {
 
 	var val = applet.queryLogger(bugfixParam(id), bugfixParam(name),
 			bugfixParam(""), bugfixParam(serverurl));
-	
-	var unescaped = unescapeSome(val); 
+
+	var unescaped = unescapeSome(val);
 
 	return unescaped;
 }
@@ -184,9 +186,9 @@ function getServer(id, name, serverurl) {
 /**
  * save data to local file
  * 
- * @param contents   file contents
+ * @param contents
+ *            file contents
  */
-
 
 function writeLocalFile(contents) {
 	var applet = document.getElementById("loglet");
@@ -200,14 +202,12 @@ function writeLocalFile(contents) {
 	return val;
 }
 
-
-
 /**
  * copy data to clipboard
  * 
- * @param contents   new contents of the clipboard
+ * @param contents
+ *            new contents of the clipboard
  */
-
 
 function setClipboardContents(contents) {
 	var applet = document.getElementById("loglet");
@@ -221,13 +221,11 @@ function setClipboardContents(contents) {
 	return val;
 }
 
-
 /**
  * copy data from clipboard
  * 
- * @returns contents   contents of the clipboard
+ * @returns contents contents of the clipboard
  */
-
 
 function getClipboardContents() {
 	var applet = document.getElementById("loglet");
@@ -238,16 +236,15 @@ function getClipboardContents() {
 	 */
 
 	var val = applet.getClipboardContents();
-	
+
 	return val;
 }
 
 /**
  * read data from local file
  * 
- * @returns contents   contents of the file
+ * @returns contents contents of the file
  */
-
 
 function readLocalFile() {
 	var applet = document.getElementById("loglet");
@@ -258,7 +255,7 @@ function readLocalFile() {
 	 */
 
 	var val = applet.getLocalFileContents();
-	
+
 	return val;
 }
 
@@ -280,7 +277,7 @@ function setServer(id, name, value, serverurl) {
 
 	var result = applet.queryLogger(bugfixParam(id), bugfixParam(name),
 			bugfixParam(escapeSome(value)), bugfixParam(serverurl));
-	
+
 	return unescapeSome(result);
 }
 
@@ -311,13 +308,14 @@ function doSet(name, value) {
 	if (logletBaseURL) {
 		var fullid = docId + "+" + name;
 		var result = setServer(logId, fullid, value, logletBaseURL + "push.php");
-		serverDataCache[fullid] = result;	
+		serverDataCache[fullid] = result;
 	}
 }
 
 /**
  * 
- * store a named variable on server, if the to be stored values differ from the local server cache value
+ * store a named variable on server, if the to be stored values differ from the
+ * local server cache value
  * 
  * @param name
  * @param value
@@ -328,9 +326,9 @@ function doSetIfDifferent(name, value) {
 	if (logletBaseURL) {
 		var fullid = docId + "+" + name;
 		if (fullid in serverDataCache) {
-				if (serverDataCache[fullid] == value)
-					return;  
-		} 
+			if (serverDataCache[fullid] == value)
+				return;
+		}
 		var result = setServer(logId, fullid, value, logletBaseURL + "push.php");
 		serverDataCache[fullid] = result;
 	}
@@ -349,7 +347,7 @@ function doGet(name) {
 	if (logletBaseURL) {
 		var fullid = docId + "+" + name;
 		var result = getServer(logId, fullid, logletBaseURL + "pull.php");
-		
+
 		return result;
 	}
 	return "";
@@ -369,7 +367,7 @@ function doGetAll() {
 		for ( var int = 0; int < raw.length; ++int) {
 			var line = raw[int].split(' ');
 			if (line.length > 1) {
-				var fullid = urldecode(line[0]); 
+				var fullid = urldecode(line[0]);
 				var key = fullid.substr(prefix_length);
 				var result = unescapeSome(urldecode(line[1]));
 				entries[key] = result;
@@ -392,9 +390,10 @@ function doGetAll() {
 function doesOperate() {
 	if (logletBaseURL) {
 		try {
-		if (getServer(logId, docId + "+" + name, logletBaseURL + "operates.php") == "okay") {
-			return true;
-		}
+			if (getServer(logId, docId + "+" + name, logletBaseURL
+					+ "operates.php") == "okay") {
+				return true;
+			}
 		} catch (err) {
 			return false;
 		}

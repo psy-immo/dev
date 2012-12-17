@@ -110,6 +110,8 @@ function Storage() {
 
 	this.StoreIn = function(storage, name) {
 		
+		//myLogger.Log("myStorage: update volatile");
+		
 		/**
 		 * update "volatile" input elements
 		 */
@@ -125,6 +127,8 @@ function Storage() {
 		/**
 		 * store in database and/or locally
 		 */
+		
+		//myLogger.Log("myStorage: store data");
 
 		for ( var int = 0; int < this.dataFieldNames.length; int++) {
 			var obj = this.dataFields[int];
@@ -152,9 +156,9 @@ function Storage() {
 					}
 				}
 
-			}
-
+			}	
 		}
+		//myLogger.Log("myStorage: done.");
 	};
 
 	/**
