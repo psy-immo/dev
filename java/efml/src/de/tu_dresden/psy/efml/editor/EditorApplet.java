@@ -18,6 +18,7 @@
 
 package de.tu_dresden.psy.efml.editor;
 
+import java.applet.Applet;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -26,7 +27,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import de.tu_dresden.psy.efml.EfmlToHtmlConverter;
-import de.tu_dresden.psy.util.Loglet;
 
 /**
  * implements an interface to the webbrowser that exhibits the compiler to the
@@ -36,7 +36,7 @@ import de.tu_dresden.psy.util.Loglet;
  * 
  */
 
-public class EditorApplet extends Loglet {
+public class EditorApplet extends Applet {
 
 	/**
 	 * Serialization ID
