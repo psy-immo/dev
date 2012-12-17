@@ -5,6 +5,7 @@
 	<projects>
 		<project>efml</project>
 		<project>efmlWebCompilerClient</project>
+		<project>efmlWebCompilerModule</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
