@@ -130,7 +130,10 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 
 			try {
 				Object cons = t.getConstructor(parameters);
-			} catch (NoSuchMethodException | SecurityException e) {
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+				
+			} catch (SecurityException e) {
 
 				e.printStackTrace();
 			}
@@ -188,7 +191,10 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 
 			try {
 				Object cons = t.getConstructor(parameters);
-			} catch (NoSuchMethodException | SecurityException e) {
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+				
+			} catch (SecurityException e) {
 
 				e.printStackTrace();
 			}
@@ -247,7 +253,10 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			try {
 				@SuppressWarnings({ "unchecked", "unused" })
 				Object cons = t.getConstructor(parameters);
-			} catch (NoSuchMethodException | SecurityException e) {
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+				
+			} catch (SecurityException e) {
 
 				e.printStackTrace();
 			}
@@ -305,7 +314,10 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 
 			try {
 				Object cons = t.getConstructor(parameters);
-			} catch (NoSuchMethodException | SecurityException e) {
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+				
+			} catch (SecurityException e) {
 
 				e.printStackTrace();
 			}
