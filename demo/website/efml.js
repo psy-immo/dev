@@ -20,25 +20,8 @@
  * load the efml compiler applet
  */
 
-
 myEfmlPreviewButtonId = 0;
 myEfmlPreviewButtons = [];
-
-/**
- * include the global applet
- */
-
-function myEfmlAppletInclude() {
-	/**if (!$('efmlApplet')) {
-
-		document.write("<applet id=\"efmlApplet\" " + "name=\"efmlApplet\""
-				+ " archive=\"" + logletBaseURL + "efmlApplet.jar\" "
-				+ "code=\"de.tu_dresden.psy.efml.editor.EditorApplet\" "
-				+ "MAYSCRIPT style=\"width: 1px; height: 1px\"></applet>");
-
-		myEfmlAppletIncluded = true;
-	}*/
-}
 
 /**
  * 
@@ -60,12 +43,12 @@ function EfmlPreviewButton(atags, rtags, text) {
 	}
 
 	this.WriteHtml = function() {
-		myEfmlAppletInclude();
-		document.write("<form target=\"_blank\" action=\"" + logletBaseURL
-				+ "bounce.php\" method=\"post\" id=\"efmlInputForm" + this.id
-				+ "\" onsubmit=\"javascript:myEfmlPreviewButtons[" + this.id
-				+ "].UpdateContents()\">");
-		document.write("<input type=\"hidden\" name=\"doc\" id=\"efmlDoc"
+		document.write("<form target=\"_previewframe" + this.id
+				+ "\" action=\"" + logletBaseURL
+				+ "compile?preview=1\" method=\"post\" id=\"efmlInputForm"
+				+ this.id + "\" onsubmit=\"javascript:myEfmlPreviewButtons["
+				+ this.id + "].UpdateContents()\">");
+		document.write("<input type=\"hidden\" name=\"efml\" id=\"efmlDoc"
 				+ this.id + "\" />");
 		document.write("<input type=\"submit\" value=\"" + this.text + "\"/>");
 		document.write("</form>");
@@ -79,18 +62,18 @@ function EfmlPreviewButton(atags, rtags, text) {
 
 	this.SetContents = function(data) {
 		var target = document.getElementById("efmlDoc" + this.id);
-		target.value = escapeSome(data);
+		target.value = data;
 	};
 
 	/**
-	 * submits the bouncer form
+	 * submits the compile form
 	 */
 
 	this.Bounce = function(data) {
 		var form = document.getElementById("efmlInputForm" + this.id);
 
 		/**
-		 * NOTE: most popup blockers will fail this !!
+		 * NOTE: most pop up blockers will fail this !!
 		 */
 		form.submit();
 	};
@@ -102,7 +85,7 @@ function EfmlPreviewButton(atags, rtags, text) {
 	 */
 
 	this.UpdateContents = function() {
-		
+
 		myLogger.Log("EfmlPreviewButton" + this.id + " click");
 
 		/**
@@ -110,63 +93,42 @@ function EfmlPreviewButton(atags, rtags, text) {
 		 */
 
 		myStorage.AutoUpdateAndStore();
-		
+
 		myLogger.Log("EfmlPreviewButton" + this.id + " store");
-
-		/**
-		 * ..and now preview & compile
-		 */
-
-		myLogger.Log("EfmlPreviewButton" + this.id + " applet");
-		
-		var applet = document.getElementById("efmlApplet");
 
 		/**
 		 * grab efml data
 		 */
-		
+
 		myLogger.Log("EfmlPreviewButton" + this.id + " tags");
 
 		var efml_parts = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
-		
+
 		myLogger.Log("EfmlPreviewButton" + this.id + " gathering");
 
 		var efml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<efml>\n";
 
 		for ( var int = 0; int < efml_parts.length; int++) {
 			var part = efml_parts[int];
-			
+
 			if (part.token)
 				efml += part.token + "\n";
 		}
 
 		efml += "</efml>";
 
-		myLogger.Log("EfmlPreviewButton" + this.id + " compile:\n" + efml);
+		myLogger.Log("EfmlPreviewButton" + this.id + " compile preview:\n"
+				+ efml);
 
 		/**
-		 * compile
+		 * set efml data accordingly
 		 */
 
-		try {
-			this.lastError = applet.compileEfml(bugfixParam(efml));
-		} catch (err) {
-			this.lastError = "Error invoking compilation applet: " + err;
-		}
-
-		if (this.lastError) {
-			myLogger.Log("EfmlPreviewButton" + this.id + " error:\n"
-					+ this.lastError);
-			return false;
-		} else {
-			myLogger.Log("EfmlPreviewButton" + this.id + " bounces.");
-		}
+		this.SetContents(efml);
 
 		/**
-		 * set bounce contents
+		 * compliation of preview code is done by servlet on tomcat7
 		 */
-
-		this.SetContents(applet.getHtml());
 
 		return true;
 	};

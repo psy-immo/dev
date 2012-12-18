@@ -31,5 +31,5 @@ function NewEfmlTag(description, name, tags, accept, reject) {
 		return block.SetContents(unescapeBTNR(trimmed.substr(10)));
 	}
 	
-	return null;
+	return new EfmlQuote(description,tags);
 };

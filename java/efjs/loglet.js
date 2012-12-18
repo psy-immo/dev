@@ -17,23 +17,32 @@
  */
 
 /**
+ * try to detect the server side php script base location
+ */
+
+if (typeof logletBaseURL == 'undefined') {
+	var scripts = document.getElementsByTagName('script');
+	logletBaseURL = scripts[scripts.length - 1].src + "\n";
+	logletBaseURL = logletBaseURL.replace("loglet.js\n", "");
+};
+
+/**
  * load the server communication applet, if not present
  */
 
 if (!$('loglet')) {
-	document.write("<applet id=\"loglet\" " + "name=\"loglet\""
-			+ " archive=\"loglet.jar\" "
+	document.write("<applet id=\"loglet\" " + "name=\"loglet\"" + " archive=\""
+			+ logletBaseURL + "loglet.jar\" "
 			+ "code=\"de.tu_dresden.psy.util.Loglet\" "
 			+ "MAYSCRIPT style=\"width: 1px; height: 1px\"></applet>");
 }
 
-/** 
+/**
  * check whether we are in preview mode
  */
 
 if (window.location.toString().toQueryParams()["preview"]) {
 	efmlPreview = true;
-	
 
 	/**
 	 * change setup for preview mode
@@ -41,7 +50,7 @@ if (window.location.toString().toQueryParams()["preview"]) {
 
 	studyId = "preview";
 	subjectId = "preview";
-		
+
 } else {
 	efmlPreview = false;
 }
@@ -59,16 +68,6 @@ serverDataCache = {};
 function bugfixParam(param) {
 	return "" + param + "\0";
 }
-
-/**
- * try to detect the server side php script base location
- */
-
-if (typeof logletBaseURL == 'undefined') {
-	var scripts = document.getElementsByTagName('script');
-	logletBaseURL = scripts[scripts.length - 1].src + "\n";
-	logletBaseURL = logletBaseURL.replace("loglet.js\n", "");
-};
 
 /**
  * fall back definitions / look ups

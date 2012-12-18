@@ -1,17 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-
-
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Hover.js test file</title>
-</head>
-
-<body id="body">
-
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /></head><body id="body">
+  <applet id="loglet" name="loglet" archive="loglet.jar" code="de.tu_dresden.psy.util.Loglet" mayscript="" style="width: 1px; height: 1px"></applet>
+  <applet id="efmlApplet" name="efmlApplet" archive="efmlApplet.jar" code="de.tu_dresden.psy.efml.editor.EditorApplet" mayscript="" style="width: 1px; height: 1px"></applet>
+	<script type="text/javascript">
+  docId = "5c85ce93-09fe-4af8-b6d0-862f05dbd2dc";
+  studyId = "bdf14258-0d68-4882-8f5c-ca6cf215ee86";
+  </script>
+  <script type="text/javascript">
+		logletBaseURL="http://127.0.1.1:8080/efmlWebCompilerModule/";
+	</script>
 	<script type="text/javascript" src="EventHelpers.js"></script>
 	<script type="text/javascript" src="cssQuery-p.js"></script>
-	<script type="text/javascript" src="jcoglan.com.sylvester.js"></script>	
+	<script type="text/javascript" src="jcoglan.com.sylvester.js"></script>
 	<script type="text/javascript" src="cssSandpaper.js"></script>
 	<script type="text/javascript" src="jquery-1.8.0.min.js"></script>
 	<script type="text/javascript" src="prototype.js"></script>
@@ -29,261 +29,32 @@
 	<script type="text/javascript" src="answer.js"></script>
 	<script type="text/javascript" src="sniffybutton.js"></script>
 	<script type="text/javascript" src="dropdown.js"></script>
+	<script type="text/javascript" src="checkbox.js"></script>
+	<script type="text/javascript" src="radiobutton.js"></script>
+	<script type="text/javascript" src="popupbutton.js"></script>
+	<script type="text/javascript" src="freetext.js"></script>
+	<script type="text/javascript" src="boxspace.js"></script>
+	<script type="text/javascript" src="trashcan.js"></script>
 	<script type="text/javascript" src="sentencepattern.js"></script>
 	<script type="text/javascript" src="airport.js"></script>
 	<script type="text/javascript" src="inference.js"></script>
-	<script type="text/javascript" src="freetext.js"></script>
-	<script type="text/javascript" src="checkbox.js"></script>
-	<script type="text/javascript" src="radiobutton.js"></script>		
-	<script type="text/javascript" src="multiline.js"></script>
-	<script type="text/javascript" src="boxspace.js"></script>
-	<script type="text/javascript" src="trashcan.js"></script>
+	<script type="text/javascript" src="efml.js"></script>
 	<script type="text/javascript" src="efmlbuttons.js"></script>
 	<script type="text/javascript" src="efmlboard.js"></script>
 	<script type="text/javascript" src="efmltag.js"></script>
 	<script type="text/javascript" src="efmlquote.js"></script>
 	<script type="text/javascript" src="efmlfactory.js"></script>
-	
-	<script type="text/javascript">
-	
-	</script>
-	
-	<script type="text/javascript" src="efml.js"></script>
-	<script type="text/javascript" src="popupbutton.js"></script>
-
-	<br />
-	<br />
-	
-	<script type="text/javascript">
-		new EfmlBoard("board",[],[],[]).SetContents("EfmlQuote <studyid>BLAH</studyid>").WriteHtml();
-	</script>
-
-	<table>
-	<script type="text/javascript">
-		new RadioButton("box",[],"tr").Option("A","A").Option("B","B").Option("C","C").WriteHtml();
-	</script>
-	
-	<script type="text/javascript">
-		new PopupButton("","http://www.google.com/").WriteHtml();
-	</script>
-	</table>
-	
-	<script type="text/javascript">
-		new Runway("box",[],"Hover",[],[]).WriteHtml();
-		
-		
-		new Boxspace("box",[],[],[]).Size("400px","400px").AddBox(new FloatBox("left:220px;top:400px;background-color:white;","Test")).WriteHtml();
-		new Boxspace("box2",[],[],[]).Size("400px","400px").AddBox(new FloatBox("left:220px;top:400px;background-color:white;","Test")).WriteHtml();
-		
-		new Checkbox("box",[],"Check here!!","CHECKED","NOPE").WriteHtml();
-		
-		new Trashcan("trash",[],[],[]).WriteHtml();
-	
-		function TestSolution() {
-			var fail = false;
-			var rows = [ "r1", "r2", "r3" ];
-
-			/**
-			 * Decolorize previous solutions
-			 */
-
-			Exists(myTags.AllTags([]), function(c) {
-				c.MarkNeutral();
-				return false;
-			});
-
-			/**
-			 * Check for every line and mark the corresponding run ways
-			 */
-
-			if (Exists(rows, function(r) {
-				var c1 = Exists(myTags.AllTags([ r, "c1" ]), function(c) {
-					return c.token == decodeString([ 194, 159, 90, 170, 170,
-							160, 186, 239, 169, 92, 76, 75, 50, 196, 85, 224,
-							127, 230, 204, 243, 177, 184, 176, 29, 169, 67,
-							250, 96, 95, 233, 6, 158, 27, 177, 118, 192, 210,
-							182, 230, 119, 223, 32, 64, 91, 26, 180, 159, 98,
-							206, 74, 8, 185, 6, 96, 212, 13, 23, 69, 65, 80,
-							46, 143, 77, 145, 202, 208, 80, 194, 253, 221, 38,
-							3, 246, 46, 159, 112, 137, 55, 91, 166, 225, 30,
-							80, 175, 104, 105, 253, 61, 24, 132, 190, 36, 146,
-							192, 106, 204, 127, 155, 25, 132, 151, 118, 177,
-							161, 169, 167, 163, 60, 27, 107, 58, 239, 44, 31,
-							76, 205, 249, 132, 19, 218, 234, 33, 168, 48, 46,
-							87, 187, 172, 199, 234 ]);
-				});
-				if (c1 == null)
-					return false;
-
-				var c2 = Exists(myTags.AllTags([ r, "c2" ]), function(c) {
-					return c.token == decodeString([ 9, 70, 134, 169, 176, 173,
-							181, 164, 186, 186, 186, 67, 63, 243, 152, 72, 85,
-							93, 241, 244, 156, 16, 240, 16, 132, 75, 255, 29,
-							237, 74, 243, 72, 191, 199, 240, 170, 64, 27, 246,
-							145, 154, 81, 98, 217, 121, 5, 76, 208, 230, 41,
-							68, 200, 205, 66, 174, 103, 86, 74, 57, 252, 25,
-							71, 64, 242, 90, 162, 252, 168, 56, 160, 182, 220,
-							15, 124, 55, 195, 179, 124, 217, 23, 150, 39, 119,
-							48, 203, 190, 215, 104, 180, 80, 65, 148, 0, 245,
-							211, 14, 81, 195, 164, 152, 56, 24, 135, 142, 20,
-							192, 42, 63, 38, 47, 118, 36, 232, 13, 175, 33,
-							191, 3, 106, 26, 18, 246, 30, 39, 101, 220, 249,
-							36, 0, 26 ]);
-				});
-				if (c2 == null)
-					return false;
-
-				c1.MarkAsGood();
-				c2.MarkAsGood();
-				return true;
-			}) == null) {
-				fail = true;
-			} else {
-				myLogger.Log("Solved: part 1");
-			}
-
-			if (Exists(rows, function(r) {
-				var c1 = Exists(myTags.AllTags([ r, "c1" ]), function(c) {
-					return c.token == decodeString([ 19, 183, 119, 169, 176,
-							173, 181, 164, 186, 186, 186, 35, 8, 64, 144, 154,
-							178, 25, 121, 176, 17, 170, 23, 153, 200, 30, 4,
-							97, 101, 11, 22, 163, 149, 126, 3, 79, 98, 168, 12,
-							193, 77, 124, 128, 162, 99, 182, 63, 129, 180, 218,
-							202, 189, 3, 124, 156, 207, 205, 163, 153, 58, 152,
-							244, 76, 131, 202, 216, 144, 251, 68, 253, 127,
-							193, 141, 40, 138, 232, 218, 65, 66, 100, 215, 61,
-							180, 120, 255, 135, 114, 85, 233, 244, 27, 16, 168,
-							146, 103, 170, 32, 139, 44, 69, 30, 104, 209, 225,
-							12, 242, 153, 224, 69, 200, 63, 69, 17, 52, 153,
-							31, 186, 222, 70, 44, 130, 168, 129, 130, 126, 101,
-							219, 125, 26, 5 ]);
-				});
-				if (c1 == null)
-					return false;
-
-				var c2 = Exists(myTags.AllTags([ r, "c2" ]), function(c) {
-					return c.token == decodeString([ 8, 123, 177, 175, 186,
-							182, 170, 164, 175, 186, 28, 202, 4, 71, 43, 129,
-							192, 138, 165, 193, 104, 235, 59, 55, 230, 0, 90,
-							27, 223, 137, 7, 110, 66, 205, 56, 105, 51, 5, 170,
-							113, 236, 242, 227, 129, 185, 153, 184, 163, 225,
-							83, 212, 246, 202, 108, 123, 175, 197, 206, 104,
-							128, 184, 200, 25, 197, 96, 124, 57, 136, 246, 101,
-							85, 3, 47, 175, 70, 78, 198, 13, 97, 19, 119, 117,
-							50, 132, 165, 214, 117, 54, 38, 156, 50, 7, 42,
-							134, 229, 214, 16, 148, 125, 190, 196, 198, 62,
-							180, 52, 175, 197, 150, 143, 9, 175, 211, 189, 71,
-							38, 76, 118, 9, 144, 221, 42, 164, 138, 184, 139,
-							100, 255, 110, 0, 147 ]);
-				});
-				if (c2 == null)
-					return false;
-
-				c1.MarkAsGood();
-				c2.MarkAsGood();
-				return true;
-			}) == null) {
-				fail = true;
-			} else {
-				myLogger.Log("Solved: part 2");
-			}
-
-			if (Exists(rows, function(r) {
-				var c1 = Exists(myTags.AllTags([ r, "c1" ]), function(c) {
-					return c.token == decodeString([ 184, 77, 136, 170, 170,
-							160, 186, 250, 46, 178, 52, 13, 132, 231, 147, 134,
-							216, 168, 119, 208, 88, 2, 148, 27, 65, 135, 146,
-							48, 136, 164, 35, 252, 101, 28, 143, 88, 153, 133,
-							160, 94, 70, 63, 197, 225, 219, 115, 3, 91, 137,
-							140, 26, 26, 71, 37, 191, 134, 175, 37, 197, 165,
-							83, 187, 118, 48, 244, 45, 40, 58, 195, 50, 52, 98,
-							123, 238, 16, 85, 63, 139, 3, 188, 202, 65, 244,
-							153, 143, 187, 19, 5, 188, 57, 170, 7, 136, 32,
-							133, 250, 240, 239, 214, 197, 151, 253, 222, 166,
-							230, 199, 69, 200, 70, 199, 53, 181, 198, 186, 139,
-							19, 53, 158, 52, 65, 213, 195, 22, 160, 107, 242,
-							85, 84, 189, 74 ]);
-				});
-				if (c1 == null)
-					return false;
-
-				var c2 = Exists(myTags.AllTags([ r, "c2" ]), function(c) {
-					return c.token == decodeString([ 151, 200, 2, 175, 186,
-							182, 170, 164, 175, 186, 78, 38, 126, 118, 70, 208,
-							157, 144, 227, 151, 225, 47, 199, 245, 179, 74,
-							252, 93, 230, 218, 122, 166, 163, 8, 226, 171, 58,
-							0, 211, 209, 67, 105, 0, 204, 166, 248, 33, 245,
-							78, 62, 243, 151, 221, 31, 127, 174, 189, 92, 191,
-							88, 19, 190, 250, 128, 247, 117, 251, 62, 157, 87,
-							96, 248, 176, 92, 150, 64, 199, 38, 91, 198, 135,
-							219, 116, 194, 59, 190, 46, 24, 227, 168, 175, 171,
-							16, 54, 232, 223, 41, 206, 137, 124, 245, 135, 25,
-							70, 237, 214, 56, 202, 178, 232, 23, 18, 28, 9,
-							192, 19, 206, 183, 33, 228, 217, 105, 15, 216, 198,
-							179, 65, 100, 159, 204 ]);
-				});
-				if (c2 == null)
-					return false;
-
-				c1.MarkAsGood();
-				c2.MarkAsGood();
-				return true;
-			}) == null) {
-				fail = true;
-			} else {
-				myLogger.Log("Solved: part 3");
-			}
-
-			if (!fail) {
-				myLogger.Log("Solved: all");
-				Exists(myTags.AllTags([]), function(x) {
-					x.SetTakeOff(false);
-					return false;
-				});
-			}
-
-			return !fail;
-		}
-	</script>
-
-	<div id="mainframe"
-		>
-		
-			<script type="text/javascript">
-	
-      new Arrow(0,20,40,60,false,false,"onclick=\"alert('0');\"").WriteHtml();
-	
-	
-		new InferenceButton([], []).Feed(
-				encodeString("<parse><predicate>b</predicate></parse><expert>a b Option A c</expert>"))
-				.WriteHtml();
-		</script><br/><script type="text/javascript">
-		new Airport("",["points"], [], []).WriteHtml();
-		</script><br/><script type="text/javascript">
-		new Airport("",["conclusions"], [], []).WriteHtml();
-	</script>
-	
-
-
-	</div>
-	
-	
-
-	<script type="text/javascript">
+<div id="mainframe" ><script type="text/javascript">printChangeSubjectButton();</script>
+ <script type="text/javascript">new EfmlBoard("", [], [], []).WriteHtml();</script>
+ <script type="text/javascript"> new EfmlPreviewButton([], [], "").WriteHtml(); </script>
+</div>	<script type="text/javascript">
 		myHover.WriteHtml();
-	</script>
+	</script>	<script type="text/javascript">
+  myStorage.SetupAutoRestore(sessionStorage,"5c85ce93-09fe-4af8-b6d0-862f05dbd2dc");  </script>
 	<script type="text/javascript">
-		myStorage
-				.SetupAutoRestore(sessionStorage,
-						"4a5bb859-5326-4b09-8666-a6cbb0d47a03--63bd1140-114b-4737-a5ac-cc4509a99e5b");
-	</script>
-
-
-
-</body>
-<script type="text/javascript">
-	RunwayDisplayBugfix();
-	BoxspaceUpdateAllArrows();
-	FeedInferenceApplets();
-</script>
-</html>
+  RunwayDisplayBugfix();  </script>
+	<script type="text/javascript">
+  BoxspaceUpdateAllArrows();  </script>
+	<script type="text/javascript">
+  FeedInferenceApplets();  </script>
+</body></html>
