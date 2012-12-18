@@ -12,10 +12,9 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <file path="/efml/jarexport.jardesc"/>
-        <javaElement handleIdentifier="=efml/src&lt;de.tu_dresden.psy.efml.editor"/>
         <file path="/efml/.classpath"/>
+        <javaElement handleIdentifier="=efml/src&lt;de.tu_dresden.psy.efml.editor"/>
         <file path="/efml/.project"/>
-        <file path="/efml/efmlApplet.jardesc"/>
         <javaElement handleIdentifier="=efml/src&lt;de.tu_dresden.psy.efml"/>
     </selectedElements>
 </jardesc>
