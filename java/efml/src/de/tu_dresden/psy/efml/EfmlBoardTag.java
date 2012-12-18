@@ -33,7 +33,7 @@ import javax.naming.OperationNotSupportedException;
 public class EfmlBoardTag implements AnyTag {
 
 	private EfmlTagsAttribute attributes;
-	@SuppressWarnings("unused")
+
 	private String label;
 
 	public EfmlBoardTag(EfmlTagsAttribute efmlAttributes) {
@@ -85,6 +85,19 @@ public class EfmlBoardTag implements AnyTag {
 					"<efmlboard> cannot enclose "
 							+ innerTag.getClass().toString());
 
+	}
+
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<efmlboard");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.label));
+		representation.append("</efmlboard>");
+
+		return representation.toString();
 	}
 
 }

@@ -51,10 +51,8 @@ public class EfmlPreviewButtonTag implements AnyTag {
 
 		writer.write(" new EfmlPreviewButton(");
 
-
 		writer.write(attributes.getAcceptTags() + ", ");
 		writer.write(attributes.getRejectTags() + ", ");
-
 
 		writer.write("\"" + StringEscape.escapeToJavaScript(token) + "\")");
 
@@ -78,7 +76,20 @@ public class EfmlPreviewButtonTag implements AnyTag {
 		} else
 			throw new OperationNotSupportedException(
 					"<efmlpreview> cannot enclose "
-					+ innerTag.getClass().toString());
+							+ innerTag.getClass().toString());
 	}
 
+	@Override
+	public String getEfml() {
+
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<efmlpreview");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(this.token);
+		representation.append("</efmlpreview>");
+
+		return representation.toString();
+	}
 }
