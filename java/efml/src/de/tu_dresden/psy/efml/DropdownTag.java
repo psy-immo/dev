@@ -143,4 +143,20 @@ public class DropdownTag implements AnyTag, NestedTag {
 							+ innerTag.getClass().toString());
 	}
 
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<dropdown");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.label));
+		for (AnyTag child : options) {
+			representation.append(child.getEfml());
+		}
+		representation.append("</dropdown>");
+
+		return representation.toString();
+	}
+
 }

@@ -32,7 +32,6 @@ import javax.naming.OperationNotSupportedException;
 
 public class ArrowTag implements AnyTag {
 	
-	@SuppressWarnings("unused")
 	private String token;
 	
 	private EfmlTagsAttribute attributes;
@@ -73,6 +72,18 @@ public class ArrowTag implements AnyTag {
 		} else
 			throw new OperationNotSupportedException("<arrow> cannot enclose "
 					+ innerTag.getClass().toString());
+	}
+
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<arrow");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(this.token);
+		representation.append("</arrow>");
+		return representation.toString();
 	}
 
 }

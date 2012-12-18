@@ -71,4 +71,15 @@ public class DocumentIdTag implements AnyTag {
 
 	}
 
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<documentid>");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</documentid>");
+
+		return representation.toString();
+	}
+
 }

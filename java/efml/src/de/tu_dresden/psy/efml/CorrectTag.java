@@ -56,6 +56,14 @@ public class CorrectTag implements AnyTag {
 	}
 
 	@Override
+	public String getEfml() {
+		/**
+		 * handled by enclosing tag
+		 */
+		return null;
+	}
+
+	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {

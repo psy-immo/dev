@@ -136,4 +136,16 @@ public class CheckboxTag implements AnyTag, NestedTag {
 							+ innerTag.getClass().toString());
 	}
 
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<checkbox");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.label));
+		representation.append("</checkbox>");
+		return representation.toString();
+	}
+
 }

@@ -80,4 +80,17 @@ public class CheckTag implements AnyTag {
 					+ innerTag.getClass().toString());
 	}
 
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<check");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.testExpression));
+		representation.append("</check>");
+
+		return representation.toString();
+	}
+
 }

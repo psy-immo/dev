@@ -98,4 +98,17 @@ public class AirportTag implements AnyTag {
 
 	}
 
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<airport");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.label));
+		representation.append("</airport>");
+
+		return representation.toString();
+	}
+
 }

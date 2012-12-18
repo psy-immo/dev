@@ -57,4 +57,8 @@ public class CTag implements AnyTag {
 		throw new OperationNotSupportedException("<c /> takes no contents.");
 	}
 
+	@Override
+	public String getEfml() {
+		return "<c/>";
+	}
 }

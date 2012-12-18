@@ -326,4 +326,12 @@ public class BodyTag implements AnyTag {
 		this.include_efml_applet = true;
 	}
 
+	@Override
+	public String getEfml() {
+		/**
+		 * there is no efml representation of the body tag!
+		 */
+		return null;
+	}
+
 }

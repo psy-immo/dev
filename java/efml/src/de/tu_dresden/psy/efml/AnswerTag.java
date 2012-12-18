@@ -193,4 +193,31 @@ public class AnswerTag implements AnyTag {
 					+ innerTag.getClass().toString());
 	}
 
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<answer");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.buttonText));
+
+		for (AnyTag child : waitfors) {
+			representation.append(child.getEfml());
+		}
+		for (AnyTag child : checks) {
+			representation.append(child.getEfml());
+		}
+		for (AnyTag child : hints) {
+			representation.append(child.getEfml());
+		}
+		if (this.goodText != null) {
+			representation.append("<correct>" + this.goodText + "</correct>");
+		}
+
+		representation.append("</answer>");
+
+		return representation.toString();
+	}
+
 }

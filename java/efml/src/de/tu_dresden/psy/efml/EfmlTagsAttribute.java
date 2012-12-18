@@ -267,6 +267,25 @@ public class EfmlTagsAttribute {
 	
 	/**
 	 * 
+	 * writes an attribute with pre- and postfix if it has been given as
+	 * attribute, otherwise does nothing
+	 * 
+	 * @param writer
+	 * @throws IOException
+	 */
+
+	public void writeXmlAttributes(StringBuffer buffer) {
+		for (String key: attribs.keySet()) {
+			buffer.append(" ");
+			buffer.append(key);
+			buffer.append("\"");
+			buffer.append(StringEscape.escapeToXmlAttrib(attribs.get(key)));
+			buffer.append("\"");
+		}
+	}
+
+	/**
+	 * 
 	 * @return attributes object of the parent node
 	 */
 

@@ -35,7 +35,7 @@ import javax.naming.OperationNotSupportedException;
 public class BoxspaceTag implements AnyTag {
 
 	private EfmlTagsAttribute attributes;
-	@SuppressWarnings("unused")
+
 	private String label;
 
 	/**
@@ -141,6 +141,25 @@ public class BoxspaceTag implements AnyTag {
 					"<boxspace> cannot enclose "
 							+ innerTag.getClass().toString());
 
+	}
+
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<boxspace");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.label));
+		for (AnyTag child : boxes) {
+			representation.append(child.getEfml());
+		}
+		for (AnyTag child : arrows) {
+			representation.append(child.getEfml());
+		}
+		representation.append("</boxspace>");
+
+		return representation.toString();
 	}
 
 }

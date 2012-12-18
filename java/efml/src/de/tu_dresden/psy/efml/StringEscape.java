@@ -131,6 +131,19 @@ public class StringEscape {
 	}
 
 	/**
+	 * translate < to &lt;, > to &gt;, & to &amp;, " to &quot;, ' to &apos;
+	 * 
+	 * @param unescaped
+	 * @return escaped
+	 */
+	public static String escapeToXml(String unescaped) {
+
+		return unescaped.replaceAll("\\&", "\\&amp;")
+				.replaceAll("\\<", "\\&lt;").replaceAll("\\>", "\\&gt;")
+				.replaceAll("\\\"", "\\&quot;").replaceAll("\\'", "\\&apos;");
+	}
+
+	/**
 	 * translate &lt; to <, &gt; to >, &amp; to &, &quot; to "
 	 * 
 	 * @param escaped
@@ -141,6 +154,17 @@ public class StringEscape {
 				.replaceAll("\\&lt;", "\\<").replaceAll("\\&gt;", "\\>")
 				.replaceAll("\\&amp;", "\\&");
 
+	}
+
+	/**
+	 * translate " to &quot;
+	 * 
+	 * @param unescaped
+	 * @return escaped
+	 */
+	public static String escapeToXmlAttrib(String unescaped) {
+
+		return unescaped.replaceAll("\\\"", "\\&quot;");
 	}
 	
 	

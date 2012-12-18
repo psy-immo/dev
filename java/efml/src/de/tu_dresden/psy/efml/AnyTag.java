@@ -18,8 +18,8 @@
 
 package de.tu_dresden.psy.efml;
 
-import java.io.Writer;
 import java.io.IOException;
+import java.io.Writer;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -50,6 +50,9 @@ public interface AnyTag {
 	 */
 	public void encloseTag(AnyTag innerTag) throws OperationNotSupportedException;
 	
-
+	/**
+	 * gives an efml representation of the tag
+	 */
 	
+	public String getEfml();
 }
