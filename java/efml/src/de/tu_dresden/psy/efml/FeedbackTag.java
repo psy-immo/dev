@@ -124,4 +124,28 @@ public class FeedbackTag implements AnyTag {
 							+ innerTag.getClass().toString());
 	}
 
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<feedback>");
+		if (correct != null)
+			representation.append(correct.getEfml());
+		if (incorrect != null)
+			representation.append(incorrect.getEfml());
+		if (incomplete != null)
+			representation.append(incomplete.getEfml());
+		if (needjustification != null)
+			representation.append(needjustification.getEfml());
+		for (AnyTag t : hints) {
+			representation.append(t.getEfml());
+		}
+		for (AnyTag t : requires) {
+			representation.append(t.getEfml());
+		}
+		representation.append("</feedback>");
+
+		return representation.toString();
+	}
+
 }

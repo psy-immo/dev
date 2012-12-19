@@ -33,7 +33,7 @@ import javax.naming.OperationNotSupportedException;
 public class AirportTag implements AnyTag {
 
 	private EfmlTagsAttribute attributes;
-	@SuppressWarnings("unused")
+
 	private String label;
 
 	public AirportTag(EfmlTagsAttribute efmlAttributes) {
