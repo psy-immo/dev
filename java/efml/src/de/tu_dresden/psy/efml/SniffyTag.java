@@ -97,7 +97,30 @@ public class SniffyTag implements AnyTag {
 		else
 			throw new OperationNotSupportedException("<sniffy> cannot enclose "
 					+ innerTag.getClass().toString());
-
+	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<sniffy");
+		representation.append(">");
+		if (this.inform.isEmpty() == false)
+		{
+			representation.append("<unused>");
+			representation.append(StringEscape.escapeToXml(this.inform));
+			representation.append("</unused>");
+		}
+		if (this.text.isEmpty() == false)
+		{
+			representation.append("<label>");
+			representation.append(StringEscape.escapeToXml(this.text));
+			representation.append("</label>");
+		}
+		
+		representation.append("</sniffy>");
+		
+		return representation.toString();
 	}
 
 }

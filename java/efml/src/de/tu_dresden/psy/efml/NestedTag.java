@@ -29,7 +29,7 @@ import java.io.Writer;
  * 
  */
 
-public interface NestedTag {
+public interface NestedTag extends AnyTag {
 
 	/**
 	 * writes java script code that creates a new java script object according

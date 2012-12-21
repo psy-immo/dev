@@ -137,3 +137,35 @@ function EfmlPreviewButton(atags, rtags, text) {
 
 	return this;
 }
+
+/**
+ * 
+ *  Fixed Efml Code Objects 
+ * 
+ */
+
+myFixedEfmlCounter = 0;
+myFixedEfmlArray = [];
+
+function EfmlFixedQuote(tags, efml) {
+
+	this.id = myFixedEfmlCounter++;
+
+	this.tags = tags;
+
+	this.token = efml;
+
+	/**
+	 * we keep the function, but it wont do anything.
+	 */
+	
+	this.WriteHtml = function() {		
+	};
+	
+	myTags.Add(this, this.tags);
+
+	myFixedEfmlArray[this.id] = this;
+
+	return this;
+}
+

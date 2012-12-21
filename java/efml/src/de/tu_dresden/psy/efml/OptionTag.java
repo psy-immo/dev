@@ -74,5 +74,19 @@ public class OptionTag implements AnyTag {
 			throw new OperationNotSupportedException("<option> cannot enclose "
 					+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<option");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</option>");
+		
+		return representation.toString();
+	}
+
 
 }

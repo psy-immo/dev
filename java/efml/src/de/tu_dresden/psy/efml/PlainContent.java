@@ -63,6 +63,12 @@ public class PlainContent implements AnyTag {
 			throws OperationNotSupportedException {
 		throw new OperationNotSupportedException("PlainContent ain't even a tag");
 	}
+	
+	@Override
+	public String getEfml() {
+		
+		return StringEscape.escapeToXml(this.unescaped);
+	}
 
 
 }

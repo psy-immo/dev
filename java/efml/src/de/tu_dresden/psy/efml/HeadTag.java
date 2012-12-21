@@ -70,5 +70,13 @@ public class HeadTag implements AnyTag {
 			throws OperationNotSupportedException {
 		innerTags.add(innerTag);
 	}
+	
+	@Override
+	public String getEfml() {
+		/**
+		 * the head tag has no efml representation
+		 */
+		return null;
+	}
 
 }

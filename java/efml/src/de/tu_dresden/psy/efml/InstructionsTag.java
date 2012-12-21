@@ -99,5 +99,30 @@ public class InstructionsTag implements AnyTag {
 					+ innerTag.getClass().toString());
 
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<instructions");
+		
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.url));
+		if (this.inform.isEmpty() == false)
+		{
+			representation.append("<unread>");
+			representation.append(StringEscape.escapeToXml(this.inform));
+			representation.append("</unread>");
+		}
+		if (this.text.isEmpty() == false)
+		{
+			representation.append("<label>");
+			representation.append(StringEscape.escapeToXml(this.text));
+			representation.append("</label>");
+		}
+		representation.append("</instructions>");
+
+		return representation.toString();
+	}
 
 }

@@ -131,5 +131,18 @@ public class RunwayTag implements AnyTag {
 			throw new OperationNotSupportedException("<runway> cannot enclose "
 					+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<runway");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(this.token);
+		representation.append("</runway>");
+		
+		return representation.toString();
+	}
 
 }

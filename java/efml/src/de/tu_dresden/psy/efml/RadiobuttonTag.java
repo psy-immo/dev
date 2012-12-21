@@ -149,5 +149,21 @@ public class RadiobuttonTag implements AnyTag, NestedTag {
 					"<radiobutton> cannot enclose "
 							+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<radiobutton");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.label));
+		for (AnyTag t: options) {
+			representation.append(t.getEfml());
+		}
+		representation.append("</radiobutton>");
+		
+		return representation.toString();
+	}
 
 }

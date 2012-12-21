@@ -70,5 +70,17 @@ public class SubjectPromptTag implements AnyTag {
 							+ innerTag.getClass().toString());
 
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<subjectprompt");
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</subjectprompt>");
+		
+		return representation.toString();
+	}
 
 }

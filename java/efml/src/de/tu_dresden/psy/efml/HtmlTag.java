@@ -140,5 +140,13 @@ public class HtmlTag implements AnyTag {
 			throws OperationNotSupportedException {
 		innerTags.add(innerTag);
 	}
+	
+	@Override
+	public String getEfml() {
+		/**
+		 * the html tag has no efml representation
+		 */
+		return null;
+	}
 
 }

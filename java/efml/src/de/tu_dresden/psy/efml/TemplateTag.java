@@ -34,7 +34,7 @@ import javax.naming.OperationNotSupportedException;
 public class TemplateTag implements AnyTag {
 
 	private EfmlTagsAttribute attributes;
-	@SuppressWarnings("unused")
+	
 	private String label;
 
 	private ArrayList<NestedTag> parts;
@@ -112,6 +112,22 @@ public class TemplateTag implements AnyTag {
 					"<template> cannot enclose "
 							+ innerTag.getClass().toString());
 
+	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<template");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.label));
+		for (AnyTag t: parts) {
+			representation.append(t.getEfml());
+		}
+		representation.append("</template>");
+		
+		return representation.toString();
 	}
 
 }

@@ -126,5 +126,18 @@ public class MultilineTag implements AnyTag, NestedTag {
 					"<multiline> cannot enclose "
 							+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<multiline");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.label));
+		representation.append("</multiline>");
+		
+		return representation.toString();
+	}
 
 }

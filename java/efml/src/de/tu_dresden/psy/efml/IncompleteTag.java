@@ -66,5 +66,16 @@ public class IncompleteTag implements AnyTag {
 			throw new OperationNotSupportedException("<incomplete> cannot enclose "
 					+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<incomplete");
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</incomplete>");
+		return representation.toString();
+	}
 
 }

@@ -70,5 +70,17 @@ public class SubjectChangeTag implements AnyTag {
 							+ innerTag.getClass().toString());
 
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<subjectchange");
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</subjectchange>");
+		
+		return representation.toString();
+	}
 
 }

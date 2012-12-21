@@ -64,5 +64,16 @@ public class UnusedTag implements AnyTag {
 			throw new OperationNotSupportedException("<unused> cannot enclose "
 					+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<unused>");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</unused>");
+		
+		return representation.toString();
+	}
 
 }

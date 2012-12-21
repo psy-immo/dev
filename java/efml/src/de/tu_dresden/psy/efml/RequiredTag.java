@@ -90,5 +90,16 @@ public class RequiredTag implements AnyTag {
 		throw new OperationNotSupportedException("<required> cannot enclose "
 				+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<required");
+		attributes.writeXmlAttributes(representation);
+		representation.append("/>");
+		
+		return representation.toString();
+	}
 
 }

@@ -64,6 +64,8 @@ function Tags() {
 
 	/**
 	 * this return all objects bearing all of the tags
+	 * 
+	 * in the sequential ordering their .Add calls
 	 */
 	this.AllTags = function(tags) {
 		var objs = this.objs;
@@ -84,6 +86,8 @@ function Tags() {
 	/**
 	 * this return all objects bearing all of the tags, not having any of the
 	 * reject tags
+	 * 
+	 * in the sequential ordering their .Add calls 
 	 */
 	this.AllTagsBut = function(tags, rejects) {
 		var objs = this.objs;

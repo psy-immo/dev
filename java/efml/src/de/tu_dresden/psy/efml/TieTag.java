@@ -34,10 +34,10 @@ import javax.naming.OperationNotSupportedException;
 public class TieTag implements AnyTag {
 	
 	private ArrayList<AnyTag> innerTags;
-	
-	
-	public TieTag() {
-	
+	private EfmlTagsAttribute attributes;
+
+	public TieTag(EfmlTagsAttribute efmlAttributes) {
+		this.attributes = efmlAttributes;
 		innerTags = new ArrayList<AnyTag>();
 	}
 
@@ -68,6 +68,22 @@ public class TieTag implements AnyTag {
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		innerTags.add(innerTag);
+	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<tie");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		for (AnyTag t: innerTags)
+		{
+			representation.append(t.getEfml());
+		}
+		representation.append("</tie>");
+		
+		return representation.toString();
 	}
 
 }

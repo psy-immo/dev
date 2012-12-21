@@ -64,5 +64,16 @@ public class LabelTag implements AnyTag {
 			throw new OperationNotSupportedException("<label> cannot enclose "
 					+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<label>");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</label>");
+		
+		return representation.toString();
+	}
 
 }

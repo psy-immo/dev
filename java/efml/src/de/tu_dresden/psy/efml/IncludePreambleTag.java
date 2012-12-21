@@ -16,7 +16,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package de.tu_dresden.psy.efml;
 
 import java.io.IOException;
@@ -25,9 +24,11 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implementation of the &lt;includepreamble/> tag (which is sort of hack & unsupported)
+ * implementation of the &lt;includepreamble/> tag (which is sort of hack &
+ * unsupported)
+ * 
  * @author immanuel
- *
+ * 
  */
 
 public class IncludePreambleTag implements AnyTag {
@@ -40,13 +41,17 @@ public class IncludePreambleTag implements AnyTag {
 	@Override
 	public void close(Writer writer) throws IOException {
 
-
 	}
 
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
-		throw new OperationNotSupportedException("<includepreamble /> takes no contents.");
+		throw new OperationNotSupportedException(
+				"<includepreamble /> takes no contents.");
 	}
 
+	@Override
+	public String getEfml() {
+		return "<includepreamble/>";
+	}
 }

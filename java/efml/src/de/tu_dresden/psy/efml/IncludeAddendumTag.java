@@ -48,5 +48,11 @@ public class IncludeAddendumTag implements AnyTag {
 			throws OperationNotSupportedException {
 		throw new OperationNotSupportedException("<includeaddendum /> takes no contents.");
 	}
+	
+	@Override
+	public String getEfml() {
+	
+		return "<includeaddendum/>";
+	}
 
 }

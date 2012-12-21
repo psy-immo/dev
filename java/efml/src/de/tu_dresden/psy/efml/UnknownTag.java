@@ -42,7 +42,11 @@ public class UnknownTag implements AnyTag {
 
 	private ArrayList<AnyTag> innerTags;
 
+	private EfmlTagsAttribute attributes;
+
 	public UnknownTag(EfmlTagsAttribute reproduce) {
+		
+		this.attributes = reproduce;
 
 		opening = "<" + reproduce.getName();
 
@@ -132,6 +136,26 @@ public class UnknownTag implements AnyTag {
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		innerTags.add(innerTag);
+	}
+	
+
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<");
+		representation.append(attributes.getName());
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		for (AnyTag t: innerTags)
+		{
+			representation.append(t.getEfml());
+		}
+		representation.append("</");
+		representation.append(attributes.getName());
+		representation.append(">");
+		
+		return representation.toString();
 	}
 
 }

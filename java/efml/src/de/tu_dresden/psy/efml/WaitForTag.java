@@ -81,5 +81,16 @@ public class WaitForTag implements AnyTag {
 					"<waitfor> cannot enclose "
 							+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<waitfor>");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</waitfor>");
+		
+		return representation.toString();
+	}
 
 }

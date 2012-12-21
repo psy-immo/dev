@@ -77,6 +77,18 @@ public class PlainTag implements AnyTag, NestedTag {
 			throw new OperationNotSupportedException(
 					"<plain> cannot enclose tags");
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<plain");
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.unescaped));
+		representation.append("</plain>");
+		
+		return representation.toString();
+	}
 
 
 }

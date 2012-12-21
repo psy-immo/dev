@@ -47,5 +47,10 @@ public class RTag implements AnyTag {
 			throws OperationNotSupportedException {
 		throw new OperationNotSupportedException("<r /> takes no contents.");
 	}
+	
+	@Override
+	public String getEfml() {
+		return "<r/>";
+	}
 
 }

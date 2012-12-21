@@ -89,5 +89,18 @@ public class FloatboxTag implements AnyTag, NestedTag {
 			throw new OperationNotSupportedException(
 					"<floatbox> cannot enclose tags");
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<floatbox");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.content));
+		representation.append("</floatbox>");
+
+		return representation.toString();
+	}
 
 }

@@ -70,5 +70,17 @@ public class SubjectInfoTag implements AnyTag {
 							+ innerTag.getClass().toString());
 
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<subjectinfo");
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</subjectinfo>");
+		
+		return representation.toString();
+	}
 
 }

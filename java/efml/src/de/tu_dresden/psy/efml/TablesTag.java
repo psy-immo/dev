@@ -81,5 +81,21 @@ public class TablesTag implements AnyTag {
 			throws OperationNotSupportedException {
 		innerTags.add(innerTag);
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<tables");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		for (AnyTag t: innerTags)
+		{
+			representation.append(t.getEfml());
+		}
+		representation.append("</tables>");
+		
+		return representation.toString();
+	}
 
 }

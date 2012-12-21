@@ -125,5 +125,18 @@ public class FreetextTag implements AnyTag, NestedTag {
 					"<freetext> cannot enclose "
 							+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<freetext");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.label));
+		representation.append("</freetext>");
+
+		return representation.toString();
+	}
 
 }

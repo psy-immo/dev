@@ -69,5 +69,17 @@ public class PhpUrlTag implements AnyTag {
 							+ innerTag.getClass().toString());
 
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<phpurl");
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</phpurl>");
+		
+		return representation.toString();
+	}
 
 }

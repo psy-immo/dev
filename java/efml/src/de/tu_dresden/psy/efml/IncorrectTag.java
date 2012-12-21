@@ -66,5 +66,17 @@ public class IncorrectTag implements AnyTag {
 			throw new OperationNotSupportedException("<incorrect> cannot enclose "
 					+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<incorrect");
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</incorrect>");
+
+		return representation.toString();
+	}
 
 }

@@ -76,5 +76,18 @@ public class PopupHelpTag implements AnyTag {
 							+ innerTag.getClass().toString());
 
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<popuphelp");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		representation.append(StringEscape.escapeToXml(this.url));
+		representation.append("</popuphelp>");
+		
+		return representation.toString();
+	}
 
 }

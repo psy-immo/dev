@@ -56,5 +56,10 @@ public class IncludeHoverTag implements AnyTag {
 			throws OperationNotSupportedException {
 		throw new OperationNotSupportedException("<includehover /> takes no contents.");
 	}
+	
+	@Override
+	public String getEfml() {
+		return "<includehover/>";
+	}
 
 }

@@ -66,5 +66,16 @@ public class NeedJustificationTag implements AnyTag {
 			throw new OperationNotSupportedException("<needjustification> cannot enclose "
 					+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<needjustification>");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</needjustification>");
+		
+		return representation.toString();
+	}
 
 }

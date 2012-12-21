@@ -64,5 +64,16 @@ public class UnreadTag implements AnyTag {
 			throw new OperationNotSupportedException("<unread> cannot enclose "
 					+ innerTag.getClass().toString());
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<unread>");
+		representation.append(StringEscape.escapeToXml(this.token));
+		representation.append("</unread>");
+		
+		return representation.toString();
+	}
 
 }

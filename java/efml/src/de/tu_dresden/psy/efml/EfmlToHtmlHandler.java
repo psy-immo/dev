@@ -359,10 +359,10 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	 */
 
 	private static Object[] tagClasses = { "title",
-			new SimpleObjectConstructor(TitleTag.class), "tags",
-			new SimpleObjectConstructor(TagsTag.class), "efml",
-			new SimpleObjectConstructor(TagsTag.class), "tie",
-			new SimpleObjectConstructor(TieTag.class), "tables",
+			new AttributeObjectConstructor(TitleTag.class), "tags",
+			new AttributeObjectConstructor(TagsTag.class), "efml",
+			new AttributeObjectConstructor(TagsTag.class), "tie",
+			new AttributeObjectConstructor(TieTag.class), "tables",
 			new AttributeObjectConstructor(TablesTag.class), "r",
 			new SimpleObjectConstructor(RTag.class), "c",
 			new ParentObjectConstructor(CTag.class), "runway",

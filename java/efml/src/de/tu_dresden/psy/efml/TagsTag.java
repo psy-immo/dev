@@ -36,8 +36,10 @@ import javax.naming.OperationNotSupportedException;
 public class TagsTag implements AnyTag {
 
 	private ArrayList<AnyTag> innerTags;
+	private EfmlTagsAttribute attributes;
 
-	public TagsTag() {
+	public TagsTag(EfmlTagsAttribute efmlAttributes) {
+		this.attributes = efmlAttributes;
 		innerTags = new ArrayList<AnyTag>();
 	}
 
@@ -63,6 +65,22 @@ public class TagsTag implements AnyTag {
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		innerTags.add(innerTag);
+	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<tags");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		for (AnyTag t: innerTags)
+		{
+			representation.append(t.getEfml());
+		}
+		representation.append("</tags>");
+		
+		return representation.toString();
 	}
 
 }

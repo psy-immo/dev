@@ -94,5 +94,17 @@ public class TrashcanTag implements AnyTag {
 						+ innerTag.getClass().toString() + ")");
 
 	}
+	
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+		
+		representation.append("<trashcan");
+		attributes.writeXmlAttributes(representation);
+		representation.append("/>");
+		
+		return representation.toString();
+	}
+
 
 }

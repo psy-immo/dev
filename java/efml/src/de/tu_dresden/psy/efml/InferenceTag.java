@@ -165,5 +165,22 @@ public class InferenceTag implements AnyTag {
 							+ innerTag.getClass().toString());
 
 	}
+	@Override
+	public String getEfml() {
+		StringBuffer representation = new StringBuffer();
+
+		representation.append("<inference");
+		attributes.writeXmlAttributes(representation);
+		representation.append(">");
+		for (AnyTag t: xmlMachineData) {
+			representation.append(t.getEfml());
+		}
+		for (AnyTag t: feedbackData) {
+			representation.append(t.getEfml());
+		}
+		representation.append("</inference>");
+
+		return representation.toString();
+	}
 
 }
