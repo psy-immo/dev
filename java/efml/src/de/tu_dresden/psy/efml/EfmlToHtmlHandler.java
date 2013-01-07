@@ -69,15 +69,14 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	static interface TagObjectConstructor {
 		/**
 		 * 
-		 * @param body
-		 *            TODO
+		 * 
 		 * @return a new tag-handling object
 		 */
 		AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body);
 	};
 
 	/**
-	 * implements interface for constructing other classes
+	 * X() constructor
 	 */
 
 	static class SimpleObjectConstructor implements TagObjectConstructor {
@@ -110,7 +109,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	};
 
 	/**
-	 * implements interface for constructing other classes
+	 * X(EfmlTagsAttribute attributes) constructor
 	 */
 
 	static class AttributeObjectConstructor implements TagObjectConstructor {
@@ -170,7 +169,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	};
 
 	/**
-	 * implements interface for constructing other classes
+	 * X(EfmlTagsAttribute attributes, BodyTag body) constructor
 	 */
 
 	static class AttributeBodyObjectConstructor implements TagObjectConstructor {
@@ -232,7 +231,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	};
 
 	/**
-	 * implements interface for constructing other classes
+	 * X(AnyTag parent) constructor
 	 */
 
 	static class ParentObjectConstructor implements TagObjectConstructor {
@@ -294,7 +293,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	};
 
 	/**
-	 * implements interface for constructing other classes
+	 * X(BodyTag body) constructor
 	 */
 
 	static class BodyObjectConstructor implements TagObjectConstructor {
@@ -433,7 +432,8 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			new AttributeObjectConstructor(FloatboxTag.class), "arrow",
 			new AttributeObjectConstructor(ArrowTag.class), "efmlboard",
 			new AttributeObjectConstructor(EfmlBoardTag.class), "efmlpreview",
-			new AttributeBodyObjectConstructor(EfmlPreviewButtonTag.class) };
+			new AttributeBodyObjectConstructor(EfmlPreviewButtonTag.class),
+			"efmlquote", new AttributeObjectConstructor(EfmlQuoteTag.class) };
 
 	public EfmlToHtmlHandler() {
 		this.currentTags = new Stack<EfmlTagsAttribute>();

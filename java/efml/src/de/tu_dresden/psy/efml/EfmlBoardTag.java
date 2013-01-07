@@ -20,6 +20,7 @@ package de.tu_dresden.psy.efml;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -36,9 +37,12 @@ public class EfmlBoardTag implements AnyTag {
 
 	private String label;
 
+	private ArrayList<EfmlBoardComponentTag> contents;
+
 	public EfmlBoardTag(EfmlTagsAttribute efmlAttributes) {
 		this.attributes = efmlAttributes;
 		this.label = "";
+		this.contents = new ArrayList<EfmlBoardComponentTag>();
 	}
 
 	@Override
@@ -63,6 +67,23 @@ public class EfmlBoardTag implements AnyTag {
 		attributes.writeIfValueGiven(writer, ".Width(\"", "width", "\")");
 		attributes.writeIfValueGiven(writer, ".Height(\"", "height", "\")");
 
+		/**
+		 * set initial contents
+		 */
+
+		writer.write(".SetContents(\"");
+		boolean first = true;
+		for (EfmlBoardComponentTag c : this.contents) {
+			if (!first)
+				writer.write(" ");
+
+			writer.write(StringEscape.escapeToJavaScript(c
+					.getEfjsEfmlNewRepresentation()));
+
+			first = false;
+		}
+		writer.write("\")");
+
 		writer.write(".WriteHtml();");
 
 	}
@@ -76,10 +97,10 @@ public class EfmlBoardTag implements AnyTag {
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 
-		// TODO: make efml tags includable !!
-
 		if (innerTag.getClass() == PlainContent.class) {
 			this.label += ((PlainContent) innerTag).getPlainContent();
+		} else if (innerTag instanceof EfmlBoardComponentTag) {
+			this.contents.add((EfmlBoardComponentTag) innerTag);
 		} else
 			throw new OperationNotSupportedException(
 					"<efmlboard> cannot enclose "
@@ -95,6 +116,9 @@ public class EfmlBoardTag implements AnyTag {
 		attributes.writeXmlAttributes(representation);
 		representation.append(">");
 		representation.append(StringEscape.escapeToXml(this.label));
+		for (AnyTag a : this.contents) {
+			representation.append(a.getEfml());
+		}
 		representation.append("</efmlboard>");
 
 		return representation.toString();
