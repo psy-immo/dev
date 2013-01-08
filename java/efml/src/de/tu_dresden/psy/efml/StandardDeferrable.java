@@ -1,5 +1,5 @@
 /**
- * GlobalModifier.java, (c) 2013, Immanuel Albrecht; Dresden University of
+ * StandardDeferrable.java, (c) 2013, Immanuel Albrecht; Dresden University of
  * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -19,17 +19,28 @@
 package de.tu_dresden.psy.efml;
 
 /**
- * interface that implements a way to defer a global state change induced by
- * some efml tag, such that this tag can be quoted properly
+ * class that implements standard behavior of the Deferrable interface
  * 
  * @author immo
  * 
  */
 
-public interface GlobalModifier extends Deferrable {
+public class StandardDeferrable implements Deferrable {
 
+	private boolean deferred;
 
-	/** do the global action */
-	void DoAction();
+	public StandardDeferrable() {
+		this.deferred = false;
+	}
+
+	@Override
+	public boolean isDeferred() {
+		return this.deferred;
+	}
+
+	@Override
+	public void RequestDeferring() {
+		this.deferred = true;
+	}
+
 }
-

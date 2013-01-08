@@ -33,7 +33,8 @@ import javax.naming.OperationNotSupportedException;
  * 
  */
 
-public class SubjectChangeTag implements AnyTag {
+public class SubjectChangeTag extends StandardDeferrable implements AnyTag,
+		GlobalModifier {
 
 	/**
 	 * store current token
@@ -63,7 +64,7 @@ public class SubjectChangeTag implements AnyTag {
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
 			this.token += ((PlainContent) innerTag).getPlainContent();
-			body.setChange(token);
+
 		} else
 			throw new OperationNotSupportedException(
 					"<subjectchange> cannot enclose "
@@ -71,6 +72,12 @@ public class SubjectChangeTag implements AnyTag {
 
 	}
 	
+	@Override
+	public void DoAction() {
+		body.setChange(token);
+
+	}
+
 	@Override
 	public String getEfml() {
 		StringBuffer representation = new StringBuffer();

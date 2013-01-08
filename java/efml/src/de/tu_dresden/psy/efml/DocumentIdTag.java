@@ -33,7 +33,8 @@ import javax.naming.OperationNotSupportedException;
  * 
  */
 
-public class DocumentIdTag implements AnyTag {
+public class DocumentIdTag extends StandardDeferrable implements AnyTag,
+		GlobalModifier {
 
 	/**
 	 * store current token
@@ -63,11 +64,17 @@ public class DocumentIdTag implements AnyTag {
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
 			this.token += ((PlainContent) innerTag).getPlainContent();
-			body.setDocument(token);
+
 		} else
 			throw new OperationNotSupportedException(
 					"<documentid> cannot enclose "
 							+ innerTag.getClass().toString());
+
+	}
+
+	@Override
+	public void DoAction() {
+		body.setDocument(token);
 
 	}
 

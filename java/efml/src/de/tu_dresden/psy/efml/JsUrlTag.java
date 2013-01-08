@@ -33,7 +33,8 @@ import javax.naming.OperationNotSupportedException;
  * 
  */
 
-public class JsUrlTag implements AnyTag {
+public class JsUrlTag extends StandardDeferrable implements AnyTag,
+		GlobalModifier {
 
 	/**
 	 * store current token
@@ -63,12 +64,19 @@ public class JsUrlTag implements AnyTag {
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
 			this.token += ((PlainContent) innerTag).getPlainContent();
-			body.setJs(token);
+
 		} else
 			throw new OperationNotSupportedException("<jsurl> cannot enclose "
 							+ innerTag.getClass().toString());
 
 	}
+
+	@Override
+	public void DoAction() {
+		body.setJs(token);
+
+	}
+
 	@Override
 	public String getEfml() {
 		StringBuffer representation = new StringBuffer();

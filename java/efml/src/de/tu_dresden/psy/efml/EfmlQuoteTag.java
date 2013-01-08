@@ -61,6 +61,10 @@ public class EfmlQuoteTag implements EfmlBoardComponentTag {
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		this.contents.add(innerTag);
+		if (innerTag instanceof GlobalModifier) {
+			GlobalModifier modifier = (GlobalModifier) innerTag;
+			modifier.RequestDeferring();
+		}
 	}
 
 	@Override

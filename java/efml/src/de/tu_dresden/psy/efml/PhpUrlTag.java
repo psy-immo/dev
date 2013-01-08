@@ -33,7 +33,8 @@ import javax.naming.OperationNotSupportedException;
  * 
  */
 
-public class PhpUrlTag implements AnyTag {
+public class PhpUrlTag extends StandardDeferrable implements AnyTag,
+		GlobalModifier {
 
 	/**
 	 * store current token
@@ -63,13 +64,19 @@ public class PhpUrlTag implements AnyTag {
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
 			this.token += ((PlainContent) innerTag).getPlainContent();
-			body.setPhp(token);
+
 		} else
 			throw new OperationNotSupportedException("<phpurl> cannot enclose "
 							+ innerTag.getClass().toString());
 
 	}
 	
+	@Override
+	public void DoAction() {
+		body.setPhp(token);
+
+	}
+
 	@Override
 	public String getEfml() {
 		StringBuffer representation = new StringBuffer();

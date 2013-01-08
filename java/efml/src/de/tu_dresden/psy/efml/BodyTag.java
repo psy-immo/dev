@@ -35,6 +35,8 @@ import javax.naming.OperationNotSupportedException;
 
 public class BodyTag implements AnyTag {
 
+	private HeadTag headTag;
+
 	private ArrayList<AnyTag> innerTags;
 
 	/**
@@ -85,7 +87,7 @@ public class BodyTag implements AnyTag {
 
 	private boolean include_efml_applet;
 
-	public BodyTag() {
+	public BodyTag(HeadTag head) {
 		innerTags = new ArrayList<AnyTag>();
 
 		idDoc = UUID.randomUUID().toString();
@@ -97,6 +99,8 @@ public class BodyTag implements AnyTag {
 		subjectPrompt = null;
 
 		include_efml_applet = false;
+
+		headTag = head;
 	}
 
 	/**
@@ -315,7 +319,10 @@ public class BodyTag implements AnyTag {
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
-		innerTags.add(innerTag);
+		if (innerTag instanceof TitleTag)
+			headTag.encloseTag(innerTag);
+		else
+			innerTags.add(innerTag);
 	}
 
 	/**

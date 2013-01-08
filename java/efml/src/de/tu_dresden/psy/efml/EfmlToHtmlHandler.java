@@ -439,7 +439,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		this.currentTags = new Stack<EfmlTagsAttribute>();
 		this.root = new EfmlTagsAttribute("", null, null);
 		this.head = new HeadTag();
-		this.body = new BodyTag();
+		this.body = new BodyTag(this.head);
 		this.processingTags = new Stack<AnyTag>();
 
 		this.currentTags.push(this.root);
@@ -511,10 +511,13 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		AnyTag closing_tag = this.processingTags.pop();
 
 		try {
-			if (closing_tag instanceof TitleTag) {
-				this.head.encloseTag(closing_tag);
-			} else
-				this.processingTags.peek().encloseTag(closing_tag);
+			this.processingTags.peek().encloseTag(closing_tag);
+
+			if (closing_tag instanceof GlobalModifier) {
+				GlobalModifier modifier = (GlobalModifier) closing_tag;
+				if (modifier.isDeferred() == false)
+					modifier.DoAction();
+			}
 		} catch (OperationNotSupportedException e) {
 
 			e.printStackTrace();

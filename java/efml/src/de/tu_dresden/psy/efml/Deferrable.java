@@ -1,5 +1,5 @@
 /**
- * GlobalModifier.java, (c) 2013, Immanuel Albrecht; Dresden University of
+ * Deferrable.java, (c) 2013, Immanuel Albrecht; Dresden University of
  * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -15,21 +15,26 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package de.tu_dresden.psy.efml;
 
 /**
- * interface that implements a way to defer a global state change induced by
- * some efml tag, such that this tag can be quoted properly
+ * interface for deferrable actions
  * 
  * @author immo
  * 
  */
 
-public interface GlobalModifier extends Deferrable {
+public interface Deferrable {
 
+	/**
+	 * @return true, if the action has been deferred
+	 */
+	boolean isDeferred();
 
-	/** do the global action */
-	void DoAction();
+	/**
+	 * ask for the modifier action to be stalled, e.g. to stop changing the
+	 * title of the document when inside an &lt;efmlquote>-tag
+	 */
+	void RequestDeferring();
+
 }
-
