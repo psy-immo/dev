@@ -161,3 +161,17 @@ myHover = new Hover();
 addMouseClickHook(document, 0, function() {
 	myHover.CrashDown();
 });
+
+/* The Hover interface allows data to be taken up and put down in the
+ * document. There are two objects governing this process, the source
+ * and the target.
+ * 
+ * The OnClick handler routine of a take-off capable object checks for
+ * other flying objects by checking myHover.flight :
+ *    If there is some object flying, it may be removed by calling
+ *      myHover.CrashDown() to cancel the operation or 
+ *      myHover.CrashDown(true) to take away the flying object.
+ * 
+ *
+ * 
+ */
