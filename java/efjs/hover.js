@@ -168,7 +168,7 @@ addMouseClickHook(document, 0, function() {
  *    If there is some object flying, it may be removed by calling
  *      myHover.CrashDown() to cancel the operation or 
  *      myHover.CrashDown(true) to take away the flying object, 
- *      which operation is choosen may depend on myHover.source and 
+ *      which operation is chosen may depend on myHover.source and 
  *      myHover.GetType()
  *    
  *    When there is no more flying object, a new object can take off 
