@@ -64,11 +64,6 @@ function Hover() {
 		 */
 		this.flight = 2;
 
-		/*
-		 * { var pl = document.getElementById("myhoverplane"); pl.style.zIndex =
-		 * 100; pl.innerHTML = formatted_token; }
-		 */
-
 		this.hover = new HoverContainer(mouseX + 1, mouseY + 1, formatted_token);
 		this.hover.AddChild();
 
@@ -161,3 +156,24 @@ myHover = new Hover();
 addMouseClickHook(document, 0, function() {
 	myHover.CrashDown();
 });
+
+/** Instructions on the Hover interface
+ * 
+ * The Hover interface allows data to be taken up and put down in the
+ * document. There are two objects governing this process, the source
+ * and the target.
+ * 
+ * The OnClick handler routine of a take-off capable object checks for
+ * other flying objects by checking myHover.flight :
+ *    If there is some object flying, it may be removed by calling
+ *      myHover.CrashDown() to cancel the operation or 
+ *      myHover.CrashDown(true) to take away the flying object, 
+ *      which operation is chosen may depend on myHover.source and 
+ *      myHover.GetType()
+ *    
+ *    When there is no more flying object, a new object can take off 
+ *    by calling TakeOff(..), if the take off is successful. 
+ * 
+ *
+ * 
+ */
