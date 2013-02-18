@@ -511,11 +511,12 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 
 	this.HandleCut = function(index) {
+		
 		if (myHover.flight) {
 			this.HandleLanding(index);
 			return;
 		}
-
+		
 		if (mouseEvent.ctrlKey) {
 			/**
 			 * this is convenient behaviour... :)
@@ -527,14 +528,15 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			this.cursor = index;
 			this.UpdateCursorHighlighting();
 		} else {
+
 			/**
 			 * store copy in clip board
 			 * 
 			 */
 
-			var data = this.contents[index].GetDescription();
+			var clip_data = this.contents[index].GetDescription();
 
-			setClipboardContents(data);
+			
 
 			/**
 			 * cut out this element
@@ -549,7 +551,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			for ( var int = 0; int < this.contents.length; int++) {
 				if (index != int) {
 					contents.push(this.contents[int]);
-					selected.push(false);
+					selected.push(this.selected[int]);
 				} else {
 					if (int < this.cursor) {
 						this.cursor -= 1;
@@ -594,6 +596,10 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			/** log */
 
 			myLogger.Log(log_data);
+			
+			
+			
+			setClipboardContents(clip_data);
 		}
 
 	};
