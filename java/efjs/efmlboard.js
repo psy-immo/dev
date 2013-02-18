@@ -489,7 +489,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		if (myHover.flight) {
 
 		}
-		;
+		
 	};
 
 	/***************************************************************************
@@ -609,6 +609,17 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		}
 
 	};
+
+	/***************************************************************************
+	 * the hovered token has been accepted by another object
+	 */
+	this.TakeAway = function() {
+		this.hoverIndex = -1;
+	};
+
+	/***************************************************************************
+	 * the hovered token of this origin returned
+	 */
 
 	this.GiveBackToken = function(token) {
 		/**
