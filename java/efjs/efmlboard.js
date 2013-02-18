@@ -101,7 +101,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 						+ ".contents[" + int + "]", this.tags, this.accept,
 						this.reject));
 				this.selected.push(false);
-				
+
 			}
 		}
 
@@ -270,11 +270,11 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		else
 			html += " background: #338866;";
 		html += "\">";
-		html += "<td style=\"width: 10px;\">";
+		html += "<td style=\"width: 20px;\">";
 		html += "</td>";
-		html += "<td style=\"width: 10px;\">";
+		html += "<td style=\"width: 20px;\">";
 		html += "</td>";
-		html += "<td style=\"width: 10px;\">";
+		html += "<td style=\"width: 20px;\">";
 		html += "</td>";
 		html += "<td>";
 		html += "</td>";
@@ -289,7 +289,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			/** the object marker/selector */
 			html += "<td id=\"efmlBoardContents" + this.id + "[" + int
 					+ "].selected\" style=\"";
-			html += "  width: 10px;";
+			html += "  width: 20px;";
 			if (is_selected)
 				html += " background: #88FFDD;";
 			else
@@ -297,11 +297,11 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			html += "\">";
 
 			html += "</td>";
-			
+
 			/** the object delete button */
 			html += "<td id=\"efmlBoardContents" + this.id + "[" + int
 					+ "].cut\" style=\"";
-			html += "  width: 10px;";
+			html += "  width: 20px;";
 			if (is_selected)
 				html += " background: #88FFDD;";
 			else
@@ -309,11 +309,11 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			html += "\">";
 			html += "X";
 			html += "</td>";
-			
+
 			/** the object take off runway */
 			html += "<td id=\"efmlBoardContents" + this.id + "[" + int
 					+ "].takeoff\" style=\"";
-			html += "  width: 10px;";
+			html += "  width: 20px;";
 			if (is_selected)
 				html += " background: #88FFDD;";
 			else
@@ -472,10 +472,26 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	};
 
 	/***************************************************************************
+	 * someone requested landing...
+	 */
+
+	this.HandleLanding = function(index) {
+		if (myHover.flight) {
+
+		}
+		;
+	};
+
+	/***************************************************************************
 	 * someone clicked on some selection area
 	 */
 
 	this.HandleSelection = function(index) {
+		if (myHover.flight) {
+			this.HandleLanding(index);
+			return;
+		}
+
 		if (mouseEvent.ctrlKey) {
 			this.selected[index] = !this.selected[index];
 
@@ -489,24 +505,97 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		this.cursor = index;
 		this.UpdateCursorHighlighting();
 	};
-	
+
 	/***************************************************************************
 	 * someone clicked on the cut area
 	 */
 
 	this.HandleCut = function(index) {
+		if (myHover.flight) {
+			this.HandleLanding(index);
+			return;
+		}
+
 		if (mouseEvent.ctrlKey) {
+			/**
+			 * this is convenient behaviour... :)
+			 */
 			this.selected[index] = !this.selected[index];
 
-		} else
-			for ( var int = 0; int < this.selected.length; int++) {
-				this.selected[int] = int == index;
+			this.UpdateSelectionHighlighting();
+
+			this.cursor = index;
+			this.UpdateCursorHighlighting();
+		} else {
+			/**
+			 * store copy in clip board
+			 * 
+			 */
+
+			var data = this.contents[index].GetDescription();
+
+			setClipboardContents(data);
+
+			/**
+			 * cut out this element
+			 */
+
+			var log_data = this.name + ": Cut object: " + index;
+
+			/** filter non-selected content objects */
+			var contents = [];
+			var selected = [];
+
+			for ( var int = 0; int < this.contents.length; int++) {
+				if (index != int) {
+					contents.push(this.contents[int]);
+					selected.push(false);
+				} else {
+					if (int < this.cursor) {
+						this.cursor -= 1;
+					}
+				}
 			}
 
-		this.UpdateSelectionHighlighting();
+			/** unregister mouse handlers */
 
-		this.cursor = index;
-		this.UpdateCursorHighlighting();
+			this.UnregisterMouse();
+
+			/** remove old html content representation */
+
+			var html_contents = document.getElementById("efmlBoardContents"
+					+ this.id);
+			var html_parent = html_contents.parentNode;
+			html_parent.removeChild(html_contents);
+
+			/** use new contents now */
+
+			this.contents = contents;
+			this.selected = selected;
+
+			/** add new html content representation */
+
+			var html = this.GetContentsHtmlCode();
+
+			var container = document.createElement('div');
+
+			container.innerHTML = html;
+
+			html_parent.appendChild(container.firstChild);
+
+			/** register mouse handlers */
+
+			this.RegisterMouse();
+
+			/** update efml token */
+
+			this.token = this.GetEfml();
+
+			/** log */
+
+			myLogger.Log(log_data);
+		}
+
 	};
 
 	/***************************************************************************
@@ -514,20 +603,29 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 
 	this.HandleTakeOff = function(index) {
+		if (myHover.flight) {
+			this.HandleLanding(index);
+			return;
+		}
+
 		if (mouseEvent.ctrlKey) {
+			/**
+			 * this is convenient behaviour... :)
+			 */
 			this.selected[index] = !this.selected[index];
 
-		} else
-			for ( var int = 0; int < this.selected.length; int++) {
-				this.selected[int] = int == index;
-			}
+			this.UpdateSelectionHighlighting();
 
-		this.UpdateSelectionHighlighting();
+			this.cursor = index;
+			this.UpdateCursorHighlighting();
+		} else {
+			/**
+			 * take off this element
+			 */
+			// TODO
+		}
 
-		this.cursor = index;
-		this.UpdateCursorHighlighting();
 	};
-	
 
 	/***************************************************************************
 	 * someone clicked on some cursor gap
