@@ -29,6 +29,12 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	this.html_created = false;
 
 	/**
+	 * store the currently hovered object
+	 */
+	this.hoverIndex = -1;
+	this.hoverSelected = false;
+
+	/**
 	 * Provide automatic name generation: use provided tags
 	 */
 
@@ -338,9 +344,13 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			else
 				html += " background: #338866;";
 			html += "\">";
-			html += "<td style=\"width: 1em;\">";
+			html += "<td style=\"width: 20px;\">";
 			html += "</td>";
-			html += "<td style=\"width: 1em;\">";
+			html += "<td style=\"width: 20px;\">";
+			html += "</td>";
+			html += "<td style=\"width: 20px;\">";
+			html += "</td>";
+			html += "<td>";
 			html += "</td>";
 			html += "</tr>";
 		}
@@ -511,12 +521,12 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 
 	this.HandleCut = function(index) {
-		
+
 		if (myHover.flight) {
 			this.HandleLanding(index);
 			return;
 		}
-		
+
 		if (mouseEvent.ctrlKey) {
 			/**
 			 * this is convenient behaviour... :)
@@ -535,8 +545,6 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			 */
 
 			var clip_data = this.contents[index].GetDescription();
-
-			
 
 			/**
 			 * cut out this element
@@ -596,10 +604,97 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			/** log */
 
 			myLogger.Log(log_data);
-			
-			
-			
+
 			setClipboardContents(clip_data);
+		}
+
+	};
+
+	this.GiveBackToken = function(token) {
+		/**
+		 * re-insert the hovered object
+		 */
+		if (this.hoverIndex >= 0) {
+
+			var log_data = this.name + ": Token returns: " + token;
+
+			/** add token back */
+			var contents = [];
+			var selected = [];
+
+			var contents_length = this.contents.length;
+
+			for ( var int = 0; int < contents_length; int++) {
+				if (int == this.hoverIndex) {
+					var box = NewEfmlTag(token, this.name + ".contents["
+							+ this.content_id + "]", this.tags, this.accept,
+							this.reject);
+
+					this.content_id += 1;
+
+					contents.push(box);
+					selected.push(this.hoverSelected);
+				}
+
+				contents.push(this.contents[int]);
+				selected.push(this.selected[int]);
+			}
+
+			if (contents_length <= this.hoverIndex) {
+				var box = NewEfmlTag(token, this.name + ".contents["
+						+ this.content_id + "]", this.tags, this.accept,
+						this.reject);
+
+				this.content_id += 1;
+
+				contents.push(box);
+				selected.push(this.hoverSelected);
+			}
+
+			/**
+			 * reset hover index
+			 */
+
+			this.hoverIndex = -1;
+
+			/** unregister mouse handlers */
+
+			this.UnregisterMouse();
+
+			/** remove old html content representation */
+
+			var html_contents = document.getElementById("efmlBoardContents"
+					+ this.id);
+			var html_parent = html_contents.parentNode;
+			html_parent.removeChild(html_contents);
+
+			/** use new contents now */
+
+			this.contents = contents;
+			this.selected = selected;
+
+			/** add new html content representation */
+
+			var html = this.GetContentsHtmlCode();
+
+			var container = document.createElement('div');
+
+			container.innerHTML = html;
+
+			html_parent.appendChild(container.firstChild);
+
+			/** register mouse handlers */
+
+			this.RegisterMouse();
+
+			/** update efml token */
+
+			this.token = this.GetEfml();
+
+			/** log */
+
+			myLogger.Log(log_data);
+
 		}
 
 	};
@@ -628,7 +723,74 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			/**
 			 * take off this element
 			 */
-			// TODO
+
+			var token = this.contents[index].GetDescription();
+			var plane = this.contents[index].GetPlaneHtmlCode();
+
+			this.hoverIndex = index;
+			this.hoverSelected = this.selected[index];
+
+			if (myHover.TakeOff(token, this, null, plane, "EfmlTag")) {
+				/**
+				 * cut out this element
+				 */
+
+				var log_data = this.name + ": Take off object: " + index;
+
+				/** filter non-selected content objects */
+				var contents = [];
+				var selected = [];
+
+				for ( var int = 0; int < this.contents.length; int++) {
+					if (index != int) {
+						contents.push(this.contents[int]);
+						selected.push(this.selected[int]);
+					} else {
+						if (int < this.cursor) {
+							this.cursor -= 1;
+						}
+					}
+				}
+
+				/** unregister mouse handlers */
+
+				this.UnregisterMouse();
+
+				/** remove old html content representation */
+
+				var html_contents = document.getElementById("efmlBoardContents"
+						+ this.id);
+				var html_parent = html_contents.parentNode;
+				html_parent.removeChild(html_contents);
+
+				/** use new contents now */
+
+				this.contents = contents;
+				this.selected = selected;
+
+				/** add new html content representation */
+
+				var html = this.GetContentsHtmlCode();
+
+				var container = document.createElement('div');
+
+				container.innerHTML = html;
+
+				html_parent.appendChild(container.firstChild);
+
+				/** register mouse handlers */
+
+				this.RegisterMouse();
+
+				/** update efml token */
+
+				this.token = this.GetEfml();
+
+				/** log */
+
+				myLogger.Log(log_data);
+			}
+
 		}
 
 	};
@@ -885,13 +1047,36 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	this.GetDescription = function() {
 		var data = "";
 
-		for ( var int = 0; int < this.contents.length; int++) {
-			var block = this.contents[int];
+		if (this.hoverIndex < 0) {
 
-			if (data)
-				data += "\n";
+			for ( var int = 0; int < this.contents.length; int++) {
+				var block = this.contents[int];
 
-			data += block.GetDescription();
+				if (data)
+					data += "\n";
+
+				data += block.GetDescription();
+			}
+		} else {
+			/**
+			 * take the hovered object into account
+			 */
+			for ( var int = 0; int < this.contents.length; int++) {
+				var block = this.contents[int];
+
+				if (data)
+					data += "\n";
+
+				if (int == this.hoverIndex) {
+					data += myHover.token + "\n";
+				}
+
+				data += block.GetDescription();
+			}
+
+			if (this.hoverIndex >= this.contents.length) {
+				data += "\n" + myHover.token;
+			}
 		}
 
 		return "EfmlBoard " + escapeBTNR(data);
