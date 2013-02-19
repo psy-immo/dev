@@ -16,6 +16,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * SOMETHING SEEMS TO BE WRONG WITH THE SELECTION STATUS STUFF...
+ */
+
 efmlBoardCounter = 0;
 efmlBoardArray = [];
 
@@ -49,6 +53,8 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	}
 
 	this.tags = tags;
+
+	this.acceptedTypes = [ "text", "EfmlTag", "" ];
 
 	this.width = "600px";
 	this.height = "800px";
@@ -232,6 +238,23 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 					marker_element.style.background = "#88FFDD";
 				else
 					marker_element.style.background = "#338866";
+
+				marker_element = document.getElementById("efmlBoardContents"
+						+ this.id + "[" + int + "].cut");
+
+				if (is_selected)
+					marker_element.style.background = "#88FFDD";
+				else
+					marker_element.style.background = "#338866";
+
+				marker_element = document.getElementById("efmlBoardContents"
+						+ this.id + "[" + int + "].takeoff");
+
+				if (is_selected)
+					marker_element.style.background = "#88FFDD";
+				else
+					marker_element.style.background = "#338866";
+
 			}
 		}
 	};
@@ -478,7 +501,13 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	/** default click handler */
 
 	this.HandleEmptyWorkspaceClick = function() {
+		if (myHover.flight) {
+			this.HandleLanding(this.contents.length);
+			return;
+		}
+
 		this.HandleCursor(this.contents.length);
+
 	};
 
 	/***************************************************************************
@@ -487,9 +516,62 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 	this.HandleLanding = function(index) {
 		if (myHover.flight) {
+			var log_data = this.name + ": land plane ";
+			/**
+			 * check for correct token type
+			 */
+			if (!(myHover.GetType() in this.acceptedTypes)) {
+				myHover.CrashDown();
+
+				myLogger.Log(log_data + " rejected");
+				return;
+			}
+
+			/**
+			 * check for acceptance tags
+			 */
+			if (this.accept) {
+				if (myHover.source.tags) {
+					for ( var i = 0; i < this.accept.length; i++) {
+						if (myHover.source.tags.indexOf(this.accept[i]) < 0) {
+							myHover.CrashDown();
+							myLogger.Log(log_data + " rejected");
+							return;
+						}
+					}
+				} else {
+					myHover.CrashDown();
+					myLogger.Log(log_data + " rejected");
+					return;
+				}
+			}
+
+			/**
+			 * check for rejection tags
+			 */
+			if (this.reject) {
+				if (myHover.source.tags) {
+					for ( var i = 0; i < this.reject.length; i++) {
+						if (myHover.source.tags.indexOf(this.reject[i]) >= 0) {
+							myHover.CrashDown();
+							myLogger.Log(log_data + " rejected");
+							return;
+						}
+					}
+				}
+			}
+
+			token = myHover.token;
+
+			myHover.CrashDown(true);
+
+			myLogger.Log(log_data + " accepted");
+
+			this.InsertContents(index, token);
 
 		}
-		
+		;
+
 	};
 
 	/***************************************************************************
@@ -800,6 +882,9 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 				/** log */
 
 				myLogger.Log(log_data);
+				
+				this.UpdateCursorHighlighting();
+				this.UpdateSelectionHighlighting();
 			}
 
 		}
