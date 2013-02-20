@@ -424,9 +424,13 @@ function Airport(name, tags, accept, reject) {
 			 * the event handlers will be bubbling or capturing, depends on
 			 * browser, so handle it twice, this is the capturing part
 			 */
-			if (myHover.source.TakeAway) {
+			/** old
+			 * 
+			 * 
+			  if (myHover.source.TakeAway) {
 				myHover.source.TakeAway();
 			}
+			*/
 
 			/**
 			 * now crash down the plane

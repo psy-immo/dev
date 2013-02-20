@@ -18,41 +18,41 @@
 
 /**
  * creates a new efml quote string object
- *
+ * 
  * accept and reject tags are ignored
  */
 
 function EfmlQuote(efmlcode, tags, accept, reject) {
 	EfmlTagConstructor(this);
-	
+
 	this.tags = tags;
-	
+
 	this.efmlcode = efmlcode;
-	
+
 	/**
 	 * @returns efml code of this tag
 	 */
-	
-	this.GetEfml = function(){
+
+	this.GetEfml = function() {
 		return this.efmlcode;
 	};
-	
+
 	/**
-	 * @returns string that can be used to factor another instance of this object
+	 * @returns string that can be used to factor another instance of this
+	 *          object
 	 */
-		
-	
-	this.GetDescription = function(){
-		return "EfmlQuote "+escapeBTNR(this.efmlcode);
+
+	this.GetDescription = function() {
+		return "EfmlQuote " + escapeBTNR(this.efmlcode);
 	};
-	
+
 	/**
 	 * @returns control html code
 	 */
 
 	this.GetHtmlCode = function() {
 		var html = "<div style=\"";
-		//html += " display: inline-block;";
+		// html += " display: inline-block;";
 		html += " background: #FFFFFF;";
 		html += " font-family: 'Courier New', Courier, monospace;";
 		html += " color: #0000FF;";
@@ -62,19 +62,52 @@ function EfmlQuote(efmlcode, tags, accept, reject) {
 		html += " font-family: 'Times New Roman', Times, serif;";
 		html += " font-size: 70%;";
 		html += "\">";
-		
+
 		html += "efml code";
-		
+
 		html += "</span>";
 		html += "<br/>";
-		
+
 		html += escapeSome(this.efmlcode);
-			
+
 		html += "</div>";
-		
+
 		return html;
 	};
 
-	
-	return this;	
+	/**
+	 * @returns plane html code, i.e. the code for the object that is show when
+	 *          dragging this tag around with the hover feature
+	 */
+
+	this.GetPlaneHtmlCode = function() {
+		var html = "<div style=\"";
+		// html += " display: inline-block;";
+		html += " background: #FFFFFF;";
+		html += " font-family: 'Courier New', Courier, monospace;";
+		html += " color: #0000FF;";
+		html += " width: 400px";
+		html += "\">";
+		html += "<span style=\"color: #222222;";
+		html += " background: #DDDDDD;";
+		html += " font-family: 'Times New Roman', Times, serif;";
+		html += " font-size: 70%;";
+		html += "\">";
+
+		html += "efml code";
+
+		html += "</span>";
+		html += "<br/>";
+
+		if ((""+this.efmlcode).length > 80)
+			html += escapeSome(this.efmlcode.substr(0,79)+"...");
+		else
+			html += escapeSome(this.efmlcode);
+
+		html += "</div>";
+
+		return html;
+	};
+
+	return this;
 };

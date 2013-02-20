@@ -269,10 +269,11 @@ function Runway(name, tags, token, accept, reject) {
 			/**
 			 * the event handlers will be bubbling or capturing, depends on
 			 * browser, so handle it twice, this is the capturing part
+			 * this is done by myHover.CrashDown now
 			 */
-			if (myHover.source.TakeAway) {
+			/*if (myHover.source.TakeAway) {
 				myHover.source.TakeAway();
-			}
+			}*/
 
 			/**
 			 * remove the plane

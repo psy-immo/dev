@@ -208,10 +208,13 @@ function Trashcan(name, tags, accept, reject) {
 			 * the event handlers will be bubbling or capturing, depends on
 			 * browser, so handle it twice, this is the capturing part
 			 */
-
+			/**
+			 * old
+			 */
+			/*
 			if (myHover.source.TakeAway) {
 				myHover.source.TakeAway();
-			}
+			}*/
 
 			/**
 			 * remove the plane

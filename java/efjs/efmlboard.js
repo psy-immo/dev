@@ -16,10 +16,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * SOMETHING SEEMS TO BE WRONG WITH THE SELECTION STATUS STUFF...
- */
-
 efmlBoardCounter = 0;
 efmlBoardArray = [];
 
@@ -37,6 +33,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 	this.hoverIndex = -1;
 	this.hoverSelected = false;
+	this.hoverCursorIndex = -1;
 
 	/**
 	 * Provide automatic name generation: use provided tags
@@ -520,10 +517,11 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			/**
 			 * check for correct token type
 			 */
-			if (!(myHover.GetType() in this.acceptedTypes)) {
+			var type = myHover.GetType();
+			if (this.acceptedTypes.indexOf(type) < 0) {
 				myHover.CrashDown();
 
-				myLogger.Log(log_data + " rejected");
+				myLogger.Log(log_data + " rejected (wrong type: "+type+")");
 				return;
 			}
 
@@ -535,13 +533,13 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 					for ( var i = 0; i < this.accept.length; i++) {
 						if (myHover.source.tags.indexOf(this.accept[i]) < 0) {
 							myHover.CrashDown();
-							myLogger.Log(log_data + " rejected");
+							myLogger.Log(log_data + " rejected (missing tags)");
 							return;
 						}
 					}
 				} else {
 					myHover.CrashDown();
-					myLogger.Log(log_data + " rejected");
+					myLogger.Log(log_data + " rejected (missing tags)");
 					return;
 				}
 			}
@@ -554,7 +552,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 					for ( var i = 0; i < this.reject.length; i++) {
 						if (myHover.source.tags.indexOf(this.reject[i]) >= 0) {
 							myHover.CrashDown();
-							myLogger.Log(log_data + " rejected");
+							myLogger.Log(log_data + " rejected (due to tag)");
 							return;
 						}
 					}
@@ -568,10 +566,12 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			myLogger.Log(log_data + " accepted");
 
 			this.InsertContents(index, token);
+			
+			this.UpdateCursorHighlighting();
+			this.UpdateSelectionHighlighting();
 
 		}
-		;
-
+		
 	};
 
 	/***************************************************************************
@@ -749,6 +749,12 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			 */
 
 			this.hoverIndex = -1;
+			
+			/**
+			 * restore old cursor position
+			 */
+			
+			this.cursor = this.hoverCursorIndex;
 
 			/** unregister mouse handlers */
 
@@ -822,6 +828,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 			this.hoverIndex = index;
 			this.hoverSelected = this.selected[index];
+			this.hoverCursorIndex = this.cursor;
 
 			if (myHover.TakeOff(token, this, null, plane, "EfmlTag")) {
 				/**

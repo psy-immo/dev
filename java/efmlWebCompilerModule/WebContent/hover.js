@@ -46,7 +46,7 @@ function Hover() {
 			this.tokenType = tokenType;
 		else
 			this.tokenType = "text";
-		
+
 		this.respawn = respawn;
 		this.source = source;
 		this.dontGiveBack = false;
@@ -80,7 +80,6 @@ function Hover() {
 		pl.top = (mouseY + 3) + "px";
 	};
 
-	
 	/**
 	 * function that handles CrashDown by clicking somewhere
 	 */
@@ -89,23 +88,27 @@ function Hover() {
 			this.LegacyCrashDown();
 		}
 
-		if ((this.dontGiveBack == false)&&(!dontGiveBack)) {
+		if ((this.dontGiveBack == false) && (!dontGiveBack)) {
 			if (this.source) {
 				if (this.source.GiveBackToken) {
 					this.source.GiveBackToken(this.token);
 				}
 			}
+		} else if (this.source) {
+			if (this.source.TakeAway) {
+				this.source.TakeAway();
+			}
 		}
-		
+
 		this.tokenType = null;
 
 	};
-	
+
 	/**
 	 * returns the type of the current token
 	 */
-	
-	this.GetType = function(){
+
+	this.GetType = function() {
 		return this.tokenType;
 	};
 
@@ -157,23 +160,21 @@ addMouseClickHook(document, 0, function() {
 	myHover.CrashDown();
 });
 
-/** Instructions on the Hover interface
+/**
+ * Instructions on the Hover interface
  * 
- * The Hover interface allows data to be taken up and put down in the
- * document. There are two objects governing this process, the source
- * and the target.
+ * The Hover interface allows data to be taken up and put down in the document.
+ * There are two objects governing this process, the source and the target.
  * 
- * The OnClick handler routine of a take-off capable object checks for
- * other flying objects by checking myHover.flight :
- *    If there is some object flying, it may be removed by calling
- *      myHover.CrashDown() to cancel the operation or 
- *      myHover.CrashDown(true) to take away the flying object, 
- *      which operation is chosen may depend on myHover.source and 
- *      myHover.GetType()
- *    
- *    When there is no more flying object, a new object can take off 
- *    by calling TakeOff(..), if the take off is successful. 
+ * The OnClick handler routine of a take-off capable object checks for other
+ * flying objects by checking myHover.flight : If there is some object flying,
+ * it may be removed by calling myHover.CrashDown() to cancel the operation or
+ * myHover.CrashDown(true) to take away the flying object, which operation is
+ * chosen may depend on myHover.source and myHover.GetType()
  * 
- *
+ * When there is no more flying object, a new object can take off by calling
+ * TakeOff(..), if the take off is successful.
+ * 
+ * 
  * 
  */
