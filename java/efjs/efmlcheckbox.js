@@ -15,3 +15,98 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+function EfmlCheckBox(name, description, tags, accept, reject) {
+	EfmlTagConstructor(this);
+
+	this.tags = tags;
+	
+	this.name = name;
+	this.description = unescapeBTNR(description);
+	
+
+	
+	
+
+	/**
+	 * @returns efml code of this tag
+	 */
+
+	this.GetEfml = function() {
+		return this.efmlcode;
+	};
+
+	/**
+	 * @returns string that can be used to factor another instance of this
+	 *          object
+	 */
+
+	this.GetDescription = function() {
+		return "EfmlCheckBox " + escapeBTNR(this.description);
+	};
+
+	/**
+	 * @returns control html code
+	 */
+
+	this.GetHtmlCode = function() {
+		var html = "<div style=\"";
+		// html += " display: inline-block;";
+		html += " background: #FFFFFF;";
+		html += " font-family: 'Courier New', Courier, monospace;";
+		html += " color: #0000FF;";
+		html += "\">";
+		html += "<span style=\"color: #222222;";
+		html += " background: #DDDDDD;";
+		html += " font-family: 'Times New Roman', Times, serif;";
+		html += " font-size: 70%;";
+		html += "\">";
+
+		html += "checkbox";
+
+		html += "</span>";
+		html += "<br/>";
+
+		html += escapeSome(this.efmlcode);
+
+		html += "</div>";
+
+		return html;
+	};
+
+	/**
+	 * @returns plane html code, i.e. the code for the object that is show when
+	 *          dragging this tag around with the hover feature
+	 */
+
+	this.GetPlaneHtmlCode = function() {
+		var html = "<div style=\"";
+		// html += " display: inline-block;";
+		html += " background: #FFFFFF;";
+		html += " font-family: 'Courier New', Courier, monospace;";
+		html += " color: #0000FF;";
+		html += " width: 400px";
+		html += "\">";
+		html += "<span style=\"color: #222222;";
+		html += " background: #DDDDDD;";
+		html += " font-family: 'Times New Roman', Times, serif;";
+		html += " font-size: 70%;";
+		html += "\">";
+
+		html += "checkbox";
+
+		html += "</span>";
+		html += "<br/>";
+
+		if ((""+this.efmlcode).length > 80)
+			html += escapeSome(this.efmlcode.substr(0,79)+"...");
+		else
+			html += escapeSome(this.efmlcode);
+
+		html += "</div>";
+
+		return html;
+	};
+
+	return this;
+};
