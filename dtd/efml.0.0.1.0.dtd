@@ -191,6 +191,7 @@
 	name	CDATA			#IMPLIED
 	checked	CDATA			#IMPLIED
 	unchecked	CDATA			#IMPLIED	
+	defaultstatus	(unchecked|checked)			#IMPLIED		
 	color	CDATA			#IMPLIED
 	filled	CDATA			#IMPLIED
 	width	CDATA			#IMPLIED

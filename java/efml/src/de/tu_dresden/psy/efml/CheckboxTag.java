@@ -35,7 +35,6 @@ public class CheckboxTag implements AnyTag, NestedTag {
 	private EfmlTagsAttribute attributes;
 	private String label;
 
-
 	public CheckboxTag(EfmlTagsAttribute efmlAttributes) {
 		this.attributes = efmlAttributes;
 		this.label = "";
@@ -116,7 +115,10 @@ public class CheckboxTag implements AnyTag, NestedTag {
 					+ "\")");
 		}
 
-
+		if (!("unchecked".equalsIgnoreCase(attributes.getValueOrDefault(
+				"defaultstatus", "unchecked")))) {
+			writer.write(".CheckDefault()");
+		}
 
 	}
 

@@ -497,7 +497,7 @@ function descriptionToProperties(description, props, vals, locks) {
  * @returns   description string
  *            
  */
-function propertiesToDescription(description, props, vals, locks) {
+function propertiesToDescription( props, vals, locks) {
 	var description = "";
 	for ( var int = 0; int < props.length; int++) {
 		if (description)
@@ -509,4 +509,5 @@ function propertiesToDescription(description, props, vals, locks) {
 		description += "=";
 		description += escapeBTNR(vals[int]);
 	}
+	return description;
 }
