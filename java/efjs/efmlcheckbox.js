@@ -24,8 +24,27 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 	this.name = name;
 	this.description = unescapeBTNR(description);
 	
-
+	/**
+	 * the child objects properties and default values
+	 */
 	
+	this.properties = ["name","tags","label","tokenChecked","tokenUnchecked","checked"];
+	this.values = [name,"","",null,null,false];
+
+	/**
+	 * whether the property is locked and may not be edited anymore
+	 */
+	
+	this.locked = [];
+	for (var int=0;int<this.properties.length;++int) {
+		this.locked.push(false);
+	}
+	
+	/**
+	 * read the description and update the values
+	 */
+	
+	descriptionToProperties(description, this.properties, this.values, this.locked);
 	
 
 	/**
