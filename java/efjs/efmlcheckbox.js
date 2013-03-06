@@ -155,6 +155,8 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 		html += " font-size: 70%;";
 		html += "\">";
 
+		if ()
+		
 		html += "checkbox";
 
 		html += "</span>";
@@ -168,6 +170,20 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 		html += "</div>";
 
 		return html;
+	};
+	
+	/**
+	 * this function registers the mouse hooks for this object
+	 */
+
+	this.RegisterMouse = function() {
+	};
+
+	/**
+	 * this function removes the mouse hooks for this object
+	 */
+
+	this.UnregisterMouse = function() {
 	};
 
 	return this;
