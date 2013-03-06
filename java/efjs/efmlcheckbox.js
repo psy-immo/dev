@@ -124,8 +124,7 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 		html += " font-size: 70%;";
 		html += "\">";
 
-		html += "checkbox";
-
+	
 		html += "</span>";
 		html += "<br/>";
 
@@ -155,9 +154,15 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 		html += " font-size: 70%;";
 		html += "\">";
 
-		if ()
+		if (this.Get("defaultstatus")=="checked") {
+			html += "[x] ";
+		} else
+		{
+			html += "[&nbsp;] ";
+		}
 		
-		html += "checkbox";
+		html += this.Get("label");
+
 
 		html += "</span>";
 		html += "<br/>";
