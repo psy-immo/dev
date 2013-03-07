@@ -64,7 +64,7 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 			return "!!PROPERTY NOT FOUND!!";
 		return this.values[idx];
 	};
-	
+
 	/**
 	 * @param property
 	 * @returns true, if the property has the default value
@@ -75,7 +75,6 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 			return true;
 		return this.values[idx] == this.defaults[idx];
 	};
-	
 
 	/**
 	 * @param property
@@ -124,60 +123,60 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 	 */
 
 	this.GetHtmlCode = function() {
-		var html = "<div style=\"";
+		var html = "";
+
+		html += "<div style=\"";
 		// html += " display: inline-block;";
 		html += " background: #FFFFFF;";
 		html += " font-family: 'Courier New', Courier, monospace;";
 		html += " color: #0000FF;";
-		html += "\">";
+		html += "\" id=\"efmlCheckBox" + this.id + "\">";
 		html += "<span style=\"color: #222222;";
 		html += " background: #DDDDDD;";
 		html += " font-family: 'Times New Roman', Times, serif;";
 		html += " font-size: 70%;";
 		html += "\">";
-		
+
 		html += "checkbox";
-		
+
 		if (this.Locked("checked")) {
-			html += " [x]='" + this.Get("checked")+"'";
+			html += " [x]='" + this.Get("checked") + "'";
+		} else {
+			html += " [x]='"
+					+ this.Get("checked")
+					+ "' <span style=\" cursor:default;background:#DDDDFF; color: #3333FF\" id=\"efmlCheckBox"
+					+ this.id + ".edit[x]\">edit</span>";
 		}
-		else {
-			html += " [x]='" + this.Get("checked")+
-			"' <span style=\" cursor:default;background:#DDDDFF; color: #3333FF\" id=\"efmlCheckBox"+
-						this.id+".edit[x]\">edit</span>";
-		}
-		
+
 		if (this.Locked("unchecked")) {
-			html += " [&nbsp;]='" + this.Get("unchecked")+"'";
+			html += " [&nbsp;]='" + this.Get("unchecked") + "'";
+		} else {
+			html += " [&nbsp;]='"
+					+ this.Get("unchecked")
+					+ "' <span style=\" cursor:default;background:#DDDDFF; color: #3333FF\" id=\"efmlCheckBox"
+					+ this.id + ".edit[]\">edit</span>";
 		}
-		else {
-			html += " [&nbsp;]='" + this.Get("unchecked")+
-			"' <span style=\" cursor:default;background:#DDDDFF; color: #3333FF\" id=\"efmlCheckBox"+
-						this.id+".edit[]\">edit</span>";
-		}
-			
+
 		html += "</span>";
 		html += "<br/>";
 
 		if (this.Locked("defaultstatus")) {
-			
-			if (this.Get("defaultstatus")=="checked") {
+
+			if (this.Get("defaultstatus") == "checked") {
 				html += "[x] ";
-			} else
-			{
+			} else {
 				html += "[&nbsp;] ";
 			}
 
 		} else {
-			
+
 		}
 
 		if (this.Locked("label")) {
-			
+
 		} else {
-			html += escapeSome(this.Get("label"));	
+			html += escapeSome(this.Get("label"));
 		}
-		
 
 		html += "</div>";
 
@@ -204,17 +203,16 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 		html += "\">";
 
 		html += "checkbox";
-		
+
 		html += "</span>";
 		html += "<br/>";
-		
-		if (this.Get("defaultstatus")=="checked") {
+
+		if (this.Get("defaultstatus") == "checked") {
 			html += "[x] ";
-		} else
-		{
+		} else {
 			html += "[&nbsp;] ";
 		}
-		
+
 		html += escapeSome(this.Get("label"));
 
 		html += "</div>";
@@ -223,10 +221,58 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 	};
 	
 	/**
+	 * this function handles editing of the checked attribute
+	 */
+	this.EditChecked = function(){
+		alert("a");
+	};
+	
+	/**
+	 * this function handles editing of the unchecked attribute
+	 */
+	this.EditUnchecked = function(){
+		
+	};
+	
+	/**
+	 * this function updates the displayed html object, if found,
+	 * to match the current check box state
+	 */
+	
+	this.UpdateHtml = function(){
+		var elt =  document.getElementById("efmlCheckBox"+ this.id);
+		
+		if (elt) {
+			var parent = elt.parentNode;
+			parent.removeChild(elt);
+			
+			var container = document.createElement('div');
+
+			container.innerHTML = this.GetHtmlCode();
+
+			parent.appendChild(container.firstChild);
+		}
+		
+	};
+
+	/**
 	 * this function registers the mouse hooks for this object
 	 */
 
 	this.RegisterMouse = function() {
+		addMouseClickHook("efmlCheckBox" + this.id + ".edit[x]", 0,
+				function(me) {
+					return function() {
+						me.EditChecked();
+					};
+				}(this));
+		addMouseClickHook("efmlCheckBox" + this.id + ".edit[]", 0,
+				function(me) {
+					return function() {
+						me.EditUnchecked();
+					};
+				}(this));
+
 	};
 
 	/**
@@ -234,6 +280,8 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 	 */
 
 	this.UnregisterMouse = function() {
+		clearMouseClickHooks("efmlCheckBox" + this.id + ".edit[]");
+		clearMouseClickHooks("efmlCheckBox" + this.id + ".edit[x]");
 	};
 
 	return this;
