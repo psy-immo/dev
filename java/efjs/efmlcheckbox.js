@@ -64,6 +64,18 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 			return "!!PROPERTY NOT FOUND!!";
 		return this.values[idx];
 	};
+	
+	/**
+	 * @param property
+	 * @returns true, if the property has the default value
+	 */
+	this.IsDefault = function(property) {
+		var idx = this.properties.indexOf(property);
+		if (idx < 0)
+			return true;
+		return this.values[idx] == this.defaults[idx];
+	};
+	
 
 	/**
 	 * @param property
@@ -123,12 +135,49 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 		html += " font-family: 'Times New Roman', Times, serif;";
 		html += " font-size: 70%;";
 		html += "\">";
-
-	
+		
+		html += "checkbox";
+		
+		if (this.Locked("checked")) {
+			html += " [x]='" + this.Get("checked")+"'";
+		}
+		else {
+			html += " [x]='" + this.Get("checked")+
+			"' <span style=\" cursor:default;background:#DDDDFF; color: #3333FF\" id=\"efmlCheckBox"+
+						this.id+".edit[x]\">edit</span>";
+		}
+		
+		if (this.Locked("unchecked")) {
+			html += " [&nbsp;]='" + this.Get("unchecked")+"'";
+		}
+		else {
+			html += " [&nbsp;]='" + this.Get("unchecked")+
+			"' <span style=\" cursor:default;background:#DDDDFF; color: #3333FF\" id=\"efmlCheckBox"+
+						this.id+".edit[]\">edit</span>";
+		}
+			
 		html += "</span>";
 		html += "<br/>";
 
-		html += escapeSome(this.efmlcode);
+		if (this.Locked("defaultstatus")) {
+			
+			if (this.Get("defaultstatus")=="checked") {
+				html += "[x] ";
+			} else
+			{
+				html += "[&nbsp;] ";
+			}
+
+		} else {
+			
+		}
+
+		if (this.Locked("label")) {
+			
+		} else {
+			html += escapeSome(this.Get("label"));	
+		}
+		
 
 		html += "</div>";
 
@@ -154,6 +203,11 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 		html += " font-size: 70%;";
 		html += "\">";
 
+		html += "checkbox";
+		
+		html += "</span>";
+		html += "<br/>";
+		
 		if (this.Get("defaultstatus")=="checked") {
 			html += "[x] ";
 		} else
@@ -161,16 +215,7 @@ function EfmlCheckBox(name, description, tags, accept, reject) {
 			html += "[&nbsp;] ";
 		}
 		
-		html += this.Get("label");
-
-
-		html += "</span>";
-		html += "<br/>";
-
-		if (("" + this.efmlcode).length > 80)
-			html += escapeSome(this.efmlcode.substr(0, 79) + "...");
-		else
-			html += escapeSome(this.efmlcode);
+		html += escapeSome(this.Get("label"));
 
 		html += "</div>";
 
