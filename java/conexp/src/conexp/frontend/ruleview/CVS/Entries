@@ -1,0 +1,20 @@
+/AbstractDependencySetCalculator.java/1.6/Fri Sep  8 15:01:19 2006//
+/AssociationRuleCalculator.java/1.6/Fri Sep  8 15:01:19 2006//
+/AssociationRuleConfidenceRenderer.java/1.5/Fri Sep  8 15:01:19 2006//
+/AssociationRuleRenderer.java/1.10/Fri Sep  8 15:01:19 2006//
+/AssociationRuleSupportRenderer.java/1.5/Fri Sep  8 15:01:22 2006//
+/AssociationRulesView.java/1.8/Fri Sep  8 15:01:22 2006//
+/AttributeIncrementalImplicationCalculatorFactory.java/1.2/Fri Sep  8 15:01:22 2006//
+/DependencySupportDescComparator.java/1.5/Fri Sep  8 15:01:22 2006//
+/GenericRuleRenderer.java/1.6/Fri Sep  8 15:01:22 2006//
+/GenericRuleView.java/1.13/Fri Sep  8 15:01:22 2006//
+/ImplicationBaseCalculator.java/1.9/Fri Sep  8 15:01:22 2006//
+/ImplicationCalcStrategyFactory.java/1.2/Fri Sep  8 15:01:22 2006//
+/ImplicationRenderer.java/1.9/Fri Sep  8 15:01:22 2006//
+/ImplicationsView.java/1.7/Fri Sep  8 15:01:22 2006//
+/NextClosedSetImplicationCalculatorFactory.java/1.4/Fri Sep  8 15:01:22 2006//
+/RulePane.java/1.9/Fri Sep  8 15:01:22 2006//
+/RulePaneMessages.java/1.3/Fri Sep  8 15:01:22 2006//
+/RuleRenderer.java/1.6/Fri Sep  8 15:01:22 2006//
+/TextPaneViewBase.java/1.5/Fri Sep  8 15:01:22 2006//
+D/tests////

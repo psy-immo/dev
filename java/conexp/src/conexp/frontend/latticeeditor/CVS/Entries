@@ -1,0 +1,68 @@
+/AbstractDimensionCalcStrategy.java/1.6/Fri Sep  8 15:00:38 2006//
+/AbstractDrawingStrategyModel.java/1.4/Fri Sep  8 15:00:38 2006//
+/AlignCoordsFigureVisitor.java/1.5/Fri Sep  8 15:00:38 2006//
+/BaseConceptSetCanvas.java/1.15/Fri Sep  8 15:00:38 2006//
+/BaseLatticePainterPane.java/1.6/Fri Sep  8 15:00:38 2006//
+/BasicDrawParams.java/1.8/Fri Sep  8 15:00:38 2006//
+/BasicStrategiesContext.java/1.9/Fri Sep  8 15:00:38 2006//
+/BirdviewLatticeView.java/1.6/Fri Sep  8 15:00:38 2006//
+/CEDiagramEditorPanel.java/1.10/Fri Sep  8 15:00:38 2006//
+/CollisionDetector.java/1.9/Fri Sep  8 15:00:38 2006//
+/ConceptFigureCoordinatesChangingFigureVisitor.java/1.5/Fri Sep  8 15:00:38 2006//
+/ConceptHighlightAtomicStrategy.java/1.1/Mon Oct  9 16:05:58 2006//
+/ConceptHighlightStrategy.java/1.2/Mon Oct  9 16:05:58 2006//
+/ConceptHighlightStrategyCombination.java/1.1/Mon Oct  9 16:05:58 2006//
+/ConceptQuery.java/1.5/Fri Sep  8 15:00:38 2006//
+/ConceptSetDrawing.java/1.20/Fri Sep  8 15:00:38 2006//
+/ConscriptLatticeExporter.java/1.3/Fri Sep  8 15:00:38 2006//
+/CoordinateMapperFigureVisitor.java/1.5/Fri Sep  8 15:00:38 2006//
+/DefaulFigureDrawingListener.java/1.7/Fri Sep  8 15:00:38 2006//
+/DefaultDimensionCalcStrategy.java/1.8/Fri Sep  8 15:00:38 2006//
+/DiagramEditorPanel.java/1.14/Fri Sep  8 15:00:38 2006//
+/DimensionCalcStrategy.java/1.6/Fri Sep  8 15:00:38 2006//
+/DotExporter.java/1.2/Tue Nov 14 11:21:00 2006//
+/DrawParameters.java/1.8/Fri Sep  8 15:00:38 2006//
+/DrawParamsIndependentStrategyModel.java/1.7/Fri Sep  8 15:00:38 2006//
+/DrawParamsProperties.java/1.3/Fri Sep  8 15:00:38 2006//
+/DrawParamsProvider.java/1.3/Fri Sep  8 15:00:38 2006//
+/DrawStrategiesContext.java/1.10/Mon Oct  9 13:39:59 2006//
+/DrawStrategiesModelsFactory.java/1.5/Fri Sep  8 15:00:38 2006//
+/EdgeSizeCalcStrategy.java/1.4/Fri Sep  8 15:00:38 2006//
+/ExportLatticeInfoAction.java/1.9/Tue Nov 14 10:24:00 2006//
+/FigureDimensionCalcStrategy.java/1.4/Fri Sep  8 15:00:38 2006//
+/FigureDimensionCalcStrategyProvider.java/1.5/Fri Sep  8 15:00:38 2006//
+/HighlightStrategy.java/1.10/Fri Sep  8 15:00:38 2006//
+/Highlighter.java/1.3/Mon Oct  9 16:13:40 2006//
+/ILabelingStrategy.java/1.8/Fri Sep  8 15:00:38 2006//
+/LabelingStrategiesContext.java/1.5/Fri Sep  8 15:00:38 2006//
+/LabelingStrategiesContextImpl.java/1.10/Fri Sep  8 15:00:38 2006//
+/LabelingStrategy.java/1.9/Fri Sep  8 15:00:38 2006//
+/LabelingStrategyModelFactory.java/1.5/Fri Sep  8 15:00:38 2006//
+/LatticeCanvas.java/1.18/Mon Oct  9 13:39:59 2006//
+/LatticeCanvasDrawStrategiesContext.java/1.13/Mon Oct  9 16:05:58 2006//
+/LatticeCanvasDrawStrategiesContextProperties.java/1.2/Fri Sep  8 15:00:38 2006//
+/LatticeCanvasScheme.java/1.6/Fri Sep  8 15:00:38 2006//
+/LatticeCanvasSchemeProperties.java/1.2/Fri Sep  8 15:00:38 2006//
+/LatticeDrawing.java/1.21/Mon Oct  9 16:05:58 2006//
+/LatticeDrawingOptions.java/1.9/Fri Sep  8 15:00:38 2006//
+/LatticePainterDrawParams.java/1.13/Fri Sep  8 15:00:38 2006//
+/LatticePainterOptions.java/1.20/Mon Oct  9 13:39:59 2006//
+/LatticePainterPanel.java/1.24/Fri Sep  8 15:00:38 2006//
+/MoveStrategy.java/1.5/Fri Sep  8 15:00:38 2006//
+/NestedLineDiagramCanvas.java/1.8/Fri Sep  8 15:00:38 2006//
+/NestedLineDiagramDrawing.java/1.10/Fri Sep  8 15:00:38 2006//
+/PainterOptionsPaneEditor.java/1.13/Fri Sep  8 15:00:38 2006//
+/PlainTextLatticeExporter.java/1.5/Fri Sep  8 15:00:38 2006//
+/RescaleByWeigthVisitor.java/1.3/Fri Sep  8 15:00:38 2006//
+/RescaleByXFigureVisitor.java/1.5/Fri Sep  8 15:00:38 2006//
+/RescaleByYFigureVisitor.java/1.6/Fri Sep  8 15:00:38 2006//
+/XMLFileStrategyModel.java/1.10/Fri Sep  8 15:00:38 2006//
+D/drawstrategies////
+D/edgesizecalcstrategies////
+D/figures////
+D/highlightstrategies////
+D/labelingstrategies////
+D/movestrategies////
+D/noderadiusstrategy////
+D/queries////
+D/tests////

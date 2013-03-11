@@ -1,0 +1,24 @@
+/AbstractFigure.java/1.6/Fri Sep  8 14:59:35 2006//
+/BaseTextFigure.java/1.12/Fri Sep  8 14:59:35 2006//
+/BorderCalculatingFigure.java/1.6/Fri Sep  8 14:59:35 2006//
+/CenterPointLocator.java/1.5/Fri Sep  8 14:59:35 2006//
+/ColorTransformer.java/1.10/Fri Sep  8 14:59:35 2006//
+/ColorTransformerWithFadeOut.java/1.10/Fri Sep  8 14:59:35 2006//
+/CompositeFigure.java/1.11/Fri Sep  8 14:59:35 2006//
+/ConnectionFigure.java/1.6/Fri Sep  8 14:59:35 2006//
+/DefaultCenterPointLocator.java/1.6/Fri Sep  8 14:59:35 2006//
+/DefaultColorTransformer.java/1.10/Fri Sep  8 14:59:35 2006//
+/FigureIterator.java/1.5/Fri Sep  8 14:59:35 2006//
+/FigureIteratorAdapter.java/1.6/Fri Sep  8 14:59:35 2006//
+/FigureUtils.java/1.12/Fri Sep  8 14:59:35 2006//
+/FigureWithCoords.java/1.7/Fri Sep  8 14:59:35 2006//
+/FigureWithCoordsMap.java/1.5/Fri Sep  8 14:59:35 2006//
+/ICenterPointLocatorProvidingFigure.java/1.4/Fri Sep  8 14:59:35 2006//
+/IFigureWithCoords.java/1.6/Fri Sep  8 14:59:35 2006//
+/LineFigure.java/1.14/Fri Sep  8 14:59:35 2006//
+/MultiLineTextFigure.java/1.13/Fri Sep  8 14:59:35 2006//
+/RectangularFigure.java/1.8/Fri Sep  8 14:59:35 2006//
+/TextFigure.java/1.12/Fri Sep  8 14:59:35 2006//
+/TrackerRectangularFigure.java/1.9/Fri Sep  8 14:59:35 2006//
+/TrueFigurePredicate.java/1.4/Fri Sep  8 14:59:35 2006//
+D/tests////
