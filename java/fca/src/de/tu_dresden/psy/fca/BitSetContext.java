@@ -23,7 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * @author immo
@@ -245,31 +247,37 @@ public class BitSetContext implements FormalContext {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public FormalConcept topConcept() throws Exception {
 		return closeObjects(new BitSet());
 	}
-	
+
 	@Override
 	public FormalConcept bottomConcept() throws Exception {
 		return closeAttributes(new BitSet());
 	}
-	
-	@Override
-	public FormalConcept nextClosure(FormalConcept x) throws Exception {
+
+	/**
+	 * Vanilla implementation of nextClosure algorithm
+	 * 
+	 * @param x
+	 *            concept
+	 * @return next concept or null
+	 * @throws Exception
+	 */
+
+	public FormalConcept nextClosureVanilla(FormalConcept x) throws Exception {
 		BitSet m = BitSet.valueOf(x.commonAttributes().toByteArray());
-		
-		for(int i = this.numberOfAttributes()-1;i>=0;--i)
-		{
+
+		for (int i = this.numberOfAttributes() - 1; i >= 0; --i) {
 			if (m.get(i) == false) {
 				m.set(i);
 				FormalConcept y = this.closeAttributes(m);
 				boolean good = true;
-				for (int j=0;j<i;++j) {
+				for (int j = 0; j < i; ++j) {
 					if (y.commonAttributes().get(j))
-						if (m.get(j)==false)
-						{
+						if (m.get(j) == false) {
 							good = false;
 							break;
 						}
@@ -279,19 +287,129 @@ public class BitSetContext implements FormalContext {
 			}
 			m.clear(i);
 		}
-		
+
 		return null;
 	}
-	
+
+	@Override
+	public FormalConcept nextClosure(FormalConcept x) throws Exception {
+		BitSet m = BitSet.valueOf(x.commonAttributes().toByteArray());
+
+		for (int i = this.numberOfAttributes() - 1; i >= 0; --i) {
+			if (m.get(i) == false) {
+				m.set(i);
+				FormalConcept y = this.closeAttributes(m);
+				boolean good = true;
+				for (int j = 0; j < i; ++j) {
+					if (y.commonAttributes().get(j))
+						if (m.get(j) == false) {
+							good = false;
+							break;
+						}
+				}
+				if (good)
+					return y;
+			}
+			m.clear(i);
+		}
+
+		return null;
+	}
+
+	public FormalConcept nextClosureWorseThanVanilla(FormalConcept x)
+			throws Exception {
+		BitSet m = BitSet.valueOf(x.commonAttributes().toByteArray());
+		BitSet g = BitSet.valueOf(x.commonObjects().toByteArray());
+
+		int boundary = numberOfObjects();
+
+		for (int i = this.numberOfAttributes() - 1; i >= 0; --i) {
+			if (m.get(i) == false) {
+				/**
+				 * up to here, we have (g,m) to be a concept
+				 */
+
+				m.set(i);
+
+				BitSet col_i = this.attributeCol(i);
+
+				boolean shared_j = false;
+
+				ATTRIBUTE_LOOP: for (int j = 0; j < i; ++j) {
+					if (m.get(j) == true)
+						continue;
+
+					BitSet col_j = this.attributeCol(j);
+					INNER: for (int o = g.nextSetBit(0); o >= 0; o = g
+							.nextSetBit(o + 1)) {
+						if (col_i.get(o) == false)
+							continue INNER;
+						if (col_j.get(o) == false) {
+							continue ATTRIBUTE_LOOP;
+						}
+					}
+					shared_j = true;
+					break ATTRIBUTE_LOOP;
+				}
+
+				if (shared_j == false) {
+					g.and(col_i);
+
+					/**
+					 * finally, we compute g' (we could just add the common
+					 * attributes greater than i here)
+					 */
+
+					m.set(0, this.numberOfAttributes());
+					for (int o = g.nextSetBit(0); o >= 0; o = g
+							.nextSetBit(o + 1)) {
+						m.and(objectRow(o));
+					}
+
+					return new BitSetConcept(g, m);
+				}
+
+				m.clear(i);
+			} else {
+				/**
+				 * up to here, we have (g,m) to be a concept
+				 */
+
+				m.clear(i);
+
+				BitSet col_i = this.attributeCol(i);
+
+				OBJECT_LOOP: for (int o = g.nextClearBit(0); o < boundary; o = g
+						.nextClearBit(o + 1)) {
+					if (col_i.get(o) == true)
+						continue OBJECT_LOOP;
+
+					BitSet row_o = objectRow(o);
+					INNER: for (int j = m.nextSetBit(0); j >= 0; j = m
+							.nextSetBit(j + 1)) {
+						if (row_o.get(j) == false) {
+							continue OBJECT_LOOP;
+						}
+					}
+
+					g.set(o);
+				}
+
+			}
+
+		}
+
+		return null;
+	}
+
 	public String toCSV() throws Exception {
 		StringBuffer b = new StringBuffer();
-		for (int j = 0; j<this.numberOfAttributes();++j) {
-			b.append(","+this.attributeName(j));
+		for (int j = 0; j < this.numberOfAttributes(); ++j) {
+			b.append("," + this.attributeName(j));
 		}
-		for (int i=0;i<this.numberOfObjects();++i)
-		{
-			b.append("\n"+this.objectName(i));
-			for (int j = 0; j<this.numberOfAttributes();++j) {
+		for (int i = 0; i < this.numberOfObjects(); ++i) {
+			b.append("\n" + this.objectName(i));
+			for (int j = 0; j < this.numberOfAttributes(); ++j) {
 				if (this.incidenceRelation(i, j))
 					b.append(",1");
 				else
@@ -300,5 +418,16 @@ public class BitSetContext implements FormalContext {
 		}
 		return b.toString();
 	}
-	
+
+	@Override
+	public Set<FormalConcept> ConceptLattice() throws Exception {
+		Set<FormalConcept> lattice = new TreeSet<FormalConcept>();
+
+		for (FormalConcept b = bottomConcept(); b != null; b = nextClosure(b)) {
+			lattice.add(b);
+		}
+
+		return lattice;
+	}
+
 }

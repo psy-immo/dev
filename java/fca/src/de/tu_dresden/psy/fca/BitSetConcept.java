@@ -2,6 +2,7 @@ package de.tu_dresden.psy.fca;
 
 import java.util.BitSet;
 
+
 public class BitSetConcept implements FormalConcept {
 	
 	private BitSet os,as;
@@ -30,7 +31,9 @@ public class BitSetConcept implements FormalConcept {
 	public int compareTo(FormalConcept o) {
 		BitSet attribs = o.commonAttributes();
 		
-		for (int i=0; i<as.size();++i) {
+		int boundary = Math.max(as.length(), attribs.length());
+		
+		for (int i=0; i<boundary;++i) {
 			if (as.get(i)==true) {
 				if (attribs.get(i)==false)
 					return -1;
@@ -47,7 +50,9 @@ public class BitSetConcept implements FormalConcept {
 		boolean less= false;
 		boolean more= false;
 		
-		for (int i=0; i<os.size();++i) {
+		int boundary = Math.max(os.length(), objs.length());
+		
+		for (int i=0; i<boundary;++i) {
 			if (os.get(i)) {
 				if (objs.get(i)==false)
 					more = true;

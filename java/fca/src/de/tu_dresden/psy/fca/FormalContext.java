@@ -18,6 +18,7 @@
 package de.tu_dresden.psy.fca;
 
 import java.util.BitSet;
+import java.util.Set;
 
 /**
  * interface that defines a formal context
@@ -173,4 +174,12 @@ public interface FormalContext {
 	 *         topConcept()
 	 */
 	FormalConcept nextClosure(FormalConcept x) throws Exception;
+	
+	/**
+	 * 
+	 * @return A set that contains all formal concepts for the context
+	 * @throws Exception
+	 */
+	
+	Set<FormalConcept> ConceptLattice() throws Exception;
 }
