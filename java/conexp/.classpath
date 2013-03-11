@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/distr/commons-collections.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/distr/contingencytable.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/distr/cream.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/distr/crimson.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/distr/gsbase-2.0.1.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/distr/jdom.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/distr/trace.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/distr/util.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/testing/cglib-nodep-2.1_3.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/testing/jdepend-2.9.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/testing/jmock-1.0.1.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/testing/jmock-cglib-1.0.1.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/testing/junit.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/testing/mockobjects-core.jar"/>
+	<classpathentry kind="lib" path="/home/immo/git/psyCode/java/conexp/libs/testing/mockobjects-jdk1.4.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
