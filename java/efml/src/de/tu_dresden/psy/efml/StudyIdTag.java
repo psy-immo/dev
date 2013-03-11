@@ -33,7 +33,8 @@ import javax.naming.OperationNotSupportedException;
  * 
  */
 
-public class StudyIdTag implements AnyTag {
+public class StudyIdTag extends StandardDeferrable implements AnyTag,
+		GlobalModifier {
 
 	/**
 	 * store current token
@@ -63,7 +64,6 @@ public class StudyIdTag implements AnyTag {
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
 			this.token += ((PlainContent) innerTag).getPlainContent();
-			body.setStudy(token);
 		} else
 			throw new OperationNotSupportedException(
 					"<studyid> cannot enclose "
@@ -71,6 +71,11 @@ public class StudyIdTag implements AnyTag {
 
 	}
 	
+	@Override
+	public void DoAction() {
+		body.setStudy(token);
+	}
+
 	@Override
 	public String getEfml() {
 		StringBuffer representation = new StringBuffer();

@@ -173,8 +173,29 @@ function escapeBTNR(s) {
  */
 
 function unescapeBTNR(s) {
-	return ("" + s).replace(/\\n/g, "\n").replace(/\\r/g, "\r").replace(/\\t/g,
-			"\t").replace(/\\\\/g, "\\");
+	var output = "";
+	var input = "" + s;
+	var escaped = false;
+	for ( var int = 0; int < input.length; int++) {
+		var c = input[int];
+		if (escaped) {
+			escaped = false;
+			if (c == 'n') {
+				output += '\n';
+			} else if (c == 't') {
+				output += '\t';
+			} else if (c == 'r') {
+				output += '\r';
+			} else
+				output += c;
+		} else if (c == '\\') {
+			escaped = true;
+		} else {
+			output += c;
+		}
+	}
+
+	return output;
 }
 
 /**
@@ -442,4 +463,72 @@ function changeSubject() {
 	var keyname = "subject-id-" + studyId;
 	sessionStorage.removeItem(keyname);
 	window.location.reload();
+}
+
+/**
+ * routine that restores described values at the correct property's position in
+ * the value array
+ * 
+ * @param description
+ *            description string
+ * @param props
+ *            property name array
+ * @param vals
+ *            value array
+ * @param locks
+ *            lock-status array
+ */
+function descriptionToProperties(description, props, vals, locks) {
+	var lines = description.split("\n");
+	for ( var int = 0; int < lines.length; int++) {
+		var line = lines[int];
+		var eqidx = line.indexOf("=");
+		if (eqidx > 0) {
+			var p = line.substr(0, eqidx - 1).trim();
+			var idx = props.indexOf(p);
+			if (p.indexOf("!") == 0) {
+				idx = props.indexOf(p.substr(1));
+				if (idx >= 0) {
+					locks[idx] = true;
+				}
+			}
+			var q = line.substr(eqidx + 1);
+			vals[idx] = unescapeBTNR(q);
+		} else {
+			var p = line.trim();
+			if (p.indexOf("!") == 0) {
+				var idx = props.indexOf(p.substr(1));
+				if (idx >= 0) {
+					locks[idx] = true;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * routine that stores values in a description
+ * 
+ * @param props
+ *            property name array
+ * @param vals
+ *            value array
+ * @param locks
+ *            lock-status array
+ * @returns description string
+ * 
+ */
+function propertiesToDescription(props, vals, locks) {
+	var description = "";
+	for ( var int = 0; int < props.length; int++) {
+		if (description)
+			description += "\n";
+		if (locks[int]) {
+			description += "!";
+		}
+		description += props[int];
+		description += "=";
+		description += escapeBTNR(vals[int]);
+	}
+	return description;
 }

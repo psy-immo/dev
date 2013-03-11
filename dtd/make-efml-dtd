@@ -10,7 +10,9 @@ efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|"+\
 				"trashcan|boxspace|efmlboard|efmlpreview"
 efml_extra = "tables"
 nested_elements = "plain|dropdown|freetext|checkbox|radiobutton|multiline"
+editor_contents = "efmlquote"
 
+efml_root_elements = "(#PCDATA|title|"+efml_elements+"|"+efml_extra+"|"+html_elements+")*"
 
 universal_attributes = r"""
 	tags	CDATA	#IMPLIED
@@ -22,7 +24,7 @@ html_attributes = r"""
 	style	CDATA	#IMPLIED
 """ + universal_attributes
 
-dtd.write("\n<!ELEMENT efml (#PCDATA|title|"+efml_elements+"|"+efml_extra+"|"+html_elements+")* >\n")
+dtd.write("\n<!ELEMENT efml "+efml_root_elements+" >\n")
 
 dtd.write("\n<!ELEMENT br EMPTY >\n")
 
@@ -130,6 +132,7 @@ dtd.write("\n<!ATTLIST checkbox "+universal_attributes+"""
 	name	CDATA			#IMPLIED
 	checked	CDATA			#IMPLIED
 	unchecked	CDATA			#IMPLIED	
+	defaultstatus	(unchecked|checked)			#IMPLIED		
 	color	CDATA			#IMPLIED
 	filled	CDATA			#IMPLIED
 	width	CDATA			#IMPLIED
@@ -187,11 +190,16 @@ dtd.write("\n<!ATTLIST airport "+universal_attributes+"""
  >
 """)
 
-dtd.write("\n<!ELEMENT efmlboard (#PCDATA)* >\n")
+dtd.write("\n<!ELEMENT efmlboard (#PCDATA|"+editor_contents+")* >\n")
 dtd.write("\n<!ATTLIST efmlboard "+universal_attributes+"""
 	name	CDATA			#IMPLIED
 	width	CDATA			#IMPLIED
 	height	CDATA			#IMPLIED
+ >
+""")
+
+dtd.write("\n<!ELEMENT efmlquote "+efml_root_elements+">\n")
+dtd.write("\n<!ATTLIST efmlquote "+universal_attributes+"""
  >
 """)
 

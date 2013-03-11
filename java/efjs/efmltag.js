@@ -24,6 +24,15 @@ efmlTagArray = [];
  */
 function EfmlTagConstructor(me) {
 	me.id = efmlTagCounter++;
+	
+	/**
+	 * deletes the tag from the efmlTagArray
+	 */
+
+	me.Delete = function() {
+		efmlTagArray[me.id] = null;
+	};
+
 
 	/**
 	 * @returns efml code of this tag
@@ -47,6 +56,15 @@ function EfmlTagConstructor(me) {
 	 */
 
 	me.GetHtmlCode = function() {
+		return "<div>EfmlTag</div>";
+	};
+
+	/**
+	 * @returns plane html code, i.e. the code for the object that is show when
+	 *          dragging this tag around with the hover feature
+	 */
+
+	me.GetPlaneHtmlCode = function() {
 		return "<div>EfmlTag</div>";
 	};
 

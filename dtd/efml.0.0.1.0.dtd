@@ -191,6 +191,7 @@
 	name	CDATA			#IMPLIED
 	checked	CDATA			#IMPLIED
 	unchecked	CDATA			#IMPLIED	
+	defaultstatus	(unchecked|checked)			#IMPLIED		
 	color	CDATA			#IMPLIED
 	filled	CDATA			#IMPLIED
 	width	CDATA			#IMPLIED
@@ -274,7 +275,7 @@
 	filled	CDATA			#IMPLIED
  >
 
-<!ELEMENT efmlboard (#PCDATA)* >
+<!ELEMENT efmlboard (#PCDATA|efmlquote)* >
 
 <!ATTLIST efmlboard 
 	tags	CDATA	#IMPLIED
@@ -284,6 +285,15 @@
 	name	CDATA			#IMPLIED
 	width	CDATA			#IMPLIED
 	height	CDATA			#IMPLIED
+ >
+
+<!ELEMENT efmlquote (#PCDATA|title|tags|tie|runway|answer|sniffy|instructions|dropdown|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|airport|template|freetext|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|tables|i|b|br|p|div|span)*>
+
+<!ATTLIST efmlquote 
+	tags	CDATA	#IMPLIED
+	atags	CDATA	#IMPLIED
+	rtags	CDATA	#IMPLIED
+
  >
 
 <!ELEMENT efmlpreview (#PCDATA)* >

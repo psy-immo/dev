@@ -29,6 +29,13 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	this.html_created = false;
 
 	/**
+	 * store the currently hovered object
+	 */
+	this.hoverIndex = -1;
+	this.hoverSelected = false;
+	this.hoverCursorIndex = -1;
+
+	/**
 	 * Provide automatic name generation: use provided tags
 	 */
 
@@ -43,6 +50,8 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	}
 
 	this.tags = tags;
+
+	this.acceptedTypes = [ "text", "EfmlTag", "" ];
 
 	this.width = "600px";
 	this.height = "800px";
@@ -101,7 +110,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 						+ ".contents[" + int + "]", this.tags, this.accept,
 						this.reject));
 				this.selected.push(false);
-				
+
 			}
 		}
 
@@ -226,6 +235,23 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 					marker_element.style.background = "#88FFDD";
 				else
 					marker_element.style.background = "#338866";
+
+				marker_element = document.getElementById("efmlBoardContents"
+						+ this.id + "[" + int + "].cut");
+
+				if (is_selected)
+					marker_element.style.background = "#88FFDD";
+				else
+					marker_element.style.background = "#338866";
+
+				marker_element = document.getElementById("efmlBoardContents"
+						+ this.id + "[" + int + "].takeoff");
+
+				if (is_selected)
+					marker_element.style.background = "#88FFDD";
+				else
+					marker_element.style.background = "#338866";
+
 			}
 		}
 	};
@@ -270,9 +296,13 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		else
 			html += " background: #338866;";
 		html += "\">";
-		html += "<td style=\"width: 1em;\">";
+		html += "<td style=\"width: 20px;\">";
 		html += "</td>";
-		html += "<td style=\"width: 1em;\">";
+		html += "<td style=\"width: 20px;\">";
+		html += "</td>";
+		html += "<td style=\"width: 20px;\">";
+		html += "</td>";
+		html += "<td>";
 		html += "</td>";
 		html += "</tr>";
 
@@ -285,13 +315,37 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			/** the object marker/selector */
 			html += "<td id=\"efmlBoardContents" + this.id + "[" + int
 					+ "].selected\" style=\"";
-			html += "  width: 1em;";
+			html += "  width: 20px;";
 			if (is_selected)
 				html += " background: #88FFDD;";
 			else
 				html += " background: #338866;";
 			html += "\">";
 
+			html += "</td>";
+
+			/** the object delete button */
+			html += "<td id=\"efmlBoardContents" + this.id + "[" + int
+					+ "].cut\" style=\"";
+			html += "  width: 20px;";
+			if (is_selected)
+				html += " background: #88FFDD;";
+			else
+				html += " background: #338866;";
+			html += "\">";
+			html += "X";
+			html += "</td>";
+
+			/** the object take off runway */
+			html += "<td id=\"efmlBoardContents" + this.id + "[" + int
+					+ "].takeoff\" style=\"";
+			html += "  width: 20px;";
+			if (is_selected)
+				html += " background: #88FFDD;";
+			else
+				html += " background: #338866;";
+			html += "\">";
+			html += "Up";
 			html += "</td>";
 
 			/** the object itself */
@@ -310,9 +364,13 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			else
 				html += " background: #338866;";
 			html += "\">";
-			html += "<td style=\"width: 1em;\">";
+			html += "<td style=\"width: 20px;\">";
 			html += "</td>";
-			html += "<td style=\"width: 1em;\">";
+			html += "<td style=\"width: 20px;\">";
+			html += "</td>";
+			html += "<td style=\"width: 20px;\">";
+			html += "</td>";
+			html += "<td>";
 			html += "</td>";
 			html += "</tr>";
 		}
@@ -440,7 +498,80 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	/** default click handler */
 
 	this.HandleEmptyWorkspaceClick = function() {
+		if (myHover.flight) {
+			this.HandleLanding(this.contents.length);
+			return;
+		}
+
 		this.HandleCursor(this.contents.length);
+
+	};
+
+	/***************************************************************************
+	 * someone requested landing...
+	 */
+
+	this.HandleLanding = function(index) {
+		if (myHover.flight) {
+			var log_data = this.name + ": land plane ";
+			/**
+			 * check for correct token type
+			 */
+			var type = myHover.GetType();
+			if (this.acceptedTypes.indexOf(type) < 0) {
+				myHover.CrashDown();
+
+				myLogger.Log(log_data + " rejected (wrong type: "+type+")");
+				return;
+			}
+
+			/**
+			 * check for acceptance tags
+			 */
+			if (this.accept) {
+				if (myHover.source.tags) {
+					for ( var i = 0; i < this.accept.length; i++) {
+						if (myHover.source.tags.indexOf(this.accept[i]) < 0) {
+							myHover.CrashDown();
+							myLogger.Log(log_data + " rejected (missing tags)");
+							return;
+						}
+					}
+				} else {
+					myHover.CrashDown();
+					myLogger.Log(log_data + " rejected (missing tags)");
+					return;
+				}
+			}
+
+			/**
+			 * check for rejection tags
+			 */
+			if (this.reject) {
+				if (myHover.source.tags) {
+					for ( var i = 0; i < this.reject.length; i++) {
+						if (myHover.source.tags.indexOf(this.reject[i]) >= 0) {
+							myHover.CrashDown();
+							myLogger.Log(log_data + " rejected (due to tag)");
+							return;
+						}
+					}
+				}
+			}
+
+			token = myHover.token;
+
+			myHover.CrashDown(true);
+
+			myLogger.Log(log_data + " accepted");
+
+			this.InsertContents(index, token);
+			
+			this.UpdateCursorHighlighting();
+			this.UpdateSelectionHighlighting();
+
+		}
+		
 	};
 
 	/***************************************************************************
@@ -448,6 +579,11 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 
 	this.HandleSelection = function(index) {
+		if (myHover.flight) {
+			this.HandleLanding(index);
+			return;
+		}
+
 		if (mouseEvent.ctrlKey) {
 			this.selected[index] = !this.selected[index];
 
@@ -460,6 +596,306 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 
 		this.cursor = index;
 		this.UpdateCursorHighlighting();
+	};
+
+	/***************************************************************************
+	 * someone clicked on the cut area
+	 */
+
+	this.HandleCut = function(index) {
+
+		if (myHover.flight) {
+			this.HandleLanding(index);
+			return;
+		}
+
+		if (mouseEvent.ctrlKey) {
+			/**
+			 * this is convenient behaviour... :)
+			 */
+			this.selected[index] = !this.selected[index];
+
+			this.UpdateSelectionHighlighting();
+
+			this.cursor = index;
+			this.UpdateCursorHighlighting();
+		} else {
+
+			/**
+			 * store copy in clip board
+			 * 
+			 */
+
+			var clip_data = this.contents[index].GetDescription();
+
+			/**
+			 * cut out this element
+			 */
+
+			var log_data = this.name + ": Cut object: " + index;
+
+			/** filter non-selected content objects */
+			var contents = [];
+			var selected = [];
+
+			for ( var int = 0; int < this.contents.length; int++) {
+				if (index != int) {
+					contents.push(this.contents[int]);
+					selected.push(this.selected[int]);
+				} else {
+					if (int < this.cursor) {
+						this.cursor -= 1;
+					}
+				}
+			}
+
+			/** unregister mouse handlers */
+
+			this.UnregisterMouse();
+
+			/** remove old html content representation */
+
+			var html_contents = document.getElementById("efmlBoardContents"
+					+ this.id);
+			var html_parent = html_contents.parentNode;
+			html_parent.removeChild(html_contents);
+
+			/** use new contents now */
+
+			this.contents = contents;
+			this.selected = selected;
+
+			/** add new html content representation */
+
+			var html = this.GetContentsHtmlCode();
+
+			var container = document.createElement('div');
+
+			container.innerHTML = html;
+
+			html_parent.appendChild(container.firstChild);
+
+			/** register mouse handlers */
+
+			this.RegisterMouse();
+
+			/** update efml token */
+
+			this.token = this.GetEfml();
+
+			/** log */
+
+			myLogger.Log(log_data);
+
+			setClipboardContents(clip_data);
+		}
+
+	};
+
+	/***************************************************************************
+	 * the hovered token has been accepted by another object
+	 */
+	this.TakeAway = function() {
+		this.hoverIndex = -1;
+	};
+
+	/***************************************************************************
+	 * the hovered token of this origin returned
+	 */
+
+	this.GiveBackToken = function(token) {
+		/**
+		 * re-insert the hovered object
+		 */
+		if (this.hoverIndex >= 0) {
+
+			var log_data = this.name + ": Token returns: " + token;
+
+			/** add token back */
+			var contents = [];
+			var selected = [];
+
+			var contents_length = this.contents.length;
+
+			for ( var int = 0; int < contents_length; int++) {
+				if (int == this.hoverIndex) {
+					var box = NewEfmlTag(token, this.name + ".contents["
+							+ this.content_id + "]", this.tags, this.accept,
+							this.reject);
+
+					this.content_id += 1;
+
+					contents.push(box);
+					selected.push(this.hoverSelected);
+				}
+
+				contents.push(this.contents[int]);
+				selected.push(this.selected[int]);
+			}
+
+			if (contents_length <= this.hoverIndex) {
+				var box = NewEfmlTag(token, this.name + ".contents["
+						+ this.content_id + "]", this.tags, this.accept,
+						this.reject);
+
+				this.content_id += 1;
+
+				contents.push(box);
+				selected.push(this.hoverSelected);
+			}
+
+			/**
+			 * reset hover index
+			 */
+
+			this.hoverIndex = -1;
+			
+			/**
+			 * restore old cursor position
+			 */
+			
+			this.cursor = this.hoverCursorIndex;
+
+			/** unregister mouse handlers */
+
+			this.UnregisterMouse();
+
+			/** remove old html content representation */
+
+			var html_contents = document.getElementById("efmlBoardContents"
+					+ this.id);
+			var html_parent = html_contents.parentNode;
+			html_parent.removeChild(html_contents);
+
+			/** use new contents now */
+
+			this.contents = contents;
+			this.selected = selected;
+
+			/** add new html content representation */
+
+			var html = this.GetContentsHtmlCode();
+
+			var container = document.createElement('div');
+
+			container.innerHTML = html;
+
+			html_parent.appendChild(container.firstChild);
+
+			/** register mouse handlers */
+
+			this.RegisterMouse();
+
+			/** update efml token */
+
+			this.token = this.GetEfml();
+
+			/** log */
+
+			myLogger.Log(log_data);
+
+		}
+
+	};
+
+	/***************************************************************************
+	 * someone clicked on the take off area
+	 */
+
+	this.HandleTakeOff = function(index) {
+		if (myHover.flight) {
+			this.HandleLanding(index);
+			return;
+		}
+
+		if (mouseEvent.ctrlKey) {
+			/**
+			 * this is convenient behaviour... :)
+			 */
+			this.selected[index] = !this.selected[index];
+
+			this.UpdateSelectionHighlighting();
+
+			this.cursor = index;
+			this.UpdateCursorHighlighting();
+		} else {
+			/**
+			 * take off this element
+			 */
+
+			var token = this.contents[index].GetDescription();
+			var plane = this.contents[index].GetPlaneHtmlCode();
+
+			this.hoverIndex = index;
+			this.hoverSelected = this.selected[index];
+			this.hoverCursorIndex = this.cursor;
+
+			if (myHover.TakeOff(token, this, null, plane, "EfmlTag")) {
+				/**
+				 * cut out this element
+				 */
+
+				var log_data = this.name + ": Take off object: " + index;
+
+				/** filter non-selected content objects */
+				var contents = [];
+				var selected = [];
+
+				for ( var int = 0; int < this.contents.length; int++) {
+					if (index != int) {
+						contents.push(this.contents[int]);
+						selected.push(this.selected[int]);
+					} else {
+						if (int < this.cursor) {
+							this.cursor -= 1;
+						}
+					}
+				}
+
+				/** unregister mouse handlers */
+
+				this.UnregisterMouse();
+
+				/** remove old html content representation */
+
+				var html_contents = document.getElementById("efmlBoardContents"
+						+ this.id);
+				var html_parent = html_contents.parentNode;
+				html_parent.removeChild(html_contents);
+
+				/** use new contents now */
+
+				this.contents = contents;
+				this.selected = selected;
+
+				/** add new html content representation */
+
+				var html = this.GetContentsHtmlCode();
+
+				var container = document.createElement('div');
+
+				container.innerHTML = html;
+
+				html_parent.appendChild(container.firstChild);
+
+				/** register mouse handlers */
+
+				this.RegisterMouse();
+
+				/** update efml token */
+
+				this.token = this.GetEfml();
+
+				/** log */
+
+				myLogger.Log(log_data);
+				
+				this.UpdateCursorHighlighting();
+				this.UpdateSelectionHighlighting();
+			}
+
+		}
+
 	};
 
 	/***************************************************************************
@@ -499,6 +935,18 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 					me.HandleSelection(number);
 				};
 			}(this, int));
+			addMouseClickHook("efmlBoardContents" + this.id + "[" + int
+					+ "].takeoff", 0, function(me, number) {
+				return function() {
+					me.HandleTakeOff(number);
+				};
+			}(this, int));
+			addMouseClickHook("efmlBoardContents" + this.id + "[" + int
+					+ "].cut", 0, function(me, number) {
+				return function() {
+					me.HandleCut(number);
+				};
+			}(this, int));
 		}
 
 	};
@@ -521,6 +969,10 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		for ( var int = 0; int < this.contents.length; int++) {
 			clearMouseClickHooks("efmlBoardContents" + this.id + "[" + int
 					+ "].selected");
+			clearMouseClickHooks("efmlBoardContents" + this.id + "[" + int
+					+ "].cut");
+			clearMouseClickHooks("efmlBoardContents" + this.id + "[" + int
+					+ "].takeoff");
 		}
 
 	};
@@ -698,13 +1150,36 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	this.GetDescription = function() {
 		var data = "";
 
-		for ( var int = 0; int < this.contents.length; int++) {
-			var block = this.contents[int];
+		if (this.hoverIndex < 0) {
 
-			if (data)
-				data += "\n";
+			for ( var int = 0; int < this.contents.length; int++) {
+				var block = this.contents[int];
 
-			data += block.GetDescription();
+				if (data)
+					data += "\n";
+
+				data += block.GetDescription();
+			}
+		} else {
+			/**
+			 * take the hovered object into account
+			 */
+			for ( var int = 0; int < this.contents.length; int++) {
+				var block = this.contents[int];
+
+				if (data)
+					data += "\n";
+
+				if (int == this.hoverIndex) {
+					data += myHover.token + "\n";
+				}
+
+				data += block.GetDescription();
+			}
+
+			if (this.hoverIndex >= this.contents.length) {
+				data += "\n" + myHover.token;
+			}
 		}
 
 		return "EfmlBoard " + escapeBTNR(data);

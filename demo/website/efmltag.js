@@ -51,6 +51,15 @@ function EfmlTagConstructor(me) {
 	};
 
 	/**
+	 * @returns plane html code, i.e. the code for the object that is show when
+	 *          dragging this tag around with the hover feature
+	 */
+
+	me.GetPlaneHtmlCode = function() {
+		return "<div>EfmlTag</div>";
+	};
+
+	/**
 	 * this function registers the mouse hooks for this object
 	 */
 

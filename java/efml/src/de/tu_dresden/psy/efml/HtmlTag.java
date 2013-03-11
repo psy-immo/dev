@@ -7,6 +7,8 @@ import java.util.Iterator;
 
 import javax.naming.OperationNotSupportedException;
 
+import de.tu_dresden.psy.efml.res.EfjsIntegrationResources;
+
 /**
  * implements the main html tag
  * 
@@ -39,35 +41,12 @@ public class HtmlTag implements AnyTag {
 	static public void writeAllIncludes(Writer writer, String baseUrl)
 			throws IOException {
 
-		String[] javascript_includes = {
-		/**
-		 * cssSandpaper
-		 */
-		"EventHelpers.js", "cssQuery-p.js", "jcoglan.com.sylvester.js",
-				"cssSandpaper.js",
-				/**
-				 * jQuery
-				 */
-				"jquery-1.8.0.min.js",
-				/**
-				 * prototypejs
-				 */
-				"prototype.js",
-				/**
-				 * efjs scripts
-				 */
-				"crosscompat.js", "mouse.js", "cssgraphics.js", "loglet.js",
-				"storage.js", "logger.js", "tags.js", "logic.js", "hover.js",
-				"endecoder.js", "runway.js", "answer.js", "sniffybutton.js",
-				"dropdown.js", "checkbox.js", "radiobutton.js",
-				"popupbutton.js", "freetext.js", "boxspace.js", "trashcan.js",
-				"sentencepattern.js", "airport.js", "inference.js", "efml.js",
-				"efmlbuttons.js", "efmlboard.js", "efmltag.js", "efmlquote.js",
-				"efmlfactory.js" };
 
-		for (int i = 0; i < javascript_includes.length; i++) {
+
+		for (int i = 0; i < EfjsIntegrationResources.javascript_includes.length; i++) {
 			writer.write("	<script type=\"text/javascript\" src=\"" + baseUrl
-					+ javascript_includes[i] + "\"></script>\n");
+					+ EfjsIntegrationResources.javascript_includes[i]
+					+ "\"></script>\n");
 		}
 
 	}

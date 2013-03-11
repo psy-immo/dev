@@ -64,6 +64,19 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked, embeddedMode)
 	this.colorEmpty = "#CCCCAA";
 	this.colorFilled = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
+	
+	this.defaultChecked = false;
+	
+	/**
+	 * this function makes the checkbox checked by default
+	 *
+	 * @returns this
+	 */
+	this.CheckDefault = function() {
+		this.defaultChecked = true;
+		
+		return this;
+	};
 
 	/**
 	 * this function sets the bounding parameters
@@ -113,8 +126,13 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked, embeddedMode)
 			document.write("height: " + this.height + "; ");
 		}
 		document.write("background-color: " + this.colorFilled + ";\" "
-				+ "onclick=\"checkboxArray[" + this.id + "].OnClick();\" "
-				+ " />");
+				+ "onclick=\"checkboxArray[" + this.id + "].OnClick();\" ");
+		
+		if (this.defaultChecked) {
+			document.write(" checked=\"checked\"");
+		}
+		
+		document.write(" />");
 
 		document.write(this.label);
 

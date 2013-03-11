@@ -41,11 +41,12 @@
 	<script type="text/javascript" src="efml.js"></script>
 	<script type="text/javascript" src="efmlbuttons.js"></script>
 	<script type="text/javascript" src="efmlboard.js"></script>
+	<script type="text/javascript" src="efmlcheckbox.js"></script>	
 	<script type="text/javascript" src="efmltag.js"></script>
 	<script type="text/javascript" src="efmlquote.js"></script>
 	<script type="text/javascript" src="efmlfactory.js"></script>
 <div id="mainframe" ><script type="text/javascript">printChangeSubjectButton();</script>
- <script type="text/javascript">new EfmlBoard("", [], [], []).WriteHtml();</script>
+ <script type="text/javascript">new EfmlBoard("", [], [], []).SetContents("EfmlCheckBox label=test\\n!defaultstatus=checked").WriteHtml();</script>
  <script type="text/javascript"> new EfmlPreviewButton([], [], "").WriteHtml(); </script>
 </div>	<script type="text/javascript">
 		myHover.WriteHtml();

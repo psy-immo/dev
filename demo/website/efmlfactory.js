@@ -30,6 +30,9 @@ function NewEfmlTag(description, name, tags, accept, reject) {
 		var block = new EfmlBlock(name,tags,accept,reject,true);
 		return block.SetContents(unescapeBTNR(trimmed.substr(10)));
 	}
+	if (trimmed.startsWith("EfmlCheckBox ")) {
+		return new EfmlCheckBox(name,description.substr(13),tags);
+	}
 	
 	return new EfmlQuote(description,tags);
 };
