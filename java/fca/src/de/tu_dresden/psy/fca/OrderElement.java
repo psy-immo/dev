@@ -55,5 +55,4 @@ public interface OrderElement extends Comparable<OrderElement> {
 
 	public abstract int cmp(OrderElement r);
 
-
 }

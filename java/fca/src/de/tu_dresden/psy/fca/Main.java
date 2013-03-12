@@ -34,18 +34,21 @@ import de.tu_dresden.psy.fca.BitSetContext.SpecialContexts;
 public class Main {
 	public static void main(String[] args) throws Exception {
 
-		BitSetContext ctx = new BitSetContext(SpecialContexts.N5,0);
-		ctx = new BitSetContext(12,12);
-		ctx.RandomizeContext(0.7);
+		BitSetContext ctx = new BitSetContext(SpecialContexts.N5, 0);
+		ctx = new BitSetContext(6, 6);
+		ctx.RandomizeContext(0.5);
+
+		System.out.println(ctx);
 
 		Lattice l = ctx.conceptLattice();
-		
+
 		BitSetAscendingHasseNeighbors neighs = new BitSetAscendingHasseNeighbors(
 				l.Elements());
-		
-		System.out.println(ctx);
+
+		System.out.println(l.join(l.bottom(), l.top()));
+		System.out.println(l.meet(l.bottom(), l.top()));
 		System.out.println(neighs.asDotCode(true));
-		
+
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(
 					"/tmp/lattice.dot"));
@@ -54,7 +57,8 @@ public class Main {
 		} catch (IOException e) {
 		}
 
-		
+		HasseLayout h = new HasseLayout(l.Elements());
+		System.out.println(h);
 
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(

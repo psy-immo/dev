@@ -57,8 +57,8 @@ public class BitSetAscendingHasseNeighbors {
 		this.upperNeighbors.get(0).set(1, element_count + 1);
 		int id = 1;
 		for (OrderElement p : poset) {
-			numberToElement.put(id, p);
-			elementToNumber.put(p, id);
+			this.numberToElement.put(id, p);
+			this.elementToNumber.put(p, id);
 			this.upperNeighbors.add(new BitSet(element_count + 1));
 			id++;
 		}
@@ -71,8 +71,8 @@ public class BitSetAscendingHasseNeighbors {
 			for (int base = continueMoving.nextSetBit(0); base >= 0; base = continueMoving
 					.nextSetBit(base + 1)) {
 				continueMoving.clear(base);
-				if (moveUp(base)) {
-					continueMoving.or(upperNeighbors.get(base));
+				if (this.moveUp(base)) {
+					continueMoving.or(this.upperNeighbors.get(base));
 				}
 			}
 		}
@@ -89,15 +89,15 @@ public class BitSetAscendingHasseNeighbors {
 	 */
 
 	private boolean moveUp(int base) {
-		BitSet R = upperNeighbors.get(base);
+		BitSet R = this.upperNeighbors.get(base);
 		boolean changed = false;
 
 		OUTER_LOOP: for (int p = R.nextSetBit(0); p >= 0; p = R
 				.nextSetBit(p + 1)) {
 
-			OrderElement P = numberToElement.get(p);
+			OrderElement P = this.numberToElement.get(p);
 			for (int q = R.nextSetBit(p + 1); q >= 0; q = R.nextSetBit(q + 1)) {
-				OrderElement Q = numberToElement.get(q);
+				OrderElement Q = this.numberToElement.get(q);
 				int result = P.cmp(Q);
 
 				if ((result & OrderElement.lessThan) > 0) {
@@ -112,9 +112,9 @@ public class BitSetAscendingHasseNeighbors {
 
 					for (int o = R.nextSetBit(0); o >= 0; o = R
 							.nextSetBit(o + 1)) {
-						OrderElement O = numberToElement.get(o);
+						OrderElement O = this.numberToElement.get(o);
 						if ((O.cmp(Q) & OrderElement.lessThan) > 0) {
-							upperNeighbors.get(o).set(q);
+							this.upperNeighbors.get(o).set(q);
 						}
 					}
 					changed = true;
@@ -130,9 +130,9 @@ public class BitSetAscendingHasseNeighbors {
 
 					for (int o = R.nextSetBit(0); o >= 0; o = R
 							.nextSetBit(o + 1)) {
-						OrderElement O = numberToElement.get(o);
+						OrderElement O = this.numberToElement.get(o);
 						if ((O.cmp(P) & OrderElement.lessThan) > 0) {
-							upperNeighbors.get(o).set(p);
+							this.upperNeighbors.get(o).set(p);
 						}
 					}
 
@@ -149,11 +149,11 @@ public class BitSetAscendingHasseNeighbors {
 	public String toString() {
 		StringBuffer out = new StringBuffer();
 
-		for (int i = 0; i < upperNeighbors.size(); ++i) {
-			BitSet uppers = upperNeighbors.get(i);
+		for (int i = 0; i < this.upperNeighbors.size(); ++i) {
+			BitSet uppers = this.upperNeighbors.get(i);
 			if (uppers.isEmpty() == false) {
 
-				out.append(numberToElement.get(i));
+				out.append(this.numberToElement.get(i));
 				out.append(" <. ");
 
 				boolean first = true;
@@ -161,9 +161,10 @@ public class BitSetAscendingHasseNeighbors {
 						.nextSetBit(o + 1)) {
 					if (first) {
 						first = false;
-					} else
+					} else {
 						out.append(", ");
-					out.append(numberToElement.get(o));
+					}
+					out.append(this.numberToElement.get(o));
 
 				}
 				out.append("\n");
@@ -183,25 +184,29 @@ public class BitSetAscendingHasseNeighbors {
 		out.append("digraph HasseDiagramm {\n");
 		out.append("rankdir=BT;\n");
 
-		for (Integer n : numberToElement.keySet()) {
-			if (n == 0)
+		for (Integer n : this.numberToElement.keySet()) {
+			if (n == 0) {
 				continue;
-			String label = numberToElement.get(n).toString();
+			}
+			String label = this.numberToElement.get(n).toString();
 
 			out.append("node" + n);
 			out.append("[");
 			if (labels) {
-				
+
 				// out.append("shape=circle,");
 				out.append("label=\"" + label + "\"");
-				
-			} else out.append("label=\"\",shape=point,color=red,width=.1,height=.1");
+
+			} else {
+				out.append("label=\"\",shape=point,color=red,width=.1,height=.1");
+			}
 			out.append("];\n");
 		}
-		for (Integer n : numberToElement.keySet()) {
-			if (n == 0)
+		for (Integer n : this.numberToElement.keySet()) {
+			if (n == 0) {
 				continue;
-			BitSet upper = upperNeighbors.get(n);
+			}
+			BitSet upper = this.upperNeighbors.get(n);
 			for (int o = upper.nextSetBit(0); o >= 0; o = upper
 					.nextSetBit(o + 1)) {
 				out.append("node" + n + " -> node" + o + "[dir=none];\n");
@@ -212,32 +217,33 @@ public class BitSetAscendingHasseNeighbors {
 
 		return out.toString();
 	}
-	
+
 	/**
 	 * 
-	 * @return  the set of minimal elements
+	 * @return the set of minimal elements
 	 */
-	
+
 	public Set<OrderElement> Minimal() {
 		Set<OrderElement> s = new TreeSet<OrderElement>();
-		BitSet x = upperNeighbors.get(0);
-		for (int o=x.nextSetBit(0);o>=0;o=x.nextSetBit(o+1)) {
-			s.add(numberToElement.get(o));
+		BitSet x = this.upperNeighbors.get(0);
+		for (int o = x.nextSetBit(0); o >= 0; o = x.nextSetBit(o + 1)) {
+			s.add(this.numberToElement.get(o));
 		}
 		return s;
 	}
-	
+
 	/**
 	 * 
-	 * @param p  element
-	 * @return  all upper neighbors of p, i.e. all q with p <. q
+	 * @param p
+	 *            element
+	 * @return all upper neighbors of p, i.e. all q with p <. q
 	 */
-	
+
 	public Set<OrderElement> UpperNeighbors(OrderElement p) {
 		Set<OrderElement> s = new TreeSet<OrderElement>();
-		BitSet x = upperNeighbors.get(elementToNumber.get(p));
-		for (int o=x.nextSetBit(0);o>=0;o=x.nextSetBit(o+1)) {
-			s.add(numberToElement.get(o));
+		BitSet x = this.upperNeighbors.get(this.elementToNumber.get(p));
+		for (int o = x.nextSetBit(0); o >= 0; o = x.nextSetBit(o + 1)) {
+			s.add(this.numberToElement.get(o));
 		}
 		return s;
 	}

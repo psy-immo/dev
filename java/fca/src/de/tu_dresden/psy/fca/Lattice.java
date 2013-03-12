@@ -29,51 +29,53 @@ import java.util.Set;
  */
 
 public interface Lattice {
-	
+
 	/**
 	 * 
-	 * @param P   set of lattice elements
-	 * @return   greatest lower bound of P
+	 * @param P
+	 *            set of lattice elements
+	 * @return greatest lower bound of P
 	 */
 	OrderElement Inf(Set<OrderElement> P);
-	
+
 	/**
 	 * 
-	 * @param P  set of lattice elements
-	 * @return   smallest upper bound of P
+	 * @param P
+	 *            set of lattice elements
+	 * @return smallest upper bound of P
 	 */
-	
+
 	OrderElement Sup(Set<OrderElement> P);
-	
+
 	/**
 	 * 
 	 * @param p
 	 * @param q
-	 * @return  p v q
+	 * @return p v q
 	 */
-	OrderElement join(OrderElement p,OrderElement q);
-	
+	OrderElement join(OrderElement p, OrderElement q);
+
 	/**
 	 * 
 	 * @param p
 	 * @param q
-	 * @return  p ^ q
+	 * @return p ^ q
 	 */
-	
-	OrderElement meet(OrderElement p,OrderElement q);
-	
+
+	OrderElement meet(OrderElement p, OrderElement q);
+
 	/**
 	 * 
-	 * @return  biggest element of the lattice
+	 * @return biggest element of the lattice
 	 */
-	
+
 	OrderElement top();
-	
+
 	/**
 	 * 
-	 * @return  smallest element of the lattice
+	 * @return smallest element of the lattice
 	 */
-	
+
 	OrderElement bottom();
 
 	/**

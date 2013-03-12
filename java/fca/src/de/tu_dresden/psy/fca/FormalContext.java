@@ -174,21 +174,21 @@ public interface FormalContext {
 	 *         topConcept()
 	 */
 	OrderElement nextClosure(FormalConcept x) throws Exception;
-	
+
 	/**
 	 * 
 	 * @return A set that contains all formal concepts for the context
 	 * @throws Exception
 	 */
-	
+
 	Set<FormalConcept> calculateAllConcepts() throws Exception;
-	
+
 	/**
 	 * 
-	 * @return  the corresponding concept lattice
+	 * @return the corresponding concept lattice
 	 * @throws Exception
 	 */
-	
+
 	Lattice conceptLattice() throws Exception;
-	
+
 }

@@ -37,22 +37,23 @@ public class BitSetConceptLattice implements Lattice {
 
 	public BitSetConceptLattice(BitSetContext K) {
 		this.K = K;
-		elements = new TreeSet<BitSetConcept>();
+		this.elements = new TreeSet<BitSetConcept>();
 		try {
-			bottomEl = (BitSetConcept) K.bottomConcept();
+			this.bottomEl = (BitSetConcept) K.bottomConcept();
 		} catch (Exception e1) {
 
 			e1.printStackTrace();
 		}
 		try {
-			topEl = (BitSetConcept) K.topConcept();
+			this.topEl = (BitSetConcept) K.topConcept();
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
 		try {
-			for (FormalConcept b = bottomEl; b != null; b = K.nextClosureVanilla(b)) {
-				elements.add((BitSetConcept) b);
+			for (FormalConcept b = this.bottomEl; b != null; b = K
+					.nextClosureVanilla(b)) {
+				this.elements.add((BitSetConcept) b);
 			}
 		} catch (Exception e) {
 
@@ -64,20 +65,20 @@ public class BitSetConceptLattice implements Lattice {
 	public OrderElement Inf(Set<OrderElement> P) {
 		int nG = 0;
 		try {
-			nG = K.numberOfObjects();
+			nG = this.K.numberOfObjects();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 		BitSet g = new BitSet(nG);
 		g.set(0, nG);
-		for (OrderElement p: P) {
+		for (OrderElement p : P) {
 			BitSetConcept b = (BitSetConcept) p;
 			g.and(b.commonObjects());
 		}
 
 		try {
-			return K.closeObjects(g);
+			return this.K.closeObjects(g);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -88,20 +89,20 @@ public class BitSetConceptLattice implements Lattice {
 	public OrderElement Sup(Set<OrderElement> P) {
 		int nM = 0;
 		try {
-			nM = K.numberOfAttributes();
+			nM = this.K.numberOfAttributes();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 		BitSet m = new BitSet(nM);
 		m.set(0, nM);
-		for (OrderElement p: P) {
+		for (OrderElement p : P) {
 			BitSetConcept b = (BitSetConcept) p;
 			m.and(b.commonObjects());
 		}
 
 		try {
-			return K.closeAttributes(m);
+			return this.K.closeAttributes(m);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -110,14 +111,35 @@ public class BitSetConceptLattice implements Lattice {
 
 	@Override
 	public OrderElement join(OrderElement p, OrderElement q) {
-		// TODO Auto-generated method stub
-		return null;
+		BitSetConcept P = (BitSetConcept) p;
+		BitSetConcept Q = (BitSetConcept) q;
+		BitSet m = BitSet.valueOf((P.commonAttributes().toByteArray()));
+
+		m.and(Q.commonAttributes());
+
+		try {
+			return this.K.closeAttributes(m);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 	@Override
 	public OrderElement meet(OrderElement p, OrderElement q) {
-		// TODO Auto-generated method stub
-		return null;
+		BitSetConcept P = (BitSetConcept) p;
+		BitSetConcept Q = (BitSetConcept) q;
+		BitSet g = BitSet.valueOf((P.commonObjects().toByteArray()));
+
+		g.and(Q.commonObjects());
+
+		try {
+			return this.K.closeObjects(g);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
@@ -132,7 +154,7 @@ public class BitSetConceptLattice implements Lattice {
 
 	@Override
 	public Set<OrderElement> Elements() {
-		
+
 		return new TreeSet<OrderElement>(this.elements);
 	}
 

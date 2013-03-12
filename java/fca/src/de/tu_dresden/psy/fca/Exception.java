@@ -19,19 +19,21 @@ package de.tu_dresden.psy.fca;
 
 /**
  * class that handles user exceptions for this package
+ * 
  * @author immo
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class Exception extends java.lang.Exception {
 	private String what, where;
+
 	public Exception(String what, String where) {
 		this.what = what;
 		this.where = where;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Exception("+this.what+", "+this.where+")";
+		return "Exception(" + this.what + ", " + this.where + ")";
 	}
 }

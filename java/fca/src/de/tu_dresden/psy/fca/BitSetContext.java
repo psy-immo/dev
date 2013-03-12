@@ -52,7 +52,7 @@ public class BitSetContext implements FormalContext {
 	}
 
 	private void initializeEmpty(int o_count, int a_count) {
-		initializeCommon();
+		this.initializeCommon();
 		for (int i = 0; i < o_count; i++) {
 			this.incidenceRows.add(new BitSet(a_count));
 			this.objectToName.put(i, "g" + i);
@@ -71,44 +71,46 @@ public class BitSetContext implements FormalContext {
 
 	public BitSetContext(SpecialContexts kind, int size) {
 		if (kind == SpecialContexts.Chain) {
-			initializeEmpty(size, size);
+			this.initializeEmpty(size, size);
 			for (int i = 0; i < size; ++i) {
-				for (int j = i; j < size; ++j)
-					setCross(j, i);
+				for (int j = i; j < size; ++j) {
+					this.setCross(j, i);
+				}
 			}
 			this.name = "C(" + size + ")";
 		} else if (kind == SpecialContexts.Antichain) {
-			initializeEmpty(size, size);
+			this.initializeEmpty(size, size);
 			for (int i = 0; i < size; ++i) {
-				setCross(i, i);
+				this.setCross(i, i);
 			}
 			this.name = "A(" + size + ")";
 		} else if (kind == SpecialContexts.Powerset) {
-			initializeEmpty(size, size);
+			this.initializeEmpty(size, size);
 			for (int i = 0; i < size; ++i) {
 				for (int j = 0; j < size; ++j) {
-					if (i != j)
-						setCross(i, j);
+					if (i != j) {
+						this.setCross(i, j);
+					}
 				}
 			}
 			this.name = "P(" + size + ")";
 		} else if (kind == SpecialContexts.N5) {
-			initializeEmpty(3, 3);
-			setCross(0,0);
-			setCross(1,1);
-			setCross(1,2);
-			setCross(2,2);
+			this.initializeEmpty(3, 3);
+			this.setCross(0, 0);
+			this.setCross(1, 1);
+			this.setCross(1, 2);
+			this.setCross(2, 2);
 			this.name = "N5";
 		}
 	}
 
 	public BitSetContext() {
-		initializeCommon();
+		this.initializeCommon();
 		this.name = "K(0,0,{})";
 	}
 
 	public BitSetContext(int o_count, int a_count) {
-		initializeEmpty(o_count, a_count);
+		this.initializeEmpty(o_count, a_count);
 		this.name = "K(" + o_count + "," + a_count + ",{})";
 
 	}
@@ -116,16 +118,18 @@ public class BitSetContext implements FormalContext {
 	@Override
 	public int attributeByName(String name) throws Exception {
 		Integer i = this.attributeFromName.get(name);
-		if (i == null)
+		if (i == null) {
 			throw new Exception("Unknown Attribute '" + name + "'", this.name);
+		}
 		return i;
 	}
 
 	@Override
 	public String attributeName(int a) throws Exception {
 		String name = this.attributeToName.get(a);
-		if (name == null)
+		if (name == null) {
 			throw new Exception("Unknown Attribute " + a, this.name);
+		}
 		return name;
 	}
 
@@ -141,22 +145,24 @@ public class BitSetContext implements FormalContext {
 
 	@Override
 	public String nameOfContext() throws Exception {
-		return name;
+		return this.name;
 	}
 
 	@Override
 	public String objectName(int o) throws Exception {
 		String name = this.objectToName.get(o);
-		if (name == null)
+		if (name == null) {
 			throw new Exception("Unknown Object " + o, this.name);
+		}
 		return name;
 	}
 
 	@Override
 	public int objectByName(String name) throws Exception {
 		Integer i = this.objectFromName.get(name);
-		if (i == null)
+		if (i == null) {
 			throw new Exception("Unknown Object '" + name + "'", this.name);
+		}
 		return i;
 	}
 
@@ -172,35 +178,35 @@ public class BitSetContext implements FormalContext {
 
 	@Override
 	public boolean incidenceRelation(int o, int a) throws Exception {
-		return incidenceRows.get(o).get(a);
+		return this.incidenceRows.get(o).get(a);
 	}
 
 	@Override
 	public BitSet objectRow(int o) throws Exception {
-		return incidenceRows.get(o);
+		return this.incidenceRows.get(o);
 	}
 
 	@Override
 	public BitSet attributeCol(int a) throws Exception {
-		return incidenceCols.get(a);
+		return this.incidenceCols.get(a);
 	}
 
 	public void setIncidence(int o, int a, boolean cross) {
 		if (cross) {
-			incidenceRows.get(o).set(a);
-			incidenceCols.get(a).set(o);
+			this.incidenceRows.get(o).set(a);
+			this.incidenceCols.get(a).set(o);
 		} else {
-			incidenceRows.get(o).clear(a);
-			incidenceCols.get(a).clear(o);
+			this.incidenceRows.get(o).clear(a);
+			this.incidenceCols.get(a).clear(o);
 		}
 	}
 
 	public void setCross(int o, int a) {
-		setIncidence(o, a, true);
+		this.setIncidence(o, a, true);
 	}
 
 	public void clearCross(int o, int a) {
-		setIncidence(o, a, false);
+		this.setIncidence(o, a, false);
 	}
 
 	@Override
@@ -226,35 +232,35 @@ public class BitSetContext implements FormalContext {
 
 	@Override
 	public FormalConcept closeAttributes(BitSet as) throws Exception {
-		BitSet os = commonObjects(as);
-		return new BitSetConcept(os, commonAttributes(os));
+		BitSet os = this.commonObjects(as);
+		return new BitSetConcept(os, this.commonAttributes(os));
 	}
 
 	@Override
 	public OrderElement closeObjects(BitSet os) throws Exception {
-		BitSet as = commonAttributes(os);
-		return new BitSetConcept(commonObjects(as), as);
+		BitSet as = this.commonAttributes(os);
+		return new BitSetConcept(this.commonObjects(as), as);
 	}
 
 	@Override
 	public String toString() {
 		StringBuffer b = new StringBuffer();
 		b.append("B\n");
-		b.append(name);
+		b.append(this.name);
 		try {
-			b.append("\n" + numberOfObjects() + "\n" + numberOfAttributes()
-					+ "\n");
-			for (int i = 0; i < numberOfObjects(); ++i) {
+			b.append("\n" + this.numberOfObjects() + "\n"
+					+ this.numberOfAttributes() + "\n");
+			for (int i = 0; i < this.numberOfObjects(); ++i) {
 				b.append(this.objectName(i));
 				b.append("\n");
 			}
-			for (int i = 0; i < numberOfAttributes(); ++i) {
+			for (int i = 0; i < this.numberOfAttributes(); ++i) {
 				b.append(this.attributeName(i));
 				b.append("\n");
 			}
-			for (int i = 0; i < numberOfObjects(); ++i) {
-				BitSet row = incidenceRows.get(i);
-				for (int j = 0; j < numberOfAttributes(); ++j) {
+			for (int i = 0; i < this.numberOfObjects(); ++i) {
+				BitSet row = this.incidenceRows.get(i);
+				for (int j = 0; j < this.numberOfAttributes(); ++j) {
 					if (row.get(j)) {
 						b.append("X");
 					} else {
@@ -273,7 +279,7 @@ public class BitSetContext implements FormalContext {
 		try {
 			for (int a = 0; a < this.numberOfAttributes(); ++a) {
 				for (int o = 0; o < this.numberOfObjects(); ++o) {
-					setIncidence(o, a, rnd.nextDouble() < crossRate);
+					this.setIncidence(o, a, rnd.nextDouble() < crossRate);
 				}
 			}
 			this.name = "K(" + this.numberOfObjects() + ","
@@ -286,12 +292,12 @@ public class BitSetContext implements FormalContext {
 
 	@Override
 	public OrderElement topConcept() throws Exception {
-		return closeObjects(new BitSet());
+		return this.closeObjects(new BitSet());
 	}
 
 	@Override
 	public FormalConcept bottomConcept() throws Exception {
-		return closeAttributes(new BitSet());
+		return this.closeAttributes(new BitSet());
 	}
 
 	/**
@@ -312,14 +318,16 @@ public class BitSetContext implements FormalContext {
 				FormalConcept y = this.closeAttributes(m);
 				boolean good = true;
 				for (int j = 0; j < i; ++j) {
-					if (y.commonAttributes().get(j))
+					if (y.commonAttributes().get(j)) {
 						if (m.get(j) == false) {
 							good = false;
 							break;
 						}
+					}
 				}
-				if (good)
+				if (good) {
 					return y;
+				}
 			}
 			m.clear(i);
 		}
@@ -337,14 +345,16 @@ public class BitSetContext implements FormalContext {
 				FormalConcept y = this.closeAttributes(m);
 				boolean good = true;
 				for (int j = 0; j < i; ++j) {
-					if (y.commonAttributes().get(j))
+					if (y.commonAttributes().get(j)) {
 						if (m.get(j) == false) {
 							good = false;
 							break;
 						}
+					}
 				}
-				if (good)
+				if (good) {
 					return y;
+				}
 			}
 			m.clear(i);
 		}
@@ -358,7 +368,7 @@ public class BitSetContext implements FormalContext {
 		BitSet m = BitSet.valueOf(x.commonAttributes().toByteArray());
 		BitSet g = BitSet.valueOf(x.commonObjects().toByteArray());
 
-		int boundary = numberOfObjects();
+		int boundary = this.numberOfObjects();
 
 		for (int i = this.numberOfAttributes() - 1; i >= 0; --i) {
 			if (m.get(i) == false) {
@@ -373,14 +383,16 @@ public class BitSetContext implements FormalContext {
 				boolean shared_j = false;
 
 				ATTRIBUTE_LOOP: for (int j = 0; j < i; ++j) {
-					if (m.get(j) == true)
+					if (m.get(j) == true) {
 						continue;
+					}
 
 					BitSet col_j = this.attributeCol(j);
 					INNER: for (int o = g.nextSetBit(0); o >= 0; o = g
 							.nextSetBit(o + 1)) {
-						if (col_i.get(o) == false)
+						if (col_i.get(o) == false) {
 							continue INNER;
+						}
 						if (col_j.get(o) == false) {
 							continue ATTRIBUTE_LOOP;
 						}
@@ -400,7 +412,7 @@ public class BitSetContext implements FormalContext {
 					m.set(0, this.numberOfAttributes());
 					for (int o = g.nextSetBit(0); o >= 0; o = g
 							.nextSetBit(o + 1)) {
-						m.and(objectRow(o));
+						m.and(this.objectRow(o));
 					}
 
 					return new BitSetConcept(g, m);
@@ -418,10 +430,11 @@ public class BitSetContext implements FormalContext {
 
 				OBJECT_LOOP: for (int o = g.nextClearBit(0); o < boundary; o = g
 						.nextClearBit(o + 1)) {
-					if (col_i.get(o) == true)
+					if (col_i.get(o) == true) {
 						continue OBJECT_LOOP;
+					}
 
-					BitSet row_o = objectRow(o);
+					BitSet row_o = this.objectRow(o);
 					INNER: for (int j = m.nextSetBit(0); j >= 0; j = m
 							.nextSetBit(j + 1)) {
 						if (row_o.get(j) == false) {
@@ -447,10 +460,11 @@ public class BitSetContext implements FormalContext {
 		for (int i = 0; i < this.numberOfObjects(); ++i) {
 			b.append("\n" + this.objectName(i));
 			for (int j = 0; j < this.numberOfAttributes(); ++j) {
-				if (this.incidenceRelation(i, j))
+				if (this.incidenceRelation(i, j)) {
 					b.append(",1");
-				else
+				} else {
 					b.append(",0");
+				}
 			}
 		}
 		return b.toString();
@@ -460,7 +474,8 @@ public class BitSetContext implements FormalContext {
 	public Set<FormalConcept> calculateAllConcepts() throws Exception {
 		Set<FormalConcept> lattice = new TreeSet<FormalConcept>();
 
-		for (FormalConcept b = bottomConcept(); b != null; b = nextClosureVanilla(b)) {
+		for (FormalConcept b = this.bottomConcept(); b != null; b = this
+				.nextClosureVanilla(b)) {
 			lattice.add(b);
 		}
 
