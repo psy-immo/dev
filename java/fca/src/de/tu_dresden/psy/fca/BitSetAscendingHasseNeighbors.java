@@ -80,7 +80,7 @@ public class BitSetAscendingHasseNeighbors {
 					/**
 					 * Q < P
 					 */
-					R.clear(p)
+					R.clear(p);
 				}
 			}
 		}
