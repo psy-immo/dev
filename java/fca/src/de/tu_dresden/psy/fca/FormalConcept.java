@@ -27,7 +27,7 @@ import java.util.BitSet;
  * 
  */
 
-public interface FormalConcept extends Comparable<FormalConcept>{
+public interface FormalConcept extends Comparable<FormalConcept>, OrderElement{
 
 	/**
 	 * 
@@ -40,25 +40,4 @@ public interface FormalConcept extends Comparable<FormalConcept>{
 	 * @return the common attributes of the concept
 	 */
 	BitSet commonAttributes();
-
-	static int lessObjects = 1;
-	static int moreAttributes = 1;
-	static int equalConcept = 2;
-	static int moreObjects = 4;
-	static int lessAttributes = 4;
-	static int incomparable = 16;
-	static int comparableMask = 1 | 2 | 4;
-
-	/**
-	 * compare this concept to another concept (of the same context and
-	 * corresponding concept lattice object)
-	 * 
-	 * @param r
-	 *            other concept
-	 * @return any of the ints above, so a.cmp(b) == lessObjects means, that
-	 *         a.commonObjects() is a subset of b.commonObjects()
-	 * 
-	 */
-
-	int cmp(FormalConcept r);
 }

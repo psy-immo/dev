@@ -141,7 +141,7 @@ public interface FormalContext {
 	 * @return generated concept
 	 */
 
-	FormalConcept closeObjects(BitSet os) throws Exception;
+	OrderElement closeObjects(BitSet os) throws Exception;
 
 	/**
 	 * 
@@ -150,21 +150,21 @@ public interface FormalContext {
 	 * @return generated concept
 	 */
 
-	FormalConcept closeAttributes(BitSet as) throws Exception;
+	OrderElement closeAttributes(BitSet as) throws Exception;
 
 	/**
 	 * 
 	 * @return the minimal concept
 	 */
 
-	FormalConcept bottomConcept() throws Exception;
+	OrderElement bottomConcept() throws Exception;
 
 	/**
 	 * 
 	 * @return the maximal concept
 	 */
 
-	FormalConcept topConcept() throws Exception;
+	OrderElement topConcept() throws Exception;
 
 	/**
 	 * 
@@ -173,7 +173,7 @@ public interface FormalContext {
 	 * @return next concept with respect to lectic order, or null if x ==
 	 *         topConcept()
 	 */
-	FormalConcept nextClosure(FormalConcept x) throws Exception;
+	OrderElement nextClosure(FormalConcept x) throws Exception;
 	
 	/**
 	 * 
@@ -181,5 +181,14 @@ public interface FormalContext {
 	 * @throws Exception
 	 */
 	
-	Set<FormalConcept> ConceptLattice() throws Exception;
+	Set<FormalConcept> calculateAllConcepts() throws Exception;
+	
+	/**
+	 * 
+	 * @return  the corresponding concept lattice
+	 * @throws Exception
+	 */
+	
+	Lattice conceptLattice() throws Exception;
+	
 }

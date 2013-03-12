@@ -20,7 +20,6 @@ package de.tu_dresden.psy.fca;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -195,7 +194,7 @@ public class BitSetContext implements FormalContext {
 	}
 
 	@Override
-	public FormalConcept closeObjects(BitSet os) throws Exception {
+	public OrderElement closeObjects(BitSet os) throws Exception {
 		BitSet as = commonAttributes(os);
 		return new BitSetConcept(commonObjects(as), as);
 	}
@@ -249,7 +248,7 @@ public class BitSetContext implements FormalContext {
 	}
 
 	@Override
-	public FormalConcept topConcept() throws Exception {
+	public OrderElement topConcept() throws Exception {
 		return closeObjects(new BitSet());
 	}
 
@@ -316,6 +315,7 @@ public class BitSetContext implements FormalContext {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public FormalConcept nextClosureWorseThanVanilla(FormalConcept x)
 			throws Exception {
 		BitSet m = BitSet.valueOf(x.commonAttributes().toByteArray());
@@ -420,14 +420,18 @@ public class BitSetContext implements FormalContext {
 	}
 
 	@Override
-	public Set<FormalConcept> ConceptLattice() throws Exception {
+	public Set<FormalConcept> calculateAllConcepts() throws Exception {
 		Set<FormalConcept> lattice = new TreeSet<FormalConcept>();
 
-		for (FormalConcept b = bottomConcept(); b != null; b = nextClosure(b)) {
+		for (FormalConcept b = bottomConcept(); b != null; b = nextClosureVanilla(b)) {
 			lattice.add(b);
 		}
 
 		return lattice;
 	}
 
+	@Override
+	public Lattice conceptLattice() throws Exception {
+		return new BitSetConceptLattice(this);
+	}
 }

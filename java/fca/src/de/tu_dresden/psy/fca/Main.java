@@ -4,7 +4,8 @@ import java.io.BufferedWriter;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.BitSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
@@ -13,7 +14,15 @@ public class Main {
 
 		ctx.RandomizeContext(0.4);
 
-		System.out.println(ctx.ConceptLattice().size());
+		Lattice l = ctx.conceptLattice();
+		
+		System.out.println(l.Elements().size());
+		
+		System.out.println(l.bottom());
+		
+		System.out.println(l.bottom().equals(l.top()));
+		
+		
 
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(
