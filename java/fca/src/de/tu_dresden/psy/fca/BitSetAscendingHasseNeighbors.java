@@ -23,6 +23,7 @@ import java.util.BitSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * 
@@ -170,5 +171,74 @@ public class BitSetAscendingHasseNeighbors {
 		}
 
 		return out.toString();
+	}
+
+	/**
+	 * 
+	 * @return dot file contents that generate the current Hasse diagram
+	 */
+	public String asDotCode(boolean labels) {
+		StringBuffer out = new StringBuffer();
+
+		out.append("digraph HasseDiagramm {\n");
+		out.append("rankdir=BT;\n");
+
+		for (Integer n : numberToElement.keySet()) {
+			if (n == 0)
+				continue;
+			String label = numberToElement.get(n).toString();
+
+			out.append("node" + n);
+			out.append("[");
+			if (labels) {
+				
+				// out.append("shape=circle,");
+				out.append("label=\"" + label + "\"");
+				
+			} else out.append("label=\"\",shape=point,color=red");
+			out.append("];\n");
+		}
+		for (Integer n : numberToElement.keySet()) {
+			if (n == 0)
+				continue;
+			BitSet upper = upperNeighbors.get(n);
+			for (int o = upper.nextSetBit(0); o >= 0; o = upper
+					.nextSetBit(o + 1)) {
+				out.append("node" + n + " -> node" + o + "[dir=none];\n");
+			}
+		}
+
+		out.append("}");
+
+		return out.toString();
+	}
+	
+	/**
+	 * 
+	 * @return  the set of minimal elements
+	 */
+	
+	public Set<OrderElement> Minimal() {
+		Set<OrderElement> s = new TreeSet<OrderElement>();
+		BitSet x = upperNeighbors.get(0);
+		for (int o=x.nextSetBit(0);o>=0;o=x.nextSetBit(o+1)) {
+			s.add(numberToElement.get(o));
+		}
+		return s;
+	}
+	
+	/**
+	 * 
+	 * @param p  element
+	 * @return  all upper neighbors of p, i.e. all q with p <. q
+	 */
+	
+	public Set<OrderElement> UpperNeighbors(OrderElement p) {
+		Set<OrderElement> s = new TreeSet<OrderElement>();
+		BitSet x = upperNeighbors.get(elementToNumber.get(p));
+		for (int o=x.nextSetBit(0);o>=0;o=x.nextSetBit(o+1)) {
+			s.add(numberToElement.get(o));
+		}
+		return s;
 	}
 }

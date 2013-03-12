@@ -66,7 +66,7 @@ public class BitSetContext implements FormalContext {
 	}
 
 	public enum SpecialContexts {
-		Chain, Antichain, Powerset
+		Chain, Antichain, Powerset, N5
 	};
 
 	public BitSetContext(SpecialContexts kind, int size) {
@@ -92,6 +92,13 @@ public class BitSetContext implements FormalContext {
 				}
 			}
 			this.name = "P(" + size + ")";
+		} else if (kind == SpecialContexts.N5) {
+			initializeEmpty(3, 3);
+			setCross(0,0);
+			setCross(1,1);
+			setCross(1,2);
+			setCross(2,2);
+			this.name = "N5";
 		}
 	}
 

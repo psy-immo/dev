@@ -34,7 +34,9 @@ import de.tu_dresden.psy.fca.BitSetContext.SpecialContexts;
 public class Main {
 	public static void main(String[] args) throws Exception {
 
-		BitSetContext ctx = new BitSetContext(SpecialContexts.Antichain, 3);
+		BitSetContext ctx = new BitSetContext(SpecialContexts.N5,0);
+		ctx = new BitSetContext(12,12);
+		ctx.RandomizeContext(0.7);
 
 		Lattice l = ctx.conceptLattice();
 		
@@ -42,7 +44,16 @@ public class Main {
 				l.Elements());
 		
 		System.out.println(ctx);
-		System.out.println(neighs);
+		System.out.println(neighs.asDotCode(true));
+		
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(
+					"/tmp/lattice.dot"));
+			out.write(neighs.asDotCode(false));
+			out.close();
+		} catch (IOException e) {
+		}
+
 		
 
 		try {
