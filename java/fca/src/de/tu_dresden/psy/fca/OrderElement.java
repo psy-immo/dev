@@ -31,12 +31,16 @@ package de.tu_dresden.psy.fca;
 public interface OrderElement {
 
 	static int lessObjects = 1;
+	static int lessThan = 1;
 	static int moreAttributes = 1;
 	static int equalConcept = 2;
 	static int moreObjects = 4;
 	static int lessAttributes = 4;
+	static int greaterThan = 1;
 	static int incomparable = 16;
 	static int comparableMask = 1 | 2 | 4;
+	static int LessEq = 1 | 2;
+	static int GreaterEq = 4 | 2;
 
 	/**
 	 * compare this concept to another concept (of the same context and
