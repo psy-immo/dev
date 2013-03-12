@@ -32,18 +32,17 @@ import java.io.IOException;
 public class Main {
 	public static void main(String[] args) throws Exception {
 
-		BitSetContext ctx = new BitSetContext(65, 200);
+		BitSetContext ctx = new BitSetContext(5, 5);
 
 		ctx.RandomizeContext(0.4);
 
 		Lattice l = ctx.conceptLattice();
 		
-		System.out.println(l.Elements().size());
+		BitSetAscendingHasseNeighbors neighs = new BitSetAscendingHasseNeighbors(
+				l.Elements());
 		
-		System.out.println(l.bottom());
-		
-		System.out.println(l.bottom().equals(l.top()));
-		
+		System.out.println(ctx);
+		System.out.println(neighs);
 		
 
 		try {

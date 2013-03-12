@@ -57,16 +57,41 @@ public class BitSetAscendingHasseNeighbors {
 			this.upperNeighbors.add(new BitSet(element_count + 1));
 			id++;
 		}
+
+		BitSet continueMoving = new BitSet(element_count + 1);
+
+		continueMoving.set(0);
+
+		while (continueMoving.isEmpty() == false) {
+			for (int base = continueMoving.nextSetBit(0); base >= 0; base = continueMoving
+					.nextSetBit(base + 1)) {
+				continueMoving.clear(base);
+				if (moveUp(base)) {
+					continueMoving.or(upperNeighbors.get(base));
+				}
+			}
+		}
 	}
+
+	/**
+	 * 
+	 * compares all elements that are bigger than base pairwise, and moves up
+	 * those elements that are bigger than the compared elements
+	 * 
+	 * @param base
+	 *            element
+	 * @return whether we moved elements up
+	 */
 
 	private boolean moveUp(int base) {
 		BitSet R = upperNeighbors.get(base);
 		boolean changed = false;
 
-		for (int p = R.nextSetBit(0); p >= 0; p = R.nextSetBit(p + 1)) {
+		OUTER_LOOP: for (int p = R.nextSetBit(0); p >= 0; p = R
+				.nextSetBit(p + 1)) {
 			BitSet Ps = upperNeighbors.get(p);
+			OrderElement P = numberToElement.get(p);
 			for (int q = R.nextSetBit(p + 1); q >= 0; q = R.nextSetBit(q + 1)) {
-				OrderElement P = numberToElement.get(p);
 				OrderElement Q = numberToElement.get(q);
 				int result = P.cmp(Q);
 
@@ -75,16 +100,53 @@ public class BitSetAscendingHasseNeighbors {
 					 * P < Q
 					 */
 					R.clear(q);
-					Ps.set(p);
+					Ps.set(q);
+					changed = true;
 				} else if ((result & OrderElement.greaterThan) > 0) {
 					/**
-					 * Q < P
+					 * P > Q
+					 * 
 					 */
 					R.clear(p);
+					upperNeighbors.get(q).set(p);
+					changed = true;
+					continue OUTER_LOOP;
 				}
 			}
 		}
 
 		return changed;
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer out = new StringBuffer();
+
+		for (int i = 0; i < upperNeighbors.size(); ++i) {
+			BitSet uppers = upperNeighbors.get(i);
+			if (uppers.isEmpty() == false) {
+				if (i == 0)
+					out.append("minimal: ");
+				else {
+					out.append(numberToElement.get(i));
+					out.append(" <. ");
+				}
+
+				boolean first = true;
+				for (int o = uppers.nextSetBit(0); o >= 0; o = uppers
+						.nextSetBit(o + 1)) {
+					if (first) {
+						first = false;
+					} else
+						out.append(", ");
+					out.append(numberToElement.get(o));
+
+				}
+				out.append("\n");
+			}
+		}
+
+		return out.toString();
+
 	}
 }
