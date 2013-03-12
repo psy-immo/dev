@@ -195,7 +195,7 @@ public class BitSetAscendingHasseNeighbors {
 				// out.append("shape=circle,");
 				out.append("label=\"" + label + "\"");
 				
-			} else out.append("label=\"\",shape=point,color=red");
+			} else out.append("label=\"\",shape=point,color=red,width=.1,height=.1");
 			out.append("];\n");
 		}
 		for (Integer n : numberToElement.keySet()) {
