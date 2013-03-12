@@ -53,7 +53,20 @@ public class BitSetConcept implements FormalConcept {
 	}
 
 	@Override
-	public int compareTo(FormalConcept o) {
+	public int compareTo(OrderElement o) {
+		if (o instanceof FormalConcept) {
+			FormalConcept concept = (FormalConcept) o;
+			return this.compareToConcept(concept);
+		} else {
+			/**
+			 * it is not a formal concept, so it might be an arbitrary zero
+			 */
+			return 1;
+		}
+	}
+
+	public int compareToConcept(FormalConcept o) {
+
 		BitSet attribs = o.commonAttributes();
 
 		int boundary = Math.max(as.length(), attribs.length());

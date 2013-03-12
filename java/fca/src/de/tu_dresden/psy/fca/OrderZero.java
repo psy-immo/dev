@@ -25,7 +25,7 @@ package de.tu_dresden.psy.fca;
  * 
  */
 
-public class OrderZero implements OrderElement {
+public class OrderZero implements OrderElement, Comparable<OrderElement> {
 
 	@Override
 	public int cmp(OrderElement r) {
@@ -33,6 +33,19 @@ public class OrderZero implements OrderElement {
 			return OrderElement.equalConcept;
 		}
 		return OrderElement.lessThan;
+	}
+
+	@Override
+	public String toString() {
+		return "_|_";
+	}
+
+	@Override
+	public int compareTo(OrderElement o) {
+		if (o instanceof OrderZero) {
+			return 0;
+		}
+		return -1;
 	}
 
 }

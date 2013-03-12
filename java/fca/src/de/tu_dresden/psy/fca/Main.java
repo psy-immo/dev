@@ -21,6 +21,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import de.tu_dresden.psy.fca.BitSetContext.SpecialContexts;
+
 /**
  * 
  * @author immo
@@ -32,9 +34,7 @@ import java.io.IOException;
 public class Main {
 	public static void main(String[] args) throws Exception {
 
-		BitSetContext ctx = new BitSetContext(5, 5);
-
-		ctx.RandomizeContext(0.4);
+		BitSetContext ctx = new BitSetContext(SpecialContexts.Antichain, 3);
 
 		Lattice l = ctx.conceptLattice();
 		

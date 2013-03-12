@@ -28,7 +28,7 @@ package de.tu_dresden.psy.fca;
  * 
  */
 
-public interface OrderElement {
+public interface OrderElement extends Comparable<OrderElement> {
 
 	static int lessObjects = 1;
 	static int lessThan = 1;
@@ -54,5 +54,6 @@ public interface OrderElement {
 	 */
 
 	public abstract int cmp(OrderElement r);
+
 
 }

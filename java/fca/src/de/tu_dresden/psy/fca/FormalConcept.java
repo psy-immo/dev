@@ -27,7 +27,7 @@ import java.util.BitSet;
  * 
  */
 
-public interface FormalConcept extends Comparable<FormalConcept>, OrderElement{
+public interface FormalConcept extends OrderElement {
 
 	/**
 	 * 

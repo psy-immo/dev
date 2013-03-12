@@ -37,6 +37,8 @@ public class BitSetAscendingHasseNeighbors {
 
 	private Map<Integer, OrderElement> numberToElement;
 	private Map<OrderElement, Integer> elementToNumber;
+	static OrderZero bottom = new OrderZero();
+
 	/**
 	 * note that upperNeighbors.get(0) is the bit set of all elements that have
 	 * no lower neighbors, i.e. that are minimal wrt. the poset
@@ -46,6 +48,8 @@ public class BitSetAscendingHasseNeighbors {
 	public BitSetAscendingHasseNeighbors(Set<OrderElement> poset) {
 		this.numberToElement = new TreeMap<Integer, OrderElement>();
 		this.elementToNumber = new TreeMap<OrderElement, Integer>();
+		this.numberToElement.put(0, bottom);
+		this.elementToNumber.put(bottom, 0);
 		int element_count = poset.size();
 		this.upperNeighbors = new ArrayList<BitSet>(element_count + 1);
 		this.upperNeighbors.add(new BitSet(element_count + 1));
@@ -89,26 +93,48 @@ public class BitSetAscendingHasseNeighbors {
 
 		OUTER_LOOP: for (int p = R.nextSetBit(0); p >= 0; p = R
 				.nextSetBit(p + 1)) {
-			BitSet Ps = upperNeighbors.get(p);
+
 			OrderElement P = numberToElement.get(p);
 			for (int q = R.nextSetBit(p + 1); q >= 0; q = R.nextSetBit(q + 1)) {
 				OrderElement Q = numberToElement.get(q);
 				int result = P.cmp(Q);
 
 				if ((result & OrderElement.lessThan) > 0) {
-					/**
-					 * P < Q
+					/*
+					 * base < P < Q, thus (not base <. Q)
 					 */
 					R.clear(q);
-					Ps.set(q);
+
+					/*
+					 * find all O < Q, and set O <. Q
+					 */
+
+					for (int o = R.nextSetBit(0); o >= 0; o = R
+							.nextSetBit(o + 1)) {
+						OrderElement O = numberToElement.get(o);
+						if ((O.cmp(Q) & OrderElement.lessThan) > 0) {
+							upperNeighbors.get(o).set(q);
+						}
+					}
 					changed = true;
 				} else if ((result & OrderElement.greaterThan) > 0) {
-					/**
-					 * P > Q
-					 * 
+					/*
+					 * base < Q < P, thus (not base <. P)
 					 */
 					R.clear(p);
-					upperNeighbors.get(q).set(p);
+
+					/*
+					 * find all O < P, and set O <. P
+					 */
+
+					for (int o = R.nextSetBit(0); o >= 0; o = R
+							.nextSetBit(o + 1)) {
+						OrderElement O = numberToElement.get(o);
+						if ((O.cmp(P) & OrderElement.lessThan) > 0) {
+							upperNeighbors.get(o).set(p);
+						}
+					}
+
 					changed = true;
 					continue OUTER_LOOP;
 				}
@@ -125,12 +151,9 @@ public class BitSetAscendingHasseNeighbors {
 		for (int i = 0; i < upperNeighbors.size(); ++i) {
 			BitSet uppers = upperNeighbors.get(i);
 			if (uppers.isEmpty() == false) {
-				if (i == 0)
-					out.append("minimal: ");
-				else {
-					out.append(numberToElement.get(i));
-					out.append(" <. ");
-				}
+
+				out.append(numberToElement.get(i));
+				out.append(" <. ");
 
 				boolean first = true;
 				for (int o = uppers.nextSetBit(0); o >= 0; o = uppers
@@ -147,6 +170,5 @@ public class BitSetAscendingHasseNeighbors {
 		}
 
 		return out.toString();
-
 	}
 }

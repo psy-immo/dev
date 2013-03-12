@@ -65,6 +65,36 @@ public class BitSetContext implements FormalContext {
 		}
 	}
 
+	public enum SpecialContexts {
+		Chain, Antichain, Powerset
+	};
+
+	public BitSetContext(SpecialContexts kind, int size) {
+		if (kind == SpecialContexts.Chain) {
+			initializeEmpty(size, size);
+			for (int i = 0; i < size; ++i) {
+				for (int j = i; j < size; ++j)
+					setCross(j, i);
+			}
+			this.name = "C(" + size + ")";
+		} else if (kind == SpecialContexts.Antichain) {
+			initializeEmpty(size, size);
+			for (int i = 0; i < size; ++i) {
+				setCross(i, i);
+			}
+			this.name = "A(" + size + ")";
+		} else if (kind == SpecialContexts.Powerset) {
+			initializeEmpty(size, size);
+			for (int i = 0; i < size; ++i) {
+				for (int j = 0; j < size; ++j) {
+					if (i != j)
+						setCross(i, j);
+				}
+			}
+			this.name = "P(" + size + ")";
+		}
+	}
+
 	public BitSetContext() {
 		initializeCommon();
 		this.name = "K(0,0,{})";
