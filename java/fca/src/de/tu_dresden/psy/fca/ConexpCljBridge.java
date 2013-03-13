@@ -17,7 +17,12 @@
  */
 package de.tu_dresden.psy.fca;
 
-import java.io.StringReader;
+import java.io.IOException;
+
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.exec.ExecuteWatchdog;
 
 /**
  * 
@@ -31,24 +36,21 @@ import java.io.StringReader;
 
 public class ConexpCljBridge {
 
-	private Compiler compiler;
-
 	public ConexpCljBridge() {
-		// Load the Clojure script -- as a side effect this initializes the
-		// runtime.
-		String str = "(use 'conexp.main)\n"
-				+ "                                (use 'conexp.contrib.gui)\n"
-				+ "                                (@(ns-resolve 'conexp.contrib.gui 'gui)\n"
-				+ "                                 :default-close-operation javax.swing.JFrame/EXIT_ON_CLOSE)"
-				+ "(ns user) (defn foo [a b]   (str a \" \" b))";
-
-		Compiler.load(new StringReader(str));
-
-		// Get a reference to the foo function.
-		Var foo = RT.var("user", "foo");
-
-		// Call it!
-		Object result = foo.invoke("Hi", "there");
-		System.out.println(result);
+		String line = "../../conexp-clj/bin/conexp-clj --gui";
+		CommandLine cmdLine = CommandLine.parse(line);
+		DefaultExecutor executor = new DefaultExecutor();
+		executor.setExitValue(1);
+		ExecuteWatchdog watchdog = new ExecuteWatchdog(60000);
+		executor.setWatchdog(watchdog);
+		try {
+			int exitValue = executor.execute(cmdLine);
+		} catch (ExecuteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
