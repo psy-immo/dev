@@ -17,12 +17,6 @@
  */
 package de.tu_dresden.psy.fca;
 
-import java.io.IOException;
-
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.exec.ExecuteWatchdog;
 
 /**
  * 
@@ -37,20 +31,6 @@ import org.apache.commons.exec.ExecuteWatchdog;
 public class ConexpCljBridge {
 
 	public ConexpCljBridge() {
-		String line = "../../conexp-clj/bin/conexp-clj --gui";
-		CommandLine cmdLine = CommandLine.parse(line);
-		DefaultExecutor executor = new DefaultExecutor();
-		executor.setExitValue(1);
-		ExecuteWatchdog watchdog = new ExecuteWatchdog(60000);
-		executor.setWatchdog(watchdog);
-		try {
-			int exitValue = executor.execute(cmdLine);
-		} catch (ExecuteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 	}
 }
