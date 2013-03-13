@@ -18,10 +18,11 @@
 package de.tu_dresden.psy.fca;
 
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import de.tu_dresden.psy.fca.BitSetContext.SpecialContexts;
+import de.tu_dresden.psy.fca.BitSetContext.FileFormat;
 
 /**
  * 
@@ -32,11 +33,15 @@ import de.tu_dresden.psy.fca.BitSetContext.SpecialContexts;
  */
 
 public class Main {
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception,
+			FileNotFoundException, IOException {
 
-		BitSetContext ctx = new BitSetContext(SpecialContexts.N5, 0);
-		ctx = new BitSetContext(6, 6);
-		ctx.RandomizeContext(0.5);
+		new ConexpCljBridge();
+
+		BitSetContext ctx = new BitSetContext(FileFormat.Burmeister,
+				"/tmp/myRandom.bur");
+		// ctx = new BitSetContext(6, 6);
+		// ctx.RandomizeContext(0.5);
 
 		System.out.println(ctx);
 

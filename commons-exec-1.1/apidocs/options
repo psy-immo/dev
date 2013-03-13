@@ -1,0 +1,28 @@
+-classpath
+'/Users/sgoeschl/work/asf/commons/proper/exec/trunk/target/checkout/target/classes'
+-encoding
+'iso-8859-1'
+-protected
+-quiet
+-source
+'1.3'
+-sourcepath
+'/Users/sgoeschl/work/asf/commons/proper/exec/trunk/target/checkout/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2010 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/sgoeschl/work/asf/commons/proper/exec/trunk/target/checkout/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Commons Exec 1.1 API'
+-link
+'http://java.sun.com/javase/6/docs/api'
+-linksource
+-use
+-version
+-windowtitle
+'Commons Exec 1.1 API'

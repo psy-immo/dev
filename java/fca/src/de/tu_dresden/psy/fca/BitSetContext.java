@@ -17,6 +17,11 @@
  */
 package de.tu_dresden.psy.fca;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -68,6 +73,74 @@ public class BitSetContext implements FormalContext {
 	public enum SpecialContexts {
 		Chain, Antichain, Powerset, N5
 	};
+
+	public enum FileFormat {
+		Burmeister
+	}
+
+	public BitSetContext(FileFormat format, InputStreamReader data)
+			throws IOException {
+		this.BitSetContextFromFile(format, data, "unnamed stream");
+	}
+
+	public BitSetContext(FileFormat format, String path)
+			throws FileNotFoundException, IOException {
+		this.BitSetContextFromFile(format, new InputStreamReader(
+				new FileInputStream(path)), path);
+	}
+
+	private void BitSetContextFromFile(FileFormat format,
+			InputStreamReader data, String defaultName) throws IOException {
+		if (format == FileFormat.Burmeister) {
+			BufferedReader br = new BufferedReader(data);
+			String line;
+			int lineNbr = 0;
+			int nbrO = 0, nbrA = 0;
+
+			while ((line = br.readLine()) != null) {
+				if (line.isEmpty()) {
+					if (lineNbr != 1) {
+						continue;
+					}
+					/** ignore empty lines except for the name, in this case */
+					line = defaultName;
+				}
+
+				if (lineNbr == 0) {
+					if (line.equals("B") == false) {
+						this.initializeEmpty(0, 0);
+						this.name = "Error: Data Stream is not Burmeister!";
+						return;
+					}
+				} else if (lineNbr == 1) {
+					this.name = line;
+				} else if (lineNbr == 2) {
+					nbrO = Integer.parseInt(line);
+				} else if (lineNbr == 3) {
+					nbrA = Integer.parseInt(line);
+					this.initializeEmpty(nbrO, nbrA);
+
+				} else if (lineNbr < (4 + nbrO)) {
+					this.objectToName.put(lineNbr - 4, line);
+					this.objectFromName.put(line, lineNbr - 4);
+				} else if (lineNbr < (4 + nbrO + nbrA)) {
+					this.attributeToName.put(lineNbr - 4 - nbrO, line);
+					this.attributeFromName.put(line, lineNbr - 4 - nbrO);
+				} else if (lineNbr < (4 + nbrO + nbrA + nbrO)) {
+					int g = lineNbr - 4 - nbrO - nbrA;
+
+					for (int m = 0; m < nbrA; ++m) {
+
+						if (line.subSequence(m, m + 1).equals("X")) {
+							this.setCross(g, m);
+						}
+					}
+				}
+
+				lineNbr++;
+			}
+		}
+	}
 
 	public BitSetContext(SpecialContexts kind, int size) {
 		if (kind == SpecialContexts.Chain) {
@@ -250,6 +323,7 @@ public class BitSetContext implements FormalContext {
 		try {
 			b.append("\n" + this.numberOfObjects() + "\n"
 					+ this.numberOfAttributes() + "\n");
+			b.append("\n");
 			for (int i = 0; i < this.numberOfObjects(); ++i) {
 				b.append(this.objectName(i));
 				b.append("\n");
