@@ -1,3 +1,6 @@
 [submodule "borchmann/conexp-clj"]
 	path = borchmann/conexp-clj
 	url = git://github.com/exot/conexp-clj.git
+[submodule "forks/conexp-clj"]
+	path = forks/conexp-clj
+	url = git@github.com:psy-immo/conexp-clj.git
