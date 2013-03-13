@@ -17,12 +17,19 @@
  */
 package de.tu_dresden.psy.fca;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 
 import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.Executor;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.launcher.Launcher;
 
 /**
@@ -37,7 +44,22 @@ import org.apache.commons.launcher.Launcher;
 
 public class ConexpCljBridge {
 
+	private Executor executor;
+
+	private DefaultExecuteResultHandler result;
+
+	private PipedOutputStream to_conexp;
+	private InputStream from_conexp;
+	private InputStream error_conexp;
+	private InputStream stream_to_conexp;
+	private PipedOutputStream stream_error_conexp;
+	private PipedOutputStream stream_from_conexp;
+
 	public ConexpCljBridge() {
+
+		/**
+		 * build the command line (see conexp-clj/bin/conexp-clj)
+		 */
 
 		String java_bin = Launcher.getJavaCommand();
 
@@ -50,19 +72,83 @@ public class ConexpCljBridge {
 		conexp_cmd.addArgument("-e");
 		conexp_cmd.addArgument("");
 		conexp_cmd.addArgument("./conexp-clj/lib/conexp-clj.clj");
-		conexp_cmd.addArgument("--gui");
 
-		System.out.println(conexp_cmd);
+		/**
+		 * open the pipes
+		 */
+
+		this.to_conexp = new PipedOutputStream();
+		try {
+			this.stream_to_conexp = new PipedInputStream(this.to_conexp);
+		} catch (IOException e2) {
+			e2.printStackTrace();
+		}
+
+		this.stream_error_conexp = new PipedOutputStream();
+		this.stream_from_conexp = new PipedOutputStream();
+
+		try {
+			this.from_conexp = new PipedInputStream(this.stream_from_conexp);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			this.error_conexp = new PipedInputStream(this.stream_error_conexp);
+		} catch (IOException e1) {
+
+			e1.printStackTrace();
+		}
+
+		/**
+		 * setup apache commons exec
+		 */
+
+		this.result = new DefaultExecuteResultHandler();
 
 		DefaultExecutor executor = new DefaultExecutor();
-		executor.setExitValue(1);
-		ExecuteWatchdog watchdog = new ExecuteWatchdog(60000);
-		executor.setWatchdog(watchdog);
+		executor.setExitValue(0);
+		executor.setStreamHandler(new PumpStreamHandler(
+				this.stream_from_conexp, this.stream_error_conexp,
+				this.stream_to_conexp));
+
+		this.executor = executor;
+
+		/**
+		 * run in non-blocking mode
+		 */
+
 		try {
-			int exitValue = executor.execute(conexp_cmd);
+			executor.execute(conexp_cmd, this.result);
 		} catch (ExecuteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			this.to_conexp.write("(+ 2 3)\n(+ 8 10)".getBytes());
+			this.to_conexp.close();
+		} catch (IOException e1) {
+
+			e1.printStackTrace();
+		}
+
+		try {
+			this.result.waitFor();
+		} catch (InterruptedException e) {
+
+			e.printStackTrace();
+		}
+
+		try {
+			System.out
+			.println("result: "
+					+ new BufferedReader(new InputStreamReader(
+							this.from_conexp)).readLine());
+			System.out
+					.println("result: "
+							+ new BufferedReader(new InputStreamReader(
+									this.from_conexp)).readLine());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
