@@ -17,6 +17,13 @@
  */
 package de.tu_dresden.psy.fca;
 
+import java.io.IOException;
+
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.launcher.Launcher;
 
 /**
  * 
@@ -31,6 +38,35 @@ package de.tu_dresden.psy.fca;
 public class ConexpCljBridge {
 
 	public ConexpCljBridge() {
+
+		String java_bin = Launcher.getJavaCommand();
+
+		CommandLine conexp_cmd = new CommandLine(java_bin);
+		conexp_cmd.addArgument("-server");
+		conexp_cmd.addArgument("-cp");
+		conexp_cmd
+		.addArgument("./conexp-clj/lib/conexp-clj-0.0.7-alpha-SNAPSHOT-standalone.jar");
+		conexp_cmd.addArgument("clojure.main");
+		conexp_cmd.addArgument("-e");
+		conexp_cmd.addArgument("");
+		conexp_cmd.addArgument("./conexp-clj/lib/conexp-clj.clj");
+		conexp_cmd.addArgument("--gui");
+
+		System.out.println(conexp_cmd);
+
+		DefaultExecutor executor = new DefaultExecutor();
+		executor.setExitValue(1);
+		ExecuteWatchdog watchdog = new ExecuteWatchdog(60000);
+		executor.setWatchdog(watchdog);
+		try {
+			int exitValue = executor.execute(conexp_cmd);
+		} catch (ExecuteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 }
