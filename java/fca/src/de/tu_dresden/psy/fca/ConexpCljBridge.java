@@ -17,10 +17,8 @@
  */
 package de.tu_dresden.psy.fca;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
@@ -28,7 +26,6 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.launcher.Launcher;
 
@@ -44,7 +41,6 @@ import org.apache.commons.launcher.Launcher;
 
 public class ConexpCljBridge {
 
-	private Executor executor;
 
 	private DefaultExecuteResultHandler result;
 
@@ -54,6 +50,42 @@ public class ConexpCljBridge {
 	private InputStream stream_to_conexp;
 	private PipedOutputStream stream_error_conexp;
 	private PipedOutputStream stream_from_conexp;
+
+	/**
+	 * send a command and newline to conexp-clj
+	 * 
+	 * @param input
+	 *            command
+	 */
+
+	public void sendCommands(String input) {
+		try {
+			this.to_conexp.write((input + "\n").getBytes());
+			this.to_conexp.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * close conexp input and wait for the process to finish
+	 */
+
+	public void waitForResults() {
+		try {
+			this.to_conexp.close();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+		try {
+			this.result.waitFor();
+		} catch (InterruptedException e) {
+
+			e.printStackTrace();
+		}
+	}
 
 	public ConexpCljBridge() {
 
@@ -111,7 +143,7 @@ public class ConexpCljBridge {
 				this.stream_from_conexp, this.stream_error_conexp,
 				this.stream_to_conexp));
 
-		this.executor = executor;
+
 
 		/**
 		 * run in non-blocking mode
@@ -131,27 +163,6 @@ public class ConexpCljBridge {
 		} catch (IOException e1) {
 
 			e1.printStackTrace();
-		}
-
-		try {
-			this.result.waitFor();
-		} catch (InterruptedException e) {
-
-			e.printStackTrace();
-		}
-
-		try {
-			System.out
-			.println("result: "
-					+ new BufferedReader(new InputStreamReader(
-							this.from_conexp)).readLine());
-			System.out
-					.println("result: "
-							+ new BufferedReader(new InputStreamReader(
-									this.from_conexp)).readLine());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 	}

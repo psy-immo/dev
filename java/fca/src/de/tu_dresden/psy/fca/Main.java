@@ -34,9 +34,13 @@ import de.tu_dresden.psy.fca.BitSetContext.FileFormat;
 
 public class Main {
 	public static void main(String[] args) throws Exception,
-			FileNotFoundException, IOException {
+	FileNotFoundException, IOException {
 
-		new ConexpCljBridge();
+		ConexpCljBridge mygui = new ConexpCljBridge();
+		mygui.sendCommands("(use 'conexp.main)");
+		mygui.sendCommands("(use 'conexp.contrib.gui)");
+		mygui.sendCommands("(@(ns-resolve 'conexp.contrib.gui 'gui) :default-close-operation javax.swing.JFrame/EXIT_ON_CLOSE)");
+		mygui.waitForResults();
 
 		BitSetContext ctx = new BitSetContext(FileFormat.Burmeister,
 				"/tmp/myRandom.bur");
