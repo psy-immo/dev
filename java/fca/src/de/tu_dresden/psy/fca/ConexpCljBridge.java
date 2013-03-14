@@ -41,7 +41,6 @@ import org.apache.commons.launcher.Launcher;
 
 public class ConexpCljBridge {
 
-
 	private DefaultExecuteResultHandler result;
 
 	private PipedOutputStream to_conexp;
@@ -50,6 +49,9 @@ public class ConexpCljBridge {
 	private InputStream stream_to_conexp;
 	private PipedOutputStream stream_error_conexp;
 	private PipedOutputStream stream_from_conexp;
+
+	private String output_buffer;
+	private byte[] b;
 
 	/**
 	 * send a command and newline to conexp-clj
@@ -66,6 +68,65 @@ public class ConexpCljBridge {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * 
+	 * @return a line of conexp output, or null if none is available
+	 */
+
+	public String readOutput() {
+		while (this.output_buffer.indexOf("\n") < 0) {
+			try {
+				if (this.from_conexp.available() == 0) {
+					return null;
+				}
+
+				this.from_conexp.read(this.b);
+
+				this.output_buffer += new String(this.b);
+
+			} catch (IOException e) {
+				return null;
+			}
+		}
+		String line = this.output_buffer.substring(0,
+				this.output_buffer.indexOf("\n"));
+		this.output_buffer = this.output_buffer.substring(this.output_buffer
+				.indexOf("\n") + 1);
+
+		return line;
+	}
+
+	/**
+	 * 
+	 * @return a line of conexp output, or null if none is available
+	 */
+
+	public String waitOutput() {
+		while (this.output_buffer.indexOf("\n") < 0) {
+			try {
+
+				while (this.from_conexp.available() == 0) {
+					System.out.println(this.output_buffer);
+					Thread.sleep(10);
+
+				}
+
+				this.from_conexp.read(this.b);
+
+				this.output_buffer += new String(this.b);
+
+			} catch (IOException | InterruptedException e) {
+				return null;
+			}
+		}
+		String line = this.output_buffer.substring(0,
+				this.output_buffer.indexOf("\n"));
+		this.output_buffer = this.output_buffer.substring(this.output_buffer
+				.indexOf("\n") + 1);
+
+		return line;
 	}
 
 	/**
@@ -89,6 +150,8 @@ public class ConexpCljBridge {
 
 	public ConexpCljBridge() {
 
+		this.b = new byte[1];
+
 		/**
 		 * build the command line (see conexp-clj/bin/conexp-clj)
 		 */
@@ -99,7 +162,7 @@ public class ConexpCljBridge {
 		conexp_cmd.addArgument("-server");
 		conexp_cmd.addArgument("-cp");
 		conexp_cmd
-		.addArgument("./conexp-clj/lib/conexp-clj-0.0.7-alpha-SNAPSHOT-standalone.jar");
+				.addArgument("./conexp-clj/lib/conexp-clj-0.0.7-alpha-SNAPSHOT-standalone.jar");
 		conexp_cmd.addArgument("clojure.main");
 		conexp_cmd.addArgument("-e");
 		conexp_cmd.addArgument("");
@@ -111,7 +174,7 @@ public class ConexpCljBridge {
 
 		this.to_conexp = new PipedOutputStream();
 		try {
-			this.stream_to_conexp = new PipedInputStream(this.to_conexp);
+			this.stream_to_conexp = new PipedInputStream(this.to_conexp, 2048);
 		} catch (IOException e2) {
 			e2.printStackTrace();
 		}
@@ -120,12 +183,14 @@ public class ConexpCljBridge {
 		this.stream_from_conexp = new PipedOutputStream();
 
 		try {
-			this.from_conexp = new PipedInputStream(this.stream_from_conexp);
+			this.from_conexp = new PipedInputStream(this.stream_from_conexp,
+					2048);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		try {
-			this.error_conexp = new PipedInputStream(this.stream_error_conexp);
+			this.error_conexp = new PipedInputStream(this.stream_error_conexp,
+					2048);
 		} catch (IOException e1) {
 
 			e1.printStackTrace();
@@ -143,8 +208,6 @@ public class ConexpCljBridge {
 				this.stream_from_conexp, this.stream_error_conexp,
 				this.stream_to_conexp));
 
-
-
 		/**
 		 * run in non-blocking mode
 		 */
@@ -157,13 +220,7 @@ public class ConexpCljBridge {
 			e.printStackTrace();
 		}
 
-		try {
-			this.to_conexp.write("(+ 2 3)\n(+ 8 10)".getBytes());
-			this.to_conexp.close();
-		} catch (IOException e1) {
-
-			e1.printStackTrace();
-		}
+		this.output_buffer = "";
 
 	}
 }
