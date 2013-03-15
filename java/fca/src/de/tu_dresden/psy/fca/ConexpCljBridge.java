@@ -162,7 +162,7 @@ public class ConexpCljBridge {
 		conexp_cmd.addArgument("-server");
 		conexp_cmd.addArgument("-cp");
 		conexp_cmd
-				.addArgument("./conexp-clj/lib/conexp-clj-0.0.7-alpha-SNAPSHOT-standalone.jar");
+		.addArgument("./conexp-clj/lib/conexp-clj-0.0.7-alpha-SNAPSHOT-standalone.jar");
 		conexp_cmd.addArgument("clojure.main");
 		conexp_cmd.addArgument("-e");
 		conexp_cmd.addArgument("");
