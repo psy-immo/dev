@@ -55,7 +55,7 @@ public class BitSetMatrix implements Comparable<BitSetMatrix> {
 	 * 
 	 * @param o BitSetMatrix that is copied
 	 */
-	
+
 	private BitSetMatrix(BitSetMatrix o) {
 		this.rows = o.rows;
 		this.columns = o.columns;
@@ -136,13 +136,13 @@ public class BitSetMatrix implements Comparable<BitSetMatrix> {
 	}
 
 	/**
-	 * moves the contents of rowA to rowB and vice versa
+	 * moves the contents of row A to row B and vice versa
 	 * 
 	 * @param rowA
 	 * @param rowB
 	 */
 
-	public void switchRows(int rowA, int rowB) {
+	public void swapRows(int rowA, int rowB) {
 		BitSet A = this.m.get(rowA * this.columns, (rowA * this.columns)
 				+ this.columns);
 		BitSet BxorA = this.m.get(rowB * this.columns, (rowB * this.columns)
@@ -162,6 +162,24 @@ public class BitSetMatrix implements Comparable<BitSetMatrix> {
 			i = j;
 		}
 	}
+
+	/**
+	 * moves the contents of column A to column B and vice versa
+	 * 
+	 * @param colA
+	 * @param colB
+	 */
+
+	public void swapColumns(int colA, int colB) {
+		for (int r = 0; r < this.rows; ++r) {
+			if (this.m.get(colA + (r * this.columns)) != this.m.get(colB
+					+ (r * this.columns))) {
+				this.m.flip(colA + (r * this.columns));
+				this.m.flip(colB + (r * this.columns));
+			}
+		}
+	}
+
 
 	@Override
 	public int compareTo(BitSetMatrix o) {

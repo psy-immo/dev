@@ -34,15 +34,16 @@ public class Main {
 	public static void main(String[] args) throws Exception,
 	FileNotFoundException, IOException {
 
-		BitSetMatrix m = new BitSetMatrix(8, 15);
+		BitSetMatrix m = new BitSetMatrix(100, 100);
 		m.RandomizeMatrix(0.4);
 
 		BitSetMatrix old = m.Copy();
 
-		System.out.println(old);
+
 		System.out.println("---");
-		m.switchRows(4, 6);
-		System.out.println(m);
+		m.swapColumns(0, 1);
+		m.swapRows(0, 1);
+
 		System.out.println(m.compareTo(old));
 
 
