@@ -19,6 +19,7 @@
 package de.tu_dresden.psy.fca.util;
 
 import java.util.BitSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -74,6 +75,31 @@ public class Permutation {
 
 			this.sigma.put(n, sigma_n);
 			this.inverse.put(sigma_n, n);
+		}
+	}
+
+	/**
+	 * creates a new permutation such that the image of index i is represented
+	 * by the (i-1)th iterator value
+	 * 
+	 * @param images
+	 */
+
+	public Permutation(Iterator<Integer> images) {
+		this.sigma = new TreeMap<Integer, Integer>();
+		this.inverse = new TreeMap<Integer, Integer>();
+
+		int x = 0;
+		while (images.hasNext()) {
+			int sigma_x = images.next();
+			if (this.inverse.containsKey(sigma_x)) {
+				throw new RuntimeException(
+						"Permutation-image list contains double image: "
+								+ sigma_x);
+			}
+			this.sigma.put(x, sigma_x);
+			this.inverse.put(sigma_x, x);
+			++x;
 		}
 	}
 

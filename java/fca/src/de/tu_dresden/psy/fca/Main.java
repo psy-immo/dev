@@ -60,8 +60,10 @@ public class Main {
 		System.out.println(m.compareTo(old));
 
 
-		BitSetContext ctx = new BitSetContext(7, 7);
+		BitSetContext ctx = new BitSetContext(8, 8);
+
 		ctx.RandomizeContext(0.5);
+
 
 		System.out.println(ctx);
 
@@ -73,9 +75,11 @@ public class Main {
 				l.Elements());
 
 
-		System.out.println(neighs.AdjacencyMatrix());
+		System.out.println(neighs.Normalize().AdjacencyMatrix());
 		System.out.println("XXX");
-		System.out.println(neighs.Shake().AdjacencyMatrix());
+
+
+		System.out.println(neighs.Shake().Normalize().AdjacencyMatrix());
 
 	}
 }
