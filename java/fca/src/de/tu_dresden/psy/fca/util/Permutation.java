@@ -21,7 +21,9 @@ package de.tu_dresden.psy.fca.util;
 import java.util.BitSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * 
@@ -143,6 +145,54 @@ public class Permutation {
 		this.sigma.put(y, sigma_x);
 		this.inverse.put(sigma_x, y);
 		this.inverse.put(sigma_y, x);
+	}
+
+	/**
+	 * 
+	 * returns a new permutation that is this object right side multiplied with
+	 * right
+	 * 
+	 * @param right
+	 */
+
+	public Permutation andThen(Permutation right) {
+		Permutation product = new Permutation();
+		Set<Integer> keys = new TreeSet<Integer>(this.sigma.keySet());
+
+		keys.addAll(right.sigma.keySet());
+
+		for (Integer i : keys) {
+			int sigma_i = right.Forward(this.Forward(i));
+			if (i != sigma_i) {
+				product.sigma.put(i, sigma_i);
+				product.inverse.put(i, sigma_i);
+			}
+		}
+		return product;
+	}
+
+	/**
+	 * 
+	 * returns a new permutation that is this object left side multiplied with
+	 * left
+	 * 
+	 * @param left
+	 */
+
+	public Permutation after(Permutation left) {
+		Permutation product = new Permutation();
+		Set<Integer> keys = new TreeSet<Integer>(this.sigma.keySet());
+
+		keys.addAll(left.sigma.keySet());
+
+		for (Integer i : keys) {
+			int sigma_i = this.Forward(left.Forward(i));
+			if (i != sigma_i) {
+				product.sigma.put(i, sigma_i);
+				product.inverse.put(i, sigma_i);
+			}
+		}
+		return product;
 	}
 
 	@Override

@@ -38,8 +38,14 @@ public class Main {
 		Permutation p = new Permutation();
 		p.rightSwap(2, 4);
 		p.leftSwap(4, 6);
-		System.out.println(p);
+		System.out.println(p + "\n");
 
+		Permutation q = new Permutation();
+		q.rightSwap(1, 3);
+		q.rightSwap(5, 7);
+		System.out.println(q + "\n");
+
+		System.out.println(p.after(q));
 
 		BitSetMatrix m = new BitSetMatrix(100, 100);
 		m.RandomizeMatrix(0.4);
