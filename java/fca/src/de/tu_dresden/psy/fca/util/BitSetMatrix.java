@@ -19,6 +19,7 @@
 package de.tu_dresden.psy.fca.util;
 
 import java.util.BitSet;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -48,6 +49,34 @@ public class BitSetMatrix implements Comparable<BitSetMatrix> {
 
 	public BitSetMatrix(int rows, int columns) {
 		this.initialize(rows, columns);
+	}
+
+	/**
+	 * creates a filled BitSet Matrix
+	 * 
+	 * @param rows
+	 * @param columns
+	 * @param row_vectors
+	 *            iterator over the row vectors
+	 * @param column_offset
+	 *            offset to start with in the row vectors
+	 */
+
+	public BitSetMatrix(int rows, int columns, Iterator<BitSet> row_vectors,
+			int column_offset) {
+		this.initialize(rows, columns);
+		for (int row = 0; row < rows; ++row) {
+			BitSet v = row_vectors.next();
+
+			for (int c = v.nextSetBit(0); (c >= 0)
+					&& (c < (columns + column_offset)); c = v.nextSetBit(c + 1)) {
+				if (c < column_offset) {
+					continue;
+				}
+				int column = c - column_offset;
+				this.m.set(column + (row * this.columns));
+			}
+		}
 	}
 
 	/**

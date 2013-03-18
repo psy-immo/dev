@@ -20,10 +20,14 @@ package de.tu_dresden.psy.fca;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import de.tu_dresden.psy.fca.util.BitSetMatrix;
+import de.tu_dresden.psy.fca.util.Permutation;
 
 /**
  * 
@@ -45,6 +49,15 @@ public class BitSetAscendingHasseNeighbors {
 	 * no lower neighbors, i.e. that are minimal wrt. the poset
 	 */
 	private ArrayList<BitSet> upperNeighbors;
+
+	private BitSetAscendingHasseNeighbors(
+			Map<Integer, OrderElement> numberToElement,
+			Map<OrderElement, Integer> elementToNumber,
+			ArrayList<BitSet> upperNeighbors) {
+		this.numberToElement = numberToElement;
+		this.elementToNumber = elementToNumber;
+		this.upperNeighbors = upperNeighbors;
+	}
 
 	public BitSetAscendingHasseNeighbors(Set<OrderElement> poset) {
 		this.numberToElement = new TreeMap<Integer, OrderElement>();
@@ -247,4 +260,72 @@ public class BitSetAscendingHasseNeighbors {
 		}
 		return s;
 	}
+
+	/**
+	 * change the order element numbers by random permutation
+	 * 
+	 * @return a copy of this object, but with different element numbering
+	 */
+
+	public BitSetAscendingHasseNeighbors Shake() {
+		int n_elements = this.elementToNumber.size();
+		Permutation p = new Permutation(n_elements-1);
+		Map<Integer, OrderElement> numberToElement;
+		Map<OrderElement, Integer> elementToNumber;
+
+		ArrayList<BitSet> upperNeighbors;
+		numberToElement = new TreeMap<Integer, OrderElement>();
+		elementToNumber = new TreeMap<OrderElement, Integer>();
+
+		numberToElement.put(0, bottom);
+		elementToNumber.put(bottom, 0);
+
+		for(Integer n: this.numberToElement.keySet()) {
+			if (n == 0) {
+				continue;
+			}
+
+			OrderElement e = this.numberToElement.get(n);
+			int new_n = p.Forward(n-1)+1;
+
+			numberToElement.put(new_n, e);
+			elementToNumber.put(e, new_n);
+		}
+
+		upperNeighbors = new ArrayList<BitSet>();
+		for (int i=0;i<n_elements;++i) {
+			int old_i = i;
+			if (i!=0) {
+				old_i = p.Backward(i - 1) + 1;
+			}
+			BitSet old_u = this.upperNeighbors.get(old_i);
+			BitSet u = new BitSet(n_elements);
+			for (int j = 0; j < n_elements; ++j) {
+				int old_j = j;
+				if (j != 0) {
+					old_j = p.Backward(j - 1) + 1;
+				}
+				if (old_u.get(old_j)) {
+					u.set(j);
+				}
+			}
+			upperNeighbors.add(u);
+		}
+
+		return new BitSetAscendingHasseNeighbors(numberToElement,
+				elementToNumber, upperNeighbors);
+	}
+
+	/**
+	 * 
+	 * @return the adjacency matrix of this object without the bottom element
+	 */
+
+	public BitSetMatrix AdjacencyMatrix() {
+		Iterator<BitSet> i = this.upperNeighbors.iterator();
+		i.next();
+		int n_elements = this.elementToNumber.size();
+		return new BitSetMatrix(n_elements - 1, n_elements - 1, i, 1);
+	}
+
 }
