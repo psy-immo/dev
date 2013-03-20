@@ -209,7 +209,6 @@ public class BitSetMatrix implements Comparable<BitSetMatrix> {
 		}
 	}
 
-
 	@Override
 	public int compareTo(BitSetMatrix o) {
 
@@ -271,5 +270,27 @@ public class BitSetMatrix implements Comparable<BitSetMatrix> {
 		}
 
 		return s.toString();
+	}
+
+	/**
+	 * 
+	 * @param i
+	 * @return the vector consisting of m(0..i-1,i)+m(i,i)+m(i,i+1..columns)
+	 */
+
+	public ComparableBitSet LVector(int i) {
+		ComparableBitSet vector = new ComparableBitSet();
+		for (int j = 0; j < this.columns; ++j) {
+			if (j <= i) {
+				if (this.get(j, i)) {
+					vector.set(j);
+				}
+			} else {
+				if (this.get(i, j)) {
+					vector.set(j);
+				}
+			}
+		}
+		return vector;
 	}
 }

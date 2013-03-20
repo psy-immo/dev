@@ -28,6 +28,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import de.tu_dresden.psy.fca.util.BitSetMatrix;
+import de.tu_dresden.psy.fca.util.ComparableBitSet;
 import de.tu_dresden.psy.fca.util.Permutation;
 
 /**
@@ -374,7 +375,7 @@ public class BitSetAscendingHasseNeighbors {
 
 	public BitSetAscendingHasseNeighbors Shake() {
 		int n_elements = this.elementToNumber.size();
-		Permutation p = new Permutation(n_elements-1);
+		Permutation p = new Permutation(n_elements - 1);
 		Map<Integer, OrderElement> numberToElement;
 		Map<OrderElement, Integer> elementToNumber;
 
@@ -385,22 +386,22 @@ public class BitSetAscendingHasseNeighbors {
 		numberToElement.put(0, bottom);
 		elementToNumber.put(bottom, 0);
 
-		for(Integer n: this.numberToElement.keySet()) {
+		for (Integer n : this.numberToElement.keySet()) {
 			if (n == 0) {
 				continue;
 			}
 
 			OrderElement e = this.numberToElement.get(n);
-			int new_n = p.Forward(n-1)+1;
+			int new_n = p.Forward(n - 1) + 1;
 
 			numberToElement.put(new_n, e);
 			elementToNumber.put(e, new_n);
 		}
 
 		upperNeighbors = new ArrayList<BitSet>();
-		for (int i=0;i<n_elements;++i) {
+		for (int i = 0; i < n_elements; ++i) {
 			int old_i = i;
-			if (i!=0) {
+			if (i != 0) {
 				old_i = p.Backward(i - 1) + 1;
 			}
 			BitSet old_u = this.upperNeighbors.get(old_i);
@@ -495,10 +496,10 @@ public class BitSetAscendingHasseNeighbors {
 
 	/**
 	 * 
-	 * @return a normalized version of this object with regard to the poset's
-	 *         isomorphism class
+	 * @return a pre-normalized version of this object with regard to the
+	 *         poset's isomorphism class
 	 */
-	public BitSetAscendingHasseNeighbors Normalize() {
+	public BitSetAscendingHasseNeighbors PreNormalize() {
 		int n_elements = this.elementToNumber.size();
 
 		ArrayList<Integer> new_order = new ArrayList<Integer>(n_elements);
@@ -534,4 +535,73 @@ public class BitSetAscendingHasseNeighbors {
 		return this.Reorder(reorder);
 	};
 
+	/**
+	 * 
+	 * @return a normalized version of this object
+	 */
+
+	public BitSetAscendingHasseNeighbors Normalize() {
+		BitSetAscendingHasseNeighbors form = this.PreNormalize();
+		int N = form.numberToElement.size();
+		BitSetMatrix adjacency = form.AdjacencyMatrix();
+		ArrayList<Integer> new_order = new ArrayList<Integer>(N);
+		for (int i = 0; i < N; ++i) {
+			new_order.add(i);
+		}
+
+		Permutation to_minimum = new Permutation();
+
+		int group_start = 0;
+		int min_rank = 0;
+		int max_rank = 0;
+
+		TreeMap<ComparableBitSet, Set<Integer>> order_level = new TreeMap<>();
+
+		for (int i = 1; i < (N + 1); ++i) {
+			if ((i == N) || (form.numberToMinRank.get(i) != min_rank)
+					|| (form.numberToMaxRank.get(i) != max_rank)) {
+				int size = i - group_start;
+
+				if (size > 1) {
+
+					/**
+					 * minimize the order
+					 */
+					int x = group_start;
+
+					for (ComparableBitSet c : order_level.keySet()) {
+						System.out.println(i + " " + c + " "
+								+ order_level.get(c));
+						for (Integer j : order_level.get(c)) {
+							new_order.set(x, j);
+							++x;
+						}
+
+					}
+				}
+				if (i == N) {
+					break;
+				}
+
+				group_start = i;
+				min_rank = form.numberToMinRank.get(i);
+				max_rank = form.numberToMaxRank.get(i);
+
+				order_level.clear();
+			}
+
+			ComparableBitSet L = adjacency.LVector(i);
+			System.out.println(i + " " + L);
+			if (order_level.containsKey(L)== false) {
+				order_level.put(L, new TreeSet<Integer>());
+			}
+			order_level.get(L).add(i);
+
+
+		}
+
+		System.out.println(new_order);
+
+		return form.Reorder(to_minimum);
+	}
 }
