@@ -18,6 +18,7 @@
 
 package de.tu_dresden.psy.fca.util;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -100,6 +101,24 @@ public class Permutation {
 			this.sigma.put(x, sigma_x);
 			this.inverse.put(sigma_x, x);
 			++x;
+		}
+	}
+
+	/**
+	 * create a permutation that reorders according to a reorder image
+	 * 
+	 * @param new_order
+	 * @param start
+	 * @param exclusiveEnd
+	 */
+
+	public Permutation(ArrayList<Integer> new_order, int start, int exclusiveEnd) {
+		this.sigma = new TreeMap<Integer, Integer>();
+		this.inverse = new TreeMap<Integer, Integer>();
+
+		for (int i = start; i < exclusiveEnd; ++i) {
+			this.sigma.put(i, new_order.get(i));
+			this.inverse.put(new_order.get(i), i);
 		}
 	}
 

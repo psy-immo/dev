@@ -325,4 +325,24 @@ public class BitSetMatrix implements Comparable<BitSetMatrix> {
 		}
 		return vector;
 	}
+
+	/**
+	 * swaps rows and columns according to the given permutation
+	 * 
+	 * @param p
+	 */
+
+	public void multiSwap(Permutation p) {
+		BitSet new_m = new BitSet(this.rows * this.columns);
+
+		for (int r = 0; r < this.rows; ++r) {
+			for (int c = 0; c < this.columns; ++c) {
+				if (this.m.get(c + (r * this.columns))) {
+					new_m.set(p.Forward(c) + (p.Forward(r) * this.columns));
+				}
+			}
+		}
+
+		this.m = new_m;
+	}
 }

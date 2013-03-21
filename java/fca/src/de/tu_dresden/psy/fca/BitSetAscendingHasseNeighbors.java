@@ -545,22 +545,28 @@ public class BitSetAscendingHasseNeighbors {
 	};
 
 	/**
+	 * this function will identify some objects that are isomorphic, but not
+	 * all, and return a representation that has the minimal found adjacency
+	 * matrix. Since this is not unique per isomorphism class, we call is pseudo
+	 * normalized form
 	 * 
 	 * @return a psedo normalized version of this object
 	 */
 
 	public BitSetAscendingHasseNeighbors PseudoNormalize() {
+
 		BitSetAscendingHasseNeighbors form = this.PreNormalize();
 		int N = form.numberToElement.size();
 		Map<BitSetMatrix, BitSetAscendingHasseNeighbors> unique_forms = new TreeMap<BitSetMatrix, BitSetAscendingHasseNeighbors>();
 
-		for (int iteration = 0; iteration < 10000; ++iteration) {
+		for (int iteration = 0; iteration < 1000; ++iteration) {
 
 
 			BitSetMatrix adjacency = form.AdjacencyMatrix();
 
 			if (unique_forms.containsKey(adjacency)) {
-				System.out.println("Cycle after " + iteration + " iterations.");
+				// System.out.println("Cycle after " + iteration +
+				// " iterations.");
 				/**
 				 * we have completed a cycle (and thus found one)
 				 */
@@ -569,6 +575,8 @@ public class BitSetAscendingHasseNeighbors {
 			} else {
 				unique_forms.put(adjacency, form);
 			}
+
+			adjacency = form.AdjacencyMatrix();
 
 			ArrayList<Integer> new_order = new ArrayList<Integer>(N);
 			for (int i = 0; i < N; ++i) {
@@ -599,8 +607,15 @@ public class BitSetAscendingHasseNeighbors {
 								new_order.set(x, j);
 								++x;
 							}
-
 						}
+						/**
+						 * rearrange the adjacency matrix
+						 */
+						Permutation level_swap = new Permutation(new_order,
+								group_start, group_start + size);
+						// System.out.println(level_swap);
+
+						adjacency.multiSwap(level_swap);
 					}
 					if (i == N) {
 						break;
@@ -627,8 +642,10 @@ public class BitSetAscendingHasseNeighbors {
 			form = form.Reorder(to_minimum);
 		}
 
-		System.out.println("No cycle!");
+		// System.out.println("No cycle!");
 
 		return form;
 	}
+
+
 }

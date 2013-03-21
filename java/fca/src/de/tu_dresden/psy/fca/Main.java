@@ -20,7 +20,9 @@ package de.tu_dresden.psy.fca;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import de.tu_dresden.psy.fca.util.BitSetMatrix;
 import de.tu_dresden.psy.fca.util.ComparableBitSet;
@@ -81,9 +83,9 @@ public class Main {
 		System.out.println(m.compareTo(old));
 
 
-		BitSetContext ctx = new BitSetContext(5, 5);
+		BitSetContext ctx = new BitSetContext(8, 8);
 
-		ctx.RandomizeContext(0.5);
+		ctx.RandomizeContext(0.3);
 
 
 		System.out.println(ctx);
@@ -97,14 +99,20 @@ public class Main {
 
 		// System.out.println(neighs.Normalize().AdjacencyMatrix());
 		System.out.println("Elements = " + neighs.size());
-		BitSetAscendingHasseNeighbors a = neighs.PseudoNormalize();
-		System.out.println("XXX");
 
-		BitSetAscendingHasseNeighbors b = neighs.Shake().PseudoNormalize();
-		// System.out.println(neighs.Shake().Normalize().AdjacencyMatrix());
+		Set<BitSetMatrix> matrices = new TreeSet<BitSetMatrix>();
 
-		System.out.println("Compare NF? "
-				+ a.AdjacencyMatrix().compareTo(b.AdjacencyMatrix()));
+		int count;
+
+		for (count = 0; count < 10000; ++count) {
+			matrices.add(neighs.Shake().PseudoNormalize().AdjacencyMatrix());
+			if (((count + 1) % 1000) == 0) {
+				System.out.println(matrices.size() + "/" + (count + 1) + "="
+						+ ((float) matrices.size() / (count + 1)));
+			}
+		}
+		System.out.println(matrices.size() + "/" + (count) + "="
+				+ ((float) matrices.size() / (count)));
 
 	}
 }
