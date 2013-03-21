@@ -213,6 +213,14 @@ public class BitSetMatrix implements Comparable<BitSetMatrix> {
 	public int compareTo(BitSetMatrix o) {
 
 		/**
+		 * xor with this.compareTo(this) will delete the information!
+		 */
+
+		if (this == o) {
+			return 0;
+		}
+
+		/**
 		 * smaller dimension vector -> smaller matrix
 		 */
 		if (this.rows < o.rows) {
@@ -248,6 +256,30 @@ public class BitSetMatrix implements Comparable<BitSetMatrix> {
 		}
 		return 0;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + this.columns;
+		result = (prime * result) + ((this.m == null) ? 0 : this.m.hashCode());
+		result = (prime * result) + this.rows;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (obj instanceof BitSetMatrix) {
+			BitSetMatrix other = (BitSetMatrix) obj;
+			return this.compareTo(other)==0;
+		}
+		return false;
+	}
+
 
 	@Override
 	public String toString() {

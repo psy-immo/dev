@@ -19,8 +19,11 @@ package de.tu_dresden.psy.fca;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
+import java.util.TreeMap;
 
 import de.tu_dresden.psy.fca.util.BitSetMatrix;
+import de.tu_dresden.psy.fca.util.ComparableBitSet;
 import de.tu_dresden.psy.fca.util.Permutation;
 
 /**
@@ -34,6 +37,24 @@ import de.tu_dresden.psy.fca.util.Permutation;
 public class Main {
 	public static void main(String[] args) throws Exception,
 	FileNotFoundException, IOException {
+
+		ComparableBitSet b1 = new ComparableBitSet();
+		ComparableBitSet b2 = new ComparableBitSet();
+		Map<ComparableBitSet, Integer> x = new TreeMap<ComparableBitSet, Integer>();
+
+
+		b1.set(10);
+		b2.set(10);
+		b2.set(12);
+
+		System.out.println(b1);
+		x.put(b1, 1);
+
+		System.out.println(x);
+
+		System.out.println(b2);
+		System.out.println(b1.compareTo(b2));
+		System.out.println(b1.clone());
 
 		Permutation p = new Permutation();
 		p.rightSwap(2, 4);
@@ -60,7 +81,7 @@ public class Main {
 		System.out.println(m.compareTo(old));
 
 
-		BitSetContext ctx = new BitSetContext(8, 8);
+		BitSetContext ctx = new BitSetContext(5, 5);
 
 		ctx.RandomizeContext(0.5);
 
@@ -69,17 +90,21 @@ public class Main {
 
 		Lattice l = ctx.conceptLattice();
 
-		System.out.println(l.Elements().size());
 
 		BitSetAscendingHasseNeighbors neighs = new BitSetAscendingHasseNeighbors(
 				l.Elements());
 
 
-		System.out.println(neighs.Normalize().AdjacencyMatrix());
+		// System.out.println(neighs.Normalize().AdjacencyMatrix());
+		System.out.println("Elements = " + neighs.size());
+		BitSetAscendingHasseNeighbors a = neighs.PseudoNormalize();
 		System.out.println("XXX");
 
+		BitSetAscendingHasseNeighbors b = neighs.Shake().PseudoNormalize();
+		// System.out.println(neighs.Shake().Normalize().AdjacencyMatrix());
 
-		System.out.println(neighs.Shake().Normalize().AdjacencyMatrix());
+		System.out.println("Compare NF? "
+				+ a.AdjacencyMatrix().compareTo(b.AdjacencyMatrix()));
 
 	}
 }

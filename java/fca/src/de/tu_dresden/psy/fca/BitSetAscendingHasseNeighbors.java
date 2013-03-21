@@ -55,6 +55,15 @@ public class BitSetAscendingHasseNeighbors {
 	private ArrayList<BitSet> upperNeighbors;
 
 	/**
+	 * 
+	 * @return size of the poset that is the basis of this structure
+	 */
+
+	public int size() {
+		return this.numberToElement.size() - 1;
+	}
+
+	/**
 	 * calculates the numberToMinRank and numberToMaxRank sets
 	 */
 
@@ -537,71 +546,89 @@ public class BitSetAscendingHasseNeighbors {
 
 	/**
 	 * 
-	 * @return a normalized version of this object
+	 * @return a psedo normalized version of this object
 	 */
 
-	public BitSetAscendingHasseNeighbors Normalize() {
+	public BitSetAscendingHasseNeighbors PseudoNormalize() {
 		BitSetAscendingHasseNeighbors form = this.PreNormalize();
 		int N = form.numberToElement.size();
-		BitSetMatrix adjacency = form.AdjacencyMatrix();
-		ArrayList<Integer> new_order = new ArrayList<Integer>(N);
-		for (int i = 0; i < N; ++i) {
-			new_order.add(i);
-		}
+		Map<BitSetMatrix, BitSetAscendingHasseNeighbors> unique_forms = new TreeMap<BitSetMatrix, BitSetAscendingHasseNeighbors>();
 
-		Permutation to_minimum = new Permutation();
+		for (int iteration = 0; iteration < 10000; ++iteration) {
 
-		int group_start = 0;
-		int min_rank = 0;
-		int max_rank = 0;
 
-		TreeMap<ComparableBitSet, Set<Integer>> order_level = new TreeMap<>();
+			BitSetMatrix adjacency = form.AdjacencyMatrix();
 
-		for (int i = 1; i < (N + 1); ++i) {
-			if ((i == N) || (form.numberToMinRank.get(i) != min_rank)
-					|| (form.numberToMaxRank.get(i) != max_rank)) {
-				int size = i - group_start;
+			if (unique_forms.containsKey(adjacency)) {
+				System.out.println("Cycle after " + iteration + " iterations.");
+				/**
+				 * we have completed a cycle (and thus found one)
+				 */
+				return unique_forms
+						.get(unique_forms.keySet().iterator().next());
+			} else {
+				unique_forms.put(adjacency, form);
+			}
 
-				if (size > 1) {
+			ArrayList<Integer> new_order = new ArrayList<Integer>(N);
+			for (int i = 0; i < N; ++i) {
+				new_order.add(i);
+			}
 
-					/**
-					 * minimize the order
-					 */
-					int x = group_start;
+			int group_start = 0;
+			int min_rank = 0;
+			int max_rank = 0;
 
-					for (ComparableBitSet c : order_level.keySet()) {
-						System.out.println(i + " " + c + " "
-								+ order_level.get(c));
-						for (Integer j : order_level.get(c)) {
-							new_order.set(x, j);
-							++x;
+			TreeMap<ComparableBitSet, Set<Integer>> order_level = new TreeMap<>();
+
+			for (int i = 1; i < (N + 1); ++i) {
+				if ((i == N) || (form.numberToMinRank.get(i) != min_rank)
+						|| (form.numberToMaxRank.get(i) != max_rank)) {
+					int size = i - group_start;
+
+					if (size > 1) {
+
+						/**
+						 * minimize the order
+						 */
+						int x = group_start;
+
+						for (ComparableBitSet c : order_level.keySet()) {
+							// System.out.println(i + " " + order_level.get(c));
+							for (Integer j : order_level.get(c)) {
+								new_order.set(x, j);
+								++x;
+							}
+
 						}
-
 					}
-				}
-				if (i == N) {
-					break;
+					if (i == N) {
+						break;
+					}
+
+					group_start = i;
+					min_rank = form.numberToMinRank.get(i);
+					max_rank = form.numberToMaxRank.get(i);
+
+					order_level.clear();
 				}
 
-				group_start = i;
-				min_rank = form.numberToMinRank.get(i);
-				max_rank = form.numberToMaxRank.get(i);
+				ComparableBitSet L = adjacency.LVector(i);
+				// System.out.println(i + " " + L);
+				if (order_level.containsKey(L) == false) {
+					order_level.put(L, new TreeSet<Integer>());
+				}
+				order_level.get(L).add(i);
 
-				order_level.clear();
 			}
 
-			ComparableBitSet L = adjacency.LVector(i);
-			System.out.println(i + " " + L);
-			if (order_level.containsKey(L)== false) {
-				order_level.put(L, new TreeSet<Integer>());
-			}
-			order_level.get(L).add(i);
+			Permutation to_minimum = new Permutation(new_order.iterator());
 
-
+			form = form.Reorder(to_minimum);
 		}
 
-		System.out.println(new_order);
+		System.out.println("No cycle!");
 
-		return form.Reorder(to_minimum);
+		return form;
 	}
 }

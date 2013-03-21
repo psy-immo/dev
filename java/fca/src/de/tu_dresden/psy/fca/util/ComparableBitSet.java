@@ -28,30 +28,46 @@ import java.util.BitSet;
  * 
  */
 
-public class ComparableBitSet extends BitSet implements Comparable<BitSet> {
+public class ComparableBitSet extends BitSet implements
+Comparable<Object> {
 
 	@Override
-	public int compareTo(BitSet o) {
-		this.xor(o);
-		if (this.isEmpty()) {
-			this.xor(o);
+	public int compareTo(Object obj) {
+		/**
+		 * xor with this.compareTo(this) will delete the information!
+		 */
+
+		if (this == obj) {
 			return 0;
 		}
-		int i = this.nextSetBit(0);
-		this.xor(o);
-		if (this.get(i)) {
-			return 1;
+
+		if (obj instanceof BitSet) {
+			BitSet o = (BitSet) obj;
+			// System.out.println("B4: " + this + " vs " + o);
+			this.xor(o);
+			// System.out.println("Diff: " + this);
+			int i = this.nextSetBit(0);
+			this.xor(o);
+			// System.out.println("After: " + this);
+
+			if (i < 0) {
+				// System.out.println(this + "==" + o + "!");
+				return 0;
+			}
+
+			if (this.get(i)) {
+				// System.out.println(this + ">" + o + "!");
+				return 1;
+			}
+			// System.out.println(this + "<" + o + "!");
+			return -1;
 		}
-		return -1;
+		return 1;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof BitSet) {
-			BitSet o = (BitSet) obj;
-			return this.compareTo(o) == 0;
-		}
-
-		return super.equals(obj);
+		return this.compareTo(obj) == 0;
 	}
+
 }
