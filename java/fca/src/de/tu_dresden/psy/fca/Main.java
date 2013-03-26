@@ -17,12 +17,16 @@
  */
 package de.tu_dresden.psy.fca;
 
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
-import de.tu_dresden.psy.fca.BitSetContext.FileFormat;
+import de.tu_dresden.psy.fca.util.BitSetMatrix;
+import de.tu_dresden.psy.fca.util.ComparableBitSet;
+import de.tu_dresden.psy.fca.util.Permutation;
 
 /**
  * 
@@ -34,97 +38,81 @@ import de.tu_dresden.psy.fca.BitSetContext.FileFormat;
 
 public class Main {
 	public static void main(String[] args) throws Exception,
-			FileNotFoundException, IOException {
+	FileNotFoundException, IOException {
 
-		ConexpCljBridge mygui = new ConexpCljBridge();
-		System.out.println("Send");
-		mygui.sendCommands("(+ 2 3)");
-		System.out.println("Wait");
-		System.out.println(mygui.waitOutput());
-		System.out.println("Done");
-		mygui.sendCommands("(use 'conexp.main)");
-		mygui.sendCommands("(use 'conexp.contrib.gui)");
-		mygui.sendCommands("(@(ns-resolve 'conexp.contrib.gui 'gui) :default-close-operation javax.swing.JFrame/EXIT_ON_CLOSE)");
-		mygui.waitForResults();
-		System.out.println(mygui.readOutput());
+		ComparableBitSet b1 = new ComparableBitSet();
+		ComparableBitSet b2 = new ComparableBitSet();
+		Map<ComparableBitSet, Integer> x = new TreeMap<ComparableBitSet, Integer>();
 
-		BitSetContext ctx = new BitSetContext(FileFormat.Burmeister,
-				"/tmp/myRandom.bur");
-		// ctx = new BitSetContext(6, 6);
-		// ctx.RandomizeContext(0.5);
+
+		b1.set(10);
+		b2.set(10);
+		b2.set(12);
+
+		System.out.println(b1);
+		x.put(b1, 1);
+
+		System.out.println(x);
+
+		System.out.println(b2);
+		System.out.println(b1.compareTo(b2));
+		System.out.println(b1.clone());
+
+		Permutation p = new Permutation();
+		p.rightSwap(2, 4);
+		p.leftSwap(4, 6);
+		System.out.println(p + "\n");
+
+		Permutation q = new Permutation();
+		q.rightSwap(1, 3);
+		q.rightSwap(5, 7);
+		System.out.println(q + "\n");
+
+		System.out.println(p.after(q));
+
+		BitSetMatrix m = new BitSetMatrix(100, 100);
+		m.RandomizeMatrix(0.4);
+
+		BitSetMatrix old = m.Copy();
+
+
+		System.out.println("---");
+		m.swapColumns(0, 1);
+		m.swapRows(0, 1);
+
+		System.out.println(m.compareTo(old));
+
+
+		BitSetContext ctx = new BitSetContext(8, 8);
+
+		ctx.RandomizeContext(0.3);
+
 
 		System.out.println(ctx);
 
 		Lattice l = ctx.conceptLattice();
 
+
 		BitSetAscendingHasseNeighbors neighs = new BitSetAscendingHasseNeighbors(
 				l.Elements());
 
-		System.out.println(l.join(l.bottom(), l.top()));
-		System.out.println(l.meet(l.bottom(), l.top()));
-		System.out.println(neighs.asDotCode(true));
 
-		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(
-					"/tmp/lattice.dot"));
-			out.write(neighs.asDotCode(false));
-			out.close();
-		} catch (IOException e) {
-		}
+		// System.out.println(neighs.Normalize().AdjacencyMatrix());
+		System.out.println("Elements = " + neighs.size());
 
-		HasseLayout h = new HasseLayout(l.Elements());
-		System.out.println(h);
+		Set<BitSetMatrix> matrices = new TreeSet<BitSetMatrix>();
 
-		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(
-					"/tmp/context.csv"));
-			out.write(ctx.toCSV());
-			out.close();
-		} catch (IOException e) {
-		}
+		int count;
 
-		int count = 0, count2 = 0;
-
-		long startTime0 = System.currentTimeMillis();
-
-		System.out.println("NextClosure:");
-		for (int q = 0; q < 10; ++q) {
-			count = 0;
-			for (FormalConcept b = ctx.bottomConcept(); b != null; b = ctx
-					.nextClosure(b)) {
-				count++;
+		for (count = 0; count < 10000; ++count) {
+			matrices.add(neighs.Shake().PseudoNormalize().AdjacencyMatrix());
+			if (((count + 1) % 1000) == 0) {
+				System.out.println(matrices.size() + "/" + (count + 1) + "="
+						+ ((float) matrices.size() / (count + 1)));
 			}
 		}
+		System.out.println(matrices.size() + "/" + (count) + "="
+				+ ((float) matrices.size() / (count)));
 
-		long startTime = System.currentTimeMillis();
-
-		System.out.println("NextClosureWorseThanVanilla:");
-		for (int q = 0; q < 10; ++q) {
-			count = 0;
-			for (FormalConcept b = ctx.bottomConcept(); b != null; b = ctx
-					.nextClosureWorseThanVanilla(b)) {
-				count++;
-			}
-		}
-
-		long startTime2 = System.currentTimeMillis();
-
-		System.out.println("NextClosureVanilla:");
-		for (int q = 0; q < 10; ++q) {
-			count2 = 0;
-
-			for (FormalConcept b = ctx.bottomConcept(); b != null; b = ctx
-					.nextClosureVanilla(b)) {
-				count2++;
-			}
-		}
-
-		long stopTime = System.currentTimeMillis();
-
-		System.out.println(count + " concepts vs. " + count2
-				+ " vanilla concepts.");
-
-		System.out.println((startTime - startTime0) + " vs. "
-				+ (startTime2 - startTime) + " vs. " + (stopTime - startTime2));
 	}
 }

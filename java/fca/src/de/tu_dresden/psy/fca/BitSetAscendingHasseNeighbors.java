@@ -20,10 +20,16 @@ package de.tu_dresden.psy.fca;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import de.tu_dresden.psy.fca.util.BitSetMatrix;
+import de.tu_dresden.psy.fca.util.ComparableBitSet;
+import de.tu_dresden.psy.fca.util.Permutation;
 
 /**
  * 
@@ -38,6 +44,8 @@ public class BitSetAscendingHasseNeighbors {
 
 	private Map<Integer, OrderElement> numberToElement;
 	private Map<OrderElement, Integer> elementToNumber;
+	private Map<Integer, Integer> numberToMinRank;
+	private Map<Integer, Integer> numberToMaxRank;
 	static OrderZero bottom = new OrderZero();
 
 	/**
@@ -45,6 +53,59 @@ public class BitSetAscendingHasseNeighbors {
 	 * no lower neighbors, i.e. that are minimal wrt. the poset
 	 */
 	private ArrayList<BitSet> upperNeighbors;
+
+	/**
+	 * 
+	 * @return size of the poset that is the basis of this structure
+	 */
+
+	public int size() {
+		return this.numberToElement.size() - 1;
+	}
+
+	/**
+	 * calculates the numberToMinRank and numberToMaxRank sets
+	 */
+
+	private void calcRanks() {
+		this.numberToMaxRank = new TreeMap<Integer, Integer>();
+		this.numberToMinRank = new TreeMap<Integer, Integer>();
+
+		BitSet next_step = new BitSet();
+		next_step.set(0);
+		int rank = 0;
+
+		while (next_step.isEmpty() == false) {
+			BitSet next_step2 = new BitSet();
+
+			for (int n = next_step.nextSetBit(0); n >= 0; n = next_step
+					.nextSetBit(n + 1)) {
+				if (this.numberToMinRank.containsKey(n) == false) {
+					this.numberToMinRank.put(n, rank);
+				}
+				this.numberToMaxRank.put(n, rank);
+				next_step2.or(this.upperNeighbors.get(n));
+			}
+
+			next_step = next_step2;
+			++rank;
+		}
+	}
+
+	private BitSetAscendingHasseNeighbors(
+			Map<Integer, OrderElement> numberToElement,
+			Map<OrderElement, Integer> elementToNumber,
+			ArrayList<BitSet> upperNeighbors) {
+		this.numberToElement = numberToElement;
+		this.elementToNumber = elementToNumber;
+		this.upperNeighbors = upperNeighbors;
+
+		/**
+		 * calculate ranks
+		 */
+
+		this.calcRanks();
+	}
 
 	public BitSetAscendingHasseNeighbors(Set<OrderElement> poset) {
 		this.numberToElement = new TreeMap<Integer, OrderElement>();
@@ -76,6 +137,12 @@ public class BitSetAscendingHasseNeighbors {
 				}
 			}
 		}
+
+		/**
+		 * calculate ranks
+		 */
+
+		this.calcRanks();
 	}
 
 	/**
@@ -247,4 +314,338 @@ public class BitSetAscendingHasseNeighbors {
 		}
 		return s;
 	}
+
+	/**
+	 * change the order of element numbers by given permutation
+	 * 
+	 * @param p
+	 *            Permutation such that p.Forward(0)=0
+	 * @return a copy of this object, but with different element numbering; or
+	 *         null if p.Forward(0) != 0
+	 */
+
+	public BitSetAscendingHasseNeighbors Reorder(Permutation p) {
+		if (p.Forward(0) != 0) {
+			return null;
+		}
+
+		int n_elements = this.elementToNumber.size();
+		Map<Integer, OrderElement> numberToElement;
+		Map<OrderElement, Integer> elementToNumber;
+
+		ArrayList<BitSet> upperNeighbors;
+		numberToElement = new TreeMap<Integer, OrderElement>();
+		elementToNumber = new TreeMap<OrderElement, Integer>();
+
+		numberToElement.put(0, bottom);
+		elementToNumber.put(bottom, 0);
+
+		for (Integer n : this.numberToElement.keySet()) {
+			if (n == 0) {
+				continue;
+			}
+
+			OrderElement e = this.numberToElement.get(n);
+			int new_n = p.Forward(n);
+
+			numberToElement.put(new_n, e);
+			elementToNumber.put(e, new_n);
+		}
+
+		upperNeighbors = new ArrayList<BitSet>();
+		for (int i = 0; i < n_elements; ++i) {
+			int old_i = i;
+			if (i != 0) {
+				old_i = p.Backward(i);
+			}
+			BitSet old_u = this.upperNeighbors.get(old_i);
+			BitSet u = new BitSet(n_elements);
+			for (int j = 0; j < n_elements; ++j) {
+				int old_j = j;
+				if (j != 0) {
+					old_j = p.Backward(j);
+				}
+				if (old_u.get(old_j)) {
+					u.set(j);
+				}
+			}
+			upperNeighbors.add(u);
+		}
+
+		return new BitSetAscendingHasseNeighbors(numberToElement,
+				elementToNumber, upperNeighbors);
+	}
+
+	/**
+	 * change the order of element numbers by random permutation
+	 * 
+	 * @return a copy of this object, but with different element numbering
+	 */
+
+	public BitSetAscendingHasseNeighbors Shake() {
+		int n_elements = this.elementToNumber.size();
+		Permutation p = new Permutation(n_elements - 1);
+		Map<Integer, OrderElement> numberToElement;
+		Map<OrderElement, Integer> elementToNumber;
+
+		ArrayList<BitSet> upperNeighbors;
+		numberToElement = new TreeMap<Integer, OrderElement>();
+		elementToNumber = new TreeMap<OrderElement, Integer>();
+
+		numberToElement.put(0, bottom);
+		elementToNumber.put(bottom, 0);
+
+		for (Integer n : this.numberToElement.keySet()) {
+			if (n == 0) {
+				continue;
+			}
+
+			OrderElement e = this.numberToElement.get(n);
+			int new_n = p.Forward(n - 1) + 1;
+
+			numberToElement.put(new_n, e);
+			elementToNumber.put(e, new_n);
+		}
+
+		upperNeighbors = new ArrayList<BitSet>();
+		for (int i = 0; i < n_elements; ++i) {
+			int old_i = i;
+			if (i != 0) {
+				old_i = p.Backward(i - 1) + 1;
+			}
+			BitSet old_u = this.upperNeighbors.get(old_i);
+			BitSet u = new BitSet(n_elements);
+			for (int j = 0; j < n_elements; ++j) {
+				int old_j = j;
+				if (j != 0) {
+					old_j = p.Backward(j - 1) + 1;
+				}
+				if (old_u.get(old_j)) {
+					u.set(j);
+				}
+			}
+			upperNeighbors.add(u);
+		}
+
+		return new BitSetAscendingHasseNeighbors(numberToElement,
+				elementToNumber, upperNeighbors);
+	}
+
+	/**
+	 * 
+	 * @return the adjacency matrix of this object without the bottom element
+	 */
+
+	public BitSetMatrix AdjacencyMatrix() {
+		Iterator<BitSet> i = this.upperNeighbors.iterator();
+		i.next();
+		int n_elements = this.elementToNumber.size();
+		return new BitSetMatrix(n_elements - 1, n_elements - 1, i, 1);
+	}
+
+	/**
+	 * 
+	 * @author immo
+	 * 
+	 *         helper class for quick-sorting arrays of permutation images
+	 * 
+	 */
+
+	static private class QSortElementList {
+		private BitSetAscendingHasseNeighbors parent;
+		static Random rnd = new Random();
+
+		public QSortElementList(BitSetAscendingHasseNeighbors parent) {
+			this.parent = parent;
+		}
+
+		private static final void swap(ArrayList<Integer> x, int p, int q) {
+			int s = x.get(p);
+			x.set(p, x.get(q));
+			x.set(q, s);
+			/*
+			 * System.out.println("swap " + p + "<>" + q + "  ("+x.get(q)+"," +
+			 * this.parent.numberToMinRank.get(x.get(q)) + ") vs ("+x.get(p)+","
+			 * + this.parent.numberToMinRank.get(x.get(p)) + ")");
+			 */
+		}
+
+		public void QSortArray(ArrayList<Integer> x, int left, int right) {
+			if (left < right) {
+
+				// System.out.println("[" + left + "," + right + "]");
+
+				int pivotIndex = left + rnd.nextInt((right - left) + 1);
+				int pivot = x.get(pivotIndex);
+				int min_rank = this.parent.numberToMinRank.get(pivot);
+				int max_rank = this.parent.numberToMaxRank.get(pivot);
+
+				swap(x, pivotIndex, right);
+
+				pivotIndex = left;
+
+				for (int i = left; i < right; ++i) {
+					int e = x.get(i);
+					int e_min = this.parent.numberToMinRank.get(e);
+					if ((e_min < min_rank)
+							|| ((e_min == min_rank) && (this.parent.numberToMaxRank
+									.get(e) < max_rank))) {
+						swap(x, pivotIndex, i);
+						pivotIndex++;
+					}
+				}
+
+				swap(x, pivotIndex, right);
+
+				this.QSortArray(x, left, pivotIndex - 1);
+				this.QSortArray(x, pivotIndex + 1, right);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @return a pre-normalized version of this object with regard to the
+	 *         poset's isomorphism class
+	 */
+	public BitSetAscendingHasseNeighbors PreNormalize() {
+		int n_elements = this.elementToNumber.size();
+
+		ArrayList<Integer> new_order = new ArrayList<Integer>(n_elements);
+		for (int i = 0; i < n_elements; ++i) {
+			new_order.add(i);
+		}
+
+		QSortElementList sorter = new QSortElementList(this);
+
+		sorter.QSortArray(new_order, 1, n_elements - 1);
+
+		// System.out.println(new_order);
+		// ArrayList<Integer> ranks = new ArrayList<>();
+		//
+		// for (int i = 0; i < n_elements; ++i) {
+		// ranks.add(this.numberToMinRank.get(new_order.get(i)));
+		// }
+		//
+		// System.out.println(ranks);
+		//
+		// ranks = new ArrayList<>();
+		//
+		// for (int i = 0; i < n_elements; ++i) {
+		// ranks.add(this.numberToMaxRank.get(new_order.get(i)));
+		// }
+
+		// System.out.println(ranks);
+
+		Permutation reorder = new Permutation(new_order.iterator()).Inverse();
+
+		// System.out.println(reorder);
+
+		return this.Reorder(reorder);
+	};
+
+	/**
+	 * this function will identify some objects that are isomorphic, but not
+	 * all, and return a representation that has the minimal found adjacency
+	 * matrix. Since this is not unique per isomorphism class, we call is pseudo
+	 * normalized form
+	 * 
+	 * @return a psedo normalized version of this object
+	 */
+
+	public BitSetAscendingHasseNeighbors PseudoNormalize() {
+
+		BitSetAscendingHasseNeighbors form = this.PreNormalize();
+		int N = form.numberToElement.size();
+		Map<BitSetMatrix, BitSetAscendingHasseNeighbors> unique_forms = new TreeMap<BitSetMatrix, BitSetAscendingHasseNeighbors>();
+
+		for (int iteration = 0; iteration < 1000; ++iteration) {
+
+
+			BitSetMatrix adjacency = form.AdjacencyMatrix();
+
+			if (unique_forms.containsKey(adjacency)) {
+				// System.out.println("Cycle after " + iteration +
+				// " iterations.");
+				/**
+				 * we have completed a cycle (and thus found one)
+				 */
+				return unique_forms
+						.get(unique_forms.keySet().iterator().next());
+			} else {
+				unique_forms.put(adjacency, form);
+			}
+
+			adjacency = form.AdjacencyMatrix();
+
+			ArrayList<Integer> new_order = new ArrayList<Integer>(N);
+			for (int i = 0; i < N; ++i) {
+				new_order.add(i);
+			}
+
+			int group_start = 0;
+			int min_rank = 0;
+			int max_rank = 0;
+
+			TreeMap<ComparableBitSet, Set<Integer>> order_level = new TreeMap<>();
+
+			for (int i = 1; i < (N + 1); ++i) {
+				if ((i == N) || (form.numberToMinRank.get(i) != min_rank)
+						|| (form.numberToMaxRank.get(i) != max_rank)) {
+					int size = i - group_start;
+
+					if (size > 1) {
+
+						/**
+						 * minimize the order
+						 */
+						int x = group_start;
+
+						for (ComparableBitSet c : order_level.keySet()) {
+							// System.out.println(i + " " + order_level.get(c));
+							for (Integer j : order_level.get(c)) {
+								new_order.set(x, j);
+								++x;
+							}
+						}
+						/**
+						 * rearrange the adjacency matrix
+						 */
+						Permutation level_swap = new Permutation(new_order,
+								group_start, group_start + size);
+						// System.out.println(level_swap);
+
+						adjacency.multiSwap(level_swap);
+					}
+					if (i == N) {
+						break;
+					}
+
+					group_start = i;
+					min_rank = form.numberToMinRank.get(i);
+					max_rank = form.numberToMaxRank.get(i);
+
+					order_level.clear();
+				}
+
+				ComparableBitSet L = adjacency.LVector(i);
+				// System.out.println(i + " " + L);
+				if (order_level.containsKey(L) == false) {
+					order_level.put(L, new TreeSet<Integer>());
+				}
+				order_level.get(L).add(i);
+
+			}
+
+			Permutation to_minimum = new Permutation(new_order.iterator());
+
+			form = form.Reorder(to_minimum);
+		}
+
+		// System.out.println("No cycle!");
+
+		return form;
+	}
+
+
 }
