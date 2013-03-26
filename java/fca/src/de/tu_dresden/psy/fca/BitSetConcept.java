@@ -31,10 +31,23 @@ import java.util.BitSet;
 public class BitSetConcept implements FormalConcept {
 
 	private BitSet os, as;
+	private int ocount, acount;
 
-	public BitSetConcept(BitSet os, BitSet as) {
+	public BitSetConcept(BitSet os, BitSet as, int oc, int ac) {
 		this.os = os;
 		this.as = as;
+		this.ocount = oc;
+		this.acount = ac;
+	}
+
+	@Override
+	public int contextAttributeCount() {
+		return this.acount;
+	}
+
+	@Override
+	public int contextObjectCount() {
+		return this.ocount;
 	}
 
 	@Override

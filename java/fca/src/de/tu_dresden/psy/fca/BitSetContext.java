@@ -47,6 +47,8 @@ public class BitSetContext implements FormalContext {
 	private ArrayList<BitSet> incidenceRows;
 	private ArrayList<BitSet> incidenceCols;
 
+	private int nbrO, nbrA;
+
 	private void initializeCommon() {
 		this.objectToName = new TreeMap<Integer, String>();
 		this.attributeToName = new TreeMap<Integer, String>();
@@ -54,6 +56,8 @@ public class BitSetContext implements FormalContext {
 		this.attributeFromName = new HashMap<String, Integer>();
 		this.incidenceRows = new ArrayList<BitSet>();
 		this.incidenceCols = new ArrayList<BitSet>();
+		this.nbrO = 0;
+		this.nbrA = 0;
 	}
 
 	private void initializeEmpty(int o_count, int a_count) {
@@ -68,6 +72,8 @@ public class BitSetContext implements FormalContext {
 			this.attributeToName.put(i, "m" + i);
 			this.attributeFromName.put("m" + i, i);
 		}
+		this.nbrO = o_count;
+		this.nbrA = a_count;
 	}
 
 	public enum SpecialContexts {
@@ -306,13 +312,15 @@ public class BitSetContext implements FormalContext {
 	@Override
 	public FormalConcept closeAttributes(BitSet as) throws Exception {
 		BitSet os = this.commonObjects(as);
-		return new BitSetConcept(os, this.commonAttributes(os));
+		return new BitSetConcept(os, this.commonAttributes(os), this.nbrO,
+				this.nbrA);
 	}
 
 	@Override
 	public OrderElement closeObjects(BitSet os) throws Exception {
 		BitSet as = this.commonAttributes(os);
-		return new BitSetConcept(this.commonObjects(as), as);
+		return new BitSetConcept(this.commonObjects(as), as, this.nbrO,
+				this.nbrA);
 	}
 
 	@Override
@@ -489,7 +497,7 @@ public class BitSetContext implements FormalContext {
 						m.and(this.objectRow(o));
 					}
 
-					return new BitSetConcept(g, m);
+					return new BitSetConcept(g, m, this.nbrO, this.nbrA);
 				}
 
 				m.clear(i);

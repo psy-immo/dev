@@ -36,8 +36,20 @@ public interface FormalConcept extends OrderElement {
 	BitSet commonObjects();
 
 	/**
+	 * @return the number of objects of the original context
+	 */
+
+	int contextObjectCount();
+
+	/**
 	 * 
 	 * @return the common attributes of the concept
 	 */
 	BitSet commonAttributes();
+
+	/**
+	 * @return the number of attributes of the original context
+	 */
+
+	int contextAttributeCount();
 }
