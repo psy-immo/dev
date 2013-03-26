@@ -302,6 +302,41 @@ public class BitSetAscendingHasseNeighbors {
 	/**
 	 * 
 	 * @param p
+	 * @return minimal rank of element p
+	 */
+
+	public int minRank(OrderElement p) {
+		return this.numberToMinRank.get(this.elementToNumber.get(p));
+	}
+
+	/**
+	 * 
+	 * @param p
+	 * @return maximal rank of element p
+	 */
+
+	public int maxRank(OrderElement p) {
+		return this.numberToMaxRank.get(this.elementToNumber.get(p));
+	}
+
+	/**
+	 * 
+	 * @return the maximum rank
+	 */
+
+	public int highestRank() {
+		int x = 0;
+		for (Integer v : this.numberToMaxRank.values()) {
+			if (x < v) {
+				x = v;
+			}
+		}
+		return x;
+	}
+
+	/**
+	 * 
+	 * @param p
 	 *            element
 	 * @return all upper neighbors of p, i.e. all q with p <. q
 	 */
@@ -561,7 +596,6 @@ public class BitSetAscendingHasseNeighbors {
 
 		for (int iteration = 0; iteration < 1000; ++iteration) {
 
-
 			BitSetMatrix adjacency = form.AdjacencyMatrix();
 
 			if (unique_forms.containsKey(adjacency)) {
@@ -646,6 +680,5 @@ public class BitSetAscendingHasseNeighbors {
 
 		return form;
 	}
-
 
 }

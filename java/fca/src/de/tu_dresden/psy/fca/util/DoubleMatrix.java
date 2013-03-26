@@ -57,8 +57,8 @@ public class DoubleMatrix implements Comparable<DoubleMatrix> {
 		this.initialize(Rows, Columns);
 	}
 
-	enum SpecialMatrix {
-		Zero, Block, Unity;
+	public enum SpecialMatrix {
+		Zero, Block, Unity, HasseDefault;
 	}
 
 	/**
@@ -78,6 +78,11 @@ public class DoubleMatrix implements Comparable<DoubleMatrix> {
 		} else if (kind == SpecialMatrix.Unity) {
 			for (int i = 0; i < Math.min(this.M, this.N); ++i) {
 				this.set(i, i, 1.);
+			}
+		} else if (kind == SpecialMatrix.HasseDefault) {
+			for (int i = 0; i < this.N; ++i) {
+				this.set(i, i + 1, 1.);
+				this.set(i, 0, 1.);
 			}
 		}
 	}

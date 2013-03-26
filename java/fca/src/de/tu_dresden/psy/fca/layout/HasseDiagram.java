@@ -24,8 +24,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import de.tu_dresden.psy.fca.BitSetAscendingHasseNeighbors;
 import de.tu_dresden.psy.fca.FormalConcept;
 import de.tu_dresden.psy.fca.OrderElement;
+import de.tu_dresden.psy.fca.util.DoubleMatrix;
+import de.tu_dresden.psy.fca.util.DoubleMatrix.SpecialMatrix;
 import de.tu_dresden.psy.fca.util.DoubleVector;
 
 /**
@@ -42,6 +45,8 @@ public class HasseDiagram {
 	private Map<Integer, OrderElement> fromNumber;
 	private Map<OrderElement, Integer> toNumber;
 	private ArrayList<DoubleVector> vectors;
+	private DoubleMatrix layout;
+	private BitSetAscendingHasseNeighbors neighbors;
 
 	public HasseDiagram(Set<OrderElement> poset) {
 		int x = 0;
@@ -52,6 +57,8 @@ public class HasseDiagram {
 			this.toNumber.put(e, x);
 			++x;
 		}
+
+		this.neighbors = new BitSetAscendingHasseNeighbors(poset);
 
 		/**
 		 * check whether we already have formal concepts
@@ -121,10 +128,83 @@ public class HasseDiagram {
 			}
 		}
 
+		/**
+		 * fix empty poset problem
+		 */
+		if (this.k < 0) {
+			this.k = 0;
+		}
+
+		this.layout = new DoubleMatrix(this.k + 1, this.k,
+				SpecialMatrix.HasseDefault);
 	}
 
 	public int getDimension() {
 		return this.k + 1;
 	}
 
+	/**
+	 * 
+	 * @return the current hasse diagram as svg embedded in an html container
+	 */
+
+	public String toHtml() {
+		return "<!DOCTYPE html>	<html><body>" + this.toSVG() + "</body></html>";
+	}
+
+	/**
+	 * 
+	 * @return SVG code for the current hasse diagram
+	 */
+
+	public String toSVG() {
+		StringBuffer b = new StringBuffer();
+
+		b.append("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">");
+
+		double padding_x = 50;
+		double padding_y = 50;
+
+		double ymax = 0;
+		int count[] = new int[this.neighbors.highestRank() + 1];
+		double x[] = new double[this.vectors.size()];
+		double y[] = new double[this.vectors.size()];
+
+		for (int i = 0; i < this.vectors.size(); ++i) {
+
+			/**
+			 * dummy positioning !
+			 */
+			x[i] = (count[this.neighbors.maxRank(this.fromNumber.get(i))]++) * 20;
+			y[i] = this.neighbors.maxRank(this.fromNumber.get(i)) * 50;
+
+			if (y[i] > ymax) {
+				ymax = y[i];
+			}
+		}
+
+		for (int i = 0; i < this.vectors.size(); ++i) {
+			for (OrderElement q : this.neighbors.UpperNeighbors(this.fromNumber
+					.get(i))) {
+				int j = this.toNumber.get(q);
+
+				b.append("<line x1=\"" + (padding_x + x[i]) + "\" y1=\""
+						+ ((padding_y + ymax) - y[i]) + "\" x2=\""
+						+ (padding_x + x[j]) + "\" y2=\""
+						+ ((padding_y + ymax) - y[j])
+						+ "\" style=\"stroke:rgb(0,0,64);stroke-width:2\"//>");
+			}
+		}
+
+		for (int i = 0; i < this.vectors.size(); ++i) {
+
+			b.append("<circle cx=\"" + (padding_x + x[i]) + "\" cy=\""
+					+ ((padding_y + ymax) - y[i]) + "\" r=\"5\"/>");
+
+		}
+
+		b.append("</svg>");
+
+		return b.toString();
+	}
 }
