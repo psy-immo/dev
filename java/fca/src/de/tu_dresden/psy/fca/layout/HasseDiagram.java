@@ -26,6 +26,7 @@ import java.util.TreeMap;
 
 import de.tu_dresden.psy.fca.FormalConcept;
 import de.tu_dresden.psy.fca.OrderElement;
+import de.tu_dresden.psy.fca.util.DoubleVector;
 
 /**
  * 
@@ -40,7 +41,7 @@ public class HasseDiagram {
 	private int k;
 	private Map<Integer, OrderElement> fromNumber;
 	private Map<OrderElement, Integer> toNumber;
-	private ArrayList<BitSet> vectors;
+	private ArrayList<DoubleVector> vectors;
 
 	public HasseDiagram(Set<OrderElement> poset) {
 		int x = 0;
@@ -73,7 +74,7 @@ public class HasseDiagram {
 			}
 		}
 
-		this.vectors = new ArrayList<BitSet>();
+		this.vectors = new ArrayList<DoubleVector>();
 
 		if (fcs) {
 			/**
@@ -90,7 +91,7 @@ public class HasseDiagram {
 					b.set(0, nbrA);
 					FormalConcept c = (FormalConcept) this.fromNumber.get(i);
 					b.xor(c.commonAttributes());
-					this.vectors.add(b);
+					this.vectors.add(new DoubleVector(nbrA, b));
 				}
 			} else {
 				/**
@@ -101,7 +102,7 @@ public class HasseDiagram {
 					BitSet b = new BitSet(nbrO);
 					FormalConcept c = (FormalConcept) this.fromNumber.get(i);
 					b.or(c.commonObjects());
-					this.vectors.add(b);
+					this.vectors.add(new DoubleVector(nbrO, b));
 				}
 			}
 		} else {
@@ -116,7 +117,7 @@ public class HasseDiagram {
 						b.set(j);
 					}
 				}
-				this.vectors.add(b);
+				this.vectors.add(new DoubleVector(x, b));
 			}
 		}
 
