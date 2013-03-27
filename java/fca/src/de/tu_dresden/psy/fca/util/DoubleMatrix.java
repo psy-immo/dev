@@ -80,9 +80,39 @@ public class DoubleMatrix implements Comparable<DoubleMatrix> {
 				this.set(i, i, 1.);
 			}
 		} else if (kind == SpecialMatrix.HasseDefault) {
-			for (int i = 0; i < this.N; ++i) {
-				this.set(i, i + 1, 1.);
-				this.set(i, 0, 1.);
+			/**
+			 * we are going from N to M dimensions
+			 */
+			int per_dim = (int) Math.ceil(Math.pow(this.N, 1. / (this.M - 1.)));
+			double minrad = (-85. * Math.PI) / 180.;
+			double maxrad = (+85. * Math.PI) / 180.;
+			int v[] = new int[this.M];
+			int i;
+
+			for (int q = 0; q < this.N; ++q) {
+				double sinusses = 1.;
+
+				for (i = 0; i < this.M; ++i) {
+					this.set(
+							i,
+							q,
+							sinusses
+									* Math.cos(minrad
+											+ (((maxrad - minrad) / (per_dim - 1)) * v[i])));
+					sinusses *= Math.sin(minrad
+							+ (((maxrad - minrad) / per_dim) * v[i]));
+				}
+
+				i = 0;
+				v[i]++;
+				while (v[i] == per_dim) {
+					v[i] = 0;
+					i++;
+					v[i]++;
+					if (i == this.M) {
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -111,7 +141,7 @@ public class DoubleMatrix implements Comparable<DoubleMatrix> {
 	 * @return m[row,column]
 	 */
 
-	public double get(int row, int column) {
+	public final double get(int row, int column) {
 		return this.m[(row * this.N) + column];
 	}
 
@@ -124,7 +154,7 @@ public class DoubleMatrix implements Comparable<DoubleMatrix> {
 	 * @param x
 	 */
 
-	public void set(int row, int column, double x) {
+	public final void set(int row, int column, double x) {
 		this.m[(row * this.N) + column] = x;
 	}
 
@@ -197,4 +227,60 @@ public class DoubleMatrix implements Comparable<DoubleMatrix> {
 		return 0;
 	}
 
+	/**
+	 * 
+	 * left multiply a vector
+	 * 
+	 * @param x
+	 * @return xM
+	 */
+
+	public DoubleVector lMult(DoubleVector x) {
+		DoubleVector result = new DoubleVector(this.N);
+
+		for (int c = 0; c < this.N; ++c) {
+			double s = 0;
+			for (int r = 0; r < this.M; ++r) {
+				s += x.x[r] * this.get(r, c);
+			}
+			result.x[c] = s;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * right multiply a vector
+	 * 
+	 * @param x
+	 * @return Mx
+	 */
+	public DoubleVector rMult(DoubleVector x) {
+		DoubleVector result = new DoubleVector(this.M);
+
+		for (int r = 0; r < this.M; ++r) {
+			double s = 0;
+			for (int c = 0; c < this.N; ++c) {
+				s += x.x[c] * this.get(r, c);
+			}
+			result.x[r] = s;
+		}
+
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer b = new StringBuffer();
+		for (int r = 0; r < this.M; ++r) {
+			b.append("[");
+			for (int c = 0; c < this.N; ++c) {
+				b.append(this.get(r, c) + "\t");
+			}
+			b.append("]\n");
+		}
+
+		return b.toString();
+	}
 }

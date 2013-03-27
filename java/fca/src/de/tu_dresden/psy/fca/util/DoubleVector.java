@@ -162,4 +162,16 @@ public class DoubleVector implements Comparable<DoubleVector> {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		StringBuffer b = new StringBuffer();
+		b.append("[");
+
+		for (int c = 0; c < this.k; ++c) {
+			b.append(this.x[c] + "\t");
+		}
+		b.append("]\n");
+
+		return b.toString();
+	}
 }

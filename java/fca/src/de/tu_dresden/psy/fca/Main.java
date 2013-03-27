@@ -23,6 +23,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import de.tu_dresden.psy.fca.layout.HasseDiagram;
+import de.tu_dresden.psy.fca.util.DoubleMatrix;
+import de.tu_dresden.psy.fca.util.DoubleMatrix.SpecialMatrix;
+import de.tu_dresden.psy.fca.util.DoubleVector;
 
 /**
  * 
@@ -35,6 +38,10 @@ import de.tu_dresden.psy.fca.layout.HasseDiagram;
 public class Main {
 	public static void main(String[] args) throws Exception,
 			FileNotFoundException, IOException {
+
+		DoubleMatrix m = new DoubleMatrix(2, 8, SpecialMatrix.HasseDefault);
+		System.out.println(m);
+		System.out.println(m.rMult(new DoubleVector(8, 2)));
 
 		BitSetContext ctx = new BitSetContext(8, 8);
 

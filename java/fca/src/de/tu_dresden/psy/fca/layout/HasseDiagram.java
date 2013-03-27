@@ -42,6 +42,7 @@ import de.tu_dresden.psy.fca.util.DoubleVector;
 public class HasseDiagram {
 
 	private int k;
+	private int N;
 	private Map<Integer, OrderElement> fromNumber;
 	private Map<OrderElement, Integer> toNumber;
 	private ArrayList<DoubleVector> vectors;
@@ -92,7 +93,8 @@ public class HasseDiagram {
 				/**
 				 * use inverse attribute vectors
 				 */
-				this.k = nbrA - 1;
+
+				this.N = nbrA;
 				for (int i = 0; i < x; ++i) {
 					BitSet b = new BitSet(nbrA);
 					b.set(0, nbrA);
@@ -104,7 +106,8 @@ public class HasseDiagram {
 				/**
 				 * use object vectors
 				 */
-				this.k = nbrO - 1;
+
+				this.N = nbrO;
 				for (int i = 0; i < x; ++i) {
 					BitSet b = new BitSet(nbrO);
 					FormalConcept c = (FormalConcept) this.fromNumber.get(i);
@@ -116,7 +119,8 @@ public class HasseDiagram {
 			/**
 			 * use the standard context of the poset
 			 */
-			this.k = x - 1;
+
+			this.N = x;
 			for (int i = 0; i < x; ++i) {
 				BitSet b = new BitSet(x);
 				for (int j = 0; j < x; ++j) {
@@ -128,14 +132,8 @@ public class HasseDiagram {
 			}
 		}
 
-		/**
-		 * fix empty poset problem
-		 */
-		if (this.k < 0) {
-			this.k = 0;
-		}
-
-		this.layout = new DoubleMatrix(this.k + 1, this.k,
+		this.k = 1;
+		this.layout = new DoubleMatrix(this.k + 1, this.N,
 				SpecialMatrix.HasseDefault);
 	}
 
@@ -165,21 +163,40 @@ public class HasseDiagram {
 		double padding_x = 50;
 		double padding_y = 50;
 
-		double ymax = 0;
+		double ymax = Double.NEGATIVE_INFINITY;
+		double ymin = Double.POSITIVE_INFINITY;
+		double xmax = Double.NEGATIVE_INFINITY;
+		double xmin = Double.POSITIVE_INFINITY;
 		int count[] = new int[this.neighbors.highestRank() + 1];
 		double x[] = new double[this.vectors.size()];
 		double y[] = new double[this.vectors.size()];
 
 		for (int i = 0; i < this.vectors.size(); ++i) {
 
-			/**
-			 * dummy positioning !
-			 */
+			DoubleVector v = this.vectors.get(i);
+			DoubleVector r = this.layout.rMult(v);
+
 			x[i] = (count[this.neighbors.maxRank(this.fromNumber.get(i))]++) * 20;
 			y[i] = this.neighbors.maxRank(this.fromNumber.get(i)) * 50;
 
+			/**
+			 * dummy positioning !
+			 */
+			// x[i] = (count[this.neighbors.maxRank(this.fromNumber.get(i))]++)
+			// * 20;
+			// y[i] = this.neighbors.maxRank(this.fromNumber.get(i)) * 50;
+
+			if (x[i] > xmax) {
+				xmax = x[i];
+			}
+			if (xmin > x[i]) {
+				xmin = x[i];
+			}
 			if (y[i] > ymax) {
 				ymax = y[i];
+			}
+			if (ymin > y[i]) {
+				ymin = y[i];
 			}
 		}
 
@@ -192,7 +209,7 @@ public class HasseDiagram {
 						+ ((padding_y + ymax) - y[i]) + "\" x2=\""
 						+ (padding_x + x[j]) + "\" y2=\""
 						+ ((padding_y + ymax) - y[j])
-						+ "\" style=\"stroke:rgb(0,0,64);stroke-width:2\"//>");
+						+ "\" style=\"stroke:rgb(64,64,64);stroke-width:2\" />");
 			}
 		}
 
