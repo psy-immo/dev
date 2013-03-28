@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import de.tu_dresden.psy.fca.BitSetAscendingHasseNeighbors;
 import de.tu_dresden.psy.fca.FormalConcept;
 import de.tu_dresden.psy.fca.OrderElement;
 import de.tu_dresden.psy.fca.util.DoubleMatrix;
@@ -47,7 +46,7 @@ public class HasseDiagram {
 	private Map<OrderElement, Integer> toNumber;
 	private ArrayList<DoubleVector> vectors;
 	private DoubleMatrix layout;
-	private BitSetAscendingHasseNeighbors neighbors;
+	private Neighborhood neighborhood;
 
 	public HasseDiagram(Set<OrderElement> poset) {
 		int x = 0;
@@ -59,7 +58,7 @@ public class HasseDiagram {
 			++x;
 		}
 
-		this.neighbors = new BitSetAscendingHasseNeighbors(poset);
+		this.neighborhood = new Neighborhood(poset);
 
 		/**
 		 * check whether we already have formal concepts
@@ -167,7 +166,7 @@ public class HasseDiagram {
 		double ymin = Double.POSITIVE_INFINITY;
 		double xmax = Double.NEGATIVE_INFINITY;
 		double xmin = Double.POSITIVE_INFINITY;
-		int count[] = new int[this.neighbors.highestRank() + 1];
+		int count[] = new int[this.neighborhood.highestRank() + 1];
 		double x[] = new double[this.vectors.size()];
 		double y[] = new double[this.vectors.size()];
 
@@ -176,8 +175,8 @@ public class HasseDiagram {
 			DoubleVector v = this.vectors.get(i);
 			DoubleVector r = this.layout.rMult(v);
 
-			x[i] = (count[this.neighbors.maxRank(this.fromNumber.get(i))]++) * 20;
-			y[i] = this.neighbors.maxRank(this.fromNumber.get(i)) * 50;
+			x[i] = (count[this.neighborhood.maxRank(this.fromNumber.get(i))]++) * 20;
+			y[i] = this.neighborhood.maxRank(this.fromNumber.get(i)) * 50;
 
 			/**
 			 * dummy positioning !
@@ -201,7 +200,7 @@ public class HasseDiagram {
 		}
 
 		for (int i = 0; i < this.vectors.size(); ++i) {
-			for (OrderElement q : this.neighbors.UpperNeighbors(this.fromNumber
+			for (OrderElement q : this.neighborhood.UpperNeighbors(this.fromNumber
 					.get(i))) {
 				int j = this.toNumber.get(q);
 
