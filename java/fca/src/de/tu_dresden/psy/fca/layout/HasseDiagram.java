@@ -166,7 +166,7 @@ public class HasseDiagram {
 		double ymin = Double.POSITIVE_INFINITY;
 		double xmax = Double.NEGATIVE_INFINITY;
 		double xmin = Double.POSITIVE_INFINITY;
-		int count[] = new int[this.neighborhood.highestRank() + 1];
+		int count[] = new int[0 + 1]; // DUMMY CODE
 		double x[] = new double[this.vectors.size()];
 		double y[] = new double[this.vectors.size()];
 
@@ -175,8 +175,8 @@ public class HasseDiagram {
 			DoubleVector v = this.vectors.get(i);
 			DoubleVector r = this.layout.rMult(v);
 
-			x[i] = (count[this.neighborhood.maxRank(this.fromNumber.get(i))]++) * 20;
-			y[i] = this.neighborhood.maxRank(this.fromNumber.get(i)) * 50;
+			x[i] = (count[0]++) * 20; // DUMMY CODE
+			y[i] = 0 * 50; // DUMMY CODE
 
 			/**
 			 * dummy positioning !

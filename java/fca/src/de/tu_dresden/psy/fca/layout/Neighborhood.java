@@ -39,6 +39,10 @@ import de.tu_dresden.psy.fca.OrderZero;
 public class Neighborhood {
 	private Map<Integer, OrderElement> numberToElement;
 	private Map<OrderElement, Integer> elementToNumber;
+
+	private Set<OrderElement> meetIrreducibles;
+	private Set<OrderElement> joinIrreducibles;
+
 	static OrderZero bottom = new OrderZero();
 
 	/**
@@ -84,6 +88,31 @@ public class Neighborhood {
 				if (this.moveUp(base)) {
 					continueMoving.or(this.upperNeighbors.get(base));
 				}
+			}
+		}
+
+		/**
+		 * get the (finite = binary) meet and join irreducibles by checking the
+		 * neighborhood relation:
+		 * 
+		 * If there is only one upper neighbor, then the element is meet
+		 * irreducible. If there is only one lower neighbor, then the element is
+		 * join irreducible.
+		 */
+
+		this.meetIrreducibles = new TreeSet<OrderElement>();
+		this.joinIrreducibles = new TreeSet<OrderElement>();
+
+		for (int i = 1; i < this.upperNeighbors.size(); ++i) {
+			OrderElement p = this.numberToElement.get(i);
+			System.out.println("" + p + " " + this.LowerNeighbors(p).size()
+					+ " " + this.UpperNeighbors(p).size());
+			if (this.LowerNeighbors(p).size() < 2) {
+
+				this.joinIrreducibles.add(p);
+			}
+			if (this.UpperNeighbors(p).size() < 2) {
+				this.meetIrreducibles.add(p);
 			}
 		}
 	}
@@ -157,6 +186,45 @@ public class Neighborhood {
 
 	/**
 	 * 
+	 * @return set of meet/join-irreducibles
+	 * 
+	 */
+
+	public Set<OrderElement> Reduced() {
+		Set<OrderElement> irreducibles = new TreeSet<OrderElement>();
+		irreducibles.addAll(this.meetIrreducibles);
+		irreducibles.addAll(this.joinIrreducibles);
+		return irreducibles;
+	}
+
+	/**
+	 * 
+	 * @return set of meet-irreducibles
+	 * 
+	 */
+
+	public Set<OrderElement> MeetIrreducibles() {
+		Set<OrderElement> irreducibles = new TreeSet<OrderElement>();
+		irreducibles.addAll(this.meetIrreducibles);
+
+		return irreducibles;
+	}
+
+	/**
+	 * 
+	 * @return set of meet-irreducibles
+	 * 
+	 */
+
+	public Set<OrderElement> JoinIrreducibles() {
+		Set<OrderElement> irreducibles = new TreeSet<OrderElement>();
+		irreducibles.addAll(this.joinIrreducibles);
+
+		return irreducibles;
+	}
+
+	/**
+	 * 
 	 * @param p
 	 *            element
 	 * @return all upper neighbors of p, i.e. all q with p <. q
@@ -168,6 +236,26 @@ public class Neighborhood {
 		for (int o = x.nextSetBit(0); o >= 0; o = x.nextSetBit(o + 1)) {
 			s.add(this.numberToElement.get(o));
 		}
+		return s;
+	}
+
+	/**
+	 * 
+	 * @param p
+	 *            element
+	 * @return all lower neighbors of p, i.e. all q with q <. p
+	 */
+
+	public Set<OrderElement> LowerNeighbors(OrderElement p) {
+		Set<OrderElement> s = new TreeSet<OrderElement>();
+		int iP = this.elementToNumber.get(p);
+		for (int iQ = 1; iQ < this.upperNeighbors.size(); ++iQ) {
+			BitSet x = this.upperNeighbors.get(iQ);
+			if (x.get(iP)) {
+				s.add(this.numberToElement.get(iQ));
+			}
+		}
+
 		return s;
 	}
 

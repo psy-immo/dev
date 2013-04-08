@@ -23,6 +23,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import de.tu_dresden.psy.fca.layout.HasseDiagram;
+import de.tu_dresden.psy.fca.layout.Neighborhood;
 import de.tu_dresden.psy.fca.util.DoubleMatrix;
 import de.tu_dresden.psy.fca.util.DoubleMatrix.SpecialMatrix;
 import de.tu_dresden.psy.fca.util.DoubleVector;
@@ -37,7 +38,7 @@ import de.tu_dresden.psy.fca.util.DoubleVector;
 
 public class Main {
 	public static void main(String[] args) throws Exception,
-			FileNotFoundException, IOException {
+	FileNotFoundException, IOException {
 
 		DoubleMatrix m = new DoubleMatrix(2, 8, SpecialMatrix.HasseDefault);
 		System.out.println(m);
@@ -50,6 +51,13 @@ public class Main {
 		System.out.println(ctx);
 
 		Lattice l = ctx.conceptLattice();
+
+		Neighborhood n = new Neighborhood(l.Elements());
+
+		System.out.println("ELTS=" + l.Elements().size());
+		System.out.println("REDUCED ELTS=" + n.MeetIrreducibles().size());
+
+		System.out.println("IRREDUCIBLES = " + n.MeetIrreducibles());
 
 		HasseDiagram diag = new HasseDiagram(l.Elements());
 
