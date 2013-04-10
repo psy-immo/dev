@@ -32,7 +32,10 @@ import de.tu_dresden.psy.fca.OrderZero;
  * 
  * @author immo
  * 
- *         implements the neighborhood relation for a given poset
+ *         implements the neighborhood relation for a given poset, if the poset
+ *         is indeed a (complete) lattice, then this class may be used to
+ *         identify the (finitary-, non-empty-) meet and join irreducible
+ *         elements of the poset as well
  * 
  */
 
@@ -185,8 +188,10 @@ public class Neighborhood {
 	}
 
 	/**
+	 * result may be incorrect if the given poset is not a lattice, the returned
+	 * set may contain the lattice zero and one, too.
 	 * 
-	 * @return set of meet/join-irreducibles
+	 * @return set of finitary-non-empty meet/join-irreducibles
 	 * 
 	 */
 
@@ -198,8 +203,11 @@ public class Neighborhood {
 	}
 
 	/**
+	 * result may be incorrect if the given poset is not a lattice, the returned
+	 * set may contain the lattice zero and one, too. (the lattice one is
+	 * non-empty meet irreducible)
 	 * 
-	 * @return set of meet-irreducibles
+	 * @return set of finitary-non-empty meet-irreducibles
 	 * 
 	 */
 
@@ -211,8 +219,11 @@ public class Neighborhood {
 	}
 
 	/**
+	 * result may be incorrect if the given poset is not a lattice, the returned
+	 * set may contain the lattice zero and one, too. (the lattice zero is
+	 * non-empty join irreducible)
 	 * 
-	 * @return set of meet-irreducibles
+	 * @return set of finitary-non-empty join-irreducibles
 	 * 
 	 */
 
