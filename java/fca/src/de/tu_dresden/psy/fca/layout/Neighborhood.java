@@ -253,6 +253,18 @@ public class Neighborhood {
 	/**
 	 * 
 	 * @param p
+	 * @param q
+	 * @return true, if p <. q
+	 */
+
+	public boolean isUpperNeighbor(OrderElement p, OrderElement q) {
+		return this.upperNeighbors.get(this.elementToNumber.get(p)).get(
+				this.elementToNumber.get(q));
+	}
+
+	/**
+	 * 
+	 * @param p
 	 *            element
 	 * @return all lower neighbors of p, i.e. all q with q <. p
 	 */
