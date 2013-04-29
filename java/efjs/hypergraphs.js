@@ -16,7 +16,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 /**
  * This file contains routines that are used for abstract inference.
  */
@@ -26,13 +25,29 @@
  */
 
 function InferenceGraph() {
-	
+
+	/**
+	 * array that maps inference ids to their premise and conclusion
+	 * representation
+	 */
 	this.inferences = [];
-	
+
+	/**
+	 * maps assertion ids to an array of inference ids that have the given
+	 * assertion in the premises
+	 */
+	this.premise_based = {};
+
+	/**
+	 * map assertion ids to an array of inference ids that have the given
+	 * assertion in the conclusions
+	 */
+	this.conclusion_based = {};
+
 	/**
 	 * adds an inference hyper-arrow from the premises to the conclusions
 	 */
-	
+
 	this.AddInference = function(premises, conclusions) {
 		var sorted_premises = [];
 		var sorted_conclusions = [];
@@ -42,17 +57,42 @@ function InferenceGraph() {
 				sorted_premises.push(x);
 		}
 		for ( var int2 = 0; int2 < conclusions.length; int2++) {
-			var x = conclusions[int];
+			var x = conclusions[int2];
 			if ((x in sorted_conclusions) == false)
 				sorted_conclusions.push(x);
 		}
-		
+
 		sorted_premises.sort();
 		sorted_conclusions.sort();
+
+		var inference_id = this.inferences.length;
+
+		this.inferences.push({
+			"p" : sorted_premises,
+			"c" : sorted_conclusions
+		});
 		
-		this.inferences.push({"p":sorted_premises, "c":sorted_conclusions});
+		for ( var int3 = 0; int3 < sorted_premises.length; int3++) {
+			var premise_id = sorted_premises[int3];
+			
+			if (premise_id in this.premise_based == false) {
+				this.premise_based[premise_id] = [];
+			}
+			
+			this.premise_based[premise_id].push(inference_id);
+		}
+		
+		for ( var int4 = 0; int4 < sorted_conclusions.length; int4++) {
+			var conclusion_id = sorted_conclusions[int4];
+			
+			if (conclusion_id in this.conclusion_based == false) {
+				this.conclusion_based[conclusion_id] = [];
+			}
+			
+			this.conclusion_based[conclusion_id].push(inference_id);
+		}
+
 	};
-	
-	
+
 	return this;
 };
