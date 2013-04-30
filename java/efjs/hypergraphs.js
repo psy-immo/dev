@@ -71,27 +71,103 @@ function InferenceGraph() {
 			"p" : sorted_premises,
 			"c" : sorted_conclusions
 		});
-		
+
 		for ( var int3 = 0; int3 < sorted_premises.length; int3++) {
 			var premise_id = sorted_premises[int3];
-			
+
 			if (premise_id in this.premise_based == false) {
 				this.premise_based[premise_id] = [];
 			}
-			
+
 			this.premise_based[premise_id].push(inference_id);
 		}
-		
+
 		for ( var int4 = 0; int4 < sorted_conclusions.length; int4++) {
 			var conclusion_id = sorted_conclusions[int4];
-			
+
 			if (conclusion_id in this.conclusion_based == false) {
 				this.conclusion_based[conclusion_id] = [];
 			}
-			
+
 			this.conclusion_based[conclusion_id].push(inference_id);
 		}
+		
+		return inference_id;
 
+	};
+
+	/**
+	 * returns all inference rule ids that have the given premises or less
+	 */
+
+	this.GetConcludibleInferences = function(premises) {
+		var possible_keys = [];
+
+		for ( var int = 0; int < premises.length; int++) {
+			var premise_id = premises[int];
+
+			if (premise_id in this.premise_based) {
+				var inferences = this.premise_based[premise_id];
+				for ( var int2 = 0; int2 < inferences.length; int2++) {
+					var inference_id = inferences[int2];
+
+					if (possible_keys.indexOf(inference_id) < 0) {
+
+						possible_keys.push(inference_id);
+					}
+				}
+			}
+		}
+
+		var good = [];
+
+		for ( var int3 = 0; int3 < possible_keys.length; int3++) {
+			var inference_id = possible_keys[int3];
+
+			var inference = this.inferences[inference_id];
+
+			var all_premises_there = true;
+
+			for ( var int4 = 0; int4 < inference.p.length; int4++) {
+				var premise_id = inference.p[int4];
+
+				if (premises.indexOf(premise_id) < 0) {
+					all_premises_there = false;
+					break;
+				}
+
+			}
+
+			if (all_premises_there)
+				good.push(inference_id);
+		}
+
+		return good;
+	};
+	
+	/**
+	 * returns all inference rule ids that have any of the given conclusions
+	 */
+
+	this.GetJustifyingInferences = function(conclusions) {
+		var inferences = [];
+		
+		for ( var int = 0; int < conclusions.length; int++) {
+			var conclusion_id = conclusions[int];
+			
+			if (conclusion_id in this.conclusion_based) {
+				for ( var int2 = 0; int2 < this.conclusion_based[conclusion_id].length; int2++) {
+					var inference_id = this.conclusion_based[conclusion_id][int2];
+					
+					if (inferences.indexOf(inference_id) < 0) {
+						inferences.push(inference_id);
+					}
+					
+				}
+			}
+		}
+		
+		return inferences;
 	};
 
 	return this;
