@@ -1,5 +1,5 @@
 /**
- * PhpUrlTag.java, (c) 2012, Immanuel Albrecht; Dresden University of
+ * CssUrlTag.java, (c) 2013, Immanuel Albrecht; Dresden University of
  * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -26,14 +26,14 @@ import javax.naming.OperationNotSupportedException;
 /**
  * 
  * 
- * implements the &lt;phpurl>...&lt;/phpurl> tag
+ * implements the &lt;cssurl>...&lt;/cssurl> tag
  * 
  * 
  * @author albrecht
  * 
  */
 
-public class PhpUrlTag extends StandardDeferrable implements AnyTag,
+public class CssUrlTag extends StandardDeferrable implements AnyTag,
 GlobalModifier {
 
 	/**
@@ -42,11 +42,11 @@ GlobalModifier {
 	private String token;
 
 	/**
-	 * use body tag to set php url variable
+	 * use body tag to set css url variable
 	 */
 	private BodyTag body;
 
-	public PhpUrlTag(BodyTag body) {
+	public CssUrlTag(BodyTag body) {
 		this.body = body;
 		this.token = "";
 	}
@@ -74,18 +74,17 @@ GlobalModifier {
 
 	@Override
 	public void DoAction() {
-		this.body.setPhp(this.token);
-
+		this.body.setCss(this.token);
 	}
 
 	@Override
 	public String getEfml() {
 		StringBuffer representation = new StringBuffer();
 
-		representation.append("<phpurl");
+		representation.append("<cssurl");
 		representation.append(">");
 		representation.append(StringEscape.escapeToXml(this.token));
-		representation.append("</phpurl>");
+		representation.append("</cssurl>");
 
 		return representation.toString();
 	}

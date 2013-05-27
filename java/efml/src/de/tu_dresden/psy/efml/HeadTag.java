@@ -21,22 +21,56 @@ package de.tu_dresden.psy.efml;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.naming.OperationNotSupportedException;
 
 /**
  * provides the head tag
+ * 
  * @author immanuel
- *
+ * 
  */
 
 public class HeadTag implements AnyTag {
-	
+
 	private ArrayList<AnyTag> innerTags;
-	
+
+	/**
+	 * css url
+	 */
+
+	private String cssLink;
+
+	/**
+	 * css url default base
+	 */
+
+	private String cssDefaultBase;
+
 	public HeadTag() {
-		innerTags = new ArrayList<AnyTag>();
+		this.innerTags = new ArrayList<AnyTag>();
+		this.cssLink = null;
+		this.cssDefaultBase = "";
+	}
+
+	/**
+	 * 
+	 * @param newUrl
+	 *            new url of the used style sheet file
+	 */
+
+	public void setCssUrl(String newUrl) {
+		this.cssLink = newUrl;
+	}
+
+	/**
+	 * 
+	 * @param newBase
+	 *            new base if css url is not set explicitly
+	 */
+
+	public void setCssUrlDefaultBase(String newBase) {
+		this.cssDefaultBase = newBase;
 	}
 
 	@Override
@@ -45,16 +79,29 @@ public class HeadTag implements AnyTag {
 		/**
 		 * write UTF-8 meta data information
 		 */
-		
+
 		writer.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
-		
+
+		/**
+		 * write CSS style sheet link
+		 */
+
+		if (this.cssLink != null) {
+
+			writer.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+					+ this.cssLink + "\" media=\"screen\" />");
+
+		} else {
+
+			writer.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+					+ this.cssDefaultBase + "efjs.css\" media=\"screen\" />");
+		}
+
 		/**
 		 * write inner tags
 		 */
-		
-		for (Iterator<AnyTag> it=innerTags.iterator();it.hasNext();)
-		{
-			AnyTag innerTag = it.next();
+
+		for (AnyTag innerTag : this.innerTags) {
 			innerTag.open(writer);
 			innerTag.close(writer);
 		}
@@ -64,13 +111,13 @@ public class HeadTag implements AnyTag {
 	public void close(Writer writer) throws IOException {
 		writer.write("</head>");
 	}
-	
+
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
-		innerTags.add(innerTag);
+		this.innerTags.add(innerTag);
 	}
-	
+
 	@Override
 	public String getEfml() {
 		/**

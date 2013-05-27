@@ -96,6 +96,16 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 
 	this.SetContents = function(data) {
+		
+		/** delete old efml tag objects */
+		
+		for ( var int = 0; int < this.contents.length; int++) {
+			var tag = this.contents[int];
+			tag.Delete();
+		}
+		
+		/** setup the new contents */
+		
 		this.contents = [];
 		this.selected = [];
 
@@ -290,7 +300,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		html += "\">";
 
 		html += "<tr id=\"efmlBoardContents" + this.id
-				+ ".Gap[0]\" style=\"height: 4px;";
+				+ ".Gap[0]\" style=\"cursor:default; height: 4px;";
 		if (this.cursor == 0)
 			html += " background: #88FFDD;";
 		else
@@ -315,6 +325,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			/** the object marker/selector */
 			html += "<td id=\"efmlBoardContents" + this.id + "[" + int
 					+ "].selected\" style=\"";
+			html += "cursor:default;";
 			html += "  width: 20px;";
 			if (is_selected)
 				html += " background: #88FFDD;";
@@ -327,6 +338,8 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			/** the object delete button */
 			html += "<td id=\"efmlBoardContents" + this.id + "[" + int
 					+ "].cut\" style=\"";
+			html += "cursor:default;";
+			html += "color: #FF0000;";			
 			html += "  width: 20px;";
 			if (is_selected)
 				html += " background: #88FFDD;";
@@ -340,6 +353,8 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			html += "<td id=\"efmlBoardContents" + this.id + "[" + int
 					+ "].takeoff\" style=\"";
 			html += "  width: 20px;";
+			html += "  cursor:default;";
+			html += "  color:#FFFFFF;";			
 			if (is_selected)
 				html += " background: #88FFDD;";
 			else
@@ -358,7 +373,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 			html += "</tr>";
 
 			html += "<tr id=\"efmlBoardContents" + this.id + ".Gap["
-					+ (int + 1) + "]\" style=\"height: 4px;";
+					+ (int + 1) + "]\" style=\"cursor:default;height: 4px;";
 			if (this.cursor == int + 1)
 				html += " background: #88FFDD;";
 			else
@@ -659,6 +674,10 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 					+ this.id);
 			var html_parent = html_contents.parentNode;
 			html_parent.removeChild(html_contents);
+			
+			/** delete the cut out efml object */
+			
+			this.contents[index].Delete();
 
 			/** use new contents now */
 
@@ -862,6 +881,10 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 						+ this.id);
 				var html_parent = html_contents.parentNode;
 				html_parent.removeChild(html_contents);
+				
+				/** delete the cut out efml object */
+				
+				this.contents[index].Delete();
 
 				/** use new contents now */
 
@@ -1044,6 +1067,8 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 		/** filter non-selected content objects */
 		var contents = [];
 		var selected = [];
+		
+		var cut_out = [];
 
 		for ( var int = 0; int < this.contents.length; int++) {
 			if (!this.selected[int]) {
@@ -1054,6 +1079,7 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 				if (int < this.cursor) {
 					this.cursor -= 1;
 				}
+				cut_out.push(this.contents[int]);
 			}
 		}
 
@@ -1067,6 +1093,12 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 				+ this.id);
 		var html_parent = html_contents.parentNode;
 		html_parent.removeChild(html_contents);
+		
+		/** delete the cut out efml tag objects */
+		
+		for ( var int2 = 0; int2 < cut_out.length; int2++) {
+			cut_out[int2].Delete();
+		}
 
 		/** use new contents now */
 
@@ -1197,6 +1229,8 @@ function EfmlBoard(name, tags, accept, reject, embeddedMode) {
 	 */
 
 	this.SetValue = function(contents) {
+		
+		console.log("Set value:"+contents);
 
 		/** unregister mouse handlers */
 

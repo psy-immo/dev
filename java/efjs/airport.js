@@ -1,5 +1,5 @@
 /**
- * airport.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
+ * airport.js, (c) 2012-13, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -85,7 +85,7 @@ function Airport(name, tags, accept, reject) {
 
 	this.tags = tags;
 	this.token = null;
-	this.width = "400px";
+	this.width = null;
 	this.height = null;
 	this.colorEmpty = "#CCCCCC";
 	this.colorFilled = "#CCCCFF";
@@ -277,11 +277,10 @@ function Airport(name, tags, accept, reject) {
 	 */
 	this.WriteHtml = function() {
 		document.write("<span id=\"airport" + this.id + "\" ");
+		document.write(" class=\"airport\" ");
 
-		document.write(" style=\" display: inline-block; ");
-		document.write("padding: 2px; ");
-		document.write("background-color:" + this.colorAround + "; ");
-
+		document.write(" style=\" ");
+		
 		if (this.width) {
 			document.write("width:" + this.width + "; ");
 		}
@@ -294,11 +293,11 @@ function Airport(name, tags, accept, reject) {
 		 * content
 		 */
 
-		var contents = "<table style=\"  border-spacing: 0px; ";
+		var contents = "<table class=\"airport\" style=\"  ";
 
-		if (this.width) {
-			contents += "width:" + this.width + "; ";
-		}
+		//if (this.width) {
+		//	contents += "width:" + this.width + "; ";
+		//}
 
 		contents += "\">";
 		/**
