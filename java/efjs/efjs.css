@@ -3,7 +3,9 @@
  */
 
 /**
+ ***********************************
  * styles for airport.js
+ ***********************************
  */
 
 /**
@@ -67,7 +69,7 @@ tr.airportOkay {
 /**
  * padding airport gap
  */
-tr.airportGap  {
+tr.airportGap {
 	background-color: #CCCCCC; /* was: colorEmpty */
 	width: 100%;
 	height: 12px;
@@ -80,3 +82,79 @@ td.airportButtonDel {
 	width: 20px;
 	background-color: #CCCCCC; /* was: colorEmpty */
 }
+
+/**
+ ***********************************
+ * styles for answer.js
+ ***********************************
+ */
+
+/**
+ * surrounding table in form
+ */
+table.answerHint {
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
+
+/**
+ * cell that will contain the hint
+ */
+td.answerHint {
+	height: 20px;
+	width: 100%;
+}
+
+/**
+ ***********************************
+ * styles for boxspace.js
+ ***********************************
+ */
+
+/**
+ * default float box style
+ */
+div.boxspaceFloatBox {
+	display: inline-block;
+	position: absolute;
+	border-style: solid;
+	padding: 6px;
+	border-color: #000000;
+	background-color: #EEEEEE;
+	zIndex: 50;
+	cursor: default;
+	/** disable text selection **/
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	
+}
+
+/**
+ * default style for the workspace, i.e. the floating area
+ */
+div.boxspaceWorkspace {
+	display: inline-block;
+	background-color: #CCCCCC;
+	width: 500px;
+	height: 350px;
+	/** be the reference for children absolute positions **/	
+	position: relative;
+	overflow: auto; 
+	/** disable text selection **/
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/**
+ ***********************************
+ * styles for checkbox.js
+ ***********************************
+ */
