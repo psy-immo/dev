@@ -158,3 +158,29 @@ div.boxspaceWorkspace {
  * styles for checkbox.js
  ***********************************
  */
+ 
+ /**
+  * style for the form tag that contains the checkbox element (bounding box)
+  */
+ form.checkbox {
+ 	display: inline-block;
+ 	background-color: #CCCCFF; /* was colorFilled */
+ }
+ 
+ /**
+  * style change for checkboxes marked as good
+  */
+ form.checkboxMarkedGood {
+ 	background-color: #CCFFCC; /* was colorGood */
+ }
+ 
+ 
+ /**
+  * style of the checkbox element that is clickable
+  */
+ input.checkbox {
+   display: inline-block;
+ 	background-color: #CCCCFF; /* was colorFilled */
+ }
+
+ 
