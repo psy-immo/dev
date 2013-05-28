@@ -1,29 +1,82 @@
 /*
  This file contains all style definitions that are used by efml generated web pages
  */
- 
- 
-/*
- styles for airport.js
+
+/**
+ * styles for airport.js
  */
- 
- /*
-   outer object style
-  */
- 
- span.airport {
+
+/**
+ * outer object style
+ */
+span.airport {
 	display: inline-block;
 	padding: 2px;
-	background-color: #E8E8E8; /* was: colorAround */	
+	background-color: #E8E8E8; /* was: colorAround */
 	width: 400px;
 	height: 400px;
- }
+}
 
- /*
-   main table object
-  */
-
+/**
+ *  main table object
+ */
 table.airport {
 	border-spacing: 0px;
 	width: 100%;
+}
+
+/**
+ * empty airport row
+ */
+tr.airportEmpty {
+	background-color: #CCCCCC; /* was: colorEmpty */
+	width: 100%;
+}
+
+/**
+ * filled airport row
+ */
+tr.airportNonempty {
+	background-color: #CCCCFF; /* was: colorFilled */
+	width: 100%;
+}
+
+/**
+ * good (correct and justified) airport row
+ */
+tr.airportGood {
+	background-color: #CCFFCC; /* was: colorGood */
+	width: 100%;
+}
+/**
+ * incorrect airport row
+ */
+tr.airportBad {
+	background-color: #EE6666; /* was: colorBad */
+	width: 100%;
+}
+
+/**
+ * correct yet not fully justified airport row
+ */
+tr.airportOkay {
+	background-color: #FFEE00; /* was: colorOkay */
+	width: 100%;
+}
+
+/**
+ * padding airport gap
+ */
+tr.airportGap  {
+	background-color: #CCCCCC; /* was: colorEmpty */
+	width: 100%;
+	height: 12px;
+}
+
+/**
+ * airport delete button (left part of each filled line)
+ */
+td.airportButtonDel {
+	width: 20px;
+	background-color: #CCCCCC; /* was: colorEmpty */
 }

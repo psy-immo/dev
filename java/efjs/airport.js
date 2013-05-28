@@ -112,11 +112,8 @@ function Airport(name, tags, accept, reject) {
 	this.UpdateContents = function() {
 
 		var element = document.getElementById("airport" + this.id);
-		var contents = "<table style=\"  border-spacing: 0px; ";
+		var contents =  "<table class=\"airport\" style=\"";
 
-		if (this.width) {
-			contents += "width:" + this.width + "; ";
-		}
 
 		contents += "\">";
 
@@ -128,10 +125,9 @@ function Airport(name, tags, accept, reject) {
 			 * padding
 			 */
 
-			contents += "<tr style=\"height: 12px;";
-			if (this.width)
-				contents += " width:" + this.width + "; ";
-			contents += "background-color:" + this.colorEmpty + "; \" ";
+			contents += "<tr class=\"airportGap\" style=\"";
+			
+			contents += "\" ";
 			contents += "onClick=\"airportArray[" + this.id + "].OnClickRow("
 					+ count + ")\"><td>";
 			contents += "</td><td></td></tr>";
@@ -142,21 +138,24 @@ function Airport(name, tags, accept, reject) {
 			 * line
 			 */
 
-			contents += "<tr style=\"";
-			if (this.width)
-				contents += " width:" + this.width + "; ";
+			contents += "<tr class=\"";
 			if (this.marked[int] == "G") {
-				contents += "background-color:" + this.colorGood + "; \" >";
+				contents += "airportGood";
 			} else if (this.marked[int] == "O") {
-				contents += "background-color:" + this.colorOkay + "; \" >";
+				contents += "airportOkay";
 			} else if (this.marked[int] == "B") {
-				contents += "background-color:" + this.colorBad + "; \" >";
+				contents += "airportBad";
 			} else if (this.content[int])
-				contents += "background-color:" + this.colorFilled + "; \" >";
+				contents += "airportNonempty";
 			else
-				contents += "background-color:" + this.colorEmpty + "; \" >";
-			contents += "<td style=\" width: 20px;";
-			contents += "background-color:" + this.colorEmpty + ";";
+				contents += "airportEmpty";
+			
+			contents += "\"";
+			contents += " style=\"";
+			contents += "\" >";
+			
+			
+			contents += "<td class=\"airportButtonDel\" style=\"";
 			contents += " \" onClick=\"airportArray[" + this.id
 					+ "].OnDeleteRow(" + count + ")\">";
 			contents += "Del";
@@ -174,10 +173,9 @@ function Airport(name, tags, accept, reject) {
 		 * padding
 		 */
 
-		contents += "<tr style=\"";
-		if (this.width)
-			contents += " width:" + this.width + "; ";
-		contents += "background-color:" + this.colorEmpty + "; \" ";
+		contents += "<tr class=\"airportGap\" style=\"";
+		contents += "\" ";
+		
 		contents += "onClick=\"airportArray[" + this.id + "].OnClickRow("
 				+ count + ")\"><td>&nbsp;";
 		contents += "</td><td>&nbsp;</td></tr>";
@@ -295,19 +293,16 @@ function Airport(name, tags, accept, reject) {
 
 		var contents = "<table class=\"airport\" style=\"  ";
 
-		//if (this.width) {
-		//	contents += "width:" + this.width + "; ";
-		//}
-
 		contents += "\">";
+
 		/**
 		 * padding
 		 */
 
-		contents += "<tr style=\"";
-		if (this.width)
-			contents += " width:" + this.width + "; ";
-		contents += "background-color:" + this.colorEmpty + "; \" ";
+		contents += "<tr class=\"airportEmpty\" style=\"";
+		
+		contents += "\" ";
+		
 		contents += "onClick=\"airportArray[" + this.id
 				+ "].OnClickRow(0)\"><td>&nbsp;";
 		contents += "</td><td>&nbsp;</td></tr>";
