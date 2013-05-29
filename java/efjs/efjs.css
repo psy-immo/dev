@@ -192,7 +192,6 @@ input.checkbox {
   */
 form.dropdown {
 	display: inline-block;
-	background-color: #CCCCFF; /* was colorFilled */
 }
 
 /**
@@ -207,7 +206,6 @@ select.dropdown {
   * style change for dropdowns with a selection
   */
 select.dropdownNonempty {
-	display: inline-block;
 	background-color: #CCCCFF; /* was colorFilled */
 }
 
@@ -218,4 +216,37 @@ select.dropdownMarkedGood {
 	background-color: #CCFFCC; /* was colorGood */
 }
 
+/**
+ ***********************************
+ * styles for freetext.js
+ ***********************************
+ */
 
+/**
+  * style for the form tag that contains the free text element (bounding box)
+  */
+form.freetext {
+	display: inline-block;
+}
+
+/**
+  * style of the free text without a selection done yet
+  */
+input.freetext {
+	display: inline-block;
+	background-color: #CCCCAA; /* was colorEmpty */
+}
+
+/**
+  * style change for free texts with content
+  */
+input.freetextNonempty {
+	background-color: #CCCCFF; /* was colorFilled */
+}
+
+/**
+  * style change for free texts marked as good
+  */
+input.freetextMarkedGood {
+	background-color: #CCFFCC; /* was colorGood */
+}
