@@ -130,7 +130,6 @@ div.boxspaceFloatBox {
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-	
 }
 
 /**
@@ -141,9 +140,9 @@ div.boxspaceWorkspace {
 	background-color: #CCCCCC;
 	width: 500px;
 	height: 350px;
-	/** be the reference for children absolute positions **/	
+	/** be the reference for children absolute positions **/
 	position: relative;
-	overflow: auto; 
+	overflow: auto;
 	/** disable text selection **/
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -158,29 +157,65 @@ div.boxspaceWorkspace {
  * styles for checkbox.js
  ***********************************
  */
- 
- /**
+
+/**
   * style for the form tag that contains the checkbox element (bounding box)
   */
- form.checkbox {
- 	display: inline-block;
- 	background-color: #CCCCFF; /* was colorFilled */
- }
- 
- /**
+form.checkbox {
+	display: inline-block;
+	background-color: #CCCCFF; /* was colorFilled */
+}
+
+/**
   * style change for checkboxes marked as good
   */
- form.checkboxMarkedGood {
- 	background-color: #CCFFCC; /* was colorGood */
- }
- 
- 
- /**
+form.checkboxMarkedGood {
+	background-color: #CCFFCC; /* was colorGood */
+}
+
+/**
   * style of the checkbox element that is clickable
   */
- input.checkbox {
-   display: inline-block;
- 	background-color: #CCCCFF; /* was colorFilled */
- }
+input.checkbox {
+	display: inline-block;
+	background-color: #CCCCFF; /* was colorFilled */
+}
 
- 
+/**
+ ***********************************
+ * styles for dropdown.js
+ ***********************************
+ */
+
+/**
+  * style for the form tag that contains the dropdown element (bounding box)
+  */
+form.dropdown {
+	display: inline-block;
+	background-color: #CCCCFF; /* was colorFilled */
+}
+
+/**
+  * style of the dropdown without a selection done yet
+  */
+select.dropdown {
+	display: inline-block;
+	background-color: #CCCCAA; /* was colorEmpty */
+}
+
+/**
+  * style change for dropdowns with a selection
+  */
+select.dropdownNonempty {
+	display: inline-block;
+	background-color: #CCCCFF; /* was colorFilled */
+}
+
+/**
+  * style change for dropdowns marked as good
+  */
+select.dropdownMarkedGood {
+	background-color: #CCFFCC; /* was colorGood */
+}
+
+
