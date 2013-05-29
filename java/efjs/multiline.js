@@ -85,11 +85,17 @@ function Multiline(name, tags, label, embeddedMode) {
 	this.WriteHtml = function() {
 		var idstring = "multiline" + this.id;
 
-		document
-				.write("<form onsubmit=\"return false;\" style=\"display: inline-block;\">");
+		document.write("<form onsubmit=\"return false;\" class=\"multiline\">");
 
 		document.write("<textarea name=\"" + idstring + "\" id=\"" + idstring
-				+ "\" " + "style=\"display: inline-block; ");
+				+ "\" ");
+
+		document.write(" class=\"multiline");
+
+		if (this.token)
+			document.write(" multilineNonempty");
+
+		document.write("\" style=\"");
 		if (this.width) {
 			document.write("width: " + this.width + "; ");
 		}
@@ -97,15 +103,8 @@ function Multiline(name, tags, label, embeddedMode) {
 			document.write("height: " + this.height + "; ");
 		}
 
-		var color = this.colorEmpty;
-
-		if (this.token) {
-			color = this.colorFilled;
-		}
-
-		document.write("background-color: " + color + ";\" "
-				+ "onchange=\"multilineArray[" + this.id + "].OnChange();\" "
-				+ "/>");
+		document.write("\" " + "onchange=\"multilineArray[" + this.id
+				+ "].OnChange();\" " + "/>");
 
 		document.write(this.token);
 		document.write("</textarea>");
@@ -147,20 +146,23 @@ function Multiline(name, tags, label, embeddedMode) {
 	 * this function marks the current drop down green
 	 */
 	this.MarkAsGood = function() {
-		var html_object = document.getElementById("multiline" + this.id);
-		html_object.style.backgroundColor = this.colorGood;
+		var html_object = $("multiline" + this.id);
+		html_object.addClassName("multilineMarkedGood");
 	};
 
 	/**
 	 * this function demarks the current drop down
 	 */
 	this.MarkNeutral = function() {
-		var element = document.getElementById("multiline" + this.id);
+		var html_object = $("multiline" + this.id);
+
 		if (this.token) {
-			element.style.backgroundColor = this.colorFilled;
+			html_object.addClassName("multilineNonempty");
 		} else {
-			element.style.backgroundColor = this.colorEmpty;
+			html_object.removeClassName("multilineNonempty");
 		}
+
+		html_object.removeClassName("multilineMarkedGood");
 	};
 
 	/**
@@ -199,7 +201,7 @@ function Multiline(name, tags, label, embeddedMode) {
 	 * to override the save method and tag stuff
 	 */
 
-	if (!emdebbedMode) {
+	if (!embeddedMode) {
 		myTags.Add(this, this.tags);
 
 		myStorage.RegisterField(this, "multilineArray[" + this.id + "]");

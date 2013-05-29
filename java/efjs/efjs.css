@@ -250,3 +250,38 @@ input.freetextNonempty {
 input.freetextMarkedGood {
 	background-color: #CCFFCC; /* was colorGood */
 }
+
+/**
+ ***********************************
+ * styles for multiline.js
+ ***********************************
+ */
+
+/**
+  * style for the form tag that contains the multiline element (bounding box)
+  */
+form.multiline {
+	display: inline-block;
+}
+
+/**
+  * style of the free text without a selection done yet
+  */
+textarea.multiline {
+	display: inline-block;
+	background-color: #CCCCAA; /* was colorEmpty */
+}
+
+/**
+  * style change for free texts with content
+  */
+textarea.multilineNonempty {
+	background-color: #CCCCFF; /* was colorFilled */
+}
+
+/**
+  * style change for free texts marked as good
+  */
+textarea.multilineMarkedGood {
+	background-color: #CCFFCC; /* was colorGood */
+}

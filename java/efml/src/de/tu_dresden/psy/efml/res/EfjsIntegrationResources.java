@@ -91,30 +91,30 @@ public class EfjsIntegrationResources {
 	 */
 
 	public static String[] javascript_includes = {
-	/**
-	 * cssSandpaper
-	 */
-	"EventHelpers.js", "cssQuery-p.js", "jcoglan.com.sylvester.js",
-			"cssSandpaper.js",
-			/**
-			 * jQuery
-			 */
-			"jquery-1.8.0.min.js",
-			/**
-			 * prototypejs
-			 */
-			"prototype.js",
-			/**
-			 * efjs scripts
-			 */
-			"crosscompat.js", "mouse.js", "cssgraphics.js", "loglet.js",
-			"storage.js", "logger.js", "tags.js", "logic.js", "hover.js",
-			"endecoder.js", "runway.js", "answer.js", "sniffybutton.js",
-			"dropdown.js", "checkbox.js", "radiobutton.js", "popupbutton.js",
-			"freetext.js", "boxspace.js", "trashcan.js", "sentencepattern.js",
-			"airport.js", "inference.js", "efml.js", "efmlbuttons.js",
-			"efmlboard.js", "efmlcheckbox.js", "efmltag.js", "efmlquote.js",
-			"efmlfactory.js" };
+		/**
+		 * cssSandpaper
+		 */
+		"EventHelpers.js", "cssQuery-p.js", "jcoglan.com.sylvester.js",
+		"cssSandpaper.js",
+		/**
+		 * jQuery
+		 */
+		"jquery-1.8.0.min.js",
+		/**
+		 * prototypejs
+		 */
+		"prototype.js",
+		/**
+		 * efjs scripts
+		 */
+		"crosscompat.js", "stylesheets.js", "mouse.js", "cssgraphics.js",
+		"loglet.js", "storage.js", "logger.js", "tags.js", "logic.js",
+		"hover.js", "endecoder.js", "runway.js", "answer.js",
+		"multiline.js", "sniffybutton.js", "dropdown.js", "checkbox.js",
+		"radiobutton.js", "popupbutton.js", "freetext.js", "boxspace.js",
+		"trashcan.js", "sentencepattern.js", "airport.js", "inference.js",
+		"efml.js", "efmlbuttons.js", "efmlboard.js", "efmlcheckbox.js",
+		"efmltag.js", "efmlquote.js", "efmlfactory.js" };
 
 	/**
 	 * interface for constructing other classes
@@ -149,7 +149,7 @@ public class EfjsIntegrationResources {
 		@Override
 		public AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body) {
 			try {
-				return (AnyTag) t.newInstance();
+				return (AnyTag) this.t.newInstance();
 			} catch (InstantiationException e) {
 
 				e.printStackTrace();
@@ -196,7 +196,8 @@ public class EfjsIntegrationResources {
 		@Override
 		public AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body) {
 			try {
-				return (AnyTag) t.getConstructor(parameters).newInstance(tags);
+				return (AnyTag) this.t.getConstructor(parameters).newInstance(
+						tags);
 			} catch (InstantiationException e) {
 
 				e.printStackTrace();
@@ -236,7 +237,7 @@ public class EfjsIntegrationResources {
 
 		@SuppressWarnings("rawtypes")
 		private static Class[] parameters = { EfmlTagsAttribute.class,
-				BodyTag.class };
+			BodyTag.class };
 
 		@SuppressWarnings({ "rawtypes", "unused", "unchecked" })
 		public AttributeBodyObjectConstructor(Class t) {
@@ -257,8 +258,8 @@ public class EfjsIntegrationResources {
 		@Override
 		public AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body) {
 			try {
-				return (AnyTag) t.getConstructor(parameters).newInstance(tags,
-						body);
+				return (AnyTag) this.t.getConstructor(parameters).newInstance(
+						tags, body);
 			} catch (InstantiationException e) {
 
 				e.printStackTrace();
@@ -319,8 +320,8 @@ public class EfjsIntegrationResources {
 		@Override
 		public AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body) {
 			try {
-				return (AnyTag) t.getConstructor(parameters)
-						.newInstance(parent);
+				return (AnyTag) this.t.getConstructor(parameters).newInstance(
+						parent);
 			} catch (InstantiationException e) {
 
 				e.printStackTrace();
@@ -380,7 +381,8 @@ public class EfjsIntegrationResources {
 		@Override
 		public AnyTag New(EfmlTagsAttribute tags, AnyTag parent, BodyTag body) {
 			try {
-				return (AnyTag) t.getConstructor(parameters).newInstance(body);
+				return (AnyTag) this.t.getConstructor(parameters).newInstance(
+						body);
 			} catch (InstantiationException e) {
 
 				e.printStackTrace();
@@ -412,81 +414,81 @@ public class EfjsIntegrationResources {
 	 */
 
 	public static Object[] tagClasses = { "title",
-			new AttributeObjectConstructor(TitleTag.class), "tags",
-			new AttributeObjectConstructor(TagsTag.class), "efml",
-			new AttributeObjectConstructor(TagsTag.class), "tie",
-			new AttributeObjectConstructor(TieTag.class), "tables",
-			new AttributeObjectConstructor(TablesTag.class), "r",
-			new SimpleObjectConstructor(RTag.class), "c",
-			new ParentObjectConstructor(CTag.class), "runway",
-			new AttributeObjectConstructor(RunwayTag.class), "answer",
-			new AttributeObjectConstructor(AnswerTag.class), "hint",
-			new AttributeObjectConstructor(HintTag.class), "correct",
-			new SimpleObjectConstructor(CorrectTag.class), "needjustification",
-			new SimpleObjectConstructor(NeedJustificationTag.class),
-			"incomplete", new SimpleObjectConstructor(IncompleteTag.class),
-			"incorrect", new SimpleObjectConstructor(IncorrectTag.class),
-			"check", new AttributeObjectConstructor(CheckTag.class),
-			"includepreamble",
-			new SimpleObjectConstructor(IncludePreambleTag.class),
-			"includeaddendum",
-			new SimpleObjectConstructor(IncludeAddendumTag.class), "label",
-			new SimpleObjectConstructor(LabelTag.class), "unread",
-			new SimpleObjectConstructor(UnreadTag.class), "unused",
-			new SimpleObjectConstructor(UnusedTag.class), "instructions",
-			new SimpleObjectConstructor(InstructionsTag.class), "sniffy",
-			new SimpleObjectConstructor(SniffyTag.class), "waitfor",
-			new SimpleObjectConstructor(WaitForTag.class), "dropdown",
-			new AttributeObjectConstructor(DropdownTag.class), "radiobutton",
-			new AttributeObjectConstructor(RadiobuttonTag.class), "checkbox",
-			new AttributeObjectConstructor(CheckboxTag.class), "popuphelp",
-			new AttributeObjectConstructor(PopupHelpTag.class), "freetext",
-			new AttributeObjectConstructor(FreetextTag.class), "multiline",
-			new AttributeObjectConstructor(MultilineTag.class), "option",
-			new AttributeObjectConstructor(OptionTag.class), "studyid",
-			new BodyObjectConstructor(StudyIdTag.class), "documentid",
-			new BodyObjectConstructor(DocumentIdTag.class), "jsurl",
-			new BodyObjectConstructor(JsUrlTag.class), "phpurl",
-			new BodyObjectConstructor(PhpUrlTag.class), "subjectinfo",
-			new BodyObjectConstructor(SubjectInfoTag.class), "subjectprompt",
-			new BodyObjectConstructor(SubjectPromptTag.class), "subjectchange",
-			new BodyObjectConstructor(SubjectChangeTag.class), "plain",
-			new SimpleObjectConstructor(PlainTag.class), "template",
-			new AttributeObjectConstructor(TemplateTag.class), "airport",
-			new AttributeObjectConstructor(AirportTag.class), "feedback",
-			new SimpleObjectConstructor(FeedbackTag.class), "required",
-			new AttributeObjectConstructor(RequiredTag.class), "parse",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "subject",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "object",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "predicate",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "expert",
-			new AttributeObjectConstructor(InferenceXmlTag.class),
-			"conclusion",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "premise",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "infer",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "in",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "assert",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "implicit",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "rule",
-			new AttributeObjectConstructor(InferenceXmlTag.class),
-			"constraint",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "rho",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "out",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "justified",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "trivial",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "invalid",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "quality",
-			new AttributeObjectConstructor(InferenceXmlTag.class),
-			"conclusions",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "solves",
-			new AttributeObjectConstructor(InferenceXmlTag.class), "inference",
-			new AttributeObjectConstructor(InferenceTag.class), "trashcan",
-			new AttributeObjectConstructor(TrashcanTag.class), "boxspace",
-			new AttributeObjectConstructor(BoxspaceTag.class), "floatbox",
-			new AttributeObjectConstructor(FloatboxTag.class), "arrow",
-			new AttributeObjectConstructor(ArrowTag.class), "efmlboard",
-			new AttributeObjectConstructor(EfmlBoardTag.class), "efmlpreview",
-			new AttributeBodyObjectConstructor(EfmlPreviewButtonTag.class),
-			"efmlquote", new AttributeObjectConstructor(EfmlQuoteTag.class) };
+		new AttributeObjectConstructor(TitleTag.class), "tags",
+		new AttributeObjectConstructor(TagsTag.class), "efml",
+		new AttributeObjectConstructor(TagsTag.class), "tie",
+		new AttributeObjectConstructor(TieTag.class), "tables",
+		new AttributeObjectConstructor(TablesTag.class), "r",
+		new SimpleObjectConstructor(RTag.class), "c",
+		new ParentObjectConstructor(CTag.class), "runway",
+		new AttributeObjectConstructor(RunwayTag.class), "answer",
+		new AttributeObjectConstructor(AnswerTag.class), "hint",
+		new AttributeObjectConstructor(HintTag.class), "correct",
+		new SimpleObjectConstructor(CorrectTag.class), "needjustification",
+		new SimpleObjectConstructor(NeedJustificationTag.class),
+		"incomplete", new SimpleObjectConstructor(IncompleteTag.class),
+		"incorrect", new SimpleObjectConstructor(IncorrectTag.class),
+		"check", new AttributeObjectConstructor(CheckTag.class),
+		"includepreamble",
+		new SimpleObjectConstructor(IncludePreambleTag.class),
+		"includeaddendum",
+		new SimpleObjectConstructor(IncludeAddendumTag.class), "label",
+		new SimpleObjectConstructor(LabelTag.class), "unread",
+		new SimpleObjectConstructor(UnreadTag.class), "unused",
+		new SimpleObjectConstructor(UnusedTag.class), "instructions",
+		new SimpleObjectConstructor(InstructionsTag.class), "sniffy",
+		new SimpleObjectConstructor(SniffyTag.class), "waitfor",
+		new SimpleObjectConstructor(WaitForTag.class), "dropdown",
+		new AttributeObjectConstructor(DropdownTag.class), "radiobutton",
+		new AttributeObjectConstructor(RadiobuttonTag.class), "checkbox",
+		new AttributeObjectConstructor(CheckboxTag.class), "popuphelp",
+		new AttributeObjectConstructor(PopupHelpTag.class), "freetext",
+		new AttributeObjectConstructor(FreetextTag.class), "multiline",
+		new AttributeObjectConstructor(MultilineTag.class), "option",
+		new AttributeObjectConstructor(OptionTag.class), "studyid",
+		new BodyObjectConstructor(StudyIdTag.class), "documentid",
+		new BodyObjectConstructor(DocumentIdTag.class), "jsurl",
+		new BodyObjectConstructor(JsUrlTag.class), "phpurl",
+		new BodyObjectConstructor(PhpUrlTag.class), "subjectinfo",
+		new BodyObjectConstructor(SubjectInfoTag.class), "subjectprompt",
+		new BodyObjectConstructor(SubjectPromptTag.class), "subjectchange",
+		new BodyObjectConstructor(SubjectChangeTag.class), "plain",
+		new SimpleObjectConstructor(PlainTag.class), "template",
+		new AttributeObjectConstructor(TemplateTag.class), "airport",
+		new AttributeObjectConstructor(AirportTag.class), "feedback",
+		new SimpleObjectConstructor(FeedbackTag.class), "required",
+		new AttributeObjectConstructor(RequiredTag.class), "parse",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "subject",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "object",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "predicate",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "expert",
+		new AttributeObjectConstructor(InferenceXmlTag.class),
+		"conclusion",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "premise",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "infer",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "in",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "assert",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "implicit",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "rule",
+		new AttributeObjectConstructor(InferenceXmlTag.class),
+		"constraint",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "rho",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "out",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "justified",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "trivial",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "invalid",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "quality",
+		new AttributeObjectConstructor(InferenceXmlTag.class),
+		"conclusions",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "solves",
+		new AttributeObjectConstructor(InferenceXmlTag.class), "inference",
+		new AttributeObjectConstructor(InferenceTag.class), "trashcan",
+		new AttributeObjectConstructor(TrashcanTag.class), "boxspace",
+		new AttributeObjectConstructor(BoxspaceTag.class), "floatbox",
+		new AttributeObjectConstructor(FloatboxTag.class), "arrow",
+		new AttributeObjectConstructor(ArrowTag.class), "efmlboard",
+		new AttributeObjectConstructor(EfmlBoardTag.class), "efmlpreview",
+		new AttributeBodyObjectConstructor(EfmlPreviewButtonTag.class),
+		"efmlquote", new AttributeObjectConstructor(EfmlQuoteTag.class) };
 
 }
