@@ -41,8 +41,8 @@ function SentencePattern(name, tags, generators, nonempty) {
 	this.tags = tags;
 	this.token = null;
 	this.generators = generators;
-	this.width = "20px";
-	this.height = "20px";
+	this.width = "";
+	this.height = "";
 	this.colorFilled = "#EEEEEE";
 	this.colorBox = "#DDDDDD";
 	this.noTakeOff = false;

@@ -448,3 +448,16 @@ span.sentencepattern {
 	width: 20px;
 	height: 20px;
 }
+
+/**
+ ***********************************
+ * styles for trashcan.js
+ ***********************************
+ */
+div.trashcan {
+	display: inline-block;
+	background-color: #888888;/* was colorGround */
+	color: #CC0000; /* was colorBoxes */
+	width: 50px;
+	height: 50px;
+}
