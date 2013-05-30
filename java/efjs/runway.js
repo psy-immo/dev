@@ -42,8 +42,8 @@ function Runway(name, tags, token, accept, reject) {
 	this.tags = tags;
 	this.token = token;
 	this.respawn = null;
-	this.width = "200px";
-	this.height = "20px";
+	this.width = "";
+	this.height = "";
 	this.colorEmpty = "#CCCCCC";
 	this.colorFilled = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
@@ -122,15 +122,15 @@ function Runway(name, tags, token, accept, reject) {
 	 * write the HTML code that will be used for displaying the run way
 	 */
 	this.WriteHtml = function() {
-		document.write("<span id=\"runway" + this.id + "\" ");
+		document.write("<span id=\"runway" + this.id + "\" class=\"runway");
 
-		document.write(" style=\" display: inline-block; ");
+		
 
 		if (this.token) {
-			document.write("background-color:" + this.colorFilled + "; ");
-		} else {
-			document.write("background-color:" + this.colorEmpty + "; ");
-		}
+			document.write("runwayNonempty");
+		} 
+		
+		document.write("\" style=\" ");
 		if (this.width) {
 			document.write("width:" + this.width + "; ");
 		}
@@ -162,14 +162,13 @@ function Runway(name, tags, token, accept, reject) {
 	this.SetToken = function(token) {
 
 		this.token = token;
-		var html_object = document.getElementById("runway" + this.id);
+		var html_object = $("runway" + this.id);
 		if (token) {
-			html_object.innerHTML = token;
-			html_object.style.backgroundColor = this.colorFilled;
+			html_object.addClassName("runwayNonempty");
 		} else {
 			html_object.innerHTML = "&nbsp;";
-			html_object.style.backgroundColor = this.colorEmpty;
-		}
+			html_object.removeClassName("runwayNonempty");
+		};
 
 	};
 
@@ -177,8 +176,8 @@ function Runway(name, tags, token, accept, reject) {
 	 * this function marks the current run way green
 	 */
 	this.MarkAsGood = function() {
-		var html_object = document.getElementById("runway" + this.id);
-		html_object.style.backgroundColor = this.colorGood;
+		var html_object = $("runway" + this.id);
+		html_object.addClassName("runwayMarkedGood");
 		this.markedgood = true;
 	};
 
@@ -186,14 +185,13 @@ function Runway(name, tags, token, accept, reject) {
 	 * this function demarks the current run way
 	 */
 	this.MarkNeutral = function() {
-		var html_object = document.getElementById("runway" + this.id);
+		var html_object = $("runway" + this.id);
 		if (this.token) {
-
-			html_object.style.backgroundColor = this.colorFilled;
+			html_object.addClassName("runwayNonempty");
 		} else {
-
-			html_object.style.backgroundColor = this.colorEmpty;
+			html_object.removeClassName("runwayNonempty");
 		}
+		html_object.removeClassName("runwayMarkedGood");
 		this.markedgood = false;
 	};
 

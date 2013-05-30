@@ -391,3 +391,37 @@ form.radiobuttonMarkedGood {
 tr.radiobuttonMarkedGood {
 	background-color: #CCFFCC; /* was colorGood */
 }
+
+/**
+ ***********************************
+ * styles for runway.js
+ ***********************************
+ */
+ 
+/**
+  * style for the form tag that contains the radio element (bounding box)
+  * out-most (this is the default)
+  */
+
+span.runway {
+	display: inline-block;
+	width: 200px;
+	height: 20px;
+	background-color: #CCCCAA; /* was colorEmpty */
+}
+
+/**
+  * style change for filled run ways
+  */
+
+span.runwayNonempty {
+	background-color: #CCCCFF; /* was colorFilled */
+}
+
+/**
+  * style change for good run ways
+  */
+
+span.runwayMarkedGood {
+	background-color: #CCFFCC; /* was colorGood */
+}
