@@ -397,12 +397,11 @@ tr.radiobuttonMarkedGood {
  * styles for runway.js
  ***********************************
  */
- 
+
 /**
   * style for the form tag that contains the radio element (bounding box)
   * out-most (this is the default)
   */
-
 span.runway {
 	display: inline-block;
 	width: 200px;
@@ -413,7 +412,6 @@ span.runway {
 /**
   * style change for filled run ways
   */
-
 span.runwayNonempty {
 	background-color: #CCCCFF; /* was colorFilled */
 }
@@ -421,7 +419,32 @@ span.runwayNonempty {
 /**
   * style change for good run ways
   */
-
 span.runwayMarkedGood {
 	background-color: #CCFFCC; /* was colorGood */
+}
+
+/**
+ ***********************************
+ * styles for sentencepattern.js
+ ***********************************
+ */
+
+/*
+  * style for the surrounding box (that contains the parts which make up 
+  * the pattern and the UP button)
+  */
+span.sentencepatternBox {
+	display: inline-block;
+	padding: 2px;
+	background-color: #DDDDDD; /* was colorBox */
+}
+
+/*
+ * style for the UP box
+ */
+span.sentencepattern {
+	display: inline-block;
+	background-color: #EEEEEE; /* was colorFilled */
+	width: 20px;
+	height: 20px;
 }
