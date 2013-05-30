@@ -43,8 +43,8 @@ function PopupButton(name, target) {
 	 */
 	this.WriteHtml = function() {
 		var idstring = "\"PopupButton" + this.id + "\"";
-		document.write("<form onsubmit=\"return false;\">");
-		document.write("<input type=\"button\" name=" + idstring + " id="
+		document.write("<form onsubmit=\"return false;\" class=\"popupbutton\">");
+		document.write("<input class=\"popupbutton\" type=\"button\" name=" + idstring + " id="
 				+ idstring + " value=\"" + this.text
 				+ "\" onclick=\"popupButtonArray[" + this.id + "].OnClick()\"/>");
 		document.write("</form>");

@@ -285,3 +285,23 @@ textarea.multilineNonempty {
 textarea.multilineMarkedGood {
 	background-color: #CCFFCC; /* was colorGood */
 }
+
+/**
+ ***********************************
+ * styles for popupbutton.js
+ ***********************************
+ */
+
+/**
+  * style for the form tag that contains the popup button (bounding box)
+  */
+form.popupbutton {
+	display: inline-block;
+}
+
+/**
+  * style of the button
+  */
+input.popupbutton {
+	display: inline-block;
+}
