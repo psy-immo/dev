@@ -305,3 +305,89 @@ form.popupbutton {
 input.popupbutton {
 	display: inline-block;
 }
+
+/**
+ ***********************************
+ * styles for radiobutton.js
+ ***********************************
+ */
+
+/*
+ * style for bounding table (use manually in efml!)
+ */
+/* manually */
+table.radiobutton { /* stick with defaults */
+	
+}
+
+/**
+  * style for the form tag that contains the radio element (bounding box)
+  * out-most (this is the default)
+  */
+/* default */
+form.radiobutton {
+	display: inline-block;
+	background-color: #CCCCAA; /* was colorEmpty */
+}
+
+/**
+  * style for the form tag that contains the radio element (bounding box)
+  * out-most level is <tr> (optional)
+  */
+/* manually */
+tr.radiobutton {
+	display: inline-block;
+	background-color: #CCCCAA; /* was colorEmpty */
+}
+
+/* manually */
+td.radiobutton {
+	width: 100%;
+}
+
+/*
+ * mid-level form style
+ */
+/* manually */
+form.radiobuttonNested {
+	display: inline-block;
+}
+
+/**
+  * style for the form tag that contains the radio element (bounding box)
+  */
+/* default/manually */
+span.radiobutton {
+	display: inline-block;
+}
+
+/* default/manually */
+input.radiobutton { /* stick to defaults here */
+	
+}
+
+/**
+  * style change for radios with selection
+  */
+/* default */
+form.radiobuttonNonempty {
+	background-color: #CCCCFF; /* was colorFilled */
+}
+
+/* manually */
+tr.radiobuttonNonempty {
+	background-color: #CCCCFF; /* was colorFilled */
+}
+
+/**
+  * style change for radios marked as good
+  */
+/* default */
+form.radiobuttonMarkedGood {
+	background-color: #CCFFCC; /* was colorGood */
+}
+
+/* manually */
+tr.radiobuttonMarkedGood {
+	background-color: #CCFFCC; /* was colorGood */
+}
