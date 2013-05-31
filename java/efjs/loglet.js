@@ -212,6 +212,10 @@ function getServerApplet(id, name, serverurl) {
 	if (!applet) {
 		return "!! applet element not found";
 	}
+	
+	if (!applet.queryLogger) {
+		return "!! applet not running";
+	}
 
 	/**
 	 * java script to java interaction is buggy so add string termination
@@ -421,6 +425,15 @@ function readLocalFile() {
 function setServerApplet(id, name, value, serverurl) {
 	var applet = document.getElementById("loglet");
 
+	if (!applet) {
+		return "!! applet element not found";
+	}
+	
+	if (!applet.queryLogger) {
+		return "!! applet not running";
+	}
+
+	
 	/**
 	 * java script to java interaction is buggy so add string termination
 	 * zeros....
