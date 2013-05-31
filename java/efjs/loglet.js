@@ -200,6 +200,7 @@ function unescapeBTNR(s) {
 
 /**
  * query server for stored value
+ * (java applet version)
  * 
  * @param id
  * @param name
@@ -216,6 +217,79 @@ function getServer(id, name, serverurl) {
 
 	var val = applet.queryLogger(bugfixParam(id), bugfixParam(name),
 			bugfixParam(""), bugfixParam(serverurl));
+
+	var unescaped = unescapeSome(val);
+
+	return unescaped;
+}
+
+/**
+ * query server for stored value
+ * (javascript version)
+ * 
+ * @param id
+ * @param name
+ * @param serverurl
+ */
+
+function getServerJS(id, name, serverurl) {
+	var request;
+	
+	/**
+	 * thanks to cssSandpaper getXMLHttpRequest :)
+	 */
+	
+	if (window.XMLHttpRequest) {
+		
+		request = new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		try {
+			request = new ActiveXObject("Msxml2.XMLHTTP");
+		}
+		catch (dummy) {
+			request = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	} else {
+		return "!! XMLHttpRequest not supported by browser";
+	}
+	
+	/**
+	 * encode the post data
+	 */
+	
+	var data = "";
+	
+	data += encodeURIComponent("id")+"="+encodeURIComponent(id);
+	data += "&"+encodeURIComponent("varname")+"="+encodeURIComponent(name);
+	data += "&"+encodeURIComponent("value")+"="+encodeURIComponent("");
+
+	try {
+		request.open("POST",serverurl,false);
+		
+		/** is there a bug that requires
+		 * 
+		 * request.setRequestHeader("If-Modified-Since","Sat, 1 Jan 2000 00:00:00 GMT");
+		 * 
+		 * here??
+		 */
+		
+		request.send(data);
+	}
+	catch (ex) {
+		var error = ""+ex+"";
+		return "!! ERROR requesting " + serverurl + " with " + data +":\n" + error;
+	}
+	
+	
+	/**
+	 * skip the http header
+	 */
+	
+	var val = request.responseText.substr(request.responseText.indexOf("\n", 0)+1);
+	
+	if (request.statusText != "OK")
+		return "!! error in request: " + request.statusText + " .. " + val;
+	
 
 	var unescaped = unescapeSome(val);
 
@@ -299,7 +373,8 @@ function readLocalFile() {
 }
 
 /**
- * query server for stored value
+ * query server to change stored value
+ * (java applet version)
  * 
  * @param id
  * @param name
@@ -318,6 +393,78 @@ function setServer(id, name, value, serverurl) {
 			bugfixParam(escapeSome(value)), bugfixParam(serverurl));
 
 	return unescapeSome(result);
+}
+
+/**
+ * query server to change stored value
+ * (java applet version)
+ * 
+ * @param id
+ * @param name
+ * @param serverurl
+ */
+
+function setServerJS(id, name, value, serverurl) {
+	var request;
+	
+	/**
+	 * thanks to cssSandpaper getXMLHttpRequest :)
+	 */
+	
+	if (window.XMLHttpRequest) {
+		
+		request = new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		try {
+			request = new ActiveXObject("Msxml2.XMLHTTP");
+		}
+		catch (dummy) {
+			request = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	} else {
+		return "!! XMLHttpRequest not supported by browser";
+	}
+	
+	/**
+	 * encode the post data
+	 */
+	
+	var data = "";
+	
+	data += encodeURIComponent("id")+"="+encodeURIComponent(id);
+	data += "&"+encodeURIComponent("varname")+"="+encodeURIComponent(name);
+	data += "&"+encodeURIComponent("value")+"="+encodeURIComponent(value);
+
+	try {
+		request.open("POST",serverurl,false);
+		
+		/** is there a bug that requires
+		 * 
+		 * request.setRequestHeader("If-Modified-Since","Sat, 1 Jan 2000 00:00:00 GMT");
+		 * 
+		 * here??
+		 */
+		
+		request.send(data);
+	}
+	catch (ex) {
+		var error = ""+ex+"";
+		return "!! ERROR requesting " + serverurl + " with " + data +":\n" + error;
+	}
+	
+	
+	/**
+	 * skip the http header
+	 */
+	
+	var val = request.responseText.substr(request.responseText.indexOf("\n", 0)+1);
+	
+	if (request.statusText != "OK")
+		return "!! error in request: " + request.statusText + " .. " + val;	
+
+	var unescaped = unescapeSome(val);
+
+	return unescaped;
 }
 
 /**
@@ -421,6 +568,7 @@ function doGetAll() {
 /**
  * 
  * check whether the server storage works currently
+ * (using the loglet java applet)
  * 
  * @returns true, if storage works
  * 
@@ -430,6 +578,29 @@ function doesOperate() {
 	if (logletBaseURL) {
 		try {
 			if (getServer(logId, docId + "+" + name, logletBaseURL
+					+ "operates.php") == "okay") {
+				return true;
+			}
+		} catch (err) {
+			return false;
+		}
+	}
+	return false;
+}
+
+/**
+ * 
+ * check whether the server storage works currently
+ * (using the javascript XMLHttpRequest version)
+ * 
+ * @returns true, if storage works
+ * 
+ */
+
+function doesJSOperate() {
+	if (logletBaseURL) {
+		try {
+			if (getServerJS(logId, docId + "+" + name, logletBaseURL
 					+ "operates.php") == "okay") {
 				return true;
 			}
