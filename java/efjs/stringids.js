@@ -21,8 +21,45 @@
  * maps filled sentence templates to integer ids and vice versa
  */
 
-function StringId() {
+function StringIds() {
 	this.count = 0;
 	this.to_id = {};
 	this.from_id = {};
+	
+	/**
+	 * add another string to the id database
+	 */
+	
+	this.AddString = function(s) {
+		var unified = s.toUpperCase().trim();
+		if (!(unified in this.to_id)) {
+			this.to_id[unified] = this.count;
+			this.from_id[this.count] = s;
+			this.count += 1;
+		}
+	};
+	
+	/**
+	 * s   input string
+	 * @returns the id of the given string, or -1 if the string is unknown
+	 */
+	
+	this.ToId = function(s) {
+		var unified = s.toUpperCase().trim();
+		if (unified in this.to_id)
+			return this.to_id[unified];
+		return -1;
+	};
+	
+	/**
+	 * id 
+	 * @returns the string that corresponds to the given id
+	 */
+	
+	this.FromId = function(id) {
+		if (id in this.from_id)
+			return this.from_id[id];
+		return "!!UNKNOWN STRING!!";
+		
+	};
 }
