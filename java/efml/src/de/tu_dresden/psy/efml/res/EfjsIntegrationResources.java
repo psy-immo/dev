@@ -108,8 +108,8 @@ public class EfjsIntegrationResources {
 		 * efjs scripts
 		 */
 		"crosscompat.js", "stylesheets.js", "mouse.js", "cssgraphics.js",
-		"loglet.js", "storage.js", "logger.js", "tags.js", "logic.js",
-		"hover.js", "endecoder.js", "runway.js", "answer.js",
+		"stringids.js", "loglet.js", "storage.js", "logger.js", "tags.js",
+		"logic.js", "hover.js", "endecoder.js", "runway.js", "answer.js",
 		"multiline.js", "sniffybutton.js", "dropdown.js", "checkbox.js",
 		"radiobutton.js", "popupbutton.js", "freetext.js", "boxspace.js",
 		"trashcan.js", "sentencepattern.js", "airport.js", "inference.js",
