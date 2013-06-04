@@ -1,5 +1,5 @@
 
-<!ELEMENT root (parse|assert|expert|conclusion|implicit|justified|trivial|invalid|rule|conclusions|quality|solves) >
+<!ELEMENT root (parse|assert|expert|conclusion|implicit|justified|trivial|invalid|rule|conclusions|quality|solves|domain) >
 
 <!ELEMENT parse (subject|predicate|object)* >
 
@@ -82,3 +82,9 @@
 <!ATTLIST solves
         name   CDATA  #IMPLIED
  >
+
+<!ELEMENT domain (factor)* >
+
+<!ELEMENT factor (q)* >
+
+<!ELEMENT q (#PCDATA)* >

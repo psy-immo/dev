@@ -363,7 +363,7 @@
 
 <!ELEMENT incorrect (#PCDATA|i|b|br|p|div|span)* >
 
-<!ELEMENT inference (parse|assert|expert|conclusion|implicit|justified|trivial|invalid|rule|conclusions|quality|solves|feedback) >
+<!ELEMENT inference (parse|assert|expert|conclusion|implicit|justified|trivial|invalid|rule|conclusions|quality|solves|domain|feedback) >
 
 <!ELEMENT parse (subject|predicate|object)* >
 
@@ -446,6 +446,12 @@
 <!ATTLIST solves
         name   CDATA  #IMPLIED
  >
+
+<!ELEMENT domain (factor)* >
+
+<!ELEMENT factor (q)* >
+
+<!ELEMENT q (#PCDATA)* >
 
 <!ATTLIST inference 
 	tags	CDATA	#IMPLIED
