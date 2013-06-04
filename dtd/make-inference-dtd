@@ -87,7 +87,7 @@ for tag in ["quality","solves"]:
  >
 """)
 
-dtd.write("\n<!ELEMENT domain (factor)* >\n")
+dtd.write("\n<!ELEMENT domain (factor|q)* >\n")
 dtd.write("\n<!ELEMENT factor (q)* >\n")
 dtd.write("\n<!ELEMENT q (#PCDATA)* >\n")
 

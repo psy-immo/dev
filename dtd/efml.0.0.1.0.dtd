@@ -447,7 +447,7 @@
         name   CDATA  #IMPLIED
  >
 
-<!ELEMENT domain (factor)* >
+<!ELEMENT domain (factor|q)* >
 
 <!ELEMENT factor (q)* >
 
