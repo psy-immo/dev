@@ -40,14 +40,22 @@ public class StringIds {
 	/**
 	 * the string vs. id bijection
 	 */
+	/** stores unified string as key, its id as value */
 	private Map<String, Integer> toId;
+	/** stores id as key, its pre-unified version as value */
 	private Map<Integer, String> toString;
+	/**
+	 * the next fresh id
+	 */
+	private int currentId;
 
 	public StringIds() {
 		this.assertionDomain = new ArrayList<ArrayList<ArrayList<String>>>();
 
 		this.toId = new HashMap<String, Integer>();
 		this.toString = new HashMap<Integer, String>();
+
+		this.currentId = 0;
 	}
 
 	/**
@@ -83,10 +91,22 @@ public class StringIds {
 	 */
 	public void addStringProduct(ArrayList<ArrayList<String>> factorwise) {
 
+		if (factorwise.isEmpty()) {
+			/** empty product */
+			return;
+		}
+		for (ArrayList<String> factor : factorwise) {
+			if (factor.isEmpty()) {
+				/** empty product */
+				return;
+			}
+		}
+
 		/**
 		 * we make a deep copy of the factor-product
 		 */
 
+		@SuppressWarnings("unchecked")
 		ArrayList<ArrayList<String>> deep_copy = (ArrayList<ArrayList<String>>) factorwise
 				.clone();
 
@@ -95,6 +115,55 @@ public class StringIds {
 		/**
 		 * furthermore, we add the concatenated strings to the database
 		 */
+
+		/** permutation vector */
+		int[] sigma = new int[deep_copy.size()];
+
+		int stop_criterion = deep_copy.get(0).size();
+
+		while (sigma[0] < stop_criterion) {
+			/**
+			 * add the string corresponding to sigma
+			 */
+
+			String concat = "";
+
+			for (int i = 0; i < sigma.length; ++i) {
+				concat += deep_copy.get(i).get(sigma[i]);
+			}
+
+			this.addString(concat);
+
+			/**
+			 * next permutation
+			 */
+
+			sigma[sigma.length - 1] += 1;
+			for (int i = sigma.length - 1; i > 0; --i) {
+				if (sigma[i] >= deep_copy.get(i).size()) {
+					sigma[i] = 0;
+					sigma[i - 1] += 1;
+				} else {
+					break;
+				}
+			}
+		}
 	}
 
+	/**
+	 * Adds a string to the string id mapping, using a new id number if
+	 * necessary.
+	 * 
+	 * @param s
+	 */
+
+	public void addString(String s) {
+		String unified = unifyString(s);
+
+		if (this.toId.containsKey(unified) == false) {
+			this.toId.put(unified, this.currentId);
+			this.toString.put(this.currentId, s);
+			this.currentId += 1;
+		}
+	}
 }
