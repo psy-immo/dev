@@ -16,7 +16,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.tu_dresden.psy.inference.regexp.xml;
+package de.tu_dresden.psy.inference.machine;
 
 import java.applet.Applet;
 import java.io.FileInputStream;
@@ -34,6 +34,9 @@ import de.tu_dresden.psy.inference.EquivalentAssertions;
 import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
+import de.tu_dresden.psy.inference.regexp.xml.InferableAssertions;
+import de.tu_dresden.psy.inference.regexp.xml.XmlHandler;
+import de.tu_dresden.psy.inference.regexp.xml.XmlRootTag;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatchers;
 

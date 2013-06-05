@@ -41,8 +41,8 @@ function SentencePattern(name, tags, generators, nonempty) {
 	this.tags = tags;
 	this.token = null;
 	this.generators = generators;
-	this.width = "20px";
-	this.height = "20px";
+	this.width = "";
+	this.height = "";
 	this.colorFilled = "#EEEEEE";
 	this.colorBox = "#DDDDDD";
 	this.noTakeOff = false;
@@ -100,10 +100,8 @@ function SentencePattern(name, tags, generators, nonempty) {
 	this.WriteHtml = function() {
 		document.write("<span id=\"sentencePatternBox" + this.id + "\" ");
 
-		document.write(" style=\" display: inline-block; ");
-		document.write("background-color:" + this.colorBox + "; ");
-		document.write("padding: 2px; ");
-		document.write("\" >");
+		document.write(" class=\"sentencepatternBox\" ");
+		document.write(" >");
 
 		for ( var int = 0; int < this.generators.length; ++int) {
 			var part = this.generators[int];
@@ -114,19 +112,11 @@ function SentencePattern(name, tags, generators, nonempty) {
 			}
 		}
 
-		document.write("&nbsp;<span id=\"sentencePattern" + this.id + "\" ");
+		document.write("&nbsp;<span class=\"sentencepattern\" id=\"sentencePattern" + this.id + "\" ");
 
-		document.write(" style=\" display: inline-block; ");
-
-		document.write("background-color:" + this.colorFilled + "; ");
-
-		if (this.width) {
-			document.write("width:" + this.width + "; ");
-		}
-		if (this.height) {
-			document.write("height:" + this.height + "; ");
-		}
-		document.write("\"");
+		document.write(" style=\" ");
+		document.write("\" ");
+		
 		document.write("onClick=\"sentencePatternArray[" + this.id
 				+ "].OnClick()\">");
 		document.write("Up");

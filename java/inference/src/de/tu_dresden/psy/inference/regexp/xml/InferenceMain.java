@@ -18,6 +18,8 @@
 
 package de.tu_dresden.psy.inference.regexp.xml;
 
+import de.tu_dresden.psy.inference.machine.InferenceMachine;
+
 /**
  * implements main command line tool for inference argumentation checking
  * 

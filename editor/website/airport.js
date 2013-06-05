@@ -1,5 +1,5 @@
 /**
- * airport.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
+ * airport.js, (c) 2012-13, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -85,7 +85,7 @@ function Airport(name, tags, accept, reject) {
 
 	this.tags = tags;
 	this.token = null;
-	this.width = "400px";
+	this.width = null;
 	this.height = null;
 	this.colorEmpty = "#CCCCCC";
 	this.colorFilled = "#CCCCFF";
@@ -112,11 +112,8 @@ function Airport(name, tags, accept, reject) {
 	this.UpdateContents = function() {
 
 		var element = document.getElementById("airport" + this.id);
-		var contents = "<table style=\"  border-spacing: 0px; ";
+		var contents =  "<table class=\"airport\" style=\"";
 
-		if (this.width) {
-			contents += "width:" + this.width + "; ";
-		}
 
 		contents += "\">";
 
@@ -128,10 +125,9 @@ function Airport(name, tags, accept, reject) {
 			 * padding
 			 */
 
-			contents += "<tr style=\"height: 12px;";
-			if (this.width)
-				contents += " width:" + this.width + "; ";
-			contents += "background-color:" + this.colorEmpty + "; \" ";
+			contents += "<tr class=\"airportGap\" style=\"";
+			
+			contents += "\" ";
 			contents += "onClick=\"airportArray[" + this.id + "].OnClickRow("
 					+ count + ")\"><td>";
 			contents += "</td><td></td></tr>";
@@ -142,21 +138,24 @@ function Airport(name, tags, accept, reject) {
 			 * line
 			 */
 
-			contents += "<tr style=\"";
-			if (this.width)
-				contents += " width:" + this.width + "; ";
+			contents += "<tr class=\"";
 			if (this.marked[int] == "G") {
-				contents += "background-color:" + this.colorGood + "; \" >";
+				contents += "airportGood";
 			} else if (this.marked[int] == "O") {
-				contents += "background-color:" + this.colorOkay + "; \" >";
+				contents += "airportOkay";
 			} else if (this.marked[int] == "B") {
-				contents += "background-color:" + this.colorBad + "; \" >";
+				contents += "airportBad";
 			} else if (this.content[int])
-				contents += "background-color:" + this.colorFilled + "; \" >";
+				contents += "airportNonempty";
 			else
-				contents += "background-color:" + this.colorEmpty + "; \" >";
-			contents += "<td style=\" width: 20px;";
-			contents += "background-color:" + this.colorEmpty + ";";
+				contents += "airportEmpty";
+			
+			contents += "\"";
+			contents += " style=\"";
+			contents += "\" >";
+			
+			
+			contents += "<td class=\"airportButtonDel\" style=\"";
 			contents += " \" onClick=\"airportArray[" + this.id
 					+ "].OnDeleteRow(" + count + ")\">";
 			contents += "Del";
@@ -174,10 +173,9 @@ function Airport(name, tags, accept, reject) {
 		 * padding
 		 */
 
-		contents += "<tr style=\"";
-		if (this.width)
-			contents += " width:" + this.width + "; ";
-		contents += "background-color:" + this.colorEmpty + "; \" ";
+		contents += "<tr class=\"airportGap\" style=\"";
+		contents += "\" ";
+		
 		contents += "onClick=\"airportArray[" + this.id + "].OnClickRow("
 				+ count + ")\"><td>&nbsp;";
 		contents += "</td><td>&nbsp;</td></tr>";
@@ -277,11 +275,10 @@ function Airport(name, tags, accept, reject) {
 	 */
 	this.WriteHtml = function() {
 		document.write("<span id=\"airport" + this.id + "\" ");
+		document.write(" class=\"airport\" ");
 
-		document.write(" style=\" display: inline-block; ");
-		document.write("padding: 2px; ");
-		document.write("background-color:" + this.colorAround + "; ");
-
+		document.write(" style=\" ");
+		
 		if (this.width) {
 			document.write("width:" + this.width + "; ");
 		}
@@ -294,21 +291,18 @@ function Airport(name, tags, accept, reject) {
 		 * content
 		 */
 
-		var contents = "<table style=\"  border-spacing: 0px; ";
-
-		if (this.width) {
-			contents += "width:" + this.width + "; ";
-		}
+		var contents = "<table class=\"airport\" style=\"  ";
 
 		contents += "\">";
+
 		/**
 		 * padding
 		 */
 
-		contents += "<tr style=\"";
-		if (this.width)
-			contents += " width:" + this.width + "; ";
-		contents += "background-color:" + this.colorEmpty + "; \" ";
+		contents += "<tr class=\"airportEmpty\" style=\"";
+		
+		contents += "\" ";
+		
 		contents += "onClick=\"airportArray[" + this.id
 				+ "].OnClickRow(0)\"><td>&nbsp;";
 		contents += "</td><td>&nbsp;</td></tr>";

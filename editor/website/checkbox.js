@@ -64,17 +64,17 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked, embeddedMode)
 	this.colorEmpty = "#CCCCAA";
 	this.colorFilled = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
-	
+
 	this.defaultChecked = false;
-	
+
 	/**
 	 * this function makes the checkbox checked by default
-	 *
+	 * 
 	 * @returns this
 	 */
 	this.CheckDefault = function() {
 		this.defaultChecked = true;
-		
+
 		return this;
 	};
 
@@ -108,30 +108,26 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked, embeddedMode)
 	this.WriteHtml = function() {
 		var idstring = "checkbox" + this.id;
 
-		document
-				.write("<form id=\"checkboxForm"
-						+ this.id
-						+ "\" onsubmit=\"return false;\" style=\"display: inline-block;"
-						+ "background-color: " + this.colorFilled + ";"
-						+ "\" onclick=\"checkboxArray[" + this.id
-						+ "].OnClick();\">");
+		document.write("<form id=\"checkboxForm" + this.id
+				+ "\" onsubmit=\"return false;\" class=\"checkbox\" style=\""
+				+ "\" onclick=\"checkboxArray[" + this.id + "].OnClick();\">");
 
 		document.write("<input type=\"checkbox\" name=\"" + idstring
 				+ "\" id=\"" + idstring + "\" "
-				+ "style=\"display: inline-block; ");
+				+ "style=\"");
 		if (this.width) {
 			document.write("width: " + this.width + "; ");
 		}
 		if (this.height) {
 			document.write("height: " + this.height + "; ");
 		}
-		document.write("background-color: " + this.colorFilled + ";\" "
+		document.write("\" class=\"checkbox\" "
 				+ "onclick=\"checkboxArray[" + this.id + "].OnClick();\" ");
-		
+
 		if (this.defaultChecked) {
 			document.write(" checked=\"checked\"");
 		}
-		
+
 		document.write(" />");
 
 		document.write(this.label);
@@ -169,16 +165,16 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked, embeddedMode)
 	 * this function marks the current check box green
 	 */
 	this.MarkAsGood = function() {
-		var html_object = document.getElementById("checkboxForm" + this.id);
-		html_object.style.backgroundColor = this.colorGood;
+		var html_object = $("checkboxForm" + this.id);
+		html_object.addClassName("checkboxMarkedGood");
 	};
 
 	/**
 	 * this function demarks the current check box
 	 */
 	this.MarkNeutral = function() {
-		var element = document.getElementById("checkboxForm" + this.id);
-		element.style.backgroundColor = this.colorFilled;
+		var html_object = $("checkboxForm" + this.id);
+		html_object.removeClassName("checkboxMarkedGood");
 
 	};
 

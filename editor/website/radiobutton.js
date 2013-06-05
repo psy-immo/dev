@@ -82,7 +82,7 @@ function RadioButton(name, tags, type, token, embeddedMode) {
 
 	/**
 	 * 
-	 * adds a global text to be displayed before the checkbox
+	 * adds a global text to be displayed before the radio box
 	 * 
 	 * @returns this*
 	 */
@@ -126,10 +126,10 @@ function RadioButton(name, tags, type, token, embeddedMode) {
 			document
 					.write("<form id=\""
 							+ idstring
-							+ "\" onsubmit=\"return false;\" style=\"display: inline-block;");
+							+ "\" onsubmit=\"return false;\" class=\"radiobutton\" style=\"");
 		} else if (this.type == "tr") {
 			document.write("<tr id=\"" + idstring
-					+ "\" style=\"display: inline-block;");
+					+ "\" class=\"radiobutton\" style=\"");
 		}
 
 		if (this.width) {
@@ -138,7 +138,7 @@ function RadioButton(name, tags, type, token, embeddedMode) {
 		if (this.height) {
 			document.write("height: " + this.height + "; ");
 		}
-		document.write("background-color: " + this.colorEmpty + ";\">");
+		document.write("\">");
 
 		if (this.label) {
 			if (this.type == "form") {
@@ -151,12 +151,12 @@ function RadioButton(name, tags, type, token, embeddedMode) {
 		for ( var int = 0; int < this.contentLabels.length; int++) {
 			if (this.type == "tr") {
 				document
-						.write("<td><form onsubmit=\"return false;\" style=\"display: inline-block;\">");
+						.write("<td class=\"radiobutton\"><form onsubmit=\"return false;\" class=\"radiobuttonNested\">");
 			}
 
 			document.write("<span onclick=\"radiobuttonArray[" + this.id
 					+ "].OnClick(" + int + ")\">");
-			document.write("<input type=\"radio\" name=\"" + idstring
+			document.write("<input class=\"radiobutton\" type=\"radio\" name=\"" + idstring
 					+ "group\" id=\"" + idstring + "_" + int + "\""
 					+ " value=\"" + this.contentValues[int] + "\"/>");
 			document.write(this.contentLabels[int]);
@@ -214,20 +214,22 @@ function RadioButton(name, tags, type, token, embeddedMode) {
 	 * this function marks the current radio button green
 	 */
 	this.MarkAsGood = function() {
-		var html_object = document.getElementById("radiobutton" + this.id);
-		html_object.style.backgroundColor = this.colorGood;
+		var html_object = $("radiobutton" + this.id);
+		html_object.addClassName("radiobuttonMarkedGood");
 	};
 
 	/**
 	 * this function demarks the current radio button
 	 */
 	this.MarkNeutral = function() {
-		var element = document.getElementById("radiobutton" + this.id);
+		var element = $("radiobutton" + this.id);
 		if (this.selected >= 0) {
-			element.style.backgroundColor = this.colorFilled;
+			element.addClassName("radiobuttonNonempty");
 		} else {
-			element.style.backgroundColor = this.colorEmpty;
+			element.removeClassName("radiobuttonNonempty");
 		}
+		
+		element.removeClassName("radiobuttonMarkedGood");
 	};
 
 	/**

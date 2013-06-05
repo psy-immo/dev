@@ -83,21 +83,8 @@ function FloatBox(style, content) {
 
 	this.GetHtmlCode = function() {
 		var html = "<div id=\"floatbox" + this.id + "\" ";
-
-		html += " style=\" display: inline-block; ";
-		html += " position: absolute; ";
-		html += " border-style: solid; ";
-		html += " padding: 6px; ";
-		html += " border-color: #000000; ";
-		html += " zIndex: 50; ";
-		html += " -webkit-touch-callout: none;";
-		html += " -webkit-user-select: none;";
-		html += " -khtml-user-select: none;";
-		html += " -moz-user-select: none;";
-		html += " -ms-user-select: none;";
-		html += " user-select: none;";
-		
-		html += " cursor:default;";
+		html += " class=\"boxspaceFloatBox\"";
+		html += " style=\" ";
 		html += this.style;
 		html += "\" >";
 		html += this.content;
@@ -680,21 +667,9 @@ function Boxspace(name, tags, accept, reject) {
 	 */
 	this.WriteHtml = function() {
 		document.write("<div id=\"boxspace" + this.id + "\" ");
-
-		document.write(" style=\" display: inline-block; ");
-
-		/**
-		 * disable text selection (interferes with dragging)
-		 */
-
-		document.write(" -webkit-touch-callout: none;");
-		document.write(" -webkit-user-select: none;");
-		document.write(" -khtml-user-select: none;");
-		document.write(" -moz-user-select: none;");
-		document.write(" -ms-user-select: none;");
-		document.write(" user-select: none;");
-
-		document.write("background-color:" + this.colorGround + "; ");
+		document.write(" class=\"boxspaceWorkspace\" ");
+		document.write(" style=\"  ");
+	
 
 		if (this.width) {
 			document.write("width:" + this.width + "; ");
@@ -703,12 +678,7 @@ function Boxspace(name, tags, accept, reject) {
 			document.write("height:" + this.height + "; ");
 		}
 
-		/**
-		 * be the reference for children absolute positions
-		 */
-		document.write("position: relative; ");
 
-		document.write("overflow: auto; ");
 
 		document.write("\">");
 
@@ -1006,7 +976,7 @@ function Boxspace(name, tags, accept, reject) {
 			 * now add a float box
 			 */
 			if (plane_type == "text") {
-				var box = new FloatBox("background-color: #EEEEEE;" + "left: "
+				var box = new FloatBox("left: "
 						+ left + "px;" + "top: " + top + "px;", plane);
 				box.SetParentId(this.id);
 				box.Create("boxspace" + this.id);
