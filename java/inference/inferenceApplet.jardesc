@@ -12,11 +12,17 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <file path="/inference/.classpath"/>
-        <javaElement handleIdentifier="=inference/src"/>
+        <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.regexp.xml"/>
+        <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.example"/>
+        <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.forms"/>
+        <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.regexp"/>
         <file path="/inference/inference.jarexport.jardesc"/>
-        <file path="/inference/inferenceApplet.jardesc"/>
+        <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.machine{InferenceMachine.java"/>
         <file path="/inference/jarexport.jardesc"/>
+        <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference"/>
+        <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.regexp"/>
         <file path="/inference/.project"/>
         <file path="/inference/example.jarexport.jardesc"/>
+        <file path="/inference/inferenceApplet.jardesc"/>
     </selectedElements>
 </jardesc>
