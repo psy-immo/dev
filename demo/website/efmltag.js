@@ -24,6 +24,15 @@ efmlTagArray = [];
  */
 function EfmlTagConstructor(me) {
 	me.id = efmlTagCounter++;
+	
+	/**
+	 * deletes the tag from the efmlTagArray
+	 */
+
+	me.Delete = function() {
+		efmlTagArray[me.id] = null;
+	};
+
 
 	/**
 	 * @returns efml code of this tag

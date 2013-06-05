@@ -173,8 +173,29 @@ function escapeBTNR(s) {
  */
 
 function unescapeBTNR(s) {
-	return ("" + s).replace(/\\n/g, "\n").replace(/\\r/g, "\r").replace(/\\t/g,
-			"\t").replace(/\\\\/g, "\\");
+	var output = "";
+	var input = "" + s;
+	var escaped = false;
+	for ( var int = 0; int < input.length; int++) {
+		var c = input[int];
+		if (escaped) {
+			escaped = false;
+			if (c == 'n') {
+				output += '\n';
+			} else if (c == 't') {
+				output += '\t';
+			} else if (c == 'r') {
+				output += '\r';
+			} else
+				output += c;
+		} else if (c == '\\') {
+			escaped = true;
+		} else {
+			output += c;
+		}
+	}
+
+	return output;
 }
 
 /**
@@ -471,7 +492,7 @@ function descriptionToProperties(description, props, vals, locks) {
 					locks[idx] = true;
 				}
 			}
-			var q = line.substr(eqidx+1);
+			var q = line.substr(eqidx + 1);
 			vals[idx] = unescapeBTNR(q);
 		} else {
 			var p = line.trim();
@@ -494,10 +515,10 @@ function descriptionToProperties(description, props, vals, locks) {
  *            value array
  * @param locks
  *            lock-status array
- * @returns   description string
- *            
+ * @returns description string
+ * 
  */
-function propertiesToDescription( props, vals, locks) {
+function propertiesToDescription(props, vals, locks) {
 	var description = "";
 	for ( var int = 0; int < props.length; int++) {
 		if (description)
