@@ -12,9 +12,9 @@ if __name__ == '__main__':
 	
 	
 dtd.write("\n<!ELEMENT " + rootname +" (parse|assert|expert|conclusion|implicit|"+\
-	"justified|trivial|invalid|rule|conclusions|quality|solves"+\
+	"justified|trivial|invalid|rule|conclusions|quality|solves|domain"+\
 	furtherchilds+") >\n")
-
+	
 dtd.write("\n<!ELEMENT parse (subject|predicate|object)* >\n")
 
 dtd.write("\n<!ELEMENT subject (#PCDATA|rho)* >\n")
@@ -87,4 +87,7 @@ for tag in ["quality","solves"]:
  >
 """)
 
+dtd.write("\n<!ELEMENT domain (factor|q)* >\n")
+dtd.write("\n<!ELEMENT factor (q)* >\n")
+dtd.write("\n<!ELEMENT q (#PCDATA)* >\n")
 

@@ -7,7 +7,7 @@ efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|"+\
 				"phpurl|jsurl|documentid|studyid|subjectprompt|"+\
 				"subjectinfo|subjectchange|airport|template|freetext|"+\
 				"checkbox|radiobutton|multiline|popuphelp|"+\
-				"trashcan|boxspace|efmlboard|efmlpreview"
+				"trashcan|boxspace|efmlboard|efmlpreview|cssurl"
 efml_extra = "tables"
 nested_elements = "plain|dropdown|freetext|checkbox|radiobutton|multiline"
 editor_contents = "efmlquote"
@@ -169,7 +169,8 @@ dtd.write("\n<!ATTLIST option "+"""
  >
 """)
 
-for tag in ["phpurl","jsurl","documentid","studyid","subjectprompt","subjectinfo","subjectchange","plain"]:
+for tag in ["phpurl","jsurl","cssurl","documentid","studyid", \
+	        "subjectprompt","subjectinfo","subjectchange","plain"]:
 	dtd.write("\n<!ELEMENT "+tag+" (#PCDATA)* >\n")
 	#dtd.write("\n<!ATTLIST "+tag+" "+universal_attributes+" >\n")
 

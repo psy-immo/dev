@@ -21,7 +21,6 @@ package de.tu_dresden.psy.efml;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.UUID;
 
 import javax.naming.OperationNotSupportedException;
@@ -88,19 +87,19 @@ public class BodyTag implements AnyTag {
 	private boolean include_efml_applet;
 
 	public BodyTag(HeadTag head) {
-		innerTags = new ArrayList<AnyTag>();
+		this.innerTags = new ArrayList<AnyTag>();
 
-		idDoc = UUID.randomUUID().toString();
-		idStudy = UUID.randomUUID().toString();
-		logletUrl = null;
-		scriptUrl = "";
-		subjectChange = null;
-		subjectInfo = null;
-		subjectPrompt = null;
+		this.idDoc = UUID.randomUUID().toString();
+		this.idStudy = UUID.randomUUID().toString();
+		this.logletUrl = null;
+		this.scriptUrl = "";
+		this.subjectChange = null;
+		this.subjectInfo = null;
+		this.subjectPrompt = null;
 
-		include_efml_applet = false;
+		this.include_efml_applet = false;
 
-		headTag = head;
+		this.headTag = head;
 	}
 
 	/**
@@ -122,7 +121,7 @@ public class BodyTag implements AnyTag {
 				+ " code=\"de.tu_dresden.psy.util.Loglet\" mayscript=\"\" "
 				+ "style=\"width: 1px; height: 1px\"></applet>\n");
 
-		if (include_efml_applet) {
+		if (this.include_efml_applet) {
 			writer.write("  <applet id=\"efmlApplet\" name=\"efmlApplet\" archive=\""
 					+ baseUrl
 					+ "efmlApplet.jar\" "
@@ -139,7 +138,7 @@ public class BodyTag implements AnyTag {
 	 */
 
 	public void setStudy(String id) {
-		idStudy = id;
+		this.idStudy = id;
 	}
 
 	/**
@@ -149,7 +148,7 @@ public class BodyTag implements AnyTag {
 	 */
 
 	public void setPrompt(String prompt) {
-		subjectPrompt = prompt;
+		this.subjectPrompt = prompt;
 	}
 
 	/**
@@ -159,7 +158,7 @@ public class BodyTag implements AnyTag {
 	 */
 
 	public void setInfo(String info) {
-		subjectInfo = info;
+		this.subjectInfo = info;
 	}
 
 	/**
@@ -169,7 +168,7 @@ public class BodyTag implements AnyTag {
 	 */
 
 	public void setChange(String text) {
-		subjectChange = text;
+		this.subjectChange = text;
 	}
 
 	/**
@@ -179,7 +178,7 @@ public class BodyTag implements AnyTag {
 	 */
 
 	public void setDocument(String id) {
-		idDoc = id;
+		this.idDoc = id;
 	}
 
 	/**
@@ -189,7 +188,7 @@ public class BodyTag implements AnyTag {
 	 */
 
 	public void setPhp(String url) {
-		logletUrl = url;
+		this.logletUrl = url;
 	}
 
 	/**
@@ -199,14 +198,21 @@ public class BodyTag implements AnyTag {
 	 */
 
 	public void setJs(String url) {
-		scriptUrl = url;
+		this.scriptUrl = url;
+
+		/**
+		 * give the url as default base if there is no css file url specified
+		 * explicitly
+		 */
+
+		this.headTag.setCssUrlDefaultBase(url);
 	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
 		writer.write("<body id=\"body\">\n");
 
-		writeAllApplets(writer, scriptUrl);
+		this.writeAllApplets(writer, this.scriptUrl);
 
 		/**
 		 * write the identification strings & base url & ...
@@ -214,33 +220,36 @@ public class BodyTag implements AnyTag {
 		 */
 
 		writer.write("	<script type=\"text/javascript\">\n" + "  docId = \""
-				+ StringEscape.escapeToJavaScript(idDoc) + "\";\n"
-				+ "  studyId = \"" + StringEscape.escapeToJavaScript(idStudy)
-				+ "\";\n");
+				+ StringEscape.escapeToJavaScript(this.idDoc) + "\";\n"
+				+ "  studyId = \""
+				+ StringEscape.escapeToJavaScript(this.idStudy) + "\";\n");
 
-		if (logletUrl != null) {
+		if (this.logletUrl != null) {
 			writer.write("  logletBaseURL = \""
-					+ StringEscape.escapeToJavaScript(logletUrl) + "\";\n");
+					+ StringEscape.escapeToJavaScript(this.logletUrl) + "\";\n");
 		}
 
-		if (subjectPrompt != null) {
+		if (this.subjectPrompt != null) {
 			writer.write("  subjectIdPrompt = \""
-					+ StringEscape.escapeToJavaScript(subjectPrompt) + "\";\n");
+					+ StringEscape.escapeToJavaScript(this.subjectPrompt)
+					+ "\";\n");
 		}
 
-		if (subjectInfo != null) {
+		if (this.subjectInfo != null) {
 			writer.write("  subjectIdInfo = \""
-					+ StringEscape.escapeToJavaScript(subjectInfo) + "\";\n");
+					+ StringEscape.escapeToJavaScript(this.subjectInfo)
+					+ "\";\n");
 		}
 
-		if (subjectChange != null) {
+		if (this.subjectChange != null) {
 			writer.write("  subjectIdChange = \""
-					+ StringEscape.escapeToJavaScript(subjectChange) + "\";\n");
+					+ StringEscape.escapeToJavaScript(this.subjectChange)
+					+ "\";\n");
 		}
 
 		writer.write("  </script>\n");
 
-		HtmlTag.writeAllIncludes(writer, scriptUrl);
+		HtmlTag.writeAllIncludes(writer, this.scriptUrl);
 
 		/**
 		 * all content will be displayed in the "mainframe"
@@ -254,7 +263,7 @@ public class BodyTag implements AnyTag {
 
 		writer.write("<script type=\"text/javascript\">printChangeSubjectButton();</script>");
 
-		writeInnerTags(writer);
+		this.writeInnerTags(writer);
 
 	}
 
@@ -269,8 +278,7 @@ public class BodyTag implements AnyTag {
 		/**
 		 * write inner tags
 		 */
-		for (Iterator<AnyTag> it = innerTags.iterator(); it.hasNext();) {
-			AnyTag innerTag = it.next();
+		for (AnyTag innerTag : this.innerTags) {
 			innerTag.open(writer);
 			innerTag.close(writer);
 		}
@@ -291,7 +299,7 @@ public class BodyTag implements AnyTag {
 
 		writer.write("	<script type=\"text/javascript\">\n"
 				+ "  myStorage.SetupAutoRestore(sessionStorage,\""
-				+ StringEscape.escapeToJavaScript(idDoc) + "\");"
+				+ StringEscape.escapeToJavaScript(this.idDoc) + "\");"
 				+ "  </script>\n");
 
 		/**
@@ -319,10 +327,11 @@ public class BodyTag implements AnyTag {
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
-		if (innerTag instanceof TitleTag)
-			headTag.encloseTag(innerTag);
-		else
-			innerTags.add(innerTag);
+		if (innerTag instanceof TitleTag) {
+			this.headTag.encloseTag(innerTag);
+		} else {
+			this.innerTags.add(innerTag);
+		}
 	}
 
 	/**
@@ -339,6 +348,20 @@ public class BodyTag implements AnyTag {
 		 * there is no efml representation of the body tag!
 		 */
 		return null;
+	}
+
+	/**
+	 * set the css url in the document head
+	 * 
+	 * @param token
+	 *            url to the css style sheet that will be used by the generated
+	 *            html files
+	 */
+
+	public void setCss(String token) {
+
+		this.headTag.setCssUrl(token);
+
 	}
 
 }

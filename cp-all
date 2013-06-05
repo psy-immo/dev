@@ -12,6 +12,7 @@ cd ..
 cd demo
 cd website
 cp ../../java/efjs/*.js .
+cp ../../java/efjs/*.css .
 cp ../../java/efjs/*.jar .
 cp ../../php/loglet/*.php .
 
@@ -21,6 +22,7 @@ cd ..
 cd editor
 cd website
 cp ../../java/efjs/*.js .
+cp ../../java/efjs/*.css .
 cp ../../java/efjs/*.jar .
 cp ../../php/loglet/*.php .
 cp ../../php/editor/*.php .
@@ -32,6 +34,7 @@ cd java
 cd efmlWebCompilerModule
 cd WebContent
 cp ../../../java/efjs/*.js .
+cp ../../java/efjs/*.css .
 cp ../../../java/efjs/*.jar .
 cp ../../../php/loglet/*.php .
 cp ../../../php/editor/*.php .

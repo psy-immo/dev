@@ -724,6 +724,98 @@
 				<subject>.*bulb C.*</subject>
 			</solves>
 			
+			<domain>
+				<factor>
+					<q>bulb A</q>
+					<q>bulb B</q>
+					<q>bulb C</q>
+					<q>bulb chain AB</q>
+					<q>the battery</q>
+				</factor>
+				<q> </q>
+				<factor>
+					<q>is serial connected with</q>
+					<q>is connected in parallel with</q>
+				</factor>
+				<q> </q>
+				<factor>
+					<q>bulb A</q>
+					<q>bulb B</q>
+					<q>bulb C</q>
+					<q>bulb chain AB</q>
+					<q>the battery</q>
+				</factor>
+			</domain>
+			
+			<domain>
+				<factor>
+					<q>the current through</q>
+					<q>the voltage of</q>
+					<q>the resistance of</q>
+					<q>the input power of</q>
+					<q>the luminosity of</q>
+				</factor>
+				<q> </q>
+				<factor>
+					<q>bulb A</q>
+					<q>bulb B</q>
+					<q>bulb C</q>
+					<q>bulb chain AB</q>
+					<q>the battery</q>
+				</factor>
+				<q> </q>
+				<factor>
+					<q>is bigger than</q>
+					<q>is smaller than</q>
+					<q>is as big as</q>
+				</factor>
+				<q> </q>
+				<factor>
+					<q>the current through</q>
+					<q>the voltage of</q>
+					<q>the resistance of</q>
+					<q>the input power of</q>
+					<q>the luminosity of</q>
+				</factor>
+				<q> </q>
+				<factor>
+					<q>bulb A</q>
+					<q>bulb B</q>
+					<q>bulb C</q>
+					<q>bulb chain AB</q>
+					<q>the battery</q>
+				</factor>				
+			</domain>
+			
+			<domain>
+				<q>a </q>
+				<factor>
+					<q>bigger</q>
+					<q>smaller</q>
+				</factor>
+				<q> </q>
+				<factor>
+					<q>current</q>
+					<q>voltage</q>
+					<q>resistance</q>
+					<q>input power</q>
+					<q>luminosity</q>
+				</factor>
+				<q> means, for bulbs, a </q>
+				<factor>
+					<q>bigger</q>
+					<q>smaller</q>
+				</factor>
+				<q> </q>
+				<factor>
+					<q>current</q>
+					<q>voltage</q>
+					<q>resistance</q>
+					<q>input power</q>
+					<q>luminosity</q>
+				</factor>
+			</domain>
+			
 			<feedback>
 				<required count="2" />
 				<required name="BC" />

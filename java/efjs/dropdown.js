@@ -111,17 +111,17 @@ function Dropdown(name, tags, label, token) {
 	this.WriteHtml = function() {
 		var idstring = "dropdown"+this.id;
 		
-		document.write("<form onsubmit=\"return false;\" style=\"display: inline-block;\">");
+		document.write("<form onsubmit=\"return false;\" class=\"dropdown\">");
 		
 		document.write("<select name=\""+idstring+ "\" id=\""+idstring+"\" " 
-				+ "style=\"display: inline-block; ");
+				+ "class=\"dropdown\" style=\"");
 		if (this.width) {
 			document.write("width: "+this.width+"; ");
 		}
 		if (this.height){
 			document.write("height: "+this.height+"; ");
 		}
-		document.write( "background-color: "+this.colorEmpty+";\" "		
+		document.write("\" "		
 				+ "onchange=\"dropdownArray["+this.id+"].OnChange();\" "
 				+ ">");
 		document.write("<option value=\""+this.token+"\">"+this.label+"</option>");
@@ -141,16 +141,24 @@ function Dropdown(name, tags, label, token) {
 	 * this function is called when the drop down box changes its contents
 	 */
 	this.OnChange = function() {
-		var element = document.getElementById("dropdown"+this.id);
+		var html_element = $("dropdown"+this.id);
+	
 		
-		
-		if (element.selectedIndex > 0) {
-			element.style.backgroundColor = this.colorFilled;
-			this.token = this.contentValues[element.selectedIndex - 1];
+		if (html_element.selectedIndex > 0) {
+			
+			html_element.addClassName("dropdownNonempty");
+			this.token = this.contentValues[html_element.selectedIndex - 1];
 		} else {
-			element.style.backgroundColor = this.colorEmpty;
+			html_element.removeClassName("dropdownNonempty");
+			
 			this.token = this.emptyToken;
 		}
+		
+		/**
+		 * also demark the goodness of the dropdown
+		 */
+		
+		html_element.removeClassName("dropdownMarkedGood");
 		
 		myLogger.Log(this.name + " <- " + this.token);
 	};
@@ -159,20 +167,16 @@ function Dropdown(name, tags, label, token) {
 	 * this function marks the current drop down green
 	 */
 	this.MarkAsGood = function() {
-		var html_object = document.getElementById("dropdown" + this.id);
-		html_object.style.backgroundColor = this.colorGood;
+		var html_element = $("dropdown"+this.id);
+		html_element.addClassName("dropdownMarkedGood");
 	};
 
 	/**
 	 * this function demarks the current drop down
 	 */
 	this.MarkNeutral = function() {
-		var element = document.getElementById("dropdown" + this.id);
-		if (element.selectedIndex > 0) {
-			element.style.backgroundColor = this.colorFilled;
-		} else {
-			element.style.backgroundColor = this.colorEmpty;
-		}
+		var html_element = $("dropdown"+this.id);
+		html_element.removeClassName("dropdownMarkedGood");
 	};
 	
 	/**
@@ -188,16 +192,25 @@ function Dropdown(name, tags, label, token) {
 	 */
 	
 	this.SetValue = function(contents) {
-		var element = document.getElementById("dropdown"+this.id);
-		element.selectedIndex = contents;
+		var html_element = $("dropdown"+this.id);
+		html_element.selectedIndex = contents;
+		
+		if (html_element.selectedIndex > 0) {
 			
-		if (element.selectedIndex > 0) {
-			element.style.backgroundColor = this.colorFilled;
-			this.token = this.contentValues[element.selectedIndex - 1];
+			html_element.addClassName("dropdownNonempty");
+			this.token = this.contentValues[html_element.selectedIndex - 1];
 		} else {
-			element.style.backgroundColor = this.colorEmpty;
+			html_element.removeClassName("dropdownNonempty");
+			
 			this.token = this.emptyToken;
 		}
+		
+		/**
+		 * also demark the goodness of the dropdown
+		 */
+		
+		html_element.removeClassName("dropdownMarkedGood");
+	
 	};
 
 	dropdownArray[this.id] = this;

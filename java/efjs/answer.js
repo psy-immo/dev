@@ -1,5 +1,5 @@
 /**
- * solution.js, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
+ * answer.js, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -43,9 +43,9 @@ function Answer(testfn) {
 				+ idstring + " value=\"" + this.text
 				+ "\" onclick=\"answerArray[" + this.id + "].OnClick()\"/>");
 		document
-				.write("<br /><table border=0 cellpadding=0 cellspacing=0><tr><td id=\"AnswerHint"
+				.write("<br /><table class=\"answerHint\"><tr><td id=\"AnswerHint"
 						+ this.id
-						+ "\" style=\"height: 20px; width: 100%\"></td></tr></table>");
+						+ "\" class=\"answerHint\"></td></tr></table>");
 		document.write("</form>");
 	};
 

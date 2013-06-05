@@ -85,12 +85,16 @@ function Freetext(name, tags, label, embeddedMode) {
 	this.WriteHtml = function() {
 		var idstring = "freetext" + this.id;
 
-		document
-				.write("<form onsubmit=\"return false;\" style=\"display: inline-block;\">");
+		document.write("<form onsubmit=\"return false;\" class=\"freetext\">");
 
 		document.write("<input type=\"text\" name=\"" + idstring + "\" id=\""
 				+ idstring + "\" " + "value=\"" + this.token + "\""
-				+ "style=\"display: inline-block; ");
+				+ "class=\"freetext");
+
+		if (this.token)
+			document.write(" freetextNonempty");
+
+		document.write("\" style=\"");
 		if (this.width) {
 			document.write("width: " + this.width + "; ");
 		}
@@ -98,15 +102,8 @@ function Freetext(name, tags, label, embeddedMode) {
 			document.write("height: " + this.height + "; ");
 		}
 
-		var color = this.colorEmpty;
-
-		if (this.token) {
-			color = this.colorFilled;
-		}
-
-		document.write("background-color: " + color + ";\" "
-				+ "onchange=\"freetextArray[" + this.id + "].OnChange();\" "
-				+ "/>");
+		document.write("\" " + "onchange=\"freetextArray[" + this.id
+				+ "].OnChange();\" " + "/>");
 		document.write("</form>");
 	};
 
@@ -145,20 +142,22 @@ function Freetext(name, tags, label, embeddedMode) {
 	 * this function marks the current drop down green
 	 */
 	this.MarkAsGood = function() {
-		var html_object = document.getElementById("freetext" + this.id);
-		html_object.style.backgroundColor = this.colorGood;
+		var element = $("freetext" + this.id);
+		element.addClassName("freetextMarkedGood");
 	};
 
 	/**
 	 * this function demarks the current drop down
 	 */
 	this.MarkNeutral = function() {
-		var element = document.getElementById("freetext" + this.id);
+		var element = $("freetext" + this.id);
 		if (this.token) {
-			element.style.backgroundColor = this.colorFilled;
+			element.addClassName("freetextNonempty");
 		} else {
-			element.style.backgroundColor = this.colorEmpty;
+			element.removeClassName("freetextNonempty");
 		}
+		
+		element.removeClassName("freetextMarkedGood");
 	};
 
 	/**

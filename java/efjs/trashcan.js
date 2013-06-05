@@ -43,8 +43,8 @@ function Trashcan(name, tags, accept, reject) {
 	this.tags = tags;
 
 	this.respawn = null;
-	this.width = "50px";
-	this.height = "50px";
+	this.width = "";
+	this.height = "";
 	this.colorGround = "#888888";
 	this.colorBoxes = "#CC0000";
 	this.colorGood = "#CCFFCC";
@@ -106,10 +106,8 @@ function Trashcan(name, tags, accept, reject) {
 	this.WriteHtml = function() {
 		document.write("<div id=\"trashcan" + this.id + "\" ");
 
-		document.write(" style=\" display: inline-block; ");
-
-		document.write("background-color:" + this.colorGround + "; ");
-		document.write("color:" + this.colorBoxes + "; ");
+		document.write(" class=\"trashcan\" style=\" ");
+		
 
 		if (this.width) {
 			document.write("width:" + this.width + "; ");

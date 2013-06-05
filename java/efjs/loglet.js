@@ -199,15 +199,23 @@ function unescapeBTNR(s) {
 }
 
 /**
- * query server for stored value
+ * query server for stored value (java applet version)
  * 
  * @param id
  * @param name
  * @param serverurl
  */
 
-function getServer(id, name, serverurl) {
+function getServerApplet(id, name, serverurl) {
 	var applet = document.getElementById("loglet");
+
+	if (!applet) {
+		return "!! applet element not found";
+	}
+	
+	if (!applet.queryLogger) {
+		return "!! applet not running";
+	}
 
 	/**
 	 * java script to java interaction is buggy so add string termination
@@ -220,6 +228,106 @@ function getServer(id, name, serverurl) {
 	var unescaped = unescapeSome(val);
 
 	return unescaped;
+}
+
+/**
+ * query server for stored value (javascript version)
+ * 
+ * @param id
+ * @param name
+ * @param serverurl
+ */
+
+function getServerJS(id, name, serverurl, throwIfUnavailable) {
+	var request;
+
+	/**
+	 * thanks to cssSandpaper getXMLHttpRequest :)
+	 */
+
+	if (window.XMLHttpRequest) {
+
+		request = new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		try {
+			request = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch (dummy) {
+			request = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	} else {
+		if (throwIfUnavailable) {
+			throw "!! XMLHttpRequest not supported by browser";
+		}
+		return "!! XMLHttpRequest not supported by browser";
+	}
+
+	/**
+	 * encode the post data
+	 */
+
+	var data = "";
+
+	data += encodeURIComponent("id") + "=" + encodeURIComponent(id);
+	data += "&" + encodeURIComponent("varname") + "="
+			+ encodeURIComponent(name);
+	data += "&" + encodeURIComponent("value") + "=" + encodeURIComponent("");
+
+	try {
+		request.open("POST", serverurl, false);
+
+		/**
+		 * is there a bug that requires
+		 * 
+		 * request.setRequestHeader("If-Modified-Since","Sat, 1 Jan 2000
+		 * 00:00:00 GMT");
+		 * 
+		 * here??
+		 */
+
+		request.send(data);
+	} catch (ex) {
+		var error = "" + ex + "";
+		if (throwIfUnavailable) {
+			throw "!! ERROR requesting " + serverurl + " with " + data + ":\n"
+					+ error;
+		}
+		return "!! ERROR requesting " + serverurl + " with " + data + ":\n"
+				+ error;
+	}
+
+	/**
+	 * skip the http header
+	 */
+
+	var val = request.responseText
+			.substr(request.responseText.indexOf("\n", 0) + 1);
+
+	if (request.statusText != "OK")
+		return "!! error in request: " + request.statusText + " .. " + val;
+
+	var unescaped = unescapeSome(val);
+
+	return unescaped;
+}
+
+/**
+ * query server for stored value (choose which version to work with)
+ * 
+ * @param id
+ * @param name
+ * @param serverurl
+ */
+
+function getServer(id, name, serverurl) {
+	var result = "";
+	try {
+		/** try JS first, and throw if unavailable */
+		result = getServerJS(id, name, serverurl, true);
+	} catch (unavailable) {
+		result = getServerApplet(id, name, serverurl);
+	}
+
+	return result;
 }
 
 /**
@@ -299,16 +407,33 @@ function readLocalFile() {
 }
 
 /**
- * query server for stored value
+ * query server to change stored value (java applet version)
  * 
  * @param id
  * @param name
  * @param serverurl
  */
 
-function setServer(id, name, value, serverurl) {
+/**
+ * query server to change stored value (java applet version)
+ * 
+ * @param id
+ * @param name
+ * @param serverurl
+ */
+
+function setServerApplet(id, name, value, serverurl) {
 	var applet = document.getElementById("loglet");
 
+	if (!applet) {
+		return "!! applet element not found";
+	}
+	
+	if (!applet.queryLogger) {
+		return "!! applet not running";
+	}
+
+	
 	/**
 	 * java script to java interaction is buggy so add string termination
 	 * zeros....
@@ -318,6 +443,107 @@ function setServer(id, name, value, serverurl) {
 			bugfixParam(escapeSome(value)), bugfixParam(serverurl));
 
 	return unescapeSome(result);
+}
+
+/**
+ * query server to change stored value (java applet version)
+ * 
+ * @param id
+ * @param name
+ * @param serverurl
+ */
+
+function setServerJS(id, name, value, serverurl, throwIfUnavailable) {
+	var request;
+
+	/**
+	 * thanks to cssSandpaper getXMLHttpRequest :)
+	 */
+
+	if (window.XMLHttpRequest) {
+
+		request = new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		try {
+			request = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch (dummy) {
+			request = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	} else {
+		if (throwIfUnavailable) {
+			throw "!! XMLHttpRequest not supported by browser";
+		}
+		return "!! XMLHttpRequest not supported by browser";
+	}
+
+	/**
+	 * encode the post data
+	 */
+
+	var data = "";
+
+	data += encodeURIComponent("id") + "=" + encodeURIComponent(id);
+	data += "&" + encodeURIComponent("varname") + "="
+			+ encodeURIComponent(name);
+	data += "&" + encodeURIComponent("value") + "=" + encodeURIComponent(value);
+
+	try {
+		request.open("POST", serverurl, false);
+
+		/**
+		 * is there a bug that requires
+		 * 
+		 * request.setRequestHeader("If-Modified-Since","Sat, 1 Jan 2000
+		 * 00:00:00 GMT");
+		 * 
+		 * here??
+		 */
+
+		request.send(data);
+	} catch (ex) {
+		var error = "" + ex + "";
+		if (throwIfUnavailable) {
+			throw "!! ERROR requesting " + serverurl + " with " + data + ":\n"
+					+ error;
+		}
+		return "!! ERROR requesting " + serverurl + " with " + data + ":\n"
+				+ error;
+	}
+
+	/**
+	 * skip the http header
+	 */
+
+	var val = request.responseText
+			.substr(request.responseText.indexOf("\n", 0) + 1);
+
+	if (request.statusText != "OK")
+		return "!! error in request: " + request.statusText + " .. " + val;
+
+	var unescaped = unescapeSome(val);
+
+	return unescaped;
+}
+
+/**
+ * query server to change stored value (automatic version)
+ * 
+ * @param id
+ * @param name
+ * @param serverurl
+ */
+
+function setServer(id, name, value, serverurl) {
+	var result = "";
+	
+	try {
+		result = setServerJS(id, name, value, serverurl, true);
+	}
+	catch (unavailable) {
+		result = setServerApplet(id, name, value, serverurl);
+	}
+	
+	return result;
 }
 
 /**
@@ -420,16 +646,17 @@ function doGetAll() {
 
 /**
  * 
- * check whether the server storage works currently
+ * check whether the server storage works currently (using the javascript
+ * XMLHttpRequest version)
  * 
  * @returns true, if storage works
  * 
  */
 
-function doesOperate() {
+function doesJSOperate() {
 	if (logletBaseURL) {
 		try {
-			if (getServer(logId, docId + "+" + name, logletBaseURL
+			if (getServerJS(logId, docId + "+" + name, logletBaseURL
 					+ "operates.php") == "okay") {
 				return true;
 			}
@@ -438,6 +665,44 @@ function doesOperate() {
 		}
 	}
 	return false;
+}
+
+/**
+ * 
+ * check whether the server storage works currently (using the java applet
+ * version)
+ * 
+ * @returns true, if storage works
+ * 
+ */
+
+function doesAppletOperate() {
+	if (logletBaseURL) {
+		try {
+			if (getServerApplet(logId, docId + "+" + name, logletBaseURL
+					+ "operates.php") == "okay") {
+				return true;
+			}
+		} catch (err) {
+			return false;
+		}
+	}
+	return false;
+}
+
+/**
+ * 
+ * check whether the server storage works currently
+ * 
+ * @returns true, if storage works
+ * 
+ */
+
+function doesOperate() {
+	if (doesJSOperate()) {
+		return true;
+	}
+	return doesAppletOperate();
 }
 
 /**
