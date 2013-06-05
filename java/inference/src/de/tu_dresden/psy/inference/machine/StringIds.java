@@ -43,7 +43,7 @@ public class StringIds {
 	/** stores unified string as key, its id as value */
 	private Map<String, Integer> toId;
 	/** stores id as key, its pre-unified version as value */
-	private Map<Integer, String> toString;
+	private Map<Integer, String> toCaseCorrectString;
 	/**
 	 * the next fresh id
 	 */
@@ -53,7 +53,7 @@ public class StringIds {
 		this.assertionDomain = new ArrayList<ArrayList<ArrayList<String>>>();
 
 		this.toId = new HashMap<String, Integer>();
-		this.toString = new HashMap<Integer, String>();
+		this.toCaseCorrectString = new HashMap<Integer, String>();
 
 		this.currentId = 0;
 	}
@@ -162,8 +162,30 @@ public class StringIds {
 
 		if (this.toId.containsKey(unified) == false) {
 			this.toId.put(unified, this.currentId);
-			this.toString.put(this.currentId, s);
+			this.toCaseCorrectString.put(this.currentId, s);
 			this.currentId += 1;
 		}
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @return the (correct cased) string that corresponds to the given id
+	 */
+
+	public String fromId(int id) {
+		return this.toCaseCorrectString.get(id);
+	}
+
+	/**
+	 * 
+	 * @param s
+	 * @return the id that corresponds to unifyString(s)
+	 */
+
+	public int fromString(String s) {
+		String unified = this.unifyString(s);
+
+		return this.toId.get(unified);
 	}
 }
