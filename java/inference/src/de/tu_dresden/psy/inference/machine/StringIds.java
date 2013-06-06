@@ -108,7 +108,7 @@ public class StringIds {
 
 		@SuppressWarnings("unchecked")
 		ArrayList<ArrayList<String>> deep_copy = (ArrayList<ArrayList<String>>) factorwise
-				.clone();
+		.clone();
 
 		this.assertionDomain.add(deep_copy);
 
@@ -187,5 +187,43 @@ public class StringIds {
 		String unified = StringIds.unifyString(s);
 
 		return this.toId.get(unified);
+	}
+
+	/**
+	 * 
+	 * Test routines
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		StringIds ids = new StringIds();
+		ArrayList<ArrayList<String>> dbl_list = new ArrayList<ArrayList<String>>();
+
+		dbl_list.add(new ArrayList<String>());
+
+		dbl_list.get(0).add("A");
+		dbl_list.get(0).add("B");
+		dbl_list.get(0).add("C");
+
+		dbl_list.add(new ArrayList<String>());
+
+		dbl_list.get(1).add("A");
+		dbl_list.get(1).add("B");
+		dbl_list.get(1).add("C");
+
+		dbl_list.add(new ArrayList<String>());
+
+		dbl_list.get(2).add("A");
+		dbl_list.get(2).add("B");
+		dbl_list.get(2).add("C");
+
+		ids.addStringProduct(dbl_list);
+
+		for (int i = 0; i <= (3 * 3 * 3); ++i) {
+			System.out.print(i);
+			System.out.print(" = ");
+			System.out.println(ids.fromId(i));
+		}
+
 	}
 }
