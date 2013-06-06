@@ -23,6 +23,7 @@ EmbeddedInferenceXmlTag {
 	private String tagClass;
 	private Map<String, String> attributeValues;
 
+
 	public InferenceXmlTag(EfmlTagsAttribute reproduce) {
 		super(reproduce);
 

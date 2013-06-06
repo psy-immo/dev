@@ -53,10 +53,14 @@ public class InferenceCompiler {
 	 * 
 	 * @param xml
 	 *            inference xml that was embedded in the inference tag
+	 * 
+	 * @return Error reports :) (May be embedded in the generated HTML file)
 	 */
 
-	public void processXmlData(ArrayList<EmbeddedInferenceXmlTag> xml) {
+	public String processXmlData(ArrayList<EmbeddedInferenceXmlTag> xml) {
+		StringBuffer errors = new StringBuffer();
 
+		return errors.toString();
 	}
 
 }
