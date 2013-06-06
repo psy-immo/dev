@@ -19,6 +19,7 @@
 package de.tu_dresden.psy.inference.compiler;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * 
@@ -54,4 +55,12 @@ public interface EmbeddedInferenceXmlTag {
 	 */
 
 	public ArrayList<EmbeddedInferenceXmlTag> getChildren();
+
+	/**
+	 * 
+	 * @return the attribute-value mapping of the tag
+	 */
+
+	public Map<String, String> getAttributes();
+
 }

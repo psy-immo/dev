@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.naming.OperationNotSupportedException;
@@ -45,43 +44,42 @@ public class UnknownTag implements AnyTag {
 	private EfmlTagsAttribute attributes;
 
 	public UnknownTag(EfmlTagsAttribute reproduce) {
-		
+
 		this.attributes = reproduce;
 
-		opening = "<" + reproduce.getName();
+		this.opening = "<" + reproduce.getName();
 
 		Map<String,String> attribs = reproduce.getAttribs();
-		for (Iterator<String> it_attribs = attribs.keySet().iterator(); it_attribs.hasNext();) {
-			String attributeName = it_attribs.next();
+		for (String attributeName : attribs.keySet()) {
 			/**
 			 * the tags attribute belongs to the EFML data structure layer and
 			 * is not going to show in the html
 			 */
 			if ((attributeName != "tags")&&(attributeName != "atags")&&(attributeName != "rtags")) {
-				opening += " " + attributeName + "=\""
+				this.opening += " " + attributeName + "=\""
 						+ StringEscape.escapeToHtml(attribs.get(attributeName)) + "\"";
 			}
 		}
 
-		standalone = opening + " />";
+		this.standalone = this.opening + " />";
 
-		opening += ">";
+		this.opening += ">";
 
-		innerTags = new ArrayList<AnyTag>();
+		this.innerTags = new ArrayList<AnyTag>();
 
-		closing = "</" + reproduce.getName() + ">";
+		this.closing = "</" + reproduce.getName() + ">";
 
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @return the XML contents of the unknown tag
 	 */
-	
+
 	public String getContents() {
 		StringWriter w = new StringWriter();
-		
+
 		try {
 			this.open(w);
 			this.close(w);
@@ -89,19 +87,19 @@ public class UnknownTag implements AnyTag {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
+
 		return w.toString();
 	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
 
-		if (innerTags.isEmpty()) {
+		if (this.innerTags.isEmpty()) {
 			/**
 			 * no inner contents, use <... /> variant
 			 */
-			writer.write(standalone);
+			writer.write(this.standalone);
 			return;
 		}
 
@@ -109,14 +107,13 @@ public class UnknownTag implements AnyTag {
 		 * with inner contents
 		 */
 
-		writer.write(opening);
+		writer.write(this.opening);
 
 		/**
 		 * write inner tags
 		 */
 
-		for (Iterator<AnyTag> it = innerTags.iterator(); it.hasNext();) {
-			AnyTag innerTag = it.next();
+		for (AnyTag innerTag : this.innerTags) {
 			innerTag.open(writer);
 			innerTag.close(writer);
 		}
@@ -127,34 +124,34 @@ public class UnknownTag implements AnyTag {
 		/**
 		 * no need to close standalone tag
 		 */
-		if (!innerTags.isEmpty()) {
-			writer.write(closing);
+		if (!this.innerTags.isEmpty()) {
+			writer.write(this.closing);
 		}
 	}
 
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
-		innerTags.add(innerTag);
+		this.innerTags.add(innerTag);
 	}
-	
+
 
 	@Override
 	public String getEfml() {
 		StringBuffer representation = new StringBuffer();
-		
+
 		representation.append("<");
-		representation.append(attributes.getName());
-		attributes.writeXmlAttributes(representation);
+		representation.append(this.attributes.getName());
+		this.attributes.writeXmlAttributes(representation);
 		representation.append(">");
-		for (AnyTag t: innerTags)
+		for (AnyTag t: this.innerTags)
 		{
 			representation.append(t.getEfml());
 		}
 		representation.append("</");
-		representation.append(attributes.getName());
+		representation.append(this.attributes.getName());
 		representation.append(">");
-		
+
 		return representation.toString();
 	}
 

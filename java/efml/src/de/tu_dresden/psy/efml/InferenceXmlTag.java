@@ -1,6 +1,8 @@
 package de.tu_dresden.psy.efml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -19,12 +21,28 @@ EmbeddedInferenceXmlTag {
 
 	private ArrayList<EmbeddedInferenceXmlTag> enclosedInferenceXml;
 	private String tagClass;
+	private Map<String, String> attributeValues;
 
 	public InferenceXmlTag(EfmlTagsAttribute reproduce) {
 		super(reproduce);
 
 		this.enclosedInferenceXml = new ArrayList<EmbeddedInferenceXmlTag>();
 		this.tagClass = reproduce.getName();
+		this.attributeValues = new HashMap<String, String>();
+
+		Map<String, String> attribs = reproduce.getAttribs();
+		for (String attributeName : attribs.keySet()) {
+			/**
+			 * the tags attribute belongs to the EFML data structure layer and
+			 * is not going to show in the html
+			 */
+			if ((attributeName != "tags") && (attributeName != "atags")
+					&& (attributeName != "rtags")) {
+				this.attributeValues.put(attributeName,
+						attribs.get(attributeName));
+			}
+		}
+
 	}
 
 	@Override
@@ -58,6 +76,11 @@ EmbeddedInferenceXmlTag {
 			EmbeddedInferenceXmlTag inferenceXml = (EmbeddedInferenceXmlTag) innerTag;
 			this.enclosedInferenceXml.add(inferenceXml);
 		}
+	}
+
+	@Override
+	public Map<String, String> getAttributes() {
+		return this.attributeValues;
 	}
 
 }

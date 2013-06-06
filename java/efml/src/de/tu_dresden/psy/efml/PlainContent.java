@@ -21,6 +21,8 @@ package de.tu_dresden.psy.efml;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -35,6 +37,8 @@ public class PlainContent implements AnyTag, EmbeddedInferenceXmlTag {
 
 	private String content;
 	private String unescaped;
+
+	private static Map<String, String> noAttributeValues = new HashMap<String, String>();
 
 	public PlainContent(String unescapedContents) {
 		this.content = StringEscape.escapeToHtml(unescapedContents);
@@ -88,5 +92,9 @@ public class PlainContent implements AnyTag, EmbeddedInferenceXmlTag {
 		return null;
 	}
 
+	@Override
+	public Map<String, String> getAttributes() {
 
+		return noAttributeValues;
+	}
 }
