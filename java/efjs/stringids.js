@@ -40,6 +40,15 @@ function StringIds() {
 	};
 	
 	/**
+	 * add a Cartesian concatenation of sets of strings to the id database
+	 * 
+	 * @param vfactor    vector of factor sets
+	 */
+	this.AddStringProduct(vfactor) {
+		
+	};
+	
+	/**
 	 * s   input string
 	 * @returns the id of the given string, or -1 if the string is unknown
 	 */
