@@ -16,7 +16,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.tu_dresden.psy.inference.machine;
+package de.tu_dresden.psy.inference.compiler;
+
+import java.util.ArrayList;
+
 
 /**
  * 
@@ -28,5 +31,32 @@ package de.tu_dresden.psy.inference.machine;
  */
 
 public class InferenceCompiler {
+
+	private StringIds assertionDomain;
+
+	public InferenceCompiler() {
+		this.resetInferenceCompiler();
+	}
+
+	/**
+	 * reset the class object to the default initial state
+	 */
+
+	private void resetInferenceCompiler() {
+		this.assertionDomain = new StringIds();
+	}
+
+	/**
+	 * 
+	 * This routine processes the inference xml, that has been embedded into the
+	 * efml file
+	 * 
+	 * @param xml
+	 *            inference xml that was embedded in the inference tag
+	 */
+
+	public void processXmlData(ArrayList<EmbeddedInferenceXmlTag> xml) {
+
+	}
 
 }

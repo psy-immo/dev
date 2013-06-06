@@ -16,7 +16,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.tu_dresden.psy.inference.machine;
+package de.tu_dresden.psy.inference.compiler;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -23,33 +23,34 @@ import java.io.Writer;
 
 import javax.naming.OperationNotSupportedException;
 
+import de.tu_dresden.psy.inference.compiler.EmbeddedInferenceXmlTag;
 /**
  * implements character data as child "tag"
  * @author immanuel
  *
  */
 
-public class PlainContent implements AnyTag {
+public class PlainContent implements AnyTag, EmbeddedInferenceXmlTag {
 
 	private String content;
 	private String unescaped;
-	
+
 	public PlainContent(String unescapedContents) {
 		this.content = StringEscape.escapeToHtml(unescapedContents);
 		this.unescaped = unescapedContents;
 	}
-	
+
 	public final String getContent() {
-		return content;
+		return this.content;
 	}
-	
+
 	public final String getPlainContent() {
-		return unescaped;
+		return this.unescaped;
 	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		writer.write(content);
+		writer.write(this.content);
 	}
 
 	@Override
@@ -63,12 +64,17 @@ public class PlainContent implements AnyTag {
 			throws OperationNotSupportedException {
 		throw new OperationNotSupportedException("PlainContent ain't even a tag");
 	}
-	
+
 	@Override
 	public String getEfml() {
-		
+
 		return StringEscape.escapeToXml(this.unescaped);
 	}
 
+	@Override
+	public String getTagClass() {
+
+		return "#PCDATA";
+	}
 
 }
