@@ -25,11 +25,13 @@ function StringIds() {
 	this.count = 0;
 	this.to_id = {};
 	this.from_id = {};
-	
+
 	/**
 	 * add another string to the id database
+	 * 
+	 * @returns this
 	 */
-	
+
 	this.AddString = function(s) {
 		var unified = s.toUpperCase().trim();
 		if (!(unified in this.to_id)) {
@@ -37,38 +39,90 @@ function StringIds() {
 			this.from_id[this.count] = s;
 			this.count += 1;
 		}
+
+		return this;
 	};
-	
+
 	/**
 	 * add a Cartesian concatenation of sets of strings to the id database
 	 * 
-	 * @param vfactor    vector of factor sets
+	 * @param vfactor
+	 *            vector of factor sets
+	 * 
+	 * @returns this
 	 */
-	this.AddStringProduct(vfactor) {
+	this.AddStringProduct = function(vfactor) {
+		if (vfactor.length < 1) {
+			return this;
+		}
+
+		var sigma = [];
+
+		for ( var int = 0; int < vfactor.length; int++) {
+			var factor = vfactor[int];
+			if (factor.length < 1) {
+				return this;
+			}
+			sigma.push(0);
+		}
 		
+		var stop_criterion = vfactor[0].length;
+		
+		while (sigma[0] < stop_criterion) {
+			/**
+			 * add the string corresponding to sigma
+			 */
+			
+			var concat = "";
+			
+			for (var i = 0; i < sigma.length; ++i) {
+				concat += vfactor[i][sigma[i]];
+			}
+			
+			this.AddString(concat);
+			
+			/**
+			 * next permutation
+			 */
+
+			sigma[sigma.length - 1] += 1;
+			for (var i = sigma.length - 1; i > 0; --i) {
+				if (sigma[i] >= vfactor[i].length) {
+					sigma[i] = 0;
+					sigma[i - 1] += 1;
+				} else {
+					break;
+				}
+			}
+			
+		}
+
+		return this;
 	};
-	
+
 	/**
-	 * s   input string
+	 * s input string
+	 * 
 	 * @returns the id of the given string, or -1 if the string is unknown
 	 */
-	
+
 	this.ToId = function(s) {
 		var unified = s.toUpperCase().trim();
 		if (unified in this.to_id)
 			return this.to_id[unified];
 		return -1;
 	};
-	
+
 	/**
-	 * id 
+	 * id
+	 * 
 	 * @returns the string that corresponds to the given id
 	 */
-	
+
 	this.FromId = function(id) {
 		if (id in this.from_id)
 			return this.from_id[id];
 		return "!!UNKNOWN STRING!!";
-		
+
 	};
 }
