@@ -184,7 +184,7 @@ public class StringIds {
 	 */
 
 	public int fromString(String s) {
-		String unified = this.unifyString(s);
+		String unified = StringIds.unifyString(s);
 
 		return this.toId.get(unified);
 	}
