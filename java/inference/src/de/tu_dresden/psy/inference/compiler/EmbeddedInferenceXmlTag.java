@@ -18,6 +18,8 @@
 
 package de.tu_dresden.psy.inference.compiler;
 
+import java.util.ArrayList;
+
 /**
  * 
  * @author immo
@@ -36,4 +38,20 @@ public interface EmbeddedInferenceXmlTag {
 	 */
 
 	public String getTagClass();
+
+	/**
+	 * 
+	 * @return true, if there are children. In that case, getChildren may not
+	 *         return null.
+	 */
+
+	public boolean hasChildren();
+
+	/**
+	 * 
+	 * @return all child tags, i.e. <tag><child1>...<childK></tag> <b> MAY
+	 *         RETURN ZERO </b> if there are no child tags
+	 */
+
+	public ArrayList<EmbeddedInferenceXmlTag> getChildren();
 }

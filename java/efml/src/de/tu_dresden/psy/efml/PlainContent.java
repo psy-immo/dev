@@ -20,6 +20,7 @@ package de.tu_dresden.psy.efml;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -76,5 +77,16 @@ public class PlainContent implements AnyTag, EmbeddedInferenceXmlTag {
 
 		return "#PCDATA";
 	}
+
+	@Override
+	public boolean hasChildren() {
+		return false;
+	}
+
+	@Override
+	public ArrayList<EmbeddedInferenceXmlTag> getChildren() {
+		return null;
+	}
+
 
 }
