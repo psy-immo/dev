@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.tu_dresden.psy.efml.StringEscape;
+
 /**
  * 
  * implements the conversion of strings to table ids
@@ -191,6 +193,37 @@ public class StringIds {
 
 	/**
 	 * 
+	 * @return java script code that generates a corresponding stringids.js
+	 *         object
+	 */
+
+	public String getJSCode() {
+		StringBuffer code = new StringBuffer();
+
+		code.append("new StringIds()");
+
+		for (ArrayList<ArrayList<String>> domain : this.assertionDomain) {
+			code.append(".AddStringProduct([");
+
+			for (ArrayList<String> factor : domain) {
+				code.append("[");
+				for (String element : factor) {
+					code.append("\"" + StringEscape.escapeToJavaScript(element)
+							+ "\",");
+				}
+				code.append("],");
+			}
+
+			code.append("])");
+		}
+
+		code.append(";");
+
+		return code.toString();
+	}
+
+	/**
+	 * 
 	 * Test routines
 	 * 
 	 * @param args
@@ -224,6 +257,8 @@ public class StringIds {
 			System.out.print(" = ");
 			System.out.println(ids.fromId(i));
 		}
+
+		System.out.println(ids.getJSCode());
 
 	}
 }

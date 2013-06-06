@@ -22,7 +22,7 @@ public class InferenceTag implements AnyTag {
 	private EfmlTagsAttribute attributes;
 
 	private static boolean useInferenceApplet = false;
-
+	private static boolean useInferenceCompiler = true;
 
 
 	/**
@@ -47,7 +47,7 @@ public class InferenceTag implements AnyTag {
 		 * NEW CODE: use generated hypergraphs and javascript instead of feeding
 		 * xml code into an applet
 		 */
-		if (useInferenceApplet == false) {
+		if (useInferenceCompiler) {
 			/**
 			 * compiler object that calculates the inference graphs etc.
 			 */
