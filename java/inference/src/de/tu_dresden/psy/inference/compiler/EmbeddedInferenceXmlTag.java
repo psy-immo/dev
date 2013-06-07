@@ -63,4 +63,11 @@ public interface EmbeddedInferenceXmlTag {
 
 	public Map<String, String> getAttributes();
 
+	/**
+	 * 
+	 * @return the content of the tag as string
+	 */
+
+	public String getStringContent();
+
 }

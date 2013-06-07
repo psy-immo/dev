@@ -97,4 +97,9 @@ public class PlainContent implements AnyTag, EmbeddedInferenceXmlTag {
 
 		return noAttributeValues;
 	}
+
+	@Override
+	public String getStringContent() {
+		return this.unescaped;
+	}
 }

@@ -84,4 +84,14 @@ EmbeddedInferenceXmlTag {
 		return this.attributeValues;
 	}
 
+	@Override
+	public String getStringContent() {
+		StringBuffer combine = new StringBuffer();
+
+		for (EmbeddedInferenceXmlTag t : this.enclosedInferenceXml) {
+			combine.append(t.getStringContent());
+		}
+
+		return combine.toString();
+	}
 }

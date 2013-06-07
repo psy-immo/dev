@@ -60,6 +60,49 @@ public class InferenceCompiler {
 	public String processXmlData(ArrayList<EmbeddedInferenceXmlTag> xml) {
 		StringBuffer errors = new StringBuffer();
 
+		OUTER:for (EmbeddedInferenceXmlTag t : xml) {
+			/**
+			 * the domain tags contain the information about how to produce the
+			 * assertion domain by point-wise concatenation of string sets
+			 */
+			if (t.getTagClass().equalsIgnoreCase("domain")) {
+				if (t.hasChildren() == false) {
+					continue OUTER;
+				}
+
+				ArrayList<ArrayList<String>> factors = new ArrayList<ArrayList<String>>();
+
+				for (EmbeddedInferenceXmlTag f : t.getChildren()) {
+					ArrayList<String> factor = new ArrayList<String>();
+					if (f.getTagClass().equalsIgnoreCase("q")) {
+						/**
+						 * add constant factor as singleton set
+						 */
+						factor.add(f.getStringContent());
+					} else if (f.getTagClass().equalsIgnoreCase("factor")) {
+						if (f.hasChildren() == false) {
+							continue OUTER;
+						}
+
+						for (EmbeddedInferenceXmlTag q : f.getChildren()) {
+							factor.add(q.getStringContent());
+						}
+					}
+
+					factors.add(factor);
+				}
+
+				/**
+				 * update the assertionDomain object: add the new generating
+				 * product
+				 */
+
+				this.assertionDomain.addStringProduct(factors);
+			}
+		}
+
+		errors.append(this.assertionDomain.getJSCode());
+
 		return errors.toString();
 	}
 
