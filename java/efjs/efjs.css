@@ -1,6 +1,37 @@
 /*
  This file contains all style definitions that are used by efml generated web pages
  */
+ 
+/**
+ ***********************************
+ * styles for inference compiler error output
+ ***********************************
+ */
+ 
+ div.compilererror {
+ 	background-color: #FFBBBB;
+ 	color: #000000;
+ 	font-size: 210%;
+ }
+ 
+ table.stacktrace {
+ 	border: 3px solid black;
+ }
+ 
+ td.stacktracefile {
+ 	background-color: #BBBBFF;
+ 	color: #000055;
+ }
+ 
+ td.stacktraceline {
+ 	background-color: #BBBBBB;
+ 	color: #005555;
+ }
+ 
+ td.stacktraceline {
+ 	background-color: #FFBBBB;
+ 	color: #000000;
+ }
 
 /**
  ***********************************

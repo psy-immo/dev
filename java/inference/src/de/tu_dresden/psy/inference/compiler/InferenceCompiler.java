@@ -137,6 +137,12 @@ public class InferenceCompiler {
 
 			}
 		} catch (Exception e) {
+
+			/**
+			 * an error occured, now format it nicely in HTML so that the user
+			 * can spot it and take actions
+			 */
+
 			errors.append("<div class=\"compilererror\">");
 			errors.append("<h1>Inference Compiler Error</h1><br/>");
 			errors.append(StringEscape.escapeToHtml(e.getClass().getName())
