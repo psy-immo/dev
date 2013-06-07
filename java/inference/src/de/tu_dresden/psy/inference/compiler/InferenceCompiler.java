@@ -20,6 +20,9 @@ package de.tu_dresden.psy.inference.compiler;
 
 import java.util.ArrayList;
 
+import de.tu_dresden.psy.efml.StringEscape;
+import de.tu_dresden.psy.inference.regexp.xml.XmlRootTag;
+import de.tu_dresden.psy.inference.regexp.xml.XmlTag;
 
 /**
  * 
@@ -32,7 +35,17 @@ import java.util.ArrayList;
 
 public class InferenceCompiler {
 
+	/**
+	 * keep track of the assertion domain
+	 */
+
 	private StringIds assertionDomain;
+
+	/**
+	 * keep track of the inference xml data structure
+	 */
+
+	private XmlRootTag inferenceRoot;
 
 	public InferenceCompiler() {
 		this.resetInferenceCompiler();
@@ -44,6 +57,7 @@ public class InferenceCompiler {
 
 	private void resetInferenceCompiler() {
 		this.assertionDomain = new StringIds();
+		this.inferenceRoot = new XmlRootTag();
 	}
 
 	/**
@@ -60,48 +74,99 @@ public class InferenceCompiler {
 	public String processXmlData(ArrayList<EmbeddedInferenceXmlTag> xml) {
 		StringBuffer errors = new StringBuffer();
 
-		OUTER:for (EmbeddedInferenceXmlTag t : xml) {
+		try {
+
 			/**
-			 * the domain tags contain the information about how to produce the
-			 * assertion domain by point-wise concatenation of string sets
+			 * First, we need to translate the inference xml data in order to
+			 * process them
+			 * 
+			 * The assertionDomain is not used by the inference machine back end, so
+			 * we have to keep track of this here.
+			 * 
+			 * For the inference stuff, we want to recycle code from the
+			 * InferenceMachine class, so we need to translate the
+			 * EmbeddedInferenceXmlTag interface objects to XmlTag objects
 			 */
-			if (t.getTagClass().equalsIgnoreCase("domain")) {
-				if (t.hasChildren() == false) {
-					continue OUTER;
-				}
 
-				ArrayList<ArrayList<String>> factors = new ArrayList<ArrayList<String>>();
+			OUTER:for (EmbeddedInferenceXmlTag t : xml) {
+				if (t.getTagClass().equalsIgnoreCase("domain")) {
+					/**
+					 * the domain tags contain the information about how to produce
+					 * the assertion domain by point-wise concatenation of string
+					 * sets
+					 */
 
-				for (EmbeddedInferenceXmlTag f : t.getChildren()) {
-					ArrayList<String> factor = new ArrayList<String>();
-					if (f.getTagClass().equalsIgnoreCase("q")) {
-						/**
-						 * add constant factor as singleton set
-						 */
-						factor.add(f.getStringContent());
-					} else if (f.getTagClass().equalsIgnoreCase("factor")) {
-						if (f.hasChildren() == false) {
-							continue OUTER;
-						}
-
-						for (EmbeddedInferenceXmlTag q : f.getChildren()) {
-							factor.add(q.getStringContent());
-						}
+					if (t.hasChildren() == false) {
+						continue OUTER;
 					}
 
-					factors.add(factor);
+					ArrayList<ArrayList<String>> factors = new ArrayList<ArrayList<String>>();
+
+					for (EmbeddedInferenceXmlTag f : t.getChildren()) {
+						ArrayList<String> factor = new ArrayList<String>();
+						if (f.getTagClass().equalsIgnoreCase("q")) {
+							/**
+							 * add constant factor as singleton set
+							 */
+							factor.add(f.getStringContent());
+						} else if (f.getTagClass().equalsIgnoreCase("factor")) {
+							if (f.hasChildren() == false) {
+								continue OUTER;
+							}
+
+							for (EmbeddedInferenceXmlTag q : f.getChildren()) {
+								factor.add(q.getStringContent());
+							}
+						}
+
+						factors.add(factor);
+					}
+
+					/**
+					 * update the assertionDomain object: add the new generating
+					 * product
+					 */
+
+					this.assertionDomain.addStringProduct(factors);
+				} else {
+					/**
+					 * this tag is handled by the inference xml back end
+					 */
+					this.inferenceRoot.addChild(new XmlTag(t));
 				}
 
-				/**
-				 * update the assertionDomain object: add the new generating
-				 * product
-				 */
-
-				this.assertionDomain.addStringProduct(factors);
 			}
+		} catch (Exception e) {
+			errors.append("<div class=\"compilererror\">");
+			errors.append("<h1>Inference Compiler Error</h1><br/>");
+			errors.append(StringEscape.escapeToHtml(e.getClass().getName())
+					+ ": ");
+			errors.append("<em>"
+					+ StringEscape.escapeToHtml(e.getLocalizedMessage())
+					+ "</em><br/>");
+			errors.append("<h2>Stack Trace</h2><br/>");
+			errors.append("<table class=\"stacktrace\">");
+
+			StackTraceElement[] stackTrace = e.getStackTrace();
+
+			for (int i = 0; i < stackTrace.length; ++i) {
+				errors.append("<tr><td class=\"stacktracefile\">");
+				errors.append(StringEscape.escapeToHtml(stackTrace[i]
+						.getFileName()));
+				errors.append("</td><td class=\"stacktraceline\">");
+				errors.append(StringEscape.escapeToHtml(""
+						+ stackTrace[i].getLineNumber()));
+				errors.append("</td><td class=\"stacktrace\">");
+				errors.append(StringEscape.escapeToHtml(stackTrace[i]
+						.getClassName() + "." + stackTrace[i].getMethodName()));
+				errors.append("</td></tr>");
+			}
+
+			errors.append("</table>");
+
+			errors.append("</div>");
 		}
 
-		errors.append(this.assertionDomain.getJSCode());
 
 		return errors.toString();
 	}

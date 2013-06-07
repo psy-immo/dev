@@ -23,6 +23,8 @@ import java.util.Vector;
 
 import org.xml.sax.Attributes;
 
+import de.tu_dresden.psy.inference.compiler.EmbeddedInferenceXmlTag;
+
 /**
  * implements a general XML tag
  * 
@@ -47,12 +49,42 @@ public class XmlTag {
 		this.attributes = new HashMap<String, String>();
 
 		for (int i = 0; i < atts.getLength(); ++i) {
-			attributes.put(atts.getLocalName(i).toLowerCase(), atts.getValue(i).toLowerCase());
+			this.attributes.put(atts.getLocalName(i).toLowerCase(), atts.getValue(i).toLowerCase());
 		}
 
-		contents = "";
+		this.contents = "";
 
 		this.children = new Vector<XmlTag>();
+	}
+
+	/**
+	 * 
+	 * create a XmlTag object from a given tag that was embedded in some efml
+	 * file
+	 * 
+	 * @param tag
+	 *            EmbeddedInferenceXmlTag
+	 * 
+	 * 
+	 */
+
+	public XmlTag(EmbeddedInferenceXmlTag tag) {
+		this.tagName = tag.getTagClass().toUpperCase();
+		this.attributes = tag.getAttributes();
+
+		this.contents = "";
+		this.children = new Vector<XmlTag>();
+
+		if (tag.hasChildren()) {
+			for (EmbeddedInferenceXmlTag child : tag.getChildren()) {
+				if (child.getTagClass().equalsIgnoreCase("#PCDATA")) {
+					this.contents += child.getStringContent();
+				} else {
+					this.children.add(new XmlTag(child));
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -61,9 +93,10 @@ public class XmlTag {
 
 	protected String getAttributeOrDefault(String attributeName,
 			String defaultValue) {
-		String value = attributes.get(attributeName);
-		if (value == null)
+		String value = this.attributes.get(attributeName);
+		if (value == null) {
 			return defaultValue;
+		}
 
 		return value;
 	}
@@ -75,7 +108,7 @@ public class XmlTag {
 		this.tagName = "";
 		this.attributes = new HashMap<String, String>();
 
-		contents = "";
+		this.contents = "";
 		this.children = new Vector<XmlTag>();
 	}
 
@@ -85,7 +118,7 @@ public class XmlTag {
 	 * @param data
 	 */
 	public void addContent(String data) {
-		contents += data;
+		this.contents += data;
 	}
 
 	/**
@@ -94,7 +127,7 @@ public class XmlTag {
 	 * @param child
 	 */
 	public void addChild(XmlTag child) throws Exception {
-		children.add(child);
+		this.children.add(child);
 	}
 
 }
