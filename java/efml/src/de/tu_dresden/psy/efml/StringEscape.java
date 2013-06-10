@@ -21,6 +21,8 @@ package de.tu_dresden.psy.efml;
 /**
  * provides static functions that escape strings
  * 
+ * and a function that generates java script code to hide an integer
+ * 
  * @author immanuel
  * 
  */
@@ -35,8 +37,51 @@ public class StringEscape {
 	}
 
 	/**
-	 * translate \ to \\, newline to \n, tab to \t, return to \r, " to \"
-	 * <br/><br/>
+	 * encodes i by using an expression of the form (k % m) that evaluates to i
+	 * 
+	 * 
+	 * @param i
+	 *            integer
+	 * @return js code
+	 */
+
+	public static String obfuscateInt(int i) {
+		/**
+		 * deal with negative integers
+		 */
+		if (i < 0) {
+			return "-(" + obfuscateInt(-i) + ")";
+		}
+
+		/**
+		 * clearly, the module m must be bigger than i, and should be somewhat
+		 * random
+		 */
+
+		long module = i + 13 + Math.round(Math.random() * 200);
+
+		/**
+		 * we could use any factor, but bigger than 4 seems good
+		 */
+		long factor = 4 + Math.round(Math.random() * 5);
+
+		/**
+		 * now we calculate k:
+		 * 
+		 * since factor*module % module = 0 and module > i, we have that
+		 * 
+		 * (factor*module + i) % module = (0+i) % module = i
+		 * 
+		 * 
+		 */
+		long result = (module * factor) + i;
+
+		return result + "%" + module;
+	}
+
+	/**
+	 * translate \ to \\, newline to \n, tab to \t, return to \r, " to \" <br/>
+	 * <br/>
 	 * <b>No java script string delimiters are added!</b><br/>
 	 * 
 	 * @param unescaped
@@ -166,6 +211,19 @@ public class StringEscape {
 
 		return unescaped.replaceAll("\\\"", "\\&quot;");
 	}
-	
-	
+
+	/**
+	 * test routine
+	 * 
+	 * @param args
+	 */
+
+	public static void main(String[] args) {
+		System.out.print("[");
+		for (int i = -5; i < 100; ++i) {
+			System.out.print(obfuscateInt(i) + ",");
+		}
+		System.out.println("]");
+	}
+
 }
