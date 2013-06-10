@@ -125,4 +125,6 @@ function StringIds() {
 		return "!!UNKNOWN STRING!!";
 
 	};
+	
+	return this;
 }

@@ -16,11 +16,100 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+myInferenceMachines = [];
+myInferenceMachineCount = 0;
+
+/**
+ * Creates a new inference machine
+ * 
+ * @param atags
+ *            tags for input acceptance
+ * @param rtags
+ *            tags for input rejection
+ * @param stringids
+ *            StringIds object that represents the assertion domain
+ * @param hypergraph
+ *            InferenceGraph object that represents all basic inference rules
+ *            wrt. the assertion domain
+ * @param points
+ *            additional tag for input acceptance as *points* (default:
+ *            "points")
+ * @param conclusions
+ *            additional tag for input acceptance as *conclusions* (default:
+ *            "conclusions")
+ * @returns this
+ */
+
+function InferenceMachine(atags, rtags, stringids, hypergraph, points,
+		conclusions) {
+	this.id = myInferenceMachineCount++;
+
+	this.stringids = stringids;
+	this.hypergraph = hypergraph;
+
+	this.acceptTags = atags;
+	this.rejectTags = rtags;
+
+	this.name = "";
+	for ( var i = 0; i < atags.length; ++i) {
+		this.name += atags[i];
+	}
+	this.name += "_" + this.id;
+
+	if (typeof points == "undefined") {
+		this.points = "points";
+	} else {
+		this.points = points;
+	}
+
+	if (typeof conclusions == "undefined") {
+		this.conclusions = "conclusions";
+	} else {
+		this.conclusions = conclusions;
+	}
+
+	/**
+	 * write all needed html elements to the document
+	 */
+
+	this.WriteHtml = function() {
+
+	};
+
+	/**
+	 * return the current state
+	 */
+	this.GetValue = function() {
+		return "";
+	};
+
+	/**
+	 * restore the given state
+	 */
+
+	this.SetValue = function(contents) {
+
+	};
+
+	myStorage.RegisterField(this, "myInferenceMachine[" + this.id + "]");
+	myInferenceMachines[this.id] = this;
+
+	return this;
+}
+
+/*******************************************************************************
+ * **** OLD version
+ * 
+ * 
+ ******************************************************************************/
+
 myInferenceButtons = [];
 myInferenceId = 0;
 
 /**
  * generate a check inference button
+ * 
+ * (this is the old version of the inference machine using a java applet)
  * 
  * @param atags
  *            accept tags

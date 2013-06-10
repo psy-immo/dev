@@ -173,7 +173,7 @@ public class InferenceCompiler {
 			errors.append("</div>");
 		}
 
-		System.err.print(this.inferenceRoot.getExpertAssertions());
+		System.out.print("IROOT= " + this.inferenceRoot.getExpertAssertions());
 
 		return errors.toString();
 	}
