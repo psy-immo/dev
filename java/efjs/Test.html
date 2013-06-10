@@ -1,14 +1,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-           <link rel="stylesheet" type="text/css" href="efjs.css" media="screen" /></head><body id="body">
-  <applet id="loglet" name="loglet" archive="loglet.jar" code="de.tu_dresden.psy.util.Loglet" mayscript="" style="width: 1px; height: 1px"></applet>
-  <applet id="efmlApplet" name="efmlApplet" archive="efmlApplet.jar" code="de.tu_dresden.psy.efml.editor.EditorApplet" mayscript="" style="width: 1px; height: 1px"></applet>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="efjs.css" media="screen" />
+</head>
+<body id="body">
+	<applet id="loglet" name="loglet" archive="loglet.jar"
+		code="de.tu_dresden.psy.util.Loglet" mayscript=""
+		style="width: 1px; height: 1px"></applet>
+	<applet id="efmlApplet" name="efmlApplet" archive="efmlApplet.jar"
+		code="de.tu_dresden.psy.efml.editor.EditorApplet" mayscript=""
+		style="width: 1px; height: 1px"></applet>
 	<script type="text/javascript">
-  docId = "5c85ce93-09fe-4af8-b6d0-862f05dbd2dc";
-  studyId = "bdf14258-0d68-4882-8f5c-ca6cf215ee86";
-  </script>
-  <script type="text/javascript">
-		logletBaseURL="http://127.0.1.1:8080/efmlWebCompilerModule/";
+		docId = "5c85ce93-09fe-4af8-b6d0-862f05dbd2dc";
+		studyId = "bdf14258-0d68-4882-8f5c-ca6cf215ee86";
+	</script>
+	<script type="text/javascript">
+		logletBaseURL = "http://127.0.1.1:8080/efmlWebCompilerModule/";
 	</script>
 	<script type="text/javascript" src="EventHelpers.js"></script>
 	<script type="text/javascript" src="cssQuery-p.js"></script>
@@ -45,27 +53,164 @@
 	<script type="text/javascript" src="efml.js"></script>
 	<script type="text/javascript" src="efmlbuttons.js"></script>
 	<script type="text/javascript" src="efmlboard.js"></script>
-	<script type="text/javascript" src="efmlcheckbox.js"></script>	
+	<script type="text/javascript" src="efmlcheckbox.js"></script>
 	<script type="text/javascript" src="efmltag.js"></script>
 	<script type="text/javascript" src="efmlquote.js"></script>
 	<script type="text/javascript" src="efmlfactory.js"></script>
-<div id="mainframe" ><script type="text/javascript">printChangeSubjectButton();</script>
+	<div id="mainframe">
+		<script type="text/javascript">
+			printChangeSubjectButton();
+		</script>
 
-<script type="text/javascript">new Multiline("1", [], "initial label").WriteHtml();</script>
+		<script type="text/javascript">
+			new Multiline("1", [], "initial label").WriteHtml();
+		</script>
 
- <script type="text/javascript">new EfmlBoard("", [], [], []).SetContents("EfmlCheckBox label=test\\n!defaultstatus=checked").WriteHtml();</script>
- <script type="text/javascript"> new EfmlPreviewButton([], [], "").WriteHtml(); </script>
-</div>	<script type="text/javascript">
+		<script type="text/javascript">
+			new EfmlBoard("", [], [], []).SetContents(
+					"EfmlCheckBox label=test\\n!defaultstatus=checked")
+					.WriteHtml();
+		</script>
+		<script type="text/javascript">
+			new EfmlPreviewButton([], [], "").WriteHtml();
+		</script>
+	</div>
+	<script type="text/javascript">
 		myHover.WriteHtml();
-	</script>	<script type="text/javascript">
-  myStorage.SetupAutoRestore(sessionStorage,"5c85ce93-09fe-4af8-b6d0-862f05dbd2dc");  </script>
+	</script>
 	<script type="text/javascript">
-  RunwayDisplayBugfix();  </script>
+		myStorage.SetupAutoRestore(sessionStorage,
+				"5c85ce93-09fe-4af8-b6d0-862f05dbd2dc");
+	</script>
 	<script type="text/javascript">
-  BoxspaceUpdateAllArrows();  </script>
+		RunwayDisplayBugfix();
+	</script>
 	<script type="text/javascript">
-  FeedInferenceApplets();  </script>
+		BoxspaceUpdateAllArrows();
+	</script>
+	<script type="text/javascript">
+		new InferenceMachine([ "frage1" ], [], new StringIds()
+				.AddStringProduct(
+						[
+								[ "bulb A", "bulb B", "bulb C",
+										"bulb chain BC", "the battery", ],
+								[ " ", ],
+								[ "is serial connected with",
+										"is connected in parallel with", ],
+								[ " ", ],
+								[ "bulb A", "bulb B", "bulb C",
+										"bulb chain BC", "the battery", ], ])
+				.AddStringProduct(
+						[
+								[ "the current through", "the voltage of",
+										"the resistance of",
+										"the input power of",
+										"the luminosity of", ],
+								[ " ", ],
+								[ "bulb A", "bulb B", "bulb C",
+										"bulb chain BC", "the battery", ],
+								[ " ", ],
+								[ "is bigger than", "is smaller than",
+										"is as big as", ],
+								[ " ", ],
+								[ "the current through", "the voltage of",
+										"the resistance of",
+										"the input power of",
+										"the luminosity of", ],
+								[ " ", ],
+								[ "bulb A", "bulb B", "bulb C",
+										"bulb chain BC", "the battery", ], ])
+				.AddStringProduct(
+						[
+								[ "a ", ],
+								[ "bigger", "smaller", ],
+								[ " ", ],
+								[ "current", "voltage", "resistance",
+										"input power", "luminosity", ],
+								[ " means, for bulbs, a ", ],
+								[ "bigger", "smaller", ],
+								[ " ", ],
+								[ "current", "voltage", "resistance",
+										"input power", "luminosity", ], ]),
+				new InferenceGraph().AddCorrect([ 7066 % 715, 16029 % 2013,
+						17385 % 1757, 12261 % 1368, 8641 % 1450, 6647 % 671,
+						14927 % 2151, 899 % 99, 3278 % 549, 3727 % 634,
+						3940 % 576, 12365 % 2069, 21010 % 2114, 10787 % 2194,
+						4113 % 605, 305 % 74, 459 % 68, 7850 % 1312,
+						14081 % 2021, 8127 % 1639, 8400 % 1407, 2313 % 252,
+						3162 % 658, 14568 % 2093, 8517 % 1247, 5511 % 801,
+						3813 % 802, 4191 % 483, 18759 % 2092, 7369 % 933,
+						7787 % 982, 2051 % 450, 19732 % 1977, 7702 % 1119,
+						9150 % 930, -(625 % 104), -(865 % 144), 11738 % 1189,
+						5351 % 1085, 1893 % 286, 8165 % 913, 9632 % 1228,
+						16721 % 1872, -(817 % 102), 10315 % 1729, 9467 % 1924,
+						2366 % 257, 1292 % 155, 3438 % 389, 17051 % 2151,
+						8110 % 1025, 1995 % 354, 8500 % 1070, 5581 % 812,
+						758 % 142, 19423 % 2180, 7568 % 958, 4145 % 619,
+						7351 % 1069, 2194 % 292, 5216 % 760, 16900 % 2130,
+						4730 % 614, 20767 % 2089, 5816 % 737, 14928 % 2160,
+						20526 % 2063, 8567 % 973, 20496 % 2060, 10587 % 1778,
+						7833 % 789, 755 % 120, 14995 % 2167, 1300 % 184,
+						13069 % 2211, 14354 % 2071, 14197 % 2036, 1173 % 128,
+						5381 % 930, 7746 % 793, 10493 % 2141, 5497 % 709,
+						12485 % 2110, 3804 % 438, 10446 % 1322, 2082 % 272,
+						15639 % 1959, 21567 % 2178, 1823 % 223, 10389 % 1314,
+						2755 % 417, ]), "points", "conclusions").WriteHtml();
+	</script>
 
-<div class="compilererror"><h1>Inference Compiler Error</h1><br/>java.lang.Exception: <em>TEST!</em><br/><h2>Stack Trace</h2><br/><table class="stacktrace"><tr><td class="stacktracefile">InferenceCompiler.java</td><td class="stacktraceline">137</td><td class="stacktrace">de.tu_dresden.psy.inference.compiler.InferenceCompiler.processXmlData</td></tr><tr><td class="stacktracefile">InferenceTag.java</td><td class="stacktraceline">61</td><td class="stacktrace">de.tu_dresden.psy.efml.InferenceTag.open</td></tr><tr><td class="stacktracefile">TagsTag.java</td><td class="stacktraceline">54</td><td class="stacktrace">de.tu_dresden.psy.efml.TagsTag.open</td></tr><tr><td class="stacktracefile">TagsTag.java</td><td class="stacktraceline">54</td><td class="stacktrace">de.tu_dresden.psy.efml.TagsTag.open</td></tr><tr><td class="stacktracefile">BodyTag.java</td><td class="stacktraceline">282</td><td class="stacktrace">de.tu_dresden.psy.efml.BodyTag.writeInnerTags</td></tr><tr><td class="stacktracefile">BodyTag.java</td><td class="stacktraceline">266</td><td class="stacktrace">de.tu_dresden.psy.efml.BodyTag.open</td></tr><tr><td class="stacktracefile">HtmlTag.java</td><td class="stacktraceline">102</td><td class="stacktrace">de.tu_dresden.psy.efml.HtmlTag.open</td></tr><tr><td class="stacktracefile">EfmlToHtmlConverter.java</td><td class="stacktraceline">122</td><td class="stacktrace">de.tu_dresden.psy.efml.EfmlToHtmlConverter.transformStream</td></tr><tr><td class="stacktracefile">EfmlToHtmlConverter.java</td><td class="stacktraceline">181</td><td class="stacktrace">de.tu_dresden.psy.efml.EfmlToHtmlConverter.main</td></tr></table></div>  
-  
-</body></html>
+	<div class="compilererror">
+		<h1>Inference Compiler Error</h1>
+		<br />java.lang.Exception: <em>TEST!</em><br />
+		<h2>Stack Trace</h2>
+		<br />
+		<table class="stacktrace">
+			<tr>
+				<td class="stacktracefile">InferenceCompiler.java</td>
+				<td class="stacktraceline">137</td>
+				<td class="stacktrace">de.tu_dresden.psy.inference.compiler.InferenceCompiler.processXmlData</td>
+			</tr>
+			<tr>
+				<td class="stacktracefile">InferenceTag.java</td>
+				<td class="stacktraceline">61</td>
+				<td class="stacktrace">de.tu_dresden.psy.efml.InferenceTag.open</td>
+			</tr>
+			<tr>
+				<td class="stacktracefile">TagsTag.java</td>
+				<td class="stacktraceline">54</td>
+				<td class="stacktrace">de.tu_dresden.psy.efml.TagsTag.open</td>
+			</tr>
+			<tr>
+				<td class="stacktracefile">TagsTag.java</td>
+				<td class="stacktraceline">54</td>
+				<td class="stacktrace">de.tu_dresden.psy.efml.TagsTag.open</td>
+			</tr>
+			<tr>
+				<td class="stacktracefile">BodyTag.java</td>
+				<td class="stacktraceline">282</td>
+				<td class="stacktrace">de.tu_dresden.psy.efml.BodyTag.writeInnerTags</td>
+			</tr>
+			<tr>
+				<td class="stacktracefile">BodyTag.java</td>
+				<td class="stacktraceline">266</td>
+				<td class="stacktrace">de.tu_dresden.psy.efml.BodyTag.open</td>
+			</tr>
+			<tr>
+				<td class="stacktracefile">HtmlTag.java</td>
+				<td class="stacktraceline">102</td>
+				<td class="stacktrace">de.tu_dresden.psy.efml.HtmlTag.open</td>
+			</tr>
+			<tr>
+				<td class="stacktracefile">EfmlToHtmlConverter.java</td>
+				<td class="stacktraceline">122</td>
+				<td class="stacktrace">de.tu_dresden.psy.efml.EfmlToHtmlConverter.transformStream</td>
+			</tr>
+			<tr>
+				<td class="stacktracefile">EfmlToHtmlConverter.java</td>
+				<td class="stacktraceline">181</td>
+				<td class="stacktrace">de.tu_dresden.psy.efml.EfmlToHtmlConverter.main</td>
+			</tr>
+		</table>
+	</div>
+
+</body>
+</html>

@@ -207,6 +207,34 @@ public class InferenceCompiler {
 		/**
 		 * TODO: correct assertions
 		 */
+		writer.write(".AddCorrect([");
+
+		for (AssertionInterface a : this.correctAssertions) {
+			int id = this.assertionDomain.fromAssertion(a);
+
+			if (id > 0) {
+				writer.write(StringEscape.obfuscateInt(id) + ", ");
+			} else {
+
+				/**
+				 * if the id < 0, then the assertion is not part of the
+				 * assertion domain, so it may be a helper assertion that is
+				 * added via implicit.
+				 * 
+				 * For instance
+				 * 
+				 * bulb A is a bulb
+				 * 
+				 * is not a part of the assertion domain, yet "is a bulb" is
+				 * used as a set predicate to make inference rules easier.
+				 */
+
+				System.err.println("Warning: Correct, yet not in domain: "
+						+ a.toString());
+			}
+		}
+
+		writer.write("])");
 
 		/**
 		 * TODO: justified assertions
@@ -421,8 +449,15 @@ public class InferenceCompiler {
 
 			errors.append("</em><br/>");
 			errors.append("</div>");
-
 		}
+
+		/**
+		 * copy the correct assertions and their ancestor relations
+		 */
+
+		this.correctAssertions.addAll(inferCorrectAssertions.getInferred());
+
+		// TODO: save ancestor relations (i.e. inference hyper graph edges)
 
 		return errors.toString();
 	}

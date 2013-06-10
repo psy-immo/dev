@@ -43,14 +43,33 @@ function InferenceGraph() {
 	 * assertion in the conclusions
 	 */
 	this.conclusion_based = {};
+	
+	/**
+	 * store the correct assertions
+	 */
+	this.correct = {};
+	
+	
+	/**
+	 * adds a list of correct assertion ids
+	 * 
+	 * @returns this
+	 */
+	
+	this.AddCorrect = function(ids) {
+		for ( var int = 0; int < ids.length; int++) {
+			var assertion = ids[int];
+			this.correct[assertion] = true;
+		}
+		
+		return this;
+	};
 
 	/**
 	 * adds an inference hyper-arrow from the premises to the conclusions
 	 * 
 	 * @returns this
 	 */
-
-
 	this.AddInference = function(premises, conclusions) {
 		var sorted_premises = [];
 		var sorted_conclusions = [];

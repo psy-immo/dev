@@ -67,6 +67,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	} else {
 		this.conclusions = conclusions;
 	}
+	
 
 	/**
 	 * write all needed html elements to the document

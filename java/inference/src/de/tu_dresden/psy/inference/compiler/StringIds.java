@@ -189,7 +189,12 @@ public class StringIds {
 	public int fromString(String s) {
 		String unified = StringIds.unifyString(s);
 
-		return this.toId.get(unified);
+		Integer id = this.toId.get(unified);
+
+		if (id == null) {
+			return -1;
+		}
+		return id;
 	}
 
 	/**
@@ -200,7 +205,7 @@ public class StringIds {
 	 */
 
 	public int fromAssertion(AssertionInterface a) {
-		if (a.getObject() == null) {
+		if (a.getObject() != null) {
 			return this.fromString(a.getSubject() + " " + a.getPredicate()
 					+ " " + a.getObject());
 		}
