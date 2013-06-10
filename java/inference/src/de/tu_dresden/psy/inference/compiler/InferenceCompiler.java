@@ -29,8 +29,10 @@ import java.util.Set;
 import de.tu_dresden.psy.efml.StringEscape;
 import de.tu_dresden.psy.inference.AssertionEquivalenceClasses;
 import de.tu_dresden.psy.inference.AssertionInterface;
+import de.tu_dresden.psy.inference.EquivalentAssertions;
 import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
+import de.tu_dresden.psy.inference.forms.DisjunctiveNormalForm;
 import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
 import de.tu_dresden.psy.inference.regexp.xml.InferableAssertions;
 import de.tu_dresden.psy.inference.regexp.xml.InferableAssertions.State;
@@ -138,6 +140,11 @@ public class InferenceCompiler {
 	private Set<ConstrainedAssertionFilter> conclusiveAssertionFilters;
 
 	/**
+	 * save the premises and the conclusion of all inference rule applications
+	 */
+	private Set<DirectedHyperEdge> inferenceHyperGraph;
+
+	/**
 	 * keep track of the inference xml data structure
 	 */
 
@@ -168,6 +175,8 @@ public class InferenceCompiler {
 		this.invalidAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
 		this.justifiedAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
 		this.conclusiveAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
+
+		this.inferenceHyperGraph = new HashSet<DirectedHyperEdge>();
 	}
 
 	/**
@@ -471,6 +480,9 @@ public class InferenceCompiler {
 				errors.append("It was possible to infer invalid"
 						+ " assertions using the expert assertions"
 						+ " and inference rules given!");
+				/**
+				 * TODO: print inferred invalid assertions
+				 * */
 			} else if (success == State.excess) {
 				errors.append("It was not possible to find all"
 						+ " correct assertions within " + this.excessTimeLimit
@@ -498,7 +510,18 @@ public class InferenceCompiler {
 					.filter(this.correctAssertions));
 		}
 
-		// TODO: save ancestor relations (i.e. inference hyper graph edges)
+		/**
+		 * create the hyper edges accordingly
+		 */
+
+		for (AssertionInterface a : inferCorrectAssertions.getInferred()) {
+			DisjunctiveNormalForm<EquivalentAssertions> premises = inferCorrectAssertions
+					.getAncestors(a);
+
+			/**
+			 * TODO!
+			 */
+		}
 
 		return errors.toString();
 	}
