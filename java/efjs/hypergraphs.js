@@ -46,7 +46,10 @@ function InferenceGraph() {
 
 	/**
 	 * adds an inference hyper-arrow from the premises to the conclusions
+	 * 
+	 * @returns this
 	 */
+
 
 	this.AddInference = function(premises, conclusions) {
 		var sorted_premises = [];
@@ -92,7 +95,7 @@ function InferenceGraph() {
 			this.conclusion_based[conclusion_id].push(inference_id);
 		}
 		
-		return inference_id;
+		return this;
 
 	};
 

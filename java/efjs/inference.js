@@ -1,6 +1,6 @@
 /**
- * inference.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
- * Professur für die Psychologie des Lernen und Lehrens
+ * inference.js, (c) 2012-13, Immanuel Albrecht; Dresden University of
+ * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software

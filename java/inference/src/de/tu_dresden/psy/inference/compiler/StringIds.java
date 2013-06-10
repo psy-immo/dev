@@ -110,7 +110,7 @@ public class StringIds {
 
 		@SuppressWarnings("unchecked")
 		ArrayList<ArrayList<String>> deep_copy = (ArrayList<ArrayList<String>>) factorwise
-		.clone();
+				.clone();
 
 		this.assertionDomain.add(deep_copy);
 
@@ -194,7 +194,9 @@ public class StringIds {
 	/**
 	 * 
 	 * @return java script code that generates a corresponding stringids.js
-	 *         object
+	 *         object (without surrounding parentheses and trailing ";")
+	 * 
+	 * 
 	 */
 
 	public String getJSCode() {
@@ -216,8 +218,6 @@ public class StringIds {
 
 			code.append("])");
 		}
-
-		code.append(";");
 
 		return code.toString();
 	}

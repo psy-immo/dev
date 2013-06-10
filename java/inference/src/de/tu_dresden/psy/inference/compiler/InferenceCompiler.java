@@ -18,6 +18,8 @@
 
 package de.tu_dresden.psy.inference.compiler;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 
 import de.tu_dresden.psy.efml.StringEscape;
@@ -62,6 +64,71 @@ public class InferenceCompiler {
 
 	/**
 	 * 
+	 * Writes the HTML code needed to create an inference machine from the
+	 * processed xml data using EFJS
+	 * 
+	 * @param writer
+	 * @param jsAcceptTagsArray
+	 *            accept tags as java script array (like "[\"good\"]" )
+	 * @param jsRejectTagsArray
+	 *            reject tags as ...
+	 * @param pointsTag
+	 *            points tag (as plain string)
+	 * @param conclusionsTag
+	 *            conclusion tag (as plain string)
+	 * @throws IOException
+	 */
+
+	public void writeInferenceMachineCode(Writer writer,
+			String jsAcceptTagsArray, String jsRejectTagsArray,
+			String pointsTag, String conclusionsTag) throws IOException {
+		writer.write("<script type=\"text/javascript\">");
+
+		writer.write("new InferenceMachine(");
+
+		writer.write(jsAcceptTagsArray + ", ");
+		writer.write(jsRejectTagsArray + ", ");
+
+		writer.write(this.assertionDomain.getJSCode() + ", ");
+
+		/**
+		 * Write the inference hyper graph object that contains all data on the
+		 * assertion domain that is needed to check student solutions and
+		 * provide feedback
+		 */
+
+		writer.write("new InferenceGraph()");
+
+		/**
+		 * TODO: inference rules
+		 */
+
+		/**
+		 * TODO: correct assertions
+		 */
+
+		/**
+		 * TODO: justified assertions
+		 */
+
+		/**
+		 * write the rest of the stuff
+		 */
+
+		writer.write(", ");
+
+		writer.write("\"" + StringEscape.escapeToJavaScript(pointsTag) + "\", ");
+
+		writer.write("\"" + StringEscape.escapeToJavaScript(conclusionsTag)
+				+ "\"");
+		writer.write(")");
+
+		writer.write(".WriteHtml();");
+		writer.write("</script>");
+	}
+
+	/**
+	 * 
 	 * This routine processes the inference xml, that has been embedded into the
 	 * efml file
 	 * 
@@ -74,19 +141,19 @@ public class InferenceCompiler {
 	public String processXmlData(ArrayList<EmbeddedInferenceXmlTag> xml) {
 		StringBuffer errors = new StringBuffer();
 
-		try {
+		/**
+		 * First, we need to translate the inference xml data in order to
+		 * process them
+		 * 
+		 * The assertionDomain is not used by the inference machine back end, so
+		 * we have to keep track of this here.
+		 * 
+		 * For the inference stuff, we want to recycle code from the
+		 * InferenceMachine class, so we need to translate the
+		 * EmbeddedInferenceXmlTag interface objects to XmlTag objects
+		 */
 
-			/**
-			 * First, we need to translate the inference xml data in order to
-			 * process them
-			 * 
-			 * The assertionDomain is not used by the inference machine back
-			 * end, so we have to keep track of this here.
-			 * 
-			 * For the inference stuff, we want to recycle code from the
-			 * InferenceMachine class, so we need to translate the
-			 * EmbeddedInferenceXmlTag interface objects to XmlTag objects
-			 */
+		try {
 
 			OUTER: for (EmbeddedInferenceXmlTag t : xml) {
 				if (t.getTagClass().equalsIgnoreCase("domain")) {
@@ -173,7 +240,10 @@ public class InferenceCompiler {
 			errors.append("</div>");
 		}
 
-		System.out.print("IROOT= " + this.inferenceRoot.getExpertAssertions());
+		/***
+		 * Second, we need to build the inference hyper graph, the correct
+		 * assertion set and the trivial assertion set
+		 */
 
 		return errors.toString();
 	}

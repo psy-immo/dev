@@ -24,7 +24,6 @@ public class InferenceTag implements AnyTag {
 	private static boolean useInferenceApplet = false;
 	private static boolean useInferenceCompiler = true;
 
-
 	/**
 	 * contains the inference xml data that is embedded with the inference tag
 	 */
@@ -36,7 +35,6 @@ public class InferenceTag implements AnyTag {
 		this.attributes = attributes;
 		this.xmlMachineData = new ArrayList<EmbeddedInferenceXmlTag>();
 		this.feedbackData = new ArrayList<FeedbackTag>();
-
 
 	}
 
@@ -65,6 +63,16 @@ public class InferenceTag implements AnyTag {
 			 */
 
 			writer.write(compiler_errors);
+
+			/**
+			 * write the inference machine html code
+			 */
+
+			compiler.writeInferenceMachineCode(writer, this.attributes
+					.getAcceptTags(), this.attributes.getRejectTags(),
+					this.attributes.getValueOrDefault("pointstag", "points"),
+					this.attributes.getValueOrDefault("conclusionstag",
+							"conclusions"));
 
 		}
 
@@ -99,11 +107,12 @@ public class InferenceTag implements AnyTag {
 			writer.write(this.attributes.getRejectTags() + ", ");
 
 			writer.write("\""
-					+ StringEscape.escapeToJavaScript(this.attributes.getValueOrDefault(
-							"pointstag", "points")) + "\", ");
+					+ StringEscape.escapeToJavaScript(this.attributes
+							.getValueOrDefault("pointstag", "points")) + "\", ");
 			writer.write("\""
-					+ StringEscape.escapeToJavaScript(this.attributes.getValueOrDefault(
-							"conclusionstag", "conclusions")) + "\"");
+					+ StringEscape.escapeToJavaScript(this.attributes
+							.getValueOrDefault("conclusionstag", "conclusions"))
+					+ "\"");
 
 			writer.write(").Feed(");
 
@@ -123,29 +132,33 @@ public class InferenceTag implements AnyTag {
 			for (FeedbackTag feedback : this.feedbackData) {
 				if (feedback.getCorrect() != null) {
 					writer.write(".SetCorrect(");
-					writer.write(StringEscape.escapeToDecodeInJavaScript((feedback
-							.getCorrect().getFeedback())));
+					writer.write(StringEscape
+							.escapeToDecodeInJavaScript((feedback.getCorrect()
+									.getFeedback())));
 					writer.write(")");
 				}
 
 				if (feedback.getIncorrect() != null) {
 					writer.write(".SetIncorrect(");
-					writer.write(StringEscape.escapeToDecodeInJavaScript((feedback
-							.getIncorrect().getFeedback())));
+					writer.write(StringEscape
+							.escapeToDecodeInJavaScript((feedback
+									.getIncorrect().getFeedback())));
 					writer.write(")");
 				}
 
 				if (feedback.getIncomplete() != null) {
 					writer.write(".SetIncomplete(");
-					writer.write(StringEscape.escapeToDecodeInJavaScript((feedback
-							.getIncomplete().getFeedback())));
+					writer.write(StringEscape
+							.escapeToDecodeInJavaScript((feedback
+									.getIncomplete().getFeedback())));
 					writer.write(")");
 				}
 
 				if (feedback.getNeedjustification() != null) {
 					writer.write(".SetInjustified(");
-					writer.write(StringEscape.escapeToDecodeInJavaScript((feedback
-							.getNeedjustification().getFeedback())));
+					writer.write(StringEscape
+							.escapeToDecodeInJavaScript((feedback
+									.getNeedjustification().getFeedback())));
 					writer.write(")");
 				}
 
@@ -154,19 +167,21 @@ public class InferenceTag implements AnyTag {
 					writer.write(StringEscape.escapeToDecodeInJavaScript(hint
 							.getLack()));
 					writer.write(",");
-					writer.write(StringEscape.escapeToDecodableInJavaScript(hint
-							.getHint()));
+					writer.write(StringEscape
+							.escapeToDecodableInJavaScript(hint.getHint()));
 					writer.write(")");
 				}
 
 				for (RequiredTag require : feedback.getRequires()) {
 					if (require.requiresCount()) {
-						writer.write(".RequireCount(" + require.getCount() + ")");
+						writer.write(".RequireCount(" + require.getCount()
+								+ ")");
 					}
 					if (require.requiresPart()) {
 						writer.write(".RequirePart("
-								+ StringEscape.escapeToDecodeInJavaScript(require
-										.getPart()) + ")");
+								+ StringEscape
+										.escapeToDecodeInJavaScript(require
+												.getPart()) + ")");
 					}
 				}
 			}
@@ -205,6 +220,7 @@ public class InferenceTag implements AnyTag {
 		}
 
 	}
+
 	@Override
 	public String getEfml() {
 		StringBuffer representation = new StringBuffer();
@@ -216,7 +232,7 @@ public class InferenceTag implements AnyTag {
 			AnyTag backconversion = (AnyTag) t;
 			representation.append(backconversion.getEfml());
 		}
-		for (AnyTag t: this.feedbackData) {
+		for (AnyTag t : this.feedbackData) {
 			representation.append(t.getEfml());
 		}
 		representation.append("</inference>");
