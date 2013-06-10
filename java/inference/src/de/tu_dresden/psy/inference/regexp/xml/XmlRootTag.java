@@ -714,6 +714,11 @@ public class XmlRootTag extends XmlTag {
 	private void processConstraint(XmlTag child, RegExpInferenceMap rule,
 			Map<String, Integer> premise_id) throws Exception {
 
+		/**
+		 * TODO: Check whether "type" attribute is differs, in that case use
+		 * EmptyIntersectionChecker (another new todo :)
+		 */
+
 		NonEmptyIntersectionChecker checker = new NonEmptyIntersectionChecker();
 
 		for (XmlTag t : child.children) {

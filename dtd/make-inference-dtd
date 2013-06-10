@@ -60,6 +60,11 @@ dtd.write("\n<!ATTLIST premise "+"""
 """)
 
 dtd.write("\n<!ELEMENT constraint (subject|predicate|object)* >\n")
+dtd.write("\n<!ATTLIST constraint "+"""
+		type	(equals|differs)	#IMPLIED
+ >
+""")
+
 dtd.write("\n<!ELEMENT infer (subject|predicate|object)* >\n")
 
 dtd.write("\n<!ELEMENT rho (in|out)* >\n")

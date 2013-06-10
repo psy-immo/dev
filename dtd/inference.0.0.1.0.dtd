@@ -47,6 +47,10 @@
 
 <!ELEMENT constraint (subject|predicate|object)* >
 
+<!ATTLIST constraint 
+		type	(equals|differs)	#IMPLIED
+ >
+
 <!ELEMENT infer (subject|predicate|object)* >
 
 <!ELEMENT rho (in|out)* >

@@ -39,6 +39,7 @@ import de.tu_dresden.psy.inference.regexp.xml.InferableAssertions;
 import de.tu_dresden.psy.inference.regexp.xml.InferableAssertions.State;
 import de.tu_dresden.psy.inference.regexp.xml.XmlRootTag;
 import de.tu_dresden.psy.inference.regexp.xml.XmlTag;
+import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatchers;
 
 /**
  * 
@@ -146,6 +147,11 @@ public class InferenceCompiler {
 	private Set<DirectedHyperEdge> inferenceHyperGraph;
 
 	/**
+	 * save the ids of the trivial assertions
+	 */
+	private Set<Integer> trivialAssertionIds;
+
+	/**
 	 * keep track of the inference xml data structure
 	 */
 
@@ -178,6 +184,7 @@ public class InferenceCompiler {
 		this.conclusiveAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
 
 		this.inferenceHyperGraph = new HashSet<DirectedHyperEdge>();
+		this.trivialAssertionIds = new HashSet<Integer>();
 	}
 
 	/**
@@ -217,9 +224,32 @@ public class InferenceCompiler {
 
 		writer.write("new InferenceGraph()");
 
+		for (DirectedHyperEdge e : this.inferenceHyperGraph) {
+			writer.write(".AddInference([");
+
+			for (Integer p : e.getPremise().getPremise()) {
+				writer.write(StringEscape.obfuscateInt(p) + ",");
+			}
+
+			writer.write("], [");
+
+			for (Integer c : e.getConclusions()) {
+				writer.write(StringEscape.obfuscateInt(c) + ",");
+			}
+
+			writer.write("])");
+		}
+
 		/**
-		 * TODO: inference rules
+		 * trivial assertions
 		 */
+		writer.write(".AddTrivial([");
+
+		for (Integer id : this.trivialAssertionIds) {
+			writer.write(StringEscape.obfuscateInt(id) + ", ");
+		}
+
+		writer.write("])");
 
 		/**
 		 * correct assertions
@@ -620,6 +650,25 @@ public class InferenceCompiler {
 		for (DirectedHyperEdgePremise p : conclusionsByPremise.keySet()) {
 			this.inferenceHyperGraph.add(new DirectedHyperEdge(p.getPremise(),
 					conclusionsByPremise.get(p)));
+		}
+
+		/**
+		 * we should also keep track of the trivially correct assertions from
+		 * the domain
+		 */
+
+		SubjectPredicateObjectMatchers parser = this.inferenceRoot.getParsers();
+
+		for (String a : this.assertionDomain.getCaseCorrectStrings()) {
+			Set<AssertionInterface> as = new HashSet<AssertionInterface>(
+					parser.match(a));
+
+			for (ConstrainedAssertionFilter f : this.trivialAssertionFilters) {
+				if (f.filter(as).isEmpty() == false) {
+					this.trivialAssertionIds.add(this.assertionDomain
+							.fromString(a));
+				}
+			}
 		}
 
 		return errors.toString();

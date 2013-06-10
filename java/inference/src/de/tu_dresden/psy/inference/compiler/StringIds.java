@@ -20,7 +20,9 @@ package de.tu_dresden.psy.inference.compiler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import de.tu_dresden.psy.efml.StringEscape;
 import de.tu_dresden.psy.inference.AssertionInterface;
@@ -59,6 +61,15 @@ public class StringIds {
 		this.toCaseCorrectString = new HashMap<Integer, String>();
 
 		this.currentId = 0;
+	}
+
+	/**
+	 * 
+	 * @return the set of strings that have an id
+	 */
+
+	public Set<String> getCaseCorrectStrings() {
+		return new HashSet<String>(this.toCaseCorrectString.values());
 	}
 
 	/**

@@ -53,6 +53,12 @@ function InferenceGraph() {
 	 * store the correct and justified assertions
 	 */
 	this.justified = {};
+	
+	/**
+	 * store the trivially correct assertions
+	 */
+	this.trivial = {};
+		
 		
 	/**
 	 * adds a list of justified assertion ids
@@ -64,6 +70,22 @@ function InferenceGraph() {
 		for ( var int = 0; int < ids.length; int++) {
 			var assertion = ids[int];
 			this.justified[assertion] = true;
+		}
+		
+		return this;
+	};
+	
+
+	/**
+	 * adds a list of trivial assertion ids
+	 * 
+	 * @returns this
+	 */
+	
+	this.AddTrivial = function(ids) {
+		for ( var int = 0; int < ids.length; int++) {
+			var assertion = ids[int];
+			this.trivial[assertion] = true;
 		}
 		
 		return this;

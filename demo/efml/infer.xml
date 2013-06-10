@@ -594,7 +594,7 @@
 			</rule>
 			
 			<trivial>
-				<predicate>(means, for bulbs,|is as big as|is (connected in parallel|serial connected) with)</predicate>
+				<predicate>(means, for bulbs,|is as big as)</predicate>
 				<constraint>
 					<subject/>
 					<object/>
