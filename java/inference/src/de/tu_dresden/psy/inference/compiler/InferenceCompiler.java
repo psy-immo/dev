@@ -80,20 +80,20 @@ public class InferenceCompiler {
 			 * First, we need to translate the inference xml data in order to
 			 * process them
 			 * 
-			 * The assertionDomain is not used by the inference machine back end, so
-			 * we have to keep track of this here.
+			 * The assertionDomain is not used by the inference machine back
+			 * end, so we have to keep track of this here.
 			 * 
 			 * For the inference stuff, we want to recycle code from the
 			 * InferenceMachine class, so we need to translate the
 			 * EmbeddedInferenceXmlTag interface objects to XmlTag objects
 			 */
 
-			OUTER:for (EmbeddedInferenceXmlTag t : xml) {
+			OUTER: for (EmbeddedInferenceXmlTag t : xml) {
 				if (t.getTagClass().equalsIgnoreCase("domain")) {
 					/**
-					 * the domain tags contain the information about how to produce
-					 * the assertion domain by point-wise concatenation of string
-					 * sets
+					 * the domain tags contain the information about how to
+					 * produce the assertion domain by point-wise concatenation
+					 * of string sets
 					 */
 
 					if (t.hasChildren() == false) {
@@ -173,6 +173,7 @@ public class InferenceCompiler {
 			errors.append("</div>");
 		}
 
+		System.err.print(this.inferenceRoot.getExpertAssertions());
 
 		return errors.toString();
 	}
