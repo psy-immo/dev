@@ -39,17 +39,14 @@ public class AssertionEquivalenceClasses {
 	private Set<AssertionInterface> equivalenceClasses;
 	private Map<EquivalentAssertions, EquivalentAssertions> representants;
 
-	
-
 	/**
 	 * default constructor
 	 */
 
 	public AssertionEquivalenceClasses() {
-		equivalenceClasses = new HashSet<AssertionInterface>();
-		representants = new HashMap<EquivalentAssertions, EquivalentAssertions>();
+		this.equivalenceClasses = new HashSet<AssertionInterface>();
+		this.representants = new HashMap<EquivalentAssertions, EquivalentAssertions>();
 	}
-
 
 	/**
 	 * copy constructor
@@ -58,15 +55,15 @@ public class AssertionEquivalenceClasses {
 	 */
 
 	public AssertionEquivalenceClasses(AssertionEquivalenceClasses copyContents) {
-		equivalenceClasses = new HashSet<AssertionInterface>(
+		this.equivalenceClasses = new HashSet<AssertionInterface>(
 				copyContents.representants.size());
-		representants = new HashMap<EquivalentAssertions, EquivalentAssertions>(
+		this.representants = new HashMap<EquivalentAssertions, EquivalentAssertions>(
 				copyContents.representants.size());
 
 		for (EquivalentAssertions ea : copyContents.representants.keySet()) {
 			EquivalentAssertions copy = new EquivalentAssertions(ea);
-			equivalenceClasses.add(copy);
-			representants.put(copy, copy);
+			this.equivalenceClasses.add(copy);
+			this.representants.put(copy, copy);
 		}
 	}
 
@@ -76,7 +73,7 @@ public class AssertionEquivalenceClasses {
 	 */
 
 	public Set<AssertionInterface> getClasses() {
-		return equivalenceClasses;
+		return this.equivalenceClasses;
 	}
 
 	/**
@@ -88,7 +85,7 @@ public class AssertionEquivalenceClasses {
 
 	public boolean contains(AssertionInterface ass) {
 		EquivalentAssertions ec = new EquivalentAssertions(ass);
-		return representants.get(ec) != null;
+		return this.representants.get(ec) != null;
 	}
 
 	/**
@@ -96,7 +93,7 @@ public class AssertionEquivalenceClasses {
 	 */
 	public void markAllOld() {
 		int count_new_olds = 0;
-		for (AssertionInterface assertion : equivalenceClasses) {
+		for (AssertionInterface assertion : this.equivalenceClasses) {
 			if (assertion.isOld() == false) {
 				assertion.markAsOld();
 				count_new_olds++;
@@ -105,7 +102,7 @@ public class AssertionEquivalenceClasses {
 
 		}
 		System.out.println("\n ~~~~ Assertions marked as old: "
-				+ count_new_olds + " of " + equivalenceClasses.size());
+				+ count_new_olds + " of " + this.equivalenceClasses.size());
 	}
 
 	/**
@@ -114,7 +111,7 @@ public class AssertionEquivalenceClasses {
 	 * @param newAssertions
 	 */
 	public void addNewAssertions(Set<? extends AssertionInterface> newAssertions) {
-		System.out.println("\n ~~~~ New assertions: " + newAssertions.size());
+		System.err.println("\n ~~~~ New assertions: " + newAssertions.size());
 
 		int count = 0;
 		int size = newAssertions.size();
@@ -127,18 +124,19 @@ public class AssertionEquivalenceClasses {
 
 			EquivalentAssertions e_class = new EquivalentAssertions(assertion);
 
-			EquivalentAssertions previous_class = representants.get(e_class);
+			EquivalentAssertions previous_class = this.representants
+					.get(e_class);
 
 			if (previous_class != null) {
 				previous_class.add(assertion);
 			} else {
-				equivalenceClasses.add(e_class);
-				representants.put(e_class, e_class);
+				this.equivalenceClasses.add(e_class);
+				this.representants.put(e_class, e_class);
 				new_classes++;
 			}
 
 		}
-		System.out.println("");
+		System.err.println("");
 	}
 
 	/**
@@ -150,9 +148,10 @@ public class AssertionEquivalenceClasses {
 	public int justification(AssertionInterface assertion) {
 		EquivalentAssertions ec = new EquivalentAssertions(assertion);
 
-		EquivalentAssertions r = representants.get(ec);
-		if (r == null)
+		EquivalentAssertions r = this.representants.get(ec);
+		if (r == null) {
 			return EquivalentAssertions.notJustified;
+		}
 
 		return r.getJustificationDepth();
 	}
@@ -164,7 +163,7 @@ public class AssertionEquivalenceClasses {
 	 */
 
 	public void calculateAncestors(ExcessLimit excessLimit) {
-		for (EquivalentAssertions ea : representants.keySet()) {
+		for (EquivalentAssertions ea : this.representants.keySet()) {
 			ea.updateDirectAncestors(excessLimit);
 		}
 
@@ -172,13 +171,15 @@ public class AssertionEquivalenceClasses {
 
 		while (keep_going) {
 			keep_going = false;
-			for (EquivalentAssertions ea : representants.keySet()) {
-				if (ea.updateAllAncestors(excessLimit))
+			for (EquivalentAssertions ea : this.representants.keySet()) {
+				if (ea.updateAllAncestors(excessLimit)) {
 					keep_going = true;
+				}
 			}
 
-			if (excessLimit.continueTask() == false)
+			if (excessLimit.continueTask() == false) {
 				break;
+			}
 		}
 	}
 
@@ -189,7 +190,7 @@ public class AssertionEquivalenceClasses {
 	 */
 
 	public void calculateRuleAncestors(ExcessLimit excessLimit) {
-		for (EquivalentAssertions ea : representants.keySet()) {
+		for (EquivalentAssertions ea : this.representants.keySet()) {
 			ea.updateRuleAncestors(excessLimit);
 		}
 
@@ -205,9 +206,10 @@ public class AssertionEquivalenceClasses {
 			AssertionInterface assertion) {
 		EquivalentAssertions ec = new EquivalentAssertions(assertion);
 
-		EquivalentAssertions r = representants.get(ec);
-		if (r == null)
+		EquivalentAssertions r = this.representants.get(ec);
+		if (r == null) {
 			return new DisjunctiveNormalForm<EquivalentAssertions>();
+		}
 
 		return r.ancestors();
 	}
@@ -221,9 +223,10 @@ public class AssertionEquivalenceClasses {
 			AssertionInterface assertion) {
 		EquivalentAssertions ec = new EquivalentAssertions(assertion);
 
-		EquivalentAssertions r = representants.get(ec);
-		if (r == null)
+		EquivalentAssertions r = this.representants.get(ec);
+		if (r == null) {
 			return new DisjunctiveNormalForm<EquivalentAssertions>();
+		}
 
 		return r.precursors();
 	}
@@ -238,9 +241,10 @@ public class AssertionEquivalenceClasses {
 			AssertionInterface assertion) {
 		EquivalentAssertions ec = new EquivalentAssertions(assertion);
 
-		EquivalentAssertions r = representants.get(ec);
-		if (r == null)
+		EquivalentAssertions r = this.representants.get(ec);
+		if (r == null) {
 			return new DisjunctiveNormalForm<EquivalentAssertions>();
+		}
 
 		return r.preimages();
 	}
@@ -252,6 +256,6 @@ public class AssertionEquivalenceClasses {
 
 	public Set<EquivalentAssertions> getEquivalencyClasses() {
 
-		return representants.keySet();
+		return this.representants.keySet();
 	}
 }

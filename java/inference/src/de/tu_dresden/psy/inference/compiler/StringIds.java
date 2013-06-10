@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.tu_dresden.psy.efml.StringEscape;
+import de.tu_dresden.psy.inference.AssertionInterface;
 
 /**
  * 
@@ -189,6 +190,21 @@ public class StringIds {
 		String unified = StringIds.unifyString(s);
 
 		return this.toId.get(unified);
+	}
+
+	/**
+	 * 
+	 * @param a
+	 *            assertion
+	 * @return the id that corresponds to the assertion
+	 */
+
+	public int fromAssertion(AssertionInterface a) {
+		if (a.getObject() == null) {
+			return this.fromString(a.getSubject() + " " + a.getPredicate()
+					+ " " + a.getObject());
+		}
+		return this.fromString(a.getSubject() + " " + a.getPredicate());
 	}
 
 	/**

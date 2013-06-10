@@ -19,22 +19,25 @@
 package de.tu_dresden.psy.inference;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
- * implements a meta-inference map that just calls all inference maps and joins the inferred assertions
+ * implements a meta-inference map that just calls all inference maps and joins
+ * the inferred assertions
+ * 
  * @author immanuel
- *
+ * 
  */
 
 public class InferenceMaps implements InferenceMap {
-	
+
 	private Set<InferenceMap> maps;
-	
+
 	/**
 	 * create a new set of inference maps
-	 * @param maps  - the set is (shallow-) copied
+	 * 
+	 * @param maps
+	 *            - the set is (shallow-) copied
 	 */
 	public InferenceMaps(Set<InferenceMap> maps) {
 		this.maps = new HashSet<InferenceMap>();
@@ -45,23 +48,23 @@ public class InferenceMaps implements InferenceMap {
 	public Set<AssertionInterface> inferNew(
 			Set<AssertionInterface> validPremises, ExcessLimit limit) {
 		Set<AssertionInterface> inferred = new HashSet<AssertionInterface>();
-		
-		int count=0;
-		int size = maps.size();
-		
-		for (Iterator<InferenceMap> it = maps.iterator();it.hasNext();) {
+
+		int count = 0;
+		int size = this.maps.size();
+
+		for (InferenceMap phi : this.maps) {
 			++count;
-			System.err.print("\r inferring: "+((count*100)/size)+"% ("+count+")");
-			InferenceMap phi = it.next();
-			
-			if (limit.continueTask() == false)
+			System.err.print("\r inferring: " + ((count * 100) / size) + "% ("
+					+ count + ")");
+			if (limit.continueTask() == false) {
 				break;
+			}
 
 			inferred.addAll(phi.inferNew(validPremises, limit));
 		}
-		
-		System.out.println("");
-		
+
+		System.err.println("");
+
 		return inferred;
 	}
 

@@ -21,8 +21,19 @@ package de.tu_dresden.psy.inference.compiler;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import de.tu_dresden.psy.efml.StringEscape;
+import de.tu_dresden.psy.inference.AssertionEquivalenceClasses;
+import de.tu_dresden.psy.inference.AssertionInterface;
+import de.tu_dresden.psy.inference.ExcessLimit;
+import de.tu_dresden.psy.inference.InferenceMap;
+import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
+import de.tu_dresden.psy.inference.regexp.xml.InferableAssertions;
+import de.tu_dresden.psy.inference.regexp.xml.InferableAssertions.State;
 import de.tu_dresden.psy.inference.regexp.xml.XmlRootTag;
 import de.tu_dresden.psy.inference.regexp.xml.XmlTag;
 
@@ -38,10 +49,87 @@ import de.tu_dresden.psy.inference.regexp.xml.XmlTag;
 public class InferenceCompiler {
 
 	/**
+	 * there may be errors/loopholes in the inference xml data that would cause
+	 * some actions (like closing the correct assertions base using inference
+	 * rules) to take a very long time or even make them an infinite loop. So we
+	 * choose some maximal time that we will spend on these actions.
+	 **/
+
+	private float excessTimeLimit;
+
+	private static final float defaultExcessTimeLimit = 45;
+
+	/**
 	 * keep track of the assertion domain
 	 */
 
 	private StringIds assertionDomain;
+
+	/**
+	 * implicit assertions are added to the given assertions any time
+	 */
+
+	private Set<AssertionInterface> implicitAssertions;
+
+	/**
+	 * these are correct assertions given by the expert, that are used to
+	 * determine the correct assertions wrt. the assertion domain
+	 */
+
+	private Set<AssertionInterface> correctAssertionBase;
+
+	/**
+	 * these are the correct assertions that have been determined from the
+	 * correct assertion base by using the inference rules
+	 */
+
+	private Set<AssertionInterface> correctAssertions;
+
+	/**
+	 * all basic inference rules wrt. assertion domain
+	 */
+
+	private Map<String, InferenceMap> inferenceRules;
+
+	/**
+	 * a subset of the basic inference rules which are considered to be trivial,
+	 * these rules are used to turn assertions into equivalent assertions that
+	 * are formulated slightly differently, such that the other inference rules
+	 * may recognize valid reasoning even if they are not presented in the same
+	 * syntax as the rules are written. (So you do not have to create a new
+	 * inference rulen for every combination of the expressing the same fact as
+	 * assertion.)
+	 * 
+	 */
+	private Map<String, InferenceMap> trivialSubsetOfInferenceRules;
+
+	/**
+	 * filters that filter out assertions like
+	 * 
+	 * the current through bulb A is as big as the current through bulb A
+	 */
+	private Set<ConstrainedAssertionFilter> trivialAssertionFilters;
+
+	/**
+	 * filters that filter out assertions like
+	 * 
+	 * a bigger current means a smaller current
+	 */
+	private Set<ConstrainedAssertionFilter> invalidAssertionFilters;
+
+	/**
+	 * filters that filter out assertions that need no more justification
+	 * regarding the problem, like
+	 * 
+	 * bulb A is connected in parallel with bulb chain BC
+	 */
+	private Set<ConstrainedAssertionFilter> justifiedAssertionFilters;
+
+	/**
+	 * filters that filter out assertions that have the correct form to be
+	 * considered a conclusion rather than only a point in the reasoning
+	 */
+	private Set<ConstrainedAssertionFilter> conclusiveAssertionFilters;
 
 	/**
 	 * keep track of the inference xml data structure
@@ -50,6 +138,9 @@ public class InferenceCompiler {
 	private XmlRootTag inferenceRoot;
 
 	public InferenceCompiler() {
+
+		this.excessTimeLimit = defaultExcessTimeLimit;
+
 		this.resetInferenceCompiler();
 	}
 
@@ -60,6 +151,16 @@ public class InferenceCompiler {
 	private void resetInferenceCompiler() {
 		this.assertionDomain = new StringIds();
 		this.inferenceRoot = new XmlRootTag();
+		this.implicitAssertions = new HashSet<AssertionInterface>();
+		this.correctAssertionBase = new HashSet<AssertionInterface>();
+		this.correctAssertions = new HashSet<AssertionInterface>();
+		this.inferenceRules = new HashMap<String, InferenceMap>();
+		this.trivialSubsetOfInferenceRules = new HashMap<String, InferenceMap>();
+
+		this.trivialAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
+		this.invalidAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
+		this.justifiedAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
+		this.conclusiveAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
 	}
 
 	/**
@@ -206,7 +307,7 @@ public class InferenceCompiler {
 		} catch (Exception e) {
 
 			/**
-			 * an error occured, now format it nicely in HTML so that the user
+			 * an error occurred, now format it nicely in HTML so that the user
 			 * can spot it and take actions
 			 */
 
@@ -240,12 +341,89 @@ public class InferenceCompiler {
 			errors.append("</div>");
 		}
 
+		/**
+		 * transfer data to intermediate structures
+		 */
+
+		this.implicitAssertions.addAll(this.inferenceRoot
+				.getImplicitAssertions());
+		this.correctAssertionBase.addAll(this.inferenceRoot
+				.getExpertAssertions());
+
+		Map<String, InferenceMap> updated_rules = this.inferenceRoot
+				.getInferenceMapsByName();
+		for (String key : updated_rules.keySet()) {
+			this.inferenceRules.put(key, updated_rules.get(key));
+		}
+
+		updated_rules = this.inferenceRoot.getTrivialInferenceMapsByName();
+		for (String key : updated_rules.keySet()) {
+			this.trivialSubsetOfInferenceRules.put(key, updated_rules.get(key));
+		}
+
+		this.trivialAssertionFilters.addAll(this.inferenceRoot
+				.getTrivialityFilters());
+		this.invalidAssertionFilters.addAll(this.inferenceRoot
+				.getInvalidityFilters());
+		this.justifiedAssertionFilters.addAll(this.inferenceRoot
+				.getJustifiedFilters());
+		this.conclusiveAssertionFilters.addAll(this.inferenceRoot
+				.getConclusionFilters());
+
 		/***
 		 * Second, we need to build the inference hyper graph, the correct
 		 * assertion set and the trivial assertion set
 		 */
 
+		/*******
+		 * infer correct assertions
+		 ******* 
+		 */
+
+		/**
+		 * AssertionEquivalenceClasses take care of the inference history of
+		 * assertions
+		 * 
+		 * Adding AssertionInferface sets via addNewAssertions will create
+		 * interfacing EquivalentAssertion objects, which can be accessed with
+		 * .getClasses()
+		 * 
+		 */
+		AssertionEquivalenceClasses implicitClasses = new AssertionEquivalenceClasses();
+		implicitClasses.addNewAssertions(this.implicitAssertions);
+
+		AssertionEquivalenceClasses correctBaseClasses = new AssertionEquivalenceClasses();
+		correctBaseClasses.addNewAssertions(this.correctAssertionBase);
+
+		InferableAssertions inferCorrectAssertions = new InferableAssertions(
+				implicitClasses.getClasses(), correctBaseClasses.getClasses(),
+				this.inferenceRules.values(), this.invalidAssertionFilters,
+				this.trivialAssertionFilters);
+
+		InferableAssertions.State success = inferCorrectAssertions
+				.closeValid(new ExcessLimit(this.excessTimeLimit));
+
+		if (success != InferableAssertions.State.closed) {
+			errors.append("<div class=\"compilererror\">");
+			errors.append("<h1>Inference Compiler Error</h1><br/>");
+
+			if (success == InferableAssertions.State.invalid) {
+				errors.append("It was possible to infer invalid"
+						+ " assertions using the expert assertions"
+						+ " and inference rules given!");
+			} else if (success == State.excess) {
+				errors.append("It was not possible to find all"
+						+ " correct assertions within " + this.excessTimeLimit
+						+ " seconds.");
+			} else {
+				errors.append("closeValid returned " + success.toString());
+			}
+
+			errors.append("</em><br/>");
+			errors.append("</div>");
+
+		}
+
 		return errors.toString();
 	}
-
 }

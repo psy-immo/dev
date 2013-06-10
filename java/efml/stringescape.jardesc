@@ -12,8 +12,8 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <file path="/efml/jarexport.jardesc"/>
+        <file path="/efml/.classpath"/>
         <file path="/efml/.project"/>
         <javaElement handleIdentifier="=efml/src&lt;de.tu_dresden.psy.efml{StringEscape.java"/>
-        <file path="/efml/.classpath"/>
     </selectedElements>
 </jardesc>

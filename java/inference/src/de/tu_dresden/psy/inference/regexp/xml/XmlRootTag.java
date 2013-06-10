@@ -110,20 +110,20 @@ public class XmlRootTag extends XmlTag {
 	private Map<ConstrainedAssertionFilter, String> solutionParts;
 
 	public XmlRootTag() {
-		rules = new HashSet<InferenceMap>();
-		trivialRules = new HashSet<InferenceMap>();
-		parsers = new HashSet<SubjectPredicateObjectMatcher>();
-		assertions = new HashSet<String>();
-		invalid = new HashSet<ConstrainedAssertionFilter>();
-		trivial = new HashSet<ConstrainedAssertionFilter>();
-		justified = new HashSet<ConstrainedAssertionFilter>();
-		implicit = new HashSet<String>();
-		expert = new HashSet<String>();
-		conclusionAssertionsGiven = new HashSet<String>();
+		this.rules = new HashSet<InferenceMap>();
+		this.trivialRules = new HashSet<InferenceMap>();
+		this.parsers = new HashSet<SubjectPredicateObjectMatcher>();
+		this.assertions = new HashSet<String>();
+		this.invalid = new HashSet<ConstrainedAssertionFilter>();
+		this.trivial = new HashSet<ConstrainedAssertionFilter>();
+		this.justified = new HashSet<ConstrainedAssertionFilter>();
+		this.implicit = new HashSet<String>();
+		this.expert = new HashSet<String>();
+		this.conclusionAssertionsGiven = new HashSet<String>();
 
-		conclusiveFilter = new HashSet<ConstrainedAssertionFilter>();
-		lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
-		solutionParts = new HashMap<ConstrainedAssertionFilter, String>();
+		this.conclusiveFilter = new HashSet<ConstrainedAssertionFilter>();
+		this.lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
+		this.solutionParts = new HashMap<ConstrainedAssertionFilter, String>();
 	}
 
 	/**
@@ -133,14 +133,16 @@ public class XmlRootTag extends XmlTag {
 	public Map<String, InferenceMap> getInferenceMapsByName() {
 		Map<String, InferenceMap> by_name = new HashMap<String, InferenceMap>();
 
-		for (InferenceMap map : rules) {
+		for (InferenceMap map : this.rules) {
 			if (by_name.containsKey(map.ruleName())) {
 				int c = 1;
-				while (by_name.containsKey(map.ruleName() + " (" + c + ")"))
+				while (by_name.containsKey(map.ruleName() + " (" + c + ")")) {
 					++c;
+				}
 				by_name.put(map.ruleName() + " (" + c + ")", map);
-			} else
+			} else {
 				by_name.put(map.ruleName(), map);
+			}
 		}
 
 		return by_name;
@@ -149,18 +151,23 @@ public class XmlRootTag extends XmlTag {
 	/**
 	 * 
 	 * @return trivial inference maps by their name
+	 * 
+	 *         this is a subset of the inference rules returned by
+	 *         getInferenceMapsByName
 	 */
 	public Map<String, InferenceMap> getTrivialInferenceMapsByName() {
 		Map<String, InferenceMap> by_name = new HashMap<String, InferenceMap>();
 
-		for (InferenceMap map : trivialRules) {
+		for (InferenceMap map : this.trivialRules) {
 			if (by_name.containsKey(map.ruleName())) {
 				int c = 1;
-				while (by_name.containsKey(map.ruleName() + " (" + c + ")"))
+				while (by_name.containsKey(map.ruleName() + " (" + c + ")")) {
 					++c;
+				}
 				by_name.put(map.ruleName() + " (" + c + ")", map);
-			} else
+			} else {
 				by_name.put(map.ruleName(), map);
+			}
 		}
 
 		return by_name;
@@ -172,7 +179,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	public Set<ConstrainedAssertionFilter> getInvalidityFilters() {
-		return invalid;
+		return this.invalid;
 	}
 
 	/**
@@ -181,7 +188,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	public Set<ConstrainedAssertionFilter> getTrivialityFilters() {
-		return trivial;
+		return this.trivial;
 	}
 
 	/**
@@ -190,7 +197,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	public Set<ConstrainedAssertionFilter> getJustifiedFilters() {
-		return justified;
+		return this.justified;
 	}
 
 	/**
@@ -200,7 +207,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	public Set<ConstrainedAssertionFilter> getConclusionFilters() {
-		return conclusiveFilter;
+		return this.conclusiveFilter;
 	}
 
 	/**
@@ -209,7 +216,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	public Map<String, ConstrainedAssertionFilter> getQualityFilters() {
-		return lackQualities;
+		return this.lackQualities;
 	}
 
 	/**
@@ -218,7 +225,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	public Map<ConstrainedAssertionFilter, String> getPartFilters() {
-		return solutionParts;
+		return this.solutionParts;
 	}
 
 	/**
@@ -227,7 +234,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	public InferenceMaps getMaps() {
-		return new InferenceMaps(rules);
+		return new InferenceMaps(this.rules);
 	}
 
 	/**
@@ -236,7 +243,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	public InferenceMaps getTrivialMaps() {
-		return new InferenceMaps(trivialRules);
+		return new InferenceMaps(this.trivialRules);
 	}
 
 	/**
@@ -245,7 +252,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	public SubjectPredicateObjectMatchers getParsers() {
-		return new SubjectPredicateObjectMatchers(parsers);
+		return new SubjectPredicateObjectMatchers(this.parsers);
 	}
 
 	/**
@@ -254,9 +261,9 @@ public class XmlRootTag extends XmlTag {
 	 */
 	public Set<AssertionInterface> getGivenAssertions() {
 		Set<AssertionInterface> given = new HashSet<AssertionInterface>();
-		SubjectPredicateObjectMatchers matcher = getParsers();
+		SubjectPredicateObjectMatchers matcher = this.getParsers();
 
-		for (String assertion : assertions) {
+		for (String assertion : this.assertions) {
 			given.addAll(matcher.match(assertion));
 		}
 
@@ -269,9 +276,9 @@ public class XmlRootTag extends XmlTag {
 	 */
 	public Set<AssertionInterface> getGivenConclusions() {
 		Set<AssertionInterface> given = new HashSet<AssertionInterface>();
-		SubjectPredicateObjectMatchers matcher = getParsers();
+		SubjectPredicateObjectMatchers matcher = this.getParsers();
 
-		for (String assertion : conclusionAssertionsGiven) {
+		for (String assertion : this.conclusionAssertionsGiven) {
 			given.addAll(matcher.match(assertion));
 		}
 
@@ -284,9 +291,9 @@ public class XmlRootTag extends XmlTag {
 	 */
 	public Set<AssertionInterface> getExpertAssertions() {
 		Set<AssertionInterface> given = new HashSet<AssertionInterface>();
-		SubjectPredicateObjectMatchers matcher = getParsers();
+		SubjectPredicateObjectMatchers matcher = this.getParsers();
 
-		for (String assertion : expert) {
+		for (String assertion : this.expert) {
 			given.addAll(matcher.match(assertion));
 		}
 
@@ -299,9 +306,9 @@ public class XmlRootTag extends XmlTag {
 	 */
 	public Set<AssertionInterface> getImplicitAssertions() {
 		Set<AssertionInterface> given = new HashSet<AssertionInterface>();
-		SubjectPredicateObjectMatchers matcher = getParsers();
+		SubjectPredicateObjectMatchers matcher = this.getParsers();
 
-		for (String assertion : implicit) {
+		for (String assertion : this.implicit) {
 			given.addAll(matcher.match(assertion));
 		}
 
@@ -315,7 +322,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processAssert(XmlTag child) {
-		assertions.add(child.contents);
+		this.assertions.add(child.contents);
 	}
 
 	/**
@@ -325,7 +332,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processImplicit(XmlTag child) {
-		implicit.add(child.contents);
+		this.implicit.add(child.contents);
 	}
 
 	/**
@@ -335,7 +342,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processConclusion(XmlTag child) {
-		conclusionAssertionsGiven.add(child.contents);
+		this.conclusionAssertionsGiven.add(child.contents);
 	}
 
 	/**
@@ -345,7 +352,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processExpert(XmlTag child) {
-		expert.add(child.contents);
+		this.expert.add(child.contents);
 	}
 
 	/**
@@ -356,7 +363,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processTrivial(XmlTag child) throws Exception {
-		trivial.add(processConstraintFilter(child));
+		this.trivial.add(this.processConstraintFilter(child));
 	}
 
 	/**
@@ -367,7 +374,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processInvalid(XmlTag child) throws Exception {
-		invalid.add(processConstraintFilter(child));
+		this.invalid.add(this.processConstraintFilter(child));
 	}
 
 	/**
@@ -378,7 +385,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processJustified(XmlTag child) throws Exception {
-		justified.add(processConstraintFilter(child));
+		this.justified.add(this.processConstraintFilter(child));
 	}
 
 	/**
@@ -389,7 +396,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processConclusions(XmlTag child) throws Exception {
-		conclusiveFilter.add(processConstraintFilter(child));
+		this.conclusiveFilter.add(this.processConstraintFilter(child));
 	}
 
 	/**
@@ -400,9 +407,9 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processQuality(XmlTag child) throws Exception {
-		String name = child.getAttributeOrDefault("name",
-				"Q" + lackQualities.size());
-		lackQualities.put(name, processConstraintFilter(child));
+		String name = child.getAttributeOrDefault("name", "Q"
+				+ this.lackQualities.size());
+		this.lackQualities.put(name, this.processConstraintFilter(child));
 	}
 
 	/**
@@ -413,9 +420,9 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processSolves(XmlTag child) throws Exception {
-		String name = child.getAttributeOrDefault("name",
-				"P" + solutionParts.size());
-		solutionParts.put(processConstraintFilter(child), name);
+		String name = child.getAttributeOrDefault("name", "P"
+				+ this.solutionParts.size());
+		this.solutionParts.put(this.processConstraintFilter(child), name);
 	}
 
 	/**
@@ -448,7 +455,7 @@ public class XmlRootTag extends XmlTag {
 					 * the children of t form a relation
 					 */
 
-					StringRelationJoin relation = processRho(t);
+					StringRelationJoin relation = this.processRho(t);
 
 					checker.addCheckPart(0, part, relation);
 
@@ -482,21 +489,24 @@ public class XmlRootTag extends XmlTag {
 			}
 		}
 
-		if (subject.isEmpty())
+		if (subject.isEmpty()) {
 			subject = ".*";
+		}
 
-		if (object.isEmpty())
+		if (object.isEmpty()) {
 			object = ".*";
+		}
 
-		if (predicate.isEmpty())
+		if (predicate.isEmpty()) {
 			predicate = ".*";
+		}
 
 		ConstrainedAssertionFilter filter = new ConstrainedAssertionFilter(
 				subject, predicate, object);
 
 		for (XmlTag t : child.children) {
 			if (t.tagName.equals("CONSTRAINT")) {
-				filter.addConstraint(processConstraint(t));
+				filter.addConstraint(this.processConstraint(t));
 			}
 		}
 
@@ -512,7 +522,7 @@ public class XmlRootTag extends XmlTag {
 
 	private void processRule(XmlTag child) throws Exception {
 		RegExpInferenceMap rule = new RegExpInferenceMap(
-				child.getAttributeOrDefault("name", "#" + rules.size()));
+				child.getAttributeOrDefault("name", "#" + this.rules.size()));
 
 		boolean is_trivial = "trivial".equalsIgnoreCase(child
 				.getAttributeOrDefault("type", "non-trivial"));
@@ -522,11 +532,12 @@ public class XmlRootTag extends XmlTag {
 
 		for (XmlTag tag : child.children) {
 			if (tag.tagName.equals("PREMISE")) {
-				processPremise(tag, rule);
+				this.processPremise(tag, rule);
 				String id = tag.attributes.get("id");
 
-				if (id != null)
+				if (id != null) {
 					premise_id.put(id, current_premise);
+				}
 
 				current_premise++;
 			}
@@ -534,16 +545,16 @@ public class XmlRootTag extends XmlTag {
 
 		for (XmlTag tag : child.children) {
 			if (tag.tagName.equals("CONSTRAINT")) {
-				processConstraint(tag, rule, premise_id);
+				this.processConstraint(tag, rule, premise_id);
 			} else if (tag.tagName.equals("INFER")) {
-				processInfer(tag, rule, premise_id);
+				this.processInfer(tag, rule, premise_id);
 			}
 		}
 
-		rules.add(rule);
+		this.rules.add(rule);
 
 		if (is_trivial) {
-			trivialRules.add(rule);
+			this.trivialRules.add(rule);
 		}
 	}
 
@@ -592,7 +603,7 @@ public class XmlRootTag extends XmlTag {
 						StringRelationJoin relation = null;
 
 						if (tag.children.isEmpty() == false) {
-							relation = processRho(tag);
+							relation = this.processRho(tag);
 						}
 
 						if (premise_id.containsKey((tag.attributes.get("id"))) == false) {
@@ -639,14 +650,17 @@ public class XmlRootTag extends XmlTag {
 			}
 		}
 
-		if (subject.isEmpty())
+		if (subject.isEmpty()) {
 			subject = ".*";
+		}
 
-		if (object.isEmpty())
+		if (object.isEmpty()) {
 			object = ".*";
+		}
 
-		if (predicate.isEmpty())
+		if (predicate.isEmpty()) {
 			predicate = ".*";
+		}
 
 		rule.addPremiseForm(subject, predicate, object);
 	}
@@ -672,16 +686,19 @@ public class XmlRootTag extends XmlTag {
 			}
 		}
 
-		if (subject.isEmpty())
+		if (subject.isEmpty()) {
 			subject = ".*";
+		}
 
-		if (object.isEmpty())
+		if (object.isEmpty()) {
 			object = ".*";
+		}
 
-		if (predicate.isEmpty())
+		if (predicate.isEmpty()) {
 			predicate = ".*";
+		}
 
-		parsers.add(new SubjectPredicateObjectMatcher(subject, predicate,
+		this.parsers.add(new SubjectPredicateObjectMatcher(subject, predicate,
 				object));
 	}
 
@@ -725,7 +742,7 @@ public class XmlRootTag extends XmlTag {
 					 * the children of t form a relation
 					 */
 
-					StringRelationJoin relation = processRho(t);
+					StringRelationJoin relation = this.processRho(t);
 
 					if (premise_id.containsKey((t.attributes.get("id"))) == false) {
 						throw new Exception(
@@ -814,29 +831,29 @@ public class XmlRootTag extends XmlTag {
 	@Override
 	public void addChild(XmlTag child) throws Exception {
 		if (child.tagName.equals("RULE")) {
-			processRule(child);
+			this.processRule(child);
 		} else if (child.tagName.equals("PARSE")) {
-			processParse(child);
+			this.processParse(child);
 		} else if (child.tagName.equals("ASSERT")) {
-			processAssert(child);
+			this.processAssert(child);
 		} else if (child.tagName.equals("TRIVIAL")) {
-			processTrivial(child);
+			this.processTrivial(child);
 		} else if (child.tagName.equals("INVALID")) {
-			processInvalid(child);
+			this.processInvalid(child);
 		} else if (child.tagName.equals("IMPLICIT")) {
-			processImplicit(child);
+			this.processImplicit(child);
 		} else if (child.tagName.equals("EXPERT")) {
-			processExpert(child);
+			this.processExpert(child);
 		} else if (child.tagName.equals("CONCLUSION")) {
-			processConclusion(child);
+			this.processConclusion(child);
 		} else if (child.tagName.equals("CONCLUSIONS")) {
-			processConclusions(child);
+			this.processConclusions(child);
 		} else if (child.tagName.equals("JUSTIFIED")) {
-			processJustified(child);
+			this.processJustified(child);
 		} else if (child.tagName.equals("QUALITY")) {
-			processQuality(child);
+			this.processQuality(child);
 		} else if (child.tagName.equals("SOLVES")) {
-			processSolves(child);
+			this.processSolves(child);
 		}
 
 		/**
@@ -847,13 +864,13 @@ public class XmlRootTag extends XmlTag {
 	@Override
 	public String toString() {
 
-		return rules.size() + " rule(s), " + parsers.size() + " parser(s), "
-				+ assertions.size() + " assertion(s), " + trivial.size()
-				+ " triviality filter(s), " + invalid.size()
-				+ " invalidity filter(s), " + implicit.size()
-				+ " implicit assertion(s), " + expert.size()
-				+ " expert assertion(s), " + justified.size()
-				+ " justified-assertion filter(s)";
+		return this.rules.size() + " rule(s), " + this.parsers.size()
+				+ " parser(s), " + this.assertions.size() + " assertion(s), "
+				+ this.trivial.size() + " triviality filter(s), "
+				+ this.invalid.size() + " invalidity filter(s), "
+				+ this.implicit.size() + " implicit assertion(s), "
+				+ this.expert.size() + " expert assertion(s), "
+				+ this.justified.size() + " justified-assertion filter(s)";
 	}
 
 }
