@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import de.tu_dresden.psy.efml.StringEscape;
 import de.tu_dresden.psy.inference.AssertionEquivalenceClasses;
@@ -477,9 +478,9 @@ public class InferenceCompiler {
 			errors.append("<h1>Inference Compiler Error</h1><br/>");
 
 			if (success == InferableAssertions.State.invalid) {
-				errors.append("It was possible to infer invalid"
+				errors.append("<em>It was possible to infer invalid"
 						+ " assertions using the expert assertions"
-						+ " and inference rules given!");
+						+ " and inference rules given!</em>");
 				/**
 				 * TODO: print inferred invalid assertions
 				 * */
@@ -499,7 +500,8 @@ public class InferenceCompiler {
 		 * copy the correct assertions and their ancestor relations
 		 */
 
-		this.correctAssertions.addAll(inferCorrectAssertions.getInferred());
+		this.correctAssertions.addAll(inferCorrectAssertions.getValid()
+				.getClasses());
 
 		/**
 		 * filter out the justified correct assertions
@@ -510,17 +512,114 @@ public class InferenceCompiler {
 					.filter(this.correctAssertions));
 		}
 
-		/**
+		/**********
 		 * create the hyper edges accordingly
+		 **********/
+
+		/**
+		 * update the justification levels
 		 */
+
+		inferCorrectAssertions.updateJustification(
+				this.justifiedAssertionFilters,
+				inferCorrectAssertions.getValid(), true);
+
+		/**
+		 * calculate the ancestor sets
+		 */
+
+		ExcessLimit time_limit = new ExcessLimit(this.excessTimeLimit);
+
+		inferCorrectAssertions.calculateAncestors(time_limit);
+
+		if (time_limit.exceeded()) {
+			errors.append("<div class=\"compilererror\">");
+			errors.append("<h1>Inference Compiler Error</h1><br/>");
+
+			errors.append("It was not possible to calculate all "
+					+ " assertion ancestors within " + this.excessTimeLimit
+					+ " seconds.");
+
+			errors.append("</em><br/>");
+			errors.append("</div>");
+		}
+
+		/**
+		 * calculate the pre-images of the assertions
+		 */
+
+		time_limit = new ExcessLimit(this.excessTimeLimit);
+
+		inferCorrectAssertions.calculateRuleAncestors(time_limit);
+
+		if (time_limit.exceeded()) {
+			errors.append("<div class=\"compilererror\">");
+			errors.append("<h1>Inference Compiler Error</h1><br/>");
+
+			errors.append("It was not possible to calculate all "
+					+ " assertion pre-image sets within "
+					+ this.excessTimeLimit + " seconds.");
+
+			errors.append("</em><br/>");
+			errors.append("</div>");
+		}
+
+		/**
+		 * copy the data to inferenceHyperGraph
+		 */
+
+		Set<DirectedHyperEdge> singletonTargetEdges = new HashSet<DirectedHyperEdge>();
 
 		for (AssertionInterface a : inferCorrectAssertions.getInferred()) {
 			DisjunctiveNormalForm<EquivalentAssertions> premises = inferCorrectAssertions
 					.getAncestors(a);
+			int id_a = this.assertionDomain.fromAssertion(a);
 
-			/**
-			 * TODO!
-			 */
+			if (id_a >= 0) {
+				/**
+				 * a belongs to the assertionDomain
+				 */
+
+				for (Set<EquivalentAssertions> premise : premises.getTerm()) {
+					DirectedHyperEdge edge = new DirectedHyperEdge(id_a);
+
+					for (AssertionInterface p : premise) {
+						int id_p = this.assertionDomain.fromAssertion(p);
+
+						if (id_p >= 0) {
+							/**
+							 * if p is in the assertionDomain as well, it must
+							 * be specified to infer a
+							 */
+							edge.addPremise(id_p);
+						}
+					}
+
+					singletonTargetEdges.add(edge);
+				}
+			}
+		}
+
+		/**
+		 * now, we constructed a hyper graph with singleton edge targets.
+		 * 
+		 * But: it is more nice to have one edge per premise set
+		 */
+
+		Map<DirectedHyperEdgePremise, Set<Integer>> conclusionsByPremise = new HashMap<DirectedHyperEdgePremise, Set<Integer>>();
+
+		for (DirectedHyperEdge e : singletonTargetEdges) {
+			DirectedHyperEdgePremise p = e.getPremise();
+			if (conclusionsByPremise.containsKey(p) == false) {
+				conclusionsByPremise.put(p, new TreeSet<Integer>());
+			}
+
+			conclusionsByPremise.get(p).addAll(e.getConclusions());
+		}
+
+		for (DirectedHyperEdgePremise p : conclusionsByPremise.keySet()) {
+			this.inferenceHyperGraph.add(new DirectedHyperEdge(p.getPremise(),
+					conclusionsByPremise.get(p)));
 		}
 
 		return errors.toString();

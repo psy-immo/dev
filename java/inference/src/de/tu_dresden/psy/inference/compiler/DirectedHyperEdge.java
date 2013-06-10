@@ -60,4 +60,98 @@ public class DirectedHyperEdge {
 		this.initialize();
 	}
 
+	/**
+	 * empty premise, sigleton target
+	 * 
+	 * @param target
+	 */
+	public DirectedHyperEdge(int target) {
+		this.initialize();
+		this.conclusion.add(target);
+	}
+
+	public DirectedHyperEdge(Set<Integer> source, Set<Integer> target) {
+		this.initialize();
+		this.conclusion.addAll(target);
+		this.premise.addAll(source);
+	}
+
+	/**
+	 * add a vertex to the premise set
+	 * 
+	 * @param v
+	 */
+
+	public void addPremise(int v) {
+		this.premise.add(v);
+	}
+
+	/**
+	 * add a vertex to the premise set
+	 * 
+	 * @param v
+	 */
+
+	public void addConclusion(int v) {
+		this.conclusion.add(v);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result)
+				+ ((this.conclusion == null) ? 0 : this.conclusion.hashCode());
+		result = (prime * result)
+				+ ((this.premise == null) ? 0 : this.premise.hashCode());
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		DirectedHyperEdge other = (DirectedHyperEdge) obj;
+		if (this.conclusion == null) {
+			if (other.conclusion != null) {
+				return false;
+			}
+		} else if (!this.conclusion.equals(other.conclusion)) {
+			return false;
+		}
+		if (this.premise == null) {
+			if (other.premise != null) {
+				return false;
+			}
+		} else if (!this.premise.equals(other.premise)) {
+			return false;
+		}
+		return true;
+	}
+
+	public DirectedHyperEdgePremise getPremise() {
+		return new DirectedHyperEdgePremise(this.premise);
+	}
+
+	public Set<Integer> getConclusions() {
+		return this.conclusion;
+	}
+
 }
