@@ -49,7 +49,27 @@ function InferenceGraph() {
 	 */
 	this.correct = {};
 	
+	/**
+	 * store the correct and justified assertions
+	 */
+	this.justified = {};
+		
+	/**
+	 * adds a list of justified assertion ids
+	 * 
+	 * @returns this
+	 */
 	
+	this.AddJustified = function(ids) {
+		for ( var int = 0; int < ids.length; int++) {
+			var assertion = ids[int];
+			this.justified[assertion] = true;
+		}
+		
+		return this;
+	};
+
+		
 	/**
 	 * adds a list of correct assertion ids
 	 * 

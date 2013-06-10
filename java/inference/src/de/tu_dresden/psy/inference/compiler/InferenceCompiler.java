@@ -86,6 +86,12 @@ public class InferenceCompiler {
 	private Set<AssertionInterface> correctAssertions;
 
 	/**
+	 * these are the correct assertions that are justified wrt to the problem
+	 */
+
+	private Set<AssertionInterface> justifiedSubsetOfCorrectAssertions;
+
+	/**
 	 * all basic inference rules wrt. assertion domain
 	 */
 
@@ -154,6 +160,7 @@ public class InferenceCompiler {
 		this.implicitAssertions = new HashSet<AssertionInterface>();
 		this.correctAssertionBase = new HashSet<AssertionInterface>();
 		this.correctAssertions = new HashSet<AssertionInterface>();
+		this.justifiedSubsetOfCorrectAssertions = new HashSet<AssertionInterface>();
 		this.inferenceRules = new HashMap<String, InferenceMap>();
 		this.trivialSubsetOfInferenceRules = new HashMap<String, InferenceMap>();
 
@@ -205,7 +212,7 @@ public class InferenceCompiler {
 		 */
 
 		/**
-		 * TODO: correct assertions
+		 * correct assertions
 		 */
 		writer.write(".AddCorrect([");
 
@@ -237,8 +244,33 @@ public class InferenceCompiler {
 		writer.write("])");
 
 		/**
-		 * TODO: justified assertions
+		 * justified assertions
 		 */
+
+		writer.write(".AddJustified([");
+
+		for (AssertionInterface a : this.justifiedSubsetOfCorrectAssertions) {
+			int id = this.assertionDomain.fromAssertion(a);
+
+			if (id > 0) {
+				writer.write(StringEscape.obfuscateInt(id) + ", ");
+			} else {
+
+				/**
+				 * if the id < 0, then the assertion is not part of the
+				 * assertion domain, so it may be a helper assertion that is
+				 * added via implicit.
+				 * 
+				 * These warnings should not occur!!
+				 */
+
+				System.err
+						.println("WARNING: Correct and justified, yet not in domain: "
+								+ a.toString());
+			}
+		}
+
+		writer.write("])");
 
 		/**
 		 * write the rest of the stuff
@@ -456,6 +488,15 @@ public class InferenceCompiler {
 		 */
 
 		this.correctAssertions.addAll(inferCorrectAssertions.getInferred());
+
+		/**
+		 * filter out the justified correct assertions
+		 */
+
+		for (ConstrainedAssertionFilter f : this.justifiedAssertionFilters) {
+			this.justifiedSubsetOfCorrectAssertions.addAll(f
+					.filter(this.correctAssertions));
+		}
 
 		// TODO: save ancestor relations (i.e. inference hyper graph edges)
 
