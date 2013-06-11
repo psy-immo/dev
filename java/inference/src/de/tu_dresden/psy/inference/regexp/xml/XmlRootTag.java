@@ -29,6 +29,7 @@ import de.tu_dresden.psy.inference.AssertionInterface;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.InferenceMaps;
 import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
+import de.tu_dresden.psy.inference.regexp.NegationOfConstraint;
 import de.tu_dresden.psy.inference.regexp.NonEmptyIntersectionChecker;
 import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
 import de.tu_dresden.psy.regexp.KRegExp;
@@ -714,11 +715,6 @@ public class XmlRootTag extends XmlTag {
 	private void processConstraint(XmlTag child, RegExpInferenceMap rule,
 			Map<String, Integer> premise_id) throws Exception {
 
-		/**
-		 * TODO: Check whether "type" attribute is differs, in that case use
-		 * EmptyIntersectionChecker (another new todo :)
-		 */
-
 		NonEmptyIntersectionChecker checker = new NonEmptyIntersectionChecker();
 
 		for (XmlTag t : child.children) {
@@ -763,7 +759,20 @@ public class XmlRootTag extends XmlTag {
 			}
 		}
 
-		rule.addConstraint(checker);
+		/**
+		 * now we check whether the type is equals or differs, where equals is
+		 * default and checks for non-empty intersection; and differs checks for
+		 * empty intersection
+		 */
+
+		if (child.getAttributeOrDefault("type", "equals").equalsIgnoreCase(
+				"equals")) {
+			rule.addConstraint(checker);
+		} else {
+			rule.addConstraint(new NegationOfConstraint(checker));
+		}
+
+
 	}
 
 	/**

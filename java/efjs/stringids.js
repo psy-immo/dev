@@ -112,6 +112,21 @@ function StringIds() {
 			return this.to_id[unified];
 		return -1;
 	};
+	
+	/**
+	 * vs  array of input strings
+	 * 
+	 * @returns  an array that contains the ids of the given strings, or -1 for unknown strings
+	 */
+
+	this.ToIds = function(vs) {
+		var rs = [];
+		for ( var int = 0; int < vs.length; int++) {
+			var s = vs[int];
+			rs.push(this.ToId(s));
+		}
+		return rs;
+	};
 
 	/**
 	 * id
@@ -125,6 +140,22 @@ function StringIds() {
 		return "!!UNKNOWN STRING!!";
 
 	};
+	
+	/**
+	 * vid   array of ids
+	 * 
+	 * @returns  an array that contains the strings corresponding to the ids
+	 */
+
+	this.FromIds = function(vid) {
+		var rs = [];
+		for ( var int = 0; int < vid.length; int++) {
+			var id = vid[int];
+			rs.push(this.FromId(id));
+		}
+		return rs;
+	};
+
 	
 	return this;
 }

@@ -586,6 +586,10 @@
 					<object id="ab"/>
 					<subject id="bc"/>
 				</constraint>
+				<constraint type="differs">
+					<subject id="ab"/>
+					<object id="bc"/>
+				</constraint>
 				<infer>
 					<subject id="ab" source="subject"/>
 					<predicate id="ab" source="predicate"/>

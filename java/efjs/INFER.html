@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" type="text/css" href="efjs.css" media="screen" /></head><body id="body">
+  <applet id="loglet" name="loglet" archive="loglet.jar" code="de.tu_dresden.psy.util.Loglet" mayscript="" style="width: 1px; height: 1px"></applet>
+	<script type="text/javascript">
+  docId = "d03f846c-11e9-4e84-9079-732fbad74f8e";
+  studyId = "116383ef-c046-42a3-b531-68eaffda7cd0";
+  </script>
+	<script type="text/javascript" src="EventHelpers.js"></script>
+	<script type="text/javascript" src="cssQuery-p.js"></script>
+	<script type="text/javascript" src="jcoglan.com.sylvester.js"></script>
+	<script type="text/javascript" src="cssSandpaper.js"></script>
+	<script type="text/javascript" src="jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="prototype.js"></script>
+	<script type="text/javascript" src="crosscompat.js"></script>
+	<script type="text/javascript" src="stylesheets.js"></script>
+	<script type="text/javascript" src="mouse.js"></script>
+	<script type="text/javascript" src="cssgraphics.js"></script>
+	<script type="text/javascript" src="stringids.js"></script>
+	<script type="text/javascript" src="loglet.js"></script>
+	<script type="text/javascript" src="storage.js"></script>
+	<script type="text/javascript" src="logger.js"></script>
+	<script type="text/javascript" src="tags.js"></script>
+	<script type="text/javascript" src="logic.js"></script>
+	<script type="text/javascript" src="hover.js"></script>
+	<script type="text/javascript" src="endecoder.js"></script>
+	<script type="text/javascript" src="runway.js"></script>
+	<script type="text/javascript" src="answer.js"></script>
+	<script type="text/javascript" src="multiline.js"></script>
+	<script type="text/javascript" src="sniffybutton.js"></script>
+	<script type="text/javascript" src="dropdown.js"></script>
+	<script type="text/javascript" src="checkbox.js"></script>
+	<script type="text/javascript" src="radiobutton.js"></script>
+	<script type="text/javascript" src="popupbutton.js"></script>
+	<script type="text/javascript" src="freetext.js"></script>
+	<script type="text/javascript" src="boxspace.js"></script>
+	<script type="text/javascript" src="trashcan.js"></script>
+	<script type="text/javascript" src="sentencepattern.js"></script>
+	<script type="text/javascript" src="airport.js"></script>
+	<script type="text/javascript" src="hypergraphs.js"></script>
+	<script type="text/javascript" src="inference.js"></script>
+	<script type="text/javascript" src="efml.js"></script>
+	<script type="text/javascript" src="efmlbuttons.js"></script>
+	<script type="text/javascript" src="efmlboard.js"></script>
+	<script type="text/javascript" src="efmlcheckbox.js"></script>
+	<script type="text/javascript" src="efmltag.js"></script>
+	<script type="text/javascript" src="efmlquote.js"></script>
+	<script type="text/javascript" src="efmlfactory.js"></script>
+<div id="mainframe" ><script type="text/javascript">printChangeSubjectButton();</script>
+	
+		
+		<div style="float: left;">
+			<div style="float:left; padding: 4px;">
+				<img src="schematic.gif" />
+			</div>
+			<div style="float:left; width: 320px;">
+				All bulbs in the circuit have indentical specifications. How will the luminosities of the bulbs relate to each other when set up according to the schematic?
+			</div>
+		</div>
+		
+		<div style="clear: both;" />
+		<br />
+		
+		
+
+		<h2>Answer</h2>
+		<script type="text/javascript">new SentencePattern("pat1", ["frage1"], [ new Dropdown("pat1[0]", ["frage1"], "[part]", "").Option("bulb A").Option("bulb B").Option("bulb C").Option("bulb chain BC").Option("the battery"), " ",  new Dropdown("pat1[2]", ["frage1"], "[connection]", "").Option("is serial connected with").Option("is connected in parallel with"), " ",  new Dropdown("pat1[4]", ["frage1"], "[part]", "").Option("bulb A").Option("bulb B").Option("bulb C").Option("bulb chain BC").Option("the battery")], true).WriteHtml();</script><br />
+		
+		<script type="text/javascript">new SentencePattern("pat2", ["frage1"], [ new Dropdown("pat2[0]", ["frage1"], "[parameter]", "").Option("the current through").Option("the voltage of").Option("the resistance of").Option("the input power of").Option("the luminosity of"), " ",  new Dropdown("pat2[2]", ["frage1"], "[part]", "").Option("bulb A").Option("bulb B").Option("bulb C").Option("bulb chain BC").Option("the battery"), " ",  new Dropdown("pat2[4]", ["frage1"], "[comparison]", "").Option("is smaller than").Option("is as big as").Option("is bigger than"), " ",  new Dropdown("pat2[6]", ["frage1"], "[parameter]", "").Option("the current through").Option("the voltage of").Option("the resistance of").Option("the input power of").Option("the luminosity of"), " ",  new Dropdown("pat2[8]", ["frage1"], "[part]", "").Option("bulb A").Option("bulb B").Option("bulb C").Option("bulb chain BC").Option("the battery")], true).WriteHtml();</script><br />
+		
+		<script type="text/javascript">new SentencePattern("pat3", ["frage1"], ["a ",  new Dropdown("pat3[1]", ["frage1"], "[quality]", "").Option("smaller").Option("bigger"), " ",  new Dropdown("pat3[3]", ["frage1"], "[parameter]", "").Option("current").Option("voltage").Option("resistance").Option("input power").Option("luminosity"), " means, for bulbs, a ",  new Dropdown("pat3[5]", ["frage1"], "[quality]", "").Option("smaller").Option("bigger"), " ",  new Dropdown("pat3[7]", ["frage1"], "[parameter]", "").Option("current").Option("voltage").Option("resistance").Option("input power").Option("luminosity")], true).WriteHtml();</script>
+		
+				
+	
+		<h3>Points</h3>
+		<script type="text/javascript">new Airport("", ["frage1","points"], ["frage1"], []).Width("600px").WriteHtml();</script>
+
+		<h3>Conclusions</h3>
+		<script type="text/javascript">new Airport("", ["conclusions","frage1"], ["frage1"], []).Width("600px").WriteHtml();</script>
+
+		<br />
+		<br />
+		<br />
+		<script type="text/javascript">new InferenceMachine(["frage1"], [], new StringIds().AddStringProduct([["bulb A","bulb B","bulb C","bulb chain BC","the battery",],[" ",],["is serial connected with","is connected in parallel with",],[" ",],["bulb A","bulb B","bulb C","bulb chain BC","the battery",],]).AddStringProduct([["the current through","the voltage of","the resistance of","the input power of","the luminosity of",],[" ",],["bulb A","bulb B","bulb C","bulb chain BC","the battery",],[" ",],["is bigger than","is smaller than","is as big as",],[" ",],["the current through","the voltage of","the resistance of","the input power of","the luminosity of",],[" ",],["bulb A","bulb B","bulb C","bulb chain BC","the battery",],]).AddStringProduct([["a ",],["bigger","smaller",],[" ",],["current","voltage","resistance","input power","luminosity",],[" means, for bulbs, a ",],["bigger","smaller",],[" ",],["current","voltage","resistance","input power","luminosity",],]), new InferenceGraph().AddInference([1123%136,4413%761,18889%2112,], [10143%1463,]).AddInference([1133%125,5126%753,], [4545%788,]).AddInference([1026%109,], [5724%655,6541%823,]).AddInference([5538%626,19270%2160,], [2106%326,]).AddInference([872%96,4757%820,18214%2028,], [1492%180,]).AddInference([900%173,3473%588,14190%2042,], [9114%1304,]).AddInference([1757%316,16094%2024,], [5436%697,]).AddInference([459%53,6032%768,14596%2101,], [1843%256,]).AddInference([5450%615,10766%2193,], [18221%1839,]).AddInference([243%37,21090%2123,], [7045%1432,10463%1512,]).AddInference([4053%689,6480%825,20107%2013,], [1681%364,]).AddInference([3693%632,5127%737,18833%2105,], [9240%1325,]).AddInference([341%37,4726%599,19358%2171,], [2270%265,]).AddInference([4772%694,6319%802,17345%2193,], [19277%1948,]).AddInference([4119%606,5241%764,16347%2051,], [728%169,]).AddInference([1491%208,6235%797,19083%2143,], [10031%1692,]).AddInference([2834%369,10128%2036,], [19501%1970,]).AddInference([3850%664,21253%2140,], [11251%1423,]).AddInference([615%116,5813%660,11969%2006,], [16590%1865,]).AddInference([236%57,4852%839,17819%1985,], [8236%1666,]).AddInference([3127%661,7089%804,19041%2131,], [13306%1346,]).AddInference([384%94,2913%595,12313%2064,], [10260%1495,]).AddInference([973%134,6572%845,], [5104%584,]).AddInference([1484%207,6653%680,20966%2108,], [17285%1735,]).AddInference([404%44,5577%703,10250%2065,], [1626%175,]).AddInference([1275%211,], [4572%584,7516%842,]).AddInference([683%81,4084%857,17023%2147,], [11843%1712,]).AddInference([947%152,3483%590,14890%2150,], [1488%223,]).AddInference([799%113,5072%744,20178%2027,], [3699%386,]).AddInference([5187%588,4617%792,18962%2121,], [9902%1666,]).AddInference([7529%769,4729%804,], [4044%687,]).AddInference([6377%641,8391%854,15638%1957,], [18098%1817,]).AddInference([4630%805,16033%2014,], [2898%297,]).AddInference([664%164,6039%769,19386%2174,], [14483%1614,]).AddInference([5272%677,6641%742,9855%1980,], [2814%296,]).AddInference([4305%546,5120%744,18178%2030,], [7851%1332,]).AddInference([340%61,6385%716,18299%2045,], [10187%1723,]).AddInference([1498%211,14524%2090,], [17384%1743,16403%1829,]).AddInference([3493%602,5725%724,], [2800%592,]).AddInference([3381%590,18367%2054,], [730%97,]).AddInference([1019%123,6249%699,12410%2095,], [1210%193,]).AddInference([1209%133,14470%2081,], [12167%1745,10826%1811,]).AddInference([8099%827,6081%883,], [7087%908,]).AddInference([689%109,5181%664,10689%2174,], [8755%1493,]).AddInference([1065%151,5493%620,16911%2131,], [12194%1754,]).AddInference([2235%244,4571%673,], [6006%608,]).AddInference([3853%664,5257%758,], [4405%553,]).AddInference([5370%543,8360%856,19066%2134,], [16988%1713,]).AddInference([4094%594,18879%2118,], [1968%303,]).AddInference([2017%368,16970%2141,], [10648%1333,]).AddInference([1097%118,5643%831,12803%2162,], [12631%1271,]).AddInference([3408%496,12299%2072,], [12933%1623,]).AddInference([858%135,4934%713,], [6143%902,]).AddInference([498%70,4684%593,13935%2000,], [1620%210,]).AddInference([2242%295,10305%2094,], [14444%1821,]).AddInference([1714%238,5090%651,], [5774%655,]).AddInference([2495%503,4202%709,14124%2031,], [7462%1254,]).AddInference([792%112,6544%736,], [3026%519,]).AddInference([3083%520,5445%684,16618%2097,], [11796%1704,]).AddInference([1024%197,6641%748,], [8472%860,]).AddInference([896%123,6432%722,14271%2056,], [1211%145,]).AddInference([2723%309,15642%1959,], [10956%1837,]).AddInference([5095%583,14072%2013,], [12862%1613,]).AddInference([5115%655,15931%1999,], [13584%1366,]).AddInference([1104%137,4916%718,14544%2101,], [8710%1469,]).AddInference([5547%633,4677%804,16705%2110,], [718%111,]).AddInference([6944%792,5601%816,16040%2015,], [2136%273,]).AddInference([602%99,6089%679,12610%2135,], [704%163,]).AddInference([2822%478,17983%2006,], [521%67,]).AddInference([953%135,5753%735,17435%2206,], [11585%1460,]).AddInference([632%104,2921%597,10130%2048,], [13258%1496,]).AddInference([1200%129,], [7293%823,5733%825,]).AddInference([3243%552,4166%702,12420%2086,], [1011%120,]).AddInference([6397%724,12898%2181,], [6901%1384,]).AddInference([4736%615,15883%1992,], [15267%1712,]).AddInference([480%108,], [5304%919,6729%991,]).AddInference([777%81,6097%680,], [7412%835,]).AddInference([3437%501,14860%2145,], [1047%166,]).AddInference([476%117,3368%567,18755%2102,], [14109%1777,]).AddInference([6018%615,6136%685,18131%2024,], [17303%1748,]).AddInference([404%66,6249%699,], [2344%478,]).AddInference([602%63,3093%640,13653%1953,], [1314%194,]).AddInference([4154%604,11879%1988,], [10550%1776,]).AddInference([975%235,4811%831,], [2816%477,]).AddInference([6228%644,18969%2122,], [7317%1225,]).AddInference([5987%606,5685%830,12294%2071,], [16734%1883,]).AddInference([1456%181,5892%748,18751%2102,], [2107%257,]).AddInference([1445%235,6166%794,12658%2144,], [10815%1575,]).AddInference([1226%203,4286%726,11754%1963,], [13436%1695,]).AddInference([3748%653,5672%836,14731%2123,], [13269%1342,]).AddInference([1141%158,4448%640,15122%2188,], [11440%1939,]).AddInference([6856%781,7849%893,14574%2106,], [13397%1504,]).AddInference([5451%621,3596%735,18695%2095,], [1113%177,]).AddInference([4517%664,7289%823,12819%2165,], [14592%1846,]).AddInference([118%22,6606%850,10069%2019,], [6743%1388,]).AddInference([1301%211,5606%714,14746%2126,], [2017%256,]).AddInference([1747%214,5205%758,18370%2054,], [8662%1245,]).AddInference([1825%206,17132%2164,], [16729%1879,]).AddInference([764%108,6152%785,19839%1989,], [8716%1254,]).AddInference([2201%390,12391%2093,], [5587%708,]).AddInference([3329%483,12653%2132,], [7571%1276,]).AddInference([1720%214,4514%651,14372%2063,], [14667%1846,]).AddInference([2141%378,11763%1967,], [9291%1580,]).AddInference([2988%639,14776%2131,], [1060%168,]).AddInference([1237%212,17688%1970,], [9777%1410,]).AddInference([258%41,18854%2116,], [4757%600,6105%782,]).AddInference([921%147,6584%747,], [5362%679,]).AddInference([907%109,3968%828,14995%2167,], [9141%1325,]).AddInference([3320%678,6935%890,], [6072%781,]).AddInference([626%103,4772%823,18561%2071,], [9184%1332,]).AddInference([574%107,6728%759,], [5336%921,]).AddInference([1184%147,], [4101%603,5145%888,]).AddInference([315%42,12191%2053,], [6227%630,5395%794,]).AddInference([484%109,4468%772,], [4887%713,]).AddInference([3292%572,18666%2084,], [11952%1730,]).AddInference([652%80,], [965%197,2106%265,]).AddInference([4313%618,14262%2054,], [15423%1562,]).AddInference([1434%157,], [2669%356,2069%303,]).AddInference([4002%595,10506%2142,], [9472%1380,]).AddInference([2291%340,14823%2140,], [7211%1455,]).AddInference([2209%254,10505%2131,], [3065%627,]).AddInference([1316%163,20918%2110,], [8287%1394,12783%1424,]).AddInference([1204%167,6633%747,19530%2192,], [12120%1758,]).AddInference([3458%585,5040%867,20298%2040,], [12954%1458,]).AddInference([6952%793,6270%795,10697%2176,], [8765%1480,]).AddInference([605%73,18920%2124,], [12677%1420,8436%1409,]).AddInference([966%133,5333%600,], [3860%555,]).AddInference([1267%154,], [4545%677,4750%809,]).AddInference([955%115,4133%705,14475%2090,], [2097%312,]).AddInference([1310%217,6350%638,18603%2083,], [12509%1794,]).AddInference([5483%625,8153%833,], [2806%475,]).AddInference([1403%288,12716%2147,], [6231%700,]).AddInference([3491%612,10362%2106,], [10515%1332,]).AddInference([4642%587,5090%877,], [3475%589,]).AddInference([4130%705,16079%2020,], [15150%1915,]).AddInference([967%137,4022%673,12824%2166,], [10482%1782,]).AddInference([6749%768,14896%2151,], [2585%295,]).AddInference([1757%217,14277%2058,], [18131%1826,17563%1974,]).AddInference([1149%163,4541%668,], [5939%601,]).AddInference([1555%190,6936%791,], [4409%634,]).AddInference([723%117,12351%2074,], [4007%575,5167%648,]).AddInference([5145%748,6460%811,], [6150%903,]).AddInference([929%149,5389%676,16389%2057,], [462%82,]).AddInference([6109%688,14198%2034,], [14163%1774,]).AddInference([4113%716,7054%907,10026%2009,], [1355%241,]).AddInference([819%112,7480%853,17946%2001,], [10403%1316,]).AddInference([793%157,4548%788,12730%2148,], [2493%324,]).AddInference([467%65,18245%2033,], [4133%596,5035%734,]).AddInference([118%22,5036%730,15973%2005,], [10039%1264,]).AddInference([539%72,3836%807,18627%2086,], [14457%1816,]).AddInference([492%120,16524%2085,], [18455%1862,12949%1863,]).AddInference([1652%205,21297%2146,], [9645%1388,10757%1561,]).AddTrivial([17440%1949, 14929%2160, 14863%1881, 20106%2014, 5099%649, 9041%1147, 8576%1248, 7984%1364, 2942%423, 13082%1885, 20318%2040, 6816%980, 17312%2184, 3800%792, 7570%1266, 2578%375, 12227%2045, 780%136, 9549%1601, 9892%1989, 5394%922, 9323%1571, 4753%809, 12752%1420, 12537%2118, 6656%966, 15081%2178, 13889%1994, 2924%334, 16113%2027, 16166%2025, 1502%221, 10941%1375, 3290%562, 11508%1648, ]).AddCorrect([6655%753, 16687%2107, 10482%1782, 10802%1355, 12903%1439, 7268%740, 19413%2174, 890%147, 6806%697, 4715%594, 3454%594, 12540%2104, 18688%2088, 14497%2081, 3963%580, 681%84, 803%94, 12730%1430, 15885%1990, 14483%1614, 12208%1549, 1733%211, 4695%595, 18834%2103, 9475%1055, 7338%737, 5918%759, 2342%403, 4822%996, 20698%2075, 9073%1020, 1681%286, 12444%2101, 9420%1054, 5455%935, 7092%1211, 8732%1103, 1582%281, 6813%992, 6346%1062, 14555%1830, 11858%1698, 9283%1878, 1581%191, 1828%222, 1698%343, 12954%2192, 6965%1005, 2535%385, 8138%1188, 8098%821, 1196%164, 10355%2093, 5442%916, 4279%481, 5852%983, 1760%230, 4748%682, 14146%2026, 4116%614, 17149%2169, 6417%720, 14832%2144, 12739%2156, 5138%871, 16530%2082, 17267%1730, 3912%795, 495%92, 12828%2167, 880%124, 16259%2035, 10280%2088, 15007%2171, 1183%166, 7507%847, 4399%758, 13869%1990, 3569%607, 17879%1993, 3164%358, 9760%1224, 1563%277, 17750%1978, 12240%2055, 1023%123, 12171%1220, 2209%326, ]).AddJustified([10210%2068, 18170%2022, 1153%221, 12423%2088, 3684%757, 15112%2187, 14392%2071, 4348%748, 17449%2204, 5799%857, 4127%599, 808%160, 19215%2157, 10376%2102, 12235%2043, 20965%2109, 14713%2117, 13836%1980, 239%46, 719%114, 15061%2178, 720%177, 14153%2033, 14428%2069, 12691%2142, 17848%1990, 363%57, 14079%2025, 1881%204, 16341%2058, 19290%2160, 12653%2126, 11774%1967, 14154%2038, 18685%2090, 991%136, ]), "points", "conclusions").WriteHtml();</script>
+	
+	
+</div>	<script type="text/javascript">
+		myHover.WriteHtml();
+	</script>	<script type="text/javascript">
+  myStorage.SetupAutoRestore(sessionStorage,"d03f846c-11e9-4e84-9079-732fbad74f8e");  </script>
+	<script type="text/javascript">
+  RunwayDisplayBugfix();  </script>
+	<script type="text/javascript">
+  BoxspaceUpdateAllArrows();  </script>
+	<script type="text/javascript">
+  FeedInferenceApplets();  </script>
+</body></html>
