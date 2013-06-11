@@ -11,11 +11,34 @@
  div.compilererror {
  	background-color: #FFBBBB;
  	color: #000000;
- 	font-size: 210%;
+ 	font-size: 150%;
  }
  
+ h3.compilererror {
+ 	font-size: 120%;
+ }
+ 
+ table.invalidassertions {
+    background-color: #CCCCCC;
+    color: #CC0000;
+    cellspacing: 2px;
+ }
+ 
+ table.inferredassertions {
+    background-color: #CCCCCC;
+    color: #0000CC;
+    cellspacing: 2px;
+  }
+  
+  td.domainid {
+    color: #000000;
+    float: right;
+    font-weight:bold;
+  }
+  
  table.stacktrace {
  	border: 3px solid black;
+ 	cellspacing: 2px;
  }
  
  td.stacktracefile {

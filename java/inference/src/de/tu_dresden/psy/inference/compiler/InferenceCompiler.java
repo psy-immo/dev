@@ -305,8 +305,8 @@ public class InferenceCompiler {
 				 */
 
 				System.err
-						.println("WARNING: Correct and justified, yet not in domain: "
-								+ a.toString());
+				.println("WARNING: Correct and justified, yet not in domain: "
+						+ a.toString());
 			}
 		}
 
@@ -412,13 +412,13 @@ public class InferenceCompiler {
 			 */
 
 			errors.append("<div class=\"compilererror\">");
-			errors.append("<h1>Inference Compiler Error</h1><br/>");
+			errors.append("<h3 class=\"compilererror\">Inference Compiler Error</h3><br/>");
 			errors.append(StringEscape.escapeToHtml(e.getClass().getName())
 					+ ": ");
 			errors.append("<em>"
 					+ StringEscape.escapeToHtml(e.getLocalizedMessage())
 					+ "</em><br/>");
-			errors.append("<h2>Stack Trace</h2><br/>");
+			errors.append("<h3 class=\"compilererror\">Stack Trace</h3><br/>");
 			errors.append("<table class=\"stacktrace\">");
 
 			StackTraceElement[] stackTrace = e.getStackTrace();
@@ -477,7 +477,7 @@ public class InferenceCompiler {
 
 		/*******
 		 * infer correct assertions
-		 ******* 
+		 *******
 		 */
 
 		/**
@@ -503,23 +503,61 @@ public class InferenceCompiler {
 		InferableAssertions.State success = inferCorrectAssertions
 				.closeValid(new ExcessLimit(this.excessTimeLimit));
 
+
+
 		if (success != InferableAssertions.State.closed) {
 			errors.append("<div class=\"compilererror\">");
-			errors.append("<h1>Inference Compiler Error</h1><br/>");
+			errors.append("<h3 class=\"compilererror\">Inference Compiler Error</h3><br/>");
 
 			if (success == InferableAssertions.State.invalid) {
 				errors.append("<em>It was possible to infer invalid"
 						+ " assertions using the expert assertions"
-						+ " and inference rules given!</em>");
-				/**
-				 * TODO: print inferred invalid assertions
-				 * */
+						+ " and inference rules given!</em><br/>");
+
+				errors.append("<h3 class=\"compilererror\">Inferred Invalid Assertions</h3>");
+				errors.append("<table class=\"invalidassertions\">");
+
+				for (AssertionInterface a : inferCorrectAssertions.getInvalid()) {
+					errors.append("<tr><td class=\"domainid\">");
+					errors.append(this.assertionDomain.fromAssertion(a));
+					errors.append("</td><td>");
+					errors.append(StringEscape.escapeToHtml(a.toString()));
+					errors.append("</td></tr>");
+				}
+				errors.append("</table>");
+
+				errors.append("<h3 class=\"compilererror\">Other Inferred Assertions</h3>");
+				errors.append("<table class=\"inferredassertions\">");
+
+				for (AssertionInterface a : inferCorrectAssertions.getValid()
+						.getClasses()) {
+					errors.append("<tr><td class=\"domainid\">");
+					errors.append(this.assertionDomain.fromAssertion(a));
+					errors.append("</td><td>");
+					errors.append(StringEscape.escapeToHtml(a.toString()));
+					errors.append("</td></tr>");
+				}
+				errors.append("</table>");
 			} else if (success == State.excess) {
-				errors.append("It was not possible to find all"
+				errors.append("<em>It was not possible to find all"
 						+ " correct assertions within " + this.excessTimeLimit
-						+ " seconds.");
+						+ " seconds.</em><br/>");
+
+				errors.append("<h3 class=\"compilererror\">Other Inferred Assertions</h3>");
+				errors.append("<table class=\"inferredassertions\">");
+
+				for (AssertionInterface a : inferCorrectAssertions.getValid()
+						.getClasses()) {
+					errors.append("<tr><td class=\"domainid\">");
+					errors.append(this.assertionDomain.fromAssertion(a));
+					errors.append("</td><td>");
+					errors.append(StringEscape.escapeToHtml(a.toString()));
+					errors.append("</td></tr>");
+				}
+				errors.append("</table>");
 			} else {
-				errors.append("closeValid returned " + success.toString());
+				errors.append("<em>closeValid returned " + success.toString()
+						+ "</em>");
 			}
 
 			errors.append("</em><br/>");
