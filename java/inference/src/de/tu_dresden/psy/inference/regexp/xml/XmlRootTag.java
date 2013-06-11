@@ -76,9 +76,9 @@ public class XmlRootTag extends XmlTag {
 	private Set<ConstrainedAssertionFilter> trivial;
 
 	/**
-	 * all filters for conclusive assertions
+	 * all filters for concluding assertions
 	 */
-	private Set<ConstrainedAssertionFilter> conclusiveFilter;
+	private Set<ConstrainedAssertionFilter> concludingFilter;
 
 	/**
 	 * all filters for assertions, that do not need further justification
@@ -122,7 +122,7 @@ public class XmlRootTag extends XmlTag {
 		this.expert = new HashSet<String>();
 		this.conclusionAssertionsGiven = new HashSet<String>();
 
-		this.conclusiveFilter = new HashSet<ConstrainedAssertionFilter>();
+		this.concludingFilter = new HashSet<ConstrainedAssertionFilter>();
 		this.lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
 		this.solutionParts = new HashMap<ConstrainedAssertionFilter, String>();
 	}
@@ -208,7 +208,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	public Set<ConstrainedAssertionFilter> getConclusionFilters() {
-		return this.conclusiveFilter;
+		return this.concludingFilter;
 	}
 
 	/**
@@ -397,7 +397,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processConclusions(XmlTag child) throws Exception {
-		this.conclusiveFilter.add(this.processConstraintFilter(child));
+		this.concludingFilter.add(this.processConstraintFilter(child));
 	}
 
 	/**

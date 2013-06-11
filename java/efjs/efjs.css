@@ -1,60 +1,59 @@
 /*
  This file contains all style definitions that are used by efml generated web pages
  */
- 
+
 /**
  ***********************************
  * styles for inference compiler error output
  ***********************************
  */
- 
- div.compilererror {
- 	background-color: #FFBBBB;
- 	color: #000000;
- 	font-size: 150%;
- }
- 
- h3.compilererror {
- 	font-size: 120%;
- }
- 
- table.invalidassertions {
-    background-color: #CCCCCC;
-    color: #CC0000;
-    cellspacing: 2px;
- }
- 
- table.inferredassertions {
-    background-color: #CCCCCC;
-    color: #0000CC;
-    cellspacing: 2px;
-  }
-  
-  td.domainid {
-    color: #000000;
-    float: right;
-    font-weight:bold;
-  }
-  
- table.stacktrace {
- 	border: 3px solid black;
- 	cellspacing: 2px;
- }
- 
- td.stacktracefile {
- 	background-color: #BBBBFF;
- 	color: #000055;
- }
- 
- td.stacktraceline {
- 	background-color: #BBBBBB;
- 	color: #005555;
- }
- 
- td.stacktraceline {
- 	background-color: #FFBBBB;
- 	color: #000000;
- }
+div.compilererror {
+	background-color: #FFBBBB;
+	color: #000000;
+	font-size: 150%;
+}
+
+h3.compilererror {
+	font-size: 120%;
+}
+
+table.invalidassertions {
+	background-color: #CCCCCC;
+	color: #CC0000;
+	cellspacing: 2px;
+}
+
+table.inferredassertions {
+	background-color: #CCCCCC;
+	color: #0000CC;
+	cellspacing: 2px;
+}
+
+td.domainid {
+	color: #000000;
+	float: right;
+	font-weight: bold;
+}
+
+table.stacktrace {
+	border: 3px solid black;
+	cellspacing: 2px;
+}
+
+td.stacktracefile {
+	background-color: #BBBBFF;
+	color: #000055;
+}
+
+td.stacktraceline {
+	background-color: #BBBBBB;
+	color: #005555;
+}
+
+td.stacktraceline {
+	background-color: #FFBBBB;
+	color: #000000;
+}
 
 /**
  ***********************************
@@ -510,8 +509,28 @@ span.sentencepattern {
  */
 div.trashcan {
 	display: inline-block;
-	background-color: #888888;/* was colorGround */
+	background-color: #888888; /* was colorGround */
 	color: #CC0000; /* was colorBoxes */
 	width: 50px;
 	height: 50px;
+}
+
+/**
+ ***********************************
+ * styles for inference.js
+ ***********************************
+ */
+
+/**
+  * style for the form tag that contains the popup button (bounding box)
+  */
+form.inference {
+	display: inline-block;
+}
+
+/**
+  * style of the button
+  */
+input.inference {
+	display: inline-block;
 }

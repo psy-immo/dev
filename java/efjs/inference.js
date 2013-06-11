@@ -44,7 +44,14 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		conclusions) {
 	this.id = myInferenceMachineCount++;
 
+	/**
+	 * the assertion domain
+	 */
 	this.stringids = stringids;
+
+	/**
+	 * the inference hyper graph
+	 */
 	this.hypergraph = hypergraph;
 
 	this.acceptTags = atags;
@@ -67,13 +74,144 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	} else {
 		this.conclusions = conclusions;
 	}
-	
+
+	/**
+	 * wait for these other actions to trigger/complete before allowing using
+	 * the check answer button
+	 */
+
+	this.waitfor = [];
+
+	/**
+	 * button label
+	 */
+	this.text = "Check your answer";
 
 	/**
 	 * write all needed html elements to the document
 	 */
 
 	this.WriteHtml = function() {
+		document.write(this.GetHtml());
+	};
+
+	/**
+	 * get the html code for this inference machine button
+	 */
+
+	this.GetHtml = function() {
+		var html = "";
+
+		html += "<form onsubmit=\"return false;\" class=\"inference\">";
+		html += "<input class=\"inference\" type=\"button\" value=\""
+				+ this.text + "\" onclick=\"myInferenceMachines[" + this.id
+				+ "].StartMachine()\"/>";
+		html += "</form>";
+
+		return html;
+	};
+
+	/**
+	 * this handler is called when the Check-Answer button has been pressed
+	 */
+
+	this.StartMachine = function() {
+		/**
+		 * check, whether giving a solution is allowed
+		 */
+		for ( var int = 0; int < this.waitfor.length; int++) {
+			if (this.waitfor[int]() != true) {
+				myLogger.Log("myInferenceMachines[" + this.id + "] ("
+						+ this.name + ") start: check refused by " + int + ".");
+				return;
+			}
+		}
+
+		/**
+		 * fetch all inputs
+		 */
+
+		this.acceptTags.push(this.points);
+
+		var points = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
+
+		this.acceptTags.pop();
+
+		this.acceptTags.push(this.conclusions);
+
+		var conclusions = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
+
+		this.acceptTags.pop();
+		
+		/**
+		 * here we save the ids of all given assertions
+		 */
+		
+		var assertions = {};
+
+		var log_data = this.name + " check answer triggered.\nPoints:\n";
+
+		for ( var int = 0; int < points.length; ++int) {
+			var point = points[int].token;
+			var point_id = this.stringids.ToId(point);
+			log_data += point + " [" + point_id + "] ";
+
+			points[int].MarkNeutral();
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct]";
+				points[int].MarkAsGood();
+			}
+			
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial]";
+			}
+			
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding]";
+			}
+
+			log_data += "\n";
+			
+			assertions[point_id] = true;
+
+		}
+
+		log_data += "Conlusions:\n";
+
+		for ( var int = 0; int < conclusions.length; ++int) {
+			var point = conclusions[int].token;
+			var point_id = this.stringids.ToId(point);
+			log_data += point + " [" + point_id + "] ";
+			
+			conclusions[int].MarkNeutral();
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct]";
+
+				conclusions[int].MarkAsGood();
+			}
+			
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial]";
+			}
+			
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding]";
+			}
+			
+			log_data += "\n";
+
+			assertions[point_id] = true;
+		}
+
+		log_data += "Result:\n";
+
+		/**
+		 * log the results
+		 */
+
+		myLogger.Log(log_data);
 
 	};
 
@@ -82,6 +220,9 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 */
 	this.GetValue = function() {
 		return "";
+		/**
+		 * TODO
+		 */
 	};
 
 	/**
@@ -89,10 +230,47 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 */
 
 	this.SetValue = function(contents) {
-
+		/**
+		 * TODO
+		 */
 	};
 
-	myStorage.RegisterField(this, "myInferenceMachine[" + this.id + "]");
+	/**
+	 * this function sets the text of the component
+	 * 
+	 * @returns this
+	 */
+	this.Text = function(text) {
+		this.text = text;
+		return this;
+	};
+
+	/**
+	 * this function sets the name of the component
+	 * 
+	 * @returns this
+	 */
+	this.Name = function(name) {
+		this.name = name;
+		return this;
+	};
+
+	/**
+	 * this function adds a waitfor-function of the component, which is called
+	 * whenever the answer button is clicked, and which has to return true in
+	 * order to check the answer. The given function is responsible to alert the
+	 * user that the answer will not be checked.
+	 * 
+	 * @returns this
+	 */
+
+	this.WaitFor = function(waitforfn) {
+		this.waitfor[this.waitfor.length] = waitforfn;
+
+		return this;
+	};
+
+	myStorage.RegisterField(this, "myInferenceMachines[" + this.id + "]");
 	myInferenceMachines[this.id] = this;
 
 	return this;

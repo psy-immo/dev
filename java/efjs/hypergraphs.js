@@ -58,6 +58,11 @@ function InferenceGraph() {
 	 * store the trivially correct assertions
 	 */
 	this.trivial = {};
+	
+	/**
+	 * store the concluding assertions
+	 */
+	this.concluding = {};
 		
 		
 	/**
@@ -105,6 +110,51 @@ function InferenceGraph() {
 		}
 		
 		return this;
+	};
+	
+	/**
+	 * adds a list of concluding assertion ids
+	 * 
+	 * @returns this
+	 */
+	
+	this.AddConcluding = function(ids) {
+		for ( var int = 0; int < ids.length; int++) {
+			var assertion = ids[int];
+			this.concluding[assertion] = true;
+		}
+		
+		return this;
+	};
+	
+	/**
+	 * id   assertion
+	 * 
+	 * @returns true, if the assertion corresponding to the id is correct
+	 */
+	
+	this.IsCorrect = function(id) {
+		return this.correct.hasOwnProperty(id);			
+	};
+	
+	/**
+	 * id   assertion
+	 * 
+	 * @returns true, if the assertion corresponding to the id is concluding
+	 */
+	
+	this.IsConcluding = function(id) {
+		return this.concluding.hasOwnProperty(id);			
+	};
+	
+	/**
+	 * id   assertion
+	 * 
+	 * @returns true, if the assertion corresponding to the id is trivial
+	 */
+	
+	this.IsTrivial = function(id) {
+		return this.trivial.hasOwnProperty(id);			
 	};
 
 	/**

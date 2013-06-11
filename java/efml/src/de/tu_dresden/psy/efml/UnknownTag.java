@@ -84,7 +84,6 @@ public class UnknownTag implements AnyTag {
 			this.open(w);
 			this.close(w);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

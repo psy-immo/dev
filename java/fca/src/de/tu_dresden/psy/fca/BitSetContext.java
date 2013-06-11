@@ -367,7 +367,6 @@ public class BitSetContext implements FormalContext {
 			this.name = "K(" + this.numberOfObjects() + ","
 					+ this.numberOfAttributes() + ",Random<" + crossRate + ")";
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

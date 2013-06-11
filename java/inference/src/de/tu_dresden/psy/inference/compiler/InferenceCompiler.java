@@ -139,7 +139,7 @@ public class InferenceCompiler {
 	 * filters that filter out assertions that have the correct form to be
 	 * considered a conclusion rather than only a point in the reasoning
 	 */
-	private Set<ConstrainedAssertionFilter> conclusiveAssertionFilters;
+	private Set<ConstrainedAssertionFilter> concludingAssertionFilters;
 
 	/**
 	 * save the premises and the conclusion of all inference rule applications
@@ -150,6 +150,11 @@ public class InferenceCompiler {
 	 * save the ids of the trivial assertions
 	 */
 	private Set<Integer> trivialAssertionIds;
+
+	/**
+	 * save the ids of the concluding assertions
+	 */
+	private Set<Integer> concludingAssertionIds;
 
 	/**
 	 * keep track of the inference xml data structure
@@ -181,10 +186,11 @@ public class InferenceCompiler {
 		this.trivialAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
 		this.invalidAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
 		this.justifiedAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
-		this.conclusiveAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
+		this.concludingAssertionFilters = new HashSet<ConstrainedAssertionFilter>();
 
 		this.inferenceHyperGraph = new HashSet<DirectedHyperEdge>();
 		this.trivialAssertionIds = new HashSet<Integer>();
+		this.concludingAssertionIds = new HashSet<Integer>();
 	}
 
 	/**
@@ -246,6 +252,17 @@ public class InferenceCompiler {
 		writer.write(".AddTrivial([");
 
 		for (Integer id : this.trivialAssertionIds) {
+			writer.write(StringEscape.obfuscateInt(id) + ", ");
+		}
+
+		writer.write("])");
+
+		/**
+		 * concluding assertions
+		 */
+		writer.write(".AddConcluding([");
+
+		for (Integer id : this.concludingAssertionIds) {
 			writer.write(StringEscape.obfuscateInt(id) + ", ");
 		}
 
@@ -467,7 +484,7 @@ public class InferenceCompiler {
 				.getInvalidityFilters());
 		this.justifiedAssertionFilters.addAll(this.inferenceRoot
 				.getJustifiedFilters());
-		this.conclusiveAssertionFilters.addAll(this.inferenceRoot
+		this.concludingAssertionFilters.addAll(this.inferenceRoot
 				.getConclusionFilters());
 
 		/***
@@ -704,6 +721,23 @@ public class InferenceCompiler {
 			for (ConstrainedAssertionFilter f : this.trivialAssertionFilters) {
 				if (f.filter(as).isEmpty() == false) {
 					this.trivialAssertionIds.add(this.assertionDomain
+							.fromString(a));
+				}
+			}
+		}
+
+		/**
+		 * we should keep track of the concluding assertions from the domain,
+		 * too
+		 */
+
+		for (String a : this.assertionDomain.getCaseCorrectStrings()) {
+			Set<AssertionInterface> as = new HashSet<AssertionInterface>(
+					parser.match(a));
+
+			for (ConstrainedAssertionFilter f : this.concludingAssertionFilters) {
+				if (f.filter(as).isEmpty() == false) {
+					this.concludingAssertionIds.add(this.assertionDomain
 							.fromString(a));
 				}
 			}
