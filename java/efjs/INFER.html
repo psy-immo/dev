@@ -1,10 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" type="text/css" href="efjs.css" media="screen" /></head><body id="body">
-  <applet id="loglet" name="loglet" archive="loglet.jar" code="de.tu_dresden.psy.util.Loglet" mayscript="" style="width: 1px; height: 1px"></applet>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="efjs.css" media="screen" />
+</head>
+<body id="body">
+	<applet id="loglet" name="loglet" archive="loglet.jar"
+		code="de.tu_dresden.psy.util.Loglet" mayscript=""
+		style="width: 1px; height: 1px"></applet>
 	<script type="text/javascript">
-  docId = "5b887c4d-0322-4953-9007-702a65410e44";
-  studyId = "e7dacfa1-2584-48af-a107-f05e4d1e8338";
-  </script>
+		docId = "5b887c4d-0322-4953-9007-702a65410e44";
+		studyId = "e7dacfa1-2584-48af-a107-f05e4d1e8338";
+	</script>
 	<script type="text/javascript" src="EventHelpers.js"></script>
 	<script type="text/javascript" src="cssQuery-p.js"></script>
 	<script type="text/javascript" src="jcoglan.com.sylvester.js"></script>
@@ -45,52 +52,606 @@
 	<script type="text/javascript" src="efmltag.js"></script>
 	<script type="text/javascript" src="efmlquote.js"></script>
 	<script type="text/javascript" src="efmlfactory.js"></script>
-<div id="mainframe" ><script type="text/javascript">printChangeSubjectButton();</script>
-	
-		
+	<div id="mainframe">
+		<script type="text/javascript">
+			printChangeSubjectButton();
+		</script>
+
+
 		<div style="float: left;">
-			<div style="float:left; padding: 4px;">
+			<div style="float: left; padding: 4px;">
 				<img src="schematic.gif" />
 			</div>
-			<div style="float:left; width: 320px;">
-				All bulbs in the circuit have indentical specifications. How will the luminosities of the bulbs relate to each other when set up according to the schematic?
-			</div>
+			<div style="float: left; width: 320px;">All bulbs in the
+				circuit have indentical specifications. How will the luminosities of
+				the bulbs relate to each other when set up according to the
+				schematic?</div>
 		</div>
-		
+
 		<div style="clear: both;" />
 		<br />
-		
-		
+
+
 
 		<h2>Answer</h2>
-		<script type="text/javascript">new SentencePattern("pat1", ["frage1"], [ new Dropdown("pat1[0]", ["frage1"], "[part]", "").Option("bulb A").Option("bulb B").Option("bulb C").Option("bulb chain BC").Option("the battery"), " ",  new Dropdown("pat1[2]", ["frage1"], "[connection]", "").Option("is serial connected with").Option("is connected in parallel with"), " ",  new Dropdown("pat1[4]", ["frage1"], "[part]", "").Option("bulb A").Option("bulb B").Option("bulb C").Option("bulb chain BC").Option("the battery")], true).WriteHtml();</script><br />
-		
-		<script type="text/javascript">new SentencePattern("pat2", ["frage1"], [ new Dropdown("pat2[0]", ["frage1"], "[parameter]", "").Option("the current through").Option("the voltage of").Option("the resistance of").Option("the input power of").Option("the luminosity of"), " ",  new Dropdown("pat2[2]", ["frage1"], "[part]", "").Option("bulb A").Option("bulb B").Option("bulb C").Option("bulb chain BC").Option("the battery"), " ",  new Dropdown("pat2[4]", ["frage1"], "[comparison]", "").Option("is smaller than").Option("is as big as").Option("is bigger than"), " ",  new Dropdown("pat2[6]", ["frage1"], "[parameter]", "").Option("the current through").Option("the voltage of").Option("the resistance of").Option("the input power of").Option("the luminosity of"), " ",  new Dropdown("pat2[8]", ["frage1"], "[part]", "").Option("bulb A").Option("bulb B").Option("bulb C").Option("bulb chain BC").Option("the battery")], true).WriteHtml();</script><br />
-		
-		<script type="text/javascript">new SentencePattern("pat3", ["frage1"], ["a ",  new Dropdown("pat3[1]", ["frage1"], "[quality]", "").Option("smaller").Option("bigger"), " ",  new Dropdown("pat3[3]", ["frage1"], "[parameter]", "").Option("current").Option("voltage").Option("resistance").Option("input power").Option("luminosity"), " means, for bulbs, a ",  new Dropdown("pat3[5]", ["frage1"], "[quality]", "").Option("smaller").Option("bigger"), " ",  new Dropdown("pat3[7]", ["frage1"], "[parameter]", "").Option("current").Option("voltage").Option("resistance").Option("input power").Option("luminosity")], true).WriteHtml();</script>
-		
-				
-	
+		<script type="text/javascript">
+			new SentencePattern("pat1", [ "frage1" ], [
+					new Dropdown("pat1[0]", [ "frage1" ], "[part]", "").Option(
+							"bulb A").Option("bulb B").Option("bulb C").Option(
+							"bulb chain BC").Option("the battery"),
+					" ",
+					new Dropdown("pat1[2]", [ "frage1" ], "[connection]", "")
+							.Option("is serial connected with").Option(
+									"is connected in parallel with"),
+					" ",
+					new Dropdown("pat1[4]", [ "frage1" ], "[part]", "").Option(
+							"bulb A").Option("bulb B").Option("bulb C").Option(
+							"bulb chain BC").Option("the battery") ], true)
+					.WriteHtml();
+		</script>
+		<br />
+
+		<script type="text/javascript">
+			new SentencePattern("pat2", [ "frage1" ], [
+					new Dropdown("pat2[0]", [ "frage1" ], "[parameter]", "")
+							.Option("the current through").Option(
+									"the voltage of").Option(
+									"the resistance of").Option(
+									"the input power of").Option(
+									"the luminosity of"),
+					" ",
+					new Dropdown("pat2[2]", [ "frage1" ], "[part]", "").Option(
+							"bulb A").Option("bulb B").Option("bulb C").Option(
+							"bulb chain BC").Option("the battery"),
+					" ",
+					new Dropdown("pat2[4]", [ "frage1" ], "[comparison]", "")
+							.Option("is smaller than").Option("is as big as")
+							.Option("is bigger than"),
+					" ",
+					new Dropdown("pat2[6]", [ "frage1" ], "[parameter]", "")
+							.Option("the current through").Option(
+									"the voltage of").Option(
+									"the resistance of").Option(
+									"the input power of").Option(
+									"the luminosity of"),
+					" ",
+					new Dropdown("pat2[8]", [ "frage1" ], "[part]", "").Option(
+							"bulb A").Option("bulb B").Option("bulb C").Option(
+							"bulb chain BC").Option("the battery") ], true)
+					.WriteHtml();
+		</script>
+		<br />
+
+		<script type="text/javascript">
+			new SentencePattern("pat3", [ "frage1" ], [
+					"a ",
+					new Dropdown("pat3[1]", [ "frage1" ], "[quality]", "")
+							.Option("smaller").Option("bigger"),
+					" ",
+					new Dropdown("pat3[3]", [ "frage1" ], "[parameter]", "")
+							.Option("current").Option("voltage").Option(
+									"resistance").Option("input power").Option(
+									"luminosity"),
+					" means, for bulbs, a ",
+					new Dropdown("pat3[5]", [ "frage1" ], "[quality]", "")
+							.Option("smaller").Option("bigger"),
+					" ",
+					new Dropdown("pat3[7]", [ "frage1" ], "[parameter]", "")
+							.Option("current").Option("voltage").Option(
+									"resistance").Option("input power").Option(
+									"luminosity") ], true).WriteHtml();
+		</script>
+
+
+
 		<h3>Points</h3>
-		<script type="text/javascript">new Airport("", ["frage1","points"], ["frage1"], []).Width("600px").WriteHtml();</script>
+		<script type="text/javascript">
+			new Airport("", [ "frage1", "points" ], [ "frage1" ], []).Width(
+					"600px").WriteHtml();
+		</script>
 
 		<h3>Conclusions</h3>
-		<script type="text/javascript">new Airport("", ["conclusions","frage1"], ["frage1"], []).Width("600px").WriteHtml();</script>
+		<script type="text/javascript">
+			new Airport("", [ "conclusions", "frage1" ], [ "frage1" ], [])
+					.Width("600px").WriteHtml();
+		</script>
 
-		<br />
-		<br />
-		<br />
-		<script type="text/javascript">new InferenceMachine(["frage1"], [], new StringIds().AddStringProduct([["bulb A","bulb B","bulb C","bulb chain BC","the battery",],[" ",],["is serial connected with","is connected in parallel with",],[" ",],["bulb A","bulb B","bulb C","bulb chain BC","the battery",],]).AddStringProduct([["the current through","the voltage of","the resistance of","the input power of","the luminosity of",],[" ",],["bulb A","bulb B","bulb C","bulb chain BC","the battery",],[" ",],["is bigger than","is smaller than","is as big as",],[" ",],["the current through","the voltage of","the resistance of","the input power of","the luminosity of",],[" ",],["bulb A","bulb B","bulb C","bulb chain BC","the battery",],]).AddStringProduct([["a ",],["bigger","smaller",],[" ",],["current","voltage","resistance","input power","luminosity",],[" means, for bulbs, a ",],["bigger","smaller",],[" ",],["current","voltage","resistance","input power","luminosity",],]), new InferenceGraph().AddInference([779%124,6404%644,18193%2025,], [7045%1420,]).AddInference([962%159,5704%637,], [5033%738,]).AddInference([1683%234,], [3004%504,5675%979,]).AddInference([3980%575,10446%2114,], [1030%176,]).AddInference([1103%219,6285%804,14212%2037,], [572%130,]).AddInference([985%190,2877%586,11863%1985,], [10600%1330,]).AddInference([2732%365,12346%2084,], [5921%596,]).AddInference([1181%191,6564%844,19406%2177,], [579%66,]).AddInference([3038%627,10498%2126,], [10270%1720,]).AddInference([601%116,16263%2040,], [13309%1499,10577%1531,]).AddInference([3332%681,5919%869,10498%2127,], [2777%319,]).AddInference([4460%561,5739%839,12508%2103,], [6586%1324,]).AddInference([1316%218,3237%676,10658%2167,], [3408%362,]).AddInference([3240%658,5691%831,15092%2183,], [13415%1945,]).AddInference([4531%506,7473%852,17082%2156,], [1851%257,]).AddInference([1043%144,6552%737,14647%2118,], [8599%1757,]).AddInference([2129%313,17188%2172,], [14371%1800,]).AddInference([4583%579,19257%2158,], [12170%1360,]).AddInference([1619%176,4151%603,14491%2092,], [14802%1876,]).AddInference([728%80,6376%817,14119%2030,], [17529%1773,]).AddInference([3638%631,8307%850,12948%2191,], [10810%1374,]).AddInference([1296%161,3813%656,12433%2088,], [8800%1502,]).AddInference([782%83,7601%868,], [5168%592,]).AddInference([1603%224,6157%703,19442%2181,], [14669%1857,]).AddInference([1226%174,4016%840,12755%2153,], [735%171,]).AddInference([443%62,], [6046%618,7252%809,]).AddInference([811%194,6144%784,19266%2159,], [14531%1620,]).AddInference([1085%150,5582%561,14902%2152,], [2202%228,]).AddInference([1280%212,5879%753,18943%2126,], [2289%258,]).AddInference([4835%544,5781%854,10226%2058,], [11706%1689,]).AddInference([4628%670,5269%912,], [5769%645,]).AddInference([7502%766,6697%749,14299%2060,], [14254%1787,]).AddInference([3825%644,10435%2125,], [1800%315,]).AddInference([768%190,5072%736,16631%2091,], [15980%1601,]).AddInference([4103%714,6937%779,17951%2002,], [1473%189,]).AddInference([3223%685,4486%766,12408%2094,], [11119%1241,]).AddInference([881%94,7433%847,14311%2062,], [14700%1641,]).AddInference([666%129,20641%2073,], [8857%1790,11521%1950,]).AddInference([5555%634,7893%804,], [4242%635,]).AddInference([5345%546,14403%2078,], [1514%209,]).AddInference([845%162,5956%757,10215%2070,], [1120%178,]).AddInference([540%66,12154%2034,], [12665%1828,9515%1936,]).AddInference([6067%773,9036%917,], [4499%942,]).AddInference([441%58,3241%677,18713%2090,], [13638%1372,]).AddInference([1296%184,5037%563,16211%2031,], [14179%1787,]).AddInference([627%147,6284%639,], [5217%669,]).AddInference([3253%680,7093%912,], [5542%626,]).AddInference([4837%622,5498%807,12739%2149,], [11717%1691,]).AddInference([6322%724,17663%1966,], [966%204,]).AddInference([2221%292,14613%2105,], [9801%1414,]).AddInference([1007%162,5265%768,10137%2036,], [10649%1351,]).AddInference([3572%628,14185%2041,], [13563%1713,]).AddInference([1664%202,5444%798,], [6464%819,]).AddInference([1416%176,4922%627,14343%2068,], [1080%186,]).AddInference([2355%363,18729%2100,], [9273%1894,]).AddInference([1112%152,4572%577,], [3744%642,]).AddInference([5306%689,4667%802,21045%2123,], [7562%1274,]).AddInference([668%165,6298%806,], [3551%624,]).AddInference([3267%696,5199%757,16499%2080,], [15356%1723,]).AddInference([395%89,6061%772,], [4747%803,]).AddInference([1459%178,3836%795,10383%2112,], [1627%197,]).AddInference([2141%315,14769%2140,], [12505%1789,]).AddInference([3595%452,21434%2160,], [15499%1741,]).AddInference([6389%651,16855%2131,], [11741%1493,]).AddInference([925%131,5928%665,10234%2074,], [13213%1481,]).AddInference([4167%614,4937%856,10495%2140,], [1886%262,]).AddInference([5004%628,4850%829,18583%2081,], [2497%284,]).AddInference([176%42,4132%695,20745%2090,], [2124%259,]).AddInference([4639%601,15732%1971,], [1612%260,]).AddInference([1184%196,3998%678,10061%2017,], [10185%1470,]).AddInference([358%50,3905%562,13728%1965,], [8095%1361,]).AddInference([914%175,], [5347%773,5733%990,]).AddInference([4523%505,7392%842,16753%2109,], [1569%253,]).AddInference([3990%677,19337%2168,], [14316%1439,]).AddInference([3672%463,18027%2011,], [11987%1736,]).AddInference([1104%132,], [4569%772,4983%840,]).AddInference([1584%256,4923%711,], [8976%916,]).AddInference([3611%530,12130%2028,], [765%119,]).AddInference([1226%203,5202%667,15925%1998,], [13808%1734,]).AddInference([2595%528,6466%830,10547%2152,], [9891%1664,]).AddInference([178%34,4707%810,], [3864%572,]).AddInference([890%171,4157%604,16404%2067,], [2463%257,]).AddInference([5850%665,10279%2085,], [15142%1684,]).AddInference([539%63,5906%750,], [4778%621,]).AddInference([4104%612,21253%2140,], [9634%1206,]).AddInference([5589%632,4775%814,13651%1952,], [13556%1698,]).AddInference([563%111,6624%746,12650%2143,], [1196%229,]).AddInference([1211%168,6166%794,16603%2095,], [7309%1486,]).AddInference([112%26,4266%722,21190%2139,], [9901%1666,]).AddInference([4060%511,7096%805,14737%2124,], [13098%1323,]).AddInference([527%123,7032%803,16596%2086,], [16929%1898,]).AddInference([6791%687,6186%783,12353%2083,], [8345%1396,]).AddInference([3238%551,6438%826,20034%2011,], [1905%206,]).AddInference([5342%687,5160%891,10286%2073,], [8698%1757,]).AddInference([840%104,7520%858,12833%2168,], [10424%1319,]).AddInference([1195%145,7925%813,14494%2084,], [3267%338,]).AddInference([719%114,7497%855,14724%2131,], [7782%1318,]).AddInference([2281%263,10292%2077,], [12101%1734,]).AddInference([868%172,8397%860,12283%2069,], [7667%1295,]).AddInference([2627%396,20619%2077,], [4656%805,]).AddInference([5615%576,15061%2178,], [9934%1249,]).AddInference([530%87,4548%788,18242%2031,], [12401%1776,]).AddInference([2113%266,10160%2058,], [14981%1510,]).AddInference([2472%510,14212%2037,], [1868%227,]).AddInference([2019%307,12498%2114,], [7053%1434,]).AddInference([1237%175,18654%2091,], [7325%752,3435%701,]).AddInference([559%65,6539%659,], [3729%780,]).AddInference([763%182,4156%700,16581%2084,], [10887%1212,]).AddInference([4093%697,5759%722,], [5893%661,]).AddInference([1135%161,6586%847,18497%2063,], [8950%1293,]).AddInference([435%66,6046%770,], [6359%804,]).AddInference([823%163,], [4515%576,4093%847,]).AddInference([546%105,10242%2079,], [3637%616,6133%786,]).AddInference([930%147,3656%762,], [6297%711,]).AddInference([2620%547,12104%2022,], [14452%1610,]).AddInference([402%65,], [1287%222,2763%314,]).AddInference([6181%697,13926%1998,], [15324%1551,]).AddInference([903%98,], [1592%283,2243%332,]).AddInference([4572%460,14232%2049,], [9424%1372,]).AddInference([3835%448,10595%2153,], [10175%1464,]).AddInference([2452%325,15067%2181,], [4139%597,]).AddInference([204%48,18568%2080,], [8632%1463,8921%1506,]).AddInference([1435%175,4622%793,18178%2023,], [10227%1731,]).AddInference([4093%712,6459%822,16652%2102,], [7930%1328,]).AddInference([7880%808,7185%810,21154%2129,], [8850%1497,]).AddInference([693%96,12608%2136,], [13525%1526,13959%1571,]).AddInference([833%114,5020%641,], [5890%670,]).AddInference([952%131,], [5475%624,7513%851,]).AddInference([2141%234,4128%704,12090%2031,], [2199%329,]).AddInference([330%46,6736%766,14185%2041,], [17313%1946,]).AddInference([3498%603,5006%725,], [3347%486,]).AddInference([2091%368,20125%2016,], [6231%800,]).AddInference([3407%496,15896%1994,], [7731%1308,]).AddInference([5370%691,6494%827,], [6560%670,]).AddInference([4655%810,12479%2108,], [14835%1870,]).AddInference([617%87,5536%697,14984%2165,], [13213%1663,]).AddInference([5470%695,10178%2047,], [1425%240,]).AddInference([285%44,12074%2029,], [9121%1856,14658%1841,]).AddInference([962%159,5174%663,], [3146%654,]).AddInference([868%119,5802%742,], [6128%789,]).AddInference([1204%169,20710%2081,], [4079%587,3275%661,]).AddInference([6425%721,6453%945,], [5778%841,]).AddInference([1235%150,6894%693,16998%2144,], [745%99,]).AddInference([6173%696,15056%2177,], [15353%1944,]).AddInference([4593%580,4660%791,14044%2009,], [982%208,]).AddInference([1443%176,5306%775,9962%2006,], [11183%1249,]).AddInference([992%123,5424%688,14188%2033,], [1830%321,]).AddInference([1510%214,14821%2140,], [4736%597,4466%767,]).AddInference([813%115,5759%729,15861%1989,], [7421%1246,]).AddInference([1575%220,6024%677,16387%2064,], [16953%1901,]).AddInference([307%59,12209%2056,], [11182%1897,11116%1869,]).AddInference([540%132,18383%2050,], [12125%1351,11513%1446,]).AddTrivial([17656%1976, 16375%2058, 10881%1837, 14916%2156, 4588%672, 10044%1129, 5732%1161, 7169%1201, 3925%503, 11652%1976, 18134%2022, 8904%996, 20672%2072, 6256%703, 11584%1293, 3380%436, 15154%2192, 964%216, 10898%1559, 18248%2039, 7416%829, 10732%1544, 7388%835, 14096%1588, 18131%2023, 6100%1048, 19517%2188, 9761%1959, 2764%314, 16225%2043, 12171%2036, 2728%319, 11844%1504, 2955%495, 8920%1825, ]).AddConcluding([11996%1725, 13512%1695, 10060%1683, 13087%1886, 9146%1844, 16454%1835, 10868%1819, 11447%1935, 13938%2007, 14485%2098, 13772%1979, 14427%2088, 13605%1708, 15040%1674, 18743%2106, 15531%1951, 19882%2001, 13230%1893, 10339%1743, 13217%1912, 9266%1880, 11182%1887, 14313%1795, 13672%1967, 18143%2034, 14328%1797, 13094%1639, 15428%1726, 14743%1640, 15102%1685, 13135%1881, 10714%1803, 15631%1969, 13056%1893, 10472%1755, 15736%1755, 17486%1768, 19989%2016, 14332%1595, 11532%1937, 16108%1615, 11916%2014, 13344%1682, 15123%1694, 13415%1688, 12875%1611, 11743%1691, 8784%1797, 10065%1694, 10784%1812, 16074%1794, 11954%2026, 11378%1931, 17144%1928, 8933%1803, 15641%1974, 16542%1840, 15891%2010, 8503%1708, 11880%2012, 10855%1837, 12233%1760, 16144%1809, 14078%1772, 9760%1959, 16231%2044, 18490%2071, 19921%2000, 14016%2016, 9666%1967, 15582%1969, 16860%1883, 10540%1769, 11462%1933, 15648%1979, ]).AddCorrect([6787%684, 14286%2058, 15660%1761, 8477%1432, 13847%1557, 3276%667, 18749%2091, 1880%208, 4565%672, 5213%582, 5620%642, 12535%2103, 14224%2040, 20560%2061, 4956%497, 873%144, 933%98, 8725%1487, 21062%2123, 16889%1702, 11613%1464, 1512%163, 6202%709, 14436%2071, 10387%1169, 6627%846, 3185%645, 3051%454, 6868%1005, 14371%2058, 4749%959, 2015%441, 14683%2124, 6338%1070, 5220%888, 8457%1060, 10452%1049, 2417%280, 6735%979, 8074%1173, 11020%1855, 12560%1815, 14553%1826, 557%84, 1198%191, 4071%535, 17016%2146, 5223%1072, 2497%284, 7085%1215, 7792%787, 2316%252, 16928%2135, 5146%1071, 4157%621, 8252%1045, 1543%199, 6151%785, 16613%2089, 2612%545, 14938%2162, 5433%796, 16325%2051, 12154%2039, 4763%995, 16271%2045, 12629%1822, 5117%877, 515%96, 21361%2152, 1660%206, 14518%2084, 12353%2085, 12161%2036, 363%57, 5621%815, 4407%633, 12179%2050, 6478%743, 20358%2047, 3892%449, 10698%1358, 1996%303, 16213%2041, 16546%2083, 809%110, 10417%1318, 1837%396, ]).AddJustified([16925%2141, 12389%2079, 536%122, 18783%2100, 5636%830, 12805%2163, 14656%2115, 4502%649, 13126%2221, 6105%681, 2965%608, 1240%176, 10323%2091, 21237%2141, 15046%2171, 16684%2100, 21109%2122, 16768%2116, 1381%196, 980%189, 18825%2104, 724%89, 14021%2011, 10710%2174, 18181%2025, 16236%2044, 331%62, 18769%2105, 1800%195, 18807%2109, 13025%2203, 12863%2168, 10499%2140, 13686%1960, 10553%2147, 911%109, ]), "points", "conclusions").WriteHtml();</script>
-	
-	
-</div>	<script type="text/javascript">
+		<br /> <br /> <br />
+		<script type="text/javascript">
+			new InferenceMachine(
+					[ "frage1" ],
+					[],
+					new StringIds()
+							.AddStringProduct(
+									[
+											[ "bulb A", "bulb B", "bulb C",
+													"bulb chain BC",
+													"the battery", ],
+											[ " ", ],
+											[
+													"is serial connected with",
+													"is connected in parallel with", ],
+											[ " ", ],
+											[ "bulb A", "bulb B", "bulb C",
+													"bulb chain BC",
+													"the battery", ], ])
+							.AddStringProduct(
+									[
+											[ "the current through",
+													"the voltage of",
+													"the resistance of",
+													"the input power of",
+													"the luminosity of", ],
+											[ " ", ],
+											[ "bulb A", "bulb B", "bulb C",
+													"bulb chain BC",
+													"the battery", ],
+											[ " ", ],
+											[ "is bigger than",
+													"is smaller than",
+													"is as big as", ],
+											[ " ", ],
+											[ "the current through",
+													"the voltage of",
+													"the resistance of",
+													"the input power of",
+													"the luminosity of", ],
+											[ " ", ],
+											[ "bulb A", "bulb B", "bulb C",
+													"bulb chain BC",
+													"the battery", ], ])
+							.AddStringProduct(
+									[
+											[ "a ", ],
+											[ "bigger", "smaller", ],
+											[ " ", ],
+											[ "current", "voltage",
+													"resistance",
+													"input power",
+													"luminosity", ],
+											[ " means, for bulbs, a ", ],
+											[ "bigger", "smaller", ],
+											[ " ", ],
+											[ "current", "voltage",
+													"resistance",
+													"input power",
+													"luminosity", ], ]),
+					new InferenceGraph().AddInference(
+							[ 779 % 124, 6404 % 644, 18193 % 2025, ],
+							[ 7045 % 1420, ]).AddInference(
+							[ 962 % 159, 5704 % 637, ], [ 5033 % 738, ])
+							.AddInference([ 1683 % 234, ],
+									[ 3004 % 504, 5675 % 979, ]).AddInference(
+									[ 3980 % 575, 10446 % 2114, ],
+									[ 1030 % 176, ]).AddInference(
+									[ 1103 % 219, 6285 % 804, 14212 % 2037, ],
+									[ 572 % 130, ]).AddInference(
+									[ 985 % 190, 2877 % 586, 11863 % 1985, ],
+									[ 10600 % 1330, ]).AddInference(
+									[ 2732 % 365, 12346 % 2084, ],
+									[ 5921 % 596, ]).AddInference(
+									[ 1181 % 191, 6564 % 844, 19406 % 2177, ],
+									[ 579 % 66, ]).AddInference(
+									[ 3038 % 627, 10498 % 2126, ],
+									[ 10270 % 1720, ]).AddInference(
+									[ 601 % 116, 16263 % 2040, ],
+									[ 13309 % 1499, 10577 % 1531, ])
+							.AddInference(
+									[ 3332 % 681, 5919 % 869, 10498 % 2127, ],
+									[ 2777 % 319, ]).AddInference(
+									[ 4460 % 561, 5739 % 839, 12508 % 2103, ],
+									[ 6586 % 1324, ]).AddInference(
+									[ 1316 % 218, 3237 % 676, 10658 % 2167, ],
+									[ 3408 % 362, ]).AddInference(
+									[ 3240 % 658, 5691 % 831, 15092 % 2183, ],
+									[ 13415 % 1945, ]).AddInference(
+									[ 4531 % 506, 7473 % 852, 17082 % 2156, ],
+									[ 1851 % 257, ]).AddInference(
+									[ 1043 % 144, 6552 % 737, 14647 % 2118, ],
+									[ 8599 % 1757, ]).AddInference(
+									[ 2129 % 313, 17188 % 2172, ],
+									[ 14371 % 1800, ]).AddInference(
+									[ 4583 % 579, 19257 % 2158, ],
+									[ 12170 % 1360, ]).AddInference(
+									[ 1619 % 176, 4151 % 603, 14491 % 2092, ],
+									[ 14802 % 1876, ]).AddInference(
+									[ 728 % 80, 6376 % 817, 14119 % 2030, ],
+									[ 17529 % 1773, ]).AddInference(
+									[ 3638 % 631, 8307 % 850, 12948 % 2191, ],
+									[ 10810 % 1374, ]).AddInference(
+									[ 1296 % 161, 3813 % 656, 12433 % 2088, ],
+									[ 8800 % 1502, ]).AddInference(
+									[ 782 % 83, 7601 % 868, ], [ 5168 % 592, ])
+							.AddInference(
+									[ 1603 % 224, 6157 % 703, 19442 % 2181, ],
+									[ 14669 % 1857, ]).AddInference(
+									[ 1226 % 174, 4016 % 840, 12755 % 2153, ],
+									[ 735 % 171, ]).AddInference([ 443 % 62, ],
+									[ 6046 % 618, 7252 % 809, ]).AddInference(
+									[ 811 % 194, 6144 % 784, 19266 % 2159, ],
+									[ 14531 % 1620, ]).AddInference(
+									[ 1085 % 150, 5582 % 561, 14902 % 2152, ],
+									[ 2202 % 228, ]).AddInference(
+									[ 1280 % 212, 5879 % 753, 18943 % 2126, ],
+									[ 2289 % 258, ]).AddInference(
+									[ 4835 % 544, 5781 % 854, 10226 % 2058, ],
+									[ 11706 % 1689, ]).AddInference(
+									[ 4628 % 670, 5269 % 912, ],
+									[ 5769 % 645, ]).AddInference(
+									[ 7502 % 766, 6697 % 749, 14299 % 2060, ],
+									[ 14254 % 1787, ]).AddInference(
+									[ 3825 % 644, 10435 % 2125, ],
+									[ 1800 % 315, ]).AddInference(
+									[ 768 % 190, 5072 % 736, 16631 % 2091, ],
+									[ 15980 % 1601, ]).AddInference(
+									[ 4103 % 714, 6937 % 779, 17951 % 2002, ],
+									[ 1473 % 189, ]).AddInference(
+									[ 3223 % 685, 4486 % 766, 12408 % 2094, ],
+									[ 11119 % 1241, ]).AddInference(
+									[ 881 % 94, 7433 % 847, 14311 % 2062, ],
+									[ 14700 % 1641, ]).AddInference(
+									[ 666 % 129, 20641 % 2073, ],
+									[ 8857 % 1790, 11521 % 1950, ])
+							.AddInference([ 5555 % 634, 7893 % 804, ],
+									[ 4242 % 635, ]).AddInference(
+									[ 5345 % 546, 14403 % 2078, ],
+									[ 1514 % 209, ]).AddInference(
+									[ 845 % 162, 5956 % 757, 10215 % 2070, ],
+									[ 1120 % 178, ]).AddInference(
+									[ 540 % 66, 12154 % 2034, ],
+									[ 12665 % 1828, 9515 % 1936, ])
+							.AddInference([ 6067 % 773, 9036 % 917, ],
+									[ 4499 % 942, ]).AddInference(
+									[ 441 % 58, 3241 % 677, 18713 % 2090, ],
+									[ 13638 % 1372, ]).AddInference(
+									[ 1296 % 184, 5037 % 563, 16211 % 2031, ],
+									[ 14179 % 1787, ])
+							.AddInference([ 627 % 147, 6284 % 639, ],
+									[ 5217 % 669, ]).AddInference(
+									[ 3253 % 680, 7093 % 912, ],
+									[ 5542 % 626, ]).AddInference(
+									[ 4837 % 622, 5498 % 807, 12739 % 2149, ],
+									[ 11717 % 1691, ]).AddInference(
+									[ 6322 % 724, 17663 % 1966, ],
+									[ 966 % 204, ]).AddInference(
+									[ 2221 % 292, 14613 % 2105, ],
+									[ 9801 % 1414, ]).AddInference(
+									[ 1007 % 162, 5265 % 768, 10137 % 2036, ],
+									[ 10649 % 1351, ]).AddInference(
+									[ 3572 % 628, 14185 % 2041, ],
+									[ 13563 % 1713, ]).AddInference(
+									[ 1664 % 202, 5444 % 798, ],
+									[ 6464 % 819, ]).AddInference(
+									[ 1416 % 176, 4922 % 627, 14343 % 2068, ],
+									[ 1080 % 186, ]).AddInference(
+									[ 2355 % 363, 18729 % 2100, ],
+									[ 9273 % 1894, ]).AddInference(
+									[ 1112 % 152, 4572 % 577, ],
+									[ 3744 % 642, ]).AddInference(
+									[ 5306 % 689, 4667 % 802, 21045 % 2123, ],
+									[ 7562 % 1274, ])
+							.AddInference([ 668 % 165, 6298 % 806, ],
+									[ 3551 % 624, ]).AddInference(
+									[ 3267 % 696, 5199 % 757, 16499 % 2080, ],
+									[ 15356 % 1723, ]).AddInference(
+									[ 395 % 89, 6061 % 772, ], [ 4747 % 803, ])
+							.AddInference(
+									[ 1459 % 178, 3836 % 795, 10383 % 2112, ],
+									[ 1627 % 197, ]).AddInference(
+									[ 2141 % 315, 14769 % 2140, ],
+									[ 12505 % 1789, ]).AddInference(
+									[ 3595 % 452, 21434 % 2160, ],
+									[ 15499 % 1741, ]).AddInference(
+									[ 6389 % 651, 16855 % 2131, ],
+									[ 11741 % 1493, ]).AddInference(
+									[ 925 % 131, 5928 % 665, 10234 % 2074, ],
+									[ 13213 % 1481, ]).AddInference(
+									[ 4167 % 614, 4937 % 856, 10495 % 2140, ],
+									[ 1886 % 262, ]).AddInference(
+									[ 5004 % 628, 4850 % 829, 18583 % 2081, ],
+									[ 2497 % 284, ]).AddInference(
+									[ 176 % 42, 4132 % 695, 20745 % 2090, ],
+									[ 2124 % 259, ]).AddInference(
+									[ 4639 % 601, 15732 % 1971, ],
+									[ 1612 % 260, ]).AddInference(
+									[ 1184 % 196, 3998 % 678, 10061 % 2017, ],
+									[ 10185 % 1470, ]).AddInference(
+									[ 358 % 50, 3905 % 562, 13728 % 1965, ],
+									[ 8095 % 1361, ])
+							.AddInference([ 914 % 175, ],
+									[ 5347 % 773, 5733 % 990, ]).AddInference(
+									[ 4523 % 505, 7392 % 842, 16753 % 2109, ],
+									[ 1569 % 253, ]).AddInference(
+									[ 3990 % 677, 19337 % 2168, ],
+									[ 14316 % 1439, ]).AddInference(
+									[ 3672 % 463, 18027 % 2011, ],
+									[ 11987 % 1736, ]).AddInference(
+									[ 1104 % 132, ],
+									[ 4569 % 772, 4983 % 840, ]).AddInference(
+									[ 1584 % 256, 4923 % 711, ],
+									[ 8976 % 916, ]).AddInference(
+									[ 3611 % 530, 12130 % 2028, ],
+									[ 765 % 119, ]).AddInference(
+									[ 1226 % 203, 5202 % 667, 15925 % 1998, ],
+									[ 13808 % 1734, ]).AddInference(
+									[ 2595 % 528, 6466 % 830, 10547 % 2152, ],
+									[ 9891 % 1664, ]).AddInference(
+									[ 178 % 34, 4707 % 810, ], [ 3864 % 572, ])
+							.AddInference(
+									[ 890 % 171, 4157 % 604, 16404 % 2067, ],
+									[ 2463 % 257, ]).AddInference(
+									[ 5850 % 665, 10279 % 2085, ],
+									[ 15142 % 1684, ]).AddInference(
+									[ 539 % 63, 5906 % 750, ], [ 4778 % 621, ])
+							.AddInference([ 4104 % 612, 21253 % 2140, ],
+									[ 9634 % 1206, ]).AddInference(
+									[ 5589 % 632, 4775 % 814, 13651 % 1952, ],
+									[ 13556 % 1698, ]).AddInference(
+									[ 563 % 111, 6624 % 746, 12650 % 2143, ],
+									[ 1196 % 229, ]).AddInference(
+									[ 1211 % 168, 6166 % 794, 16603 % 2095, ],
+									[ 7309 % 1486, ]).AddInference(
+									[ 112 % 26, 4266 % 722, 21190 % 2139, ],
+									[ 9901 % 1666, ]).AddInference(
+									[ 4060 % 511, 7096 % 805, 14737 % 2124, ],
+									[ 13098 % 1323, ]).AddInference(
+									[ 527 % 123, 7032 % 803, 16596 % 2086, ],
+									[ 16929 % 1898, ]).AddInference(
+									[ 6791 % 687, 6186 % 783, 12353 % 2083, ],
+									[ 8345 % 1396, ]).AddInference(
+									[ 3238 % 551, 6438 % 826, 20034 % 2011, ],
+									[ 1905 % 206, ]).AddInference(
+									[ 5342 % 687, 5160 % 891, 10286 % 2073, ],
+									[ 8698 % 1757, ]).AddInference(
+									[ 840 % 104, 7520 % 858, 12833 % 2168, ],
+									[ 10424 % 1319, ]).AddInference(
+									[ 1195 % 145, 7925 % 813, 14494 % 2084, ],
+									[ 3267 % 338, ]).AddInference(
+									[ 719 % 114, 7497 % 855, 14724 % 2131, ],
+									[ 7782 % 1318, ]).AddInference(
+									[ 2281 % 263, 10292 % 2077, ],
+									[ 12101 % 1734, ]).AddInference(
+									[ 868 % 172, 8397 % 860, 12283 % 2069, ],
+									[ 7667 % 1295, ]).AddInference(
+									[ 2627 % 396, 20619 % 2077, ],
+									[ 4656 % 805, ]).AddInference(
+									[ 5615 % 576, 15061 % 2178, ],
+									[ 9934 % 1249, ]).AddInference(
+									[ 530 % 87, 4548 % 788, 18242 % 2031, ],
+									[ 12401 % 1776, ]).AddInference(
+									[ 2113 % 266, 10160 % 2058, ],
+									[ 14981 % 1510, ]).AddInference(
+									[ 2472 % 510, 14212 % 2037, ],
+									[ 1868 % 227, ]).AddInference(
+									[ 2019 % 307, 12498 % 2114, ],
+									[ 7053 % 1434, ]).AddInference(
+									[ 1237 % 175, 18654 % 2091, ],
+									[ 7325 % 752, 3435 % 701, ]).AddInference(
+									[ 559 % 65, 6539 % 659, ], [ 3729 % 780, ])
+							.AddInference(
+									[ 763 % 182, 4156 % 700, 16581 % 2084, ],
+									[ 10887 % 1212, ]).AddInference(
+									[ 4093 % 697, 5759 % 722, ],
+									[ 5893 % 661, ]).AddInference(
+									[ 1135 % 161, 6586 % 847, 18497 % 2063, ],
+									[ 8950 % 1293, ]).AddInference(
+									[ 435 % 66, 6046 % 770, ], [ 6359 % 804, ])
+							.AddInference([ 823 % 163, ],
+									[ 4515 % 576, 4093 % 847, ]).AddInference(
+									[ 546 % 105, 10242 % 2079, ],
+									[ 3637 % 616, 6133 % 786, ])
+							.AddInference([ 930 % 147, 3656 % 762, ],
+									[ 6297 % 711, ]).AddInference(
+									[ 2620 % 547, 12104 % 2022, ],
+									[ 14452 % 1610, ]).AddInference(
+									[ 402 % 65, ], [ 1287 % 222, 2763 % 314, ])
+							.AddInference([ 6181 % 697, 13926 % 1998, ],
+									[ 15324 % 1551, ]).AddInference(
+									[ 903 % 98, ], [ 1592 % 283, 2243 % 332, ])
+							.AddInference([ 4572 % 460, 14232 % 2049, ],
+									[ 9424 % 1372, ]).AddInference(
+									[ 3835 % 448, 10595 % 2153, ],
+									[ 10175 % 1464, ]).AddInference(
+									[ 2452 % 325, 15067 % 2181, ],
+									[ 4139 % 597, ]).AddInference(
+									[ 204 % 48, 18568 % 2080, ],
+									[ 8632 % 1463, 8921 % 1506, ])
+							.AddInference(
+									[ 1435 % 175, 4622 % 793, 18178 % 2023, ],
+									[ 10227 % 1731, ]).AddInference(
+									[ 4093 % 712, 6459 % 822, 16652 % 2102, ],
+									[ 7930 % 1328, ]).AddInference(
+									[ 7880 % 808, 7185 % 810, 21154 % 2129, ],
+									[ 8850 % 1497, ]).AddInference(
+									[ 693 % 96, 12608 % 2136, ],
+									[ 13525 % 1526, 13959 % 1571, ])
+							.AddInference([ 833 % 114, 5020 % 641, ],
+									[ 5890 % 670, ])
+							.AddInference([ 952 % 131, ],
+									[ 5475 % 624, 7513 % 851, ]).AddInference(
+									[ 2141 % 234, 4128 % 704, 12090 % 2031, ],
+									[ 2199 % 329, ]).AddInference(
+									[ 330 % 46, 6736 % 766, 14185 % 2041, ],
+									[ 17313 % 1946, ]).AddInference(
+									[ 3498 % 603, 5006 % 725, ],
+									[ 3347 % 486, ]).AddInference(
+									[ 2091 % 368, 20125 % 2016, ],
+									[ 6231 % 800, ]).AddInference(
+									[ 3407 % 496, 15896 % 1994, ],
+									[ 7731 % 1308, ]).AddInference(
+									[ 5370 % 691, 6494 % 827, ],
+									[ 6560 % 670, ]).AddInference(
+									[ 4655 % 810, 12479 % 2108, ],
+									[ 14835 % 1870, ]).AddInference(
+									[ 617 % 87, 5536 % 697, 14984 % 2165, ],
+									[ 13213 % 1663, ]).AddInference(
+									[ 5470 % 695, 10178 % 2047, ],
+									[ 1425 % 240, ]).AddInference(
+									[ 285 % 44, 12074 % 2029, ],
+									[ 9121 % 1856, 14658 % 1841, ])
+							.AddInference([ 962 % 159, 5174 % 663, ],
+									[ 3146 % 654, ])
+							.AddInference([ 868 % 119, 5802 % 742, ],
+									[ 6128 % 789, ]).AddInference(
+									[ 1204 % 169, 20710 % 2081, ],
+									[ 4079 % 587, 3275 % 661, ]).AddInference(
+									[ 6425 % 721, 6453 % 945, ],
+									[ 5778 % 841, ]).AddInference(
+									[ 1235 % 150, 6894 % 693, 16998 % 2144, ],
+									[ 745 % 99, ]).AddInference(
+									[ 6173 % 696, 15056 % 2177, ],
+									[ 15353 % 1944, ]).AddInference(
+									[ 4593 % 580, 4660 % 791, 14044 % 2009, ],
+									[ 982 % 208, ]).AddInference(
+									[ 1443 % 176, 5306 % 775, 9962 % 2006, ],
+									[ 11183 % 1249, ]).AddInference(
+									[ 992 % 123, 5424 % 688, 14188 % 2033, ],
+									[ 1830 % 321, ]).AddInference(
+									[ 1510 % 214, 14821 % 2140, ],
+									[ 4736 % 597, 4466 % 767, ]).AddInference(
+									[ 813 % 115, 5759 % 729, 15861 % 1989, ],
+									[ 7421 % 1246, ]).AddInference(
+									[ 1575 % 220, 6024 % 677, 16387 % 2064, ],
+									[ 16953 % 1901, ]).AddInference(
+									[ 307 % 59, 12209 % 2056, ],
+									[ 11182 % 1897, 11116 % 1869, ])
+							.AddInference([ 540 % 132, 18383 % 2050, ],
+									[ 12125 % 1351, 11513 % 1446, ])
+							.AddTrivial(
+									[ 17656 % 1976, 16375 % 2058, 10881 % 1837,
+											14916 % 2156, 4588 % 672,
+											10044 % 1129, 5732 % 1161,
+											7169 % 1201, 3925 % 503,
+											11652 % 1976, 18134 % 2022,
+											8904 % 996, 20672 % 2072,
+											6256 % 703, 11584 % 1293,
+											3380 % 436, 15154 % 2192,
+											964 % 216, 10898 % 1559,
+											18248 % 2039, 7416 % 829,
+											10732 % 1544, 7388 % 835,
+											14096 % 1588, 18131 % 2023,
+											6100 % 1048, 19517 % 2188,
+											9761 % 1959, 2764 % 314,
+											16225 % 2043, 12171 % 2036,
+											2728 % 319, 11844 % 1504,
+											2955 % 495, 8920 % 1825, ])
+							.AddConcluding(
+									[ 11996 % 1725, 13512 % 1695, 10060 % 1683,
+											13087 % 1886, 9146 % 1844,
+											16454 % 1835, 10868 % 1819,
+											11447 % 1935, 13938 % 2007,
+											14485 % 2098, 13772 % 1979,
+											14427 % 2088, 13605 % 1708,
+											15040 % 1674, 18743 % 2106,
+											15531 % 1951, 19882 % 2001,
+											13230 % 1893, 10339 % 1743,
+											13217 % 1912, 9266 % 1880,
+											11182 % 1887, 14313 % 1795,
+											13672 % 1967, 18143 % 2034,
+											14328 % 1797, 13094 % 1639,
+											15428 % 1726, 14743 % 1640,
+											15102 % 1685, 13135 % 1881,
+											10714 % 1803, 15631 % 1969,
+											13056 % 1893, 10472 % 1755,
+											15736 % 1755, 17486 % 1768,
+											19989 % 2016, 14332 % 1595,
+											11532 % 1937, 16108 % 1615,
+											11916 % 2014, 13344 % 1682,
+											15123 % 1694, 13415 % 1688,
+											12875 % 1611, 11743 % 1691,
+											8784 % 1797, 10065 % 1694,
+											10784 % 1812, 16074 % 1794,
+											11954 % 2026, 11378 % 1931,
+											17144 % 1928, 8933 % 1803,
+											15641 % 1974, 16542 % 1840,
+											15891 % 2010, 8503 % 1708,
+											11880 % 2012, 10855 % 1837,
+											12233 % 1760, 16144 % 1809,
+											14078 % 1772, 9760 % 1959,
+											16231 % 2044, 18490 % 2071,
+											19921 % 2000, 14016 % 2016,
+											9666 % 1967, 15582 % 1969,
+											16860 % 1883, 10540 % 1769,
+											11462 % 1933, 15648 % 1979, ])
+							.AddCorrect(
+									[ 6787 % 684, 14286 % 2058, 15660 % 1761,
+											8477 % 1432, 13847 % 1557,
+											3276 % 667, 18749 % 2091,
+											1880 % 208, 4565 % 672, 5213 % 582,
+											5620 % 642, 12535 % 2103,
+											14224 % 2040, 20560 % 2061,
+											4956 % 497, 873 % 144, 933 % 98,
+											8725 % 1487, 21062 % 2123,
+											16889 % 1702, 11613 % 1464,
+											1512 % 163, 6202 % 709,
+											14436 % 2071, 10387 % 1169,
+											6627 % 846, 3185 % 645, 3051 % 454,
+											6868 % 1005, 14371 % 2058,
+											4749 % 959, 2015 % 441,
+											14683 % 2124, 6338 % 1070,
+											5220 % 888, 8457 % 1060,
+											10452 % 1049, 2417 % 280,
+											6735 % 979, 8074 % 1173,
+											11020 % 1855, 12560 % 1815,
+											14553 % 1826, 557 % 84, 1198 % 191,
+											4071 % 535, 17016 % 2146,
+											5223 % 1072, 2497 % 284,
+											7085 % 1215, 7792 % 787,
+											2316 % 252, 16928 % 2135,
+											5146 % 1071, 4157 % 621,
+											8252 % 1045, 1543 % 199,
+											6151 % 785, 16613 % 2089,
+											2612 % 545, 14938 % 2162,
+											5433 % 796, 16325 % 2051,
+											12154 % 2039, 4763 % 995,
+											16271 % 2045, 12629 % 1822,
+											5117 % 877, 515 % 96, 21361 % 2152,
+											1660 % 206, 14518 % 2084,
+											12353 % 2085, 12161 % 2036,
+											363 % 57, 5621 % 815, 4407 % 633,
+											12179 % 2050, 6478 % 743,
+											20358 % 2047, 3892 % 449,
+											10698 % 1358, 1996 % 303,
+											16213 % 2041, 16546 % 2083,
+											809 % 110, 10417 % 1318,
+											1837 % 396, ]).AddJustified(
+									[ 16925 % 2141, 12389 % 2079, 536 % 122,
+											18783 % 2100, 5636 % 830,
+											12805 % 2163, 14656 % 2115,
+											4502 % 649, 13126 % 2221,
+											6105 % 681, 2965 % 608, 1240 % 176,
+											10323 % 2091, 21237 % 2141,
+											15046 % 2171, 16684 % 2100,
+											21109 % 2122, 16768 % 2116,
+											1381 % 196, 980 % 189,
+											18825 % 2104, 724 % 89,
+											14021 % 2011, 10710 % 2174,
+											18181 % 2025, 16236 % 2044,
+											331 % 62, 18769 % 2105, 1800 % 195,
+											18807 % 2109, 13025 % 2203,
+											12863 % 2168, 10499 % 2140,
+											13686 % 1960, 10553 % 2147,
+											911 % 109, ]), "points",
+					"conclusions").WriteHtml();
+		</script>
+
+
+	</div>
+	<script type="text/javascript">
 		myHover.WriteHtml();
-	</script>	<script type="text/javascript">
-  myStorage.SetupAutoRestore(sessionStorage,"5b887c4d-0322-4953-9007-702a65410e44");  </script>
+	</script>
 	<script type="text/javascript">
-  RunwayDisplayBugfix();  </script>
+		myStorage.SetupAutoRestore(sessionStorage,
+				"5b887c4d-0322-4953-9007-702a65410e44");
+	</script>
 	<script type="text/javascript">
-  BoxspaceUpdateAllArrows();  </script>
+		RunwayDisplayBugfix();
+	</script>
 	<script type="text/javascript">
-  FeedInferenceApplets();  </script>
-</body></html>
+		BoxspaceUpdateAllArrows();
+	</script>
+	<script type="text/javascript">
+		FeedInferenceApplets();
+	</script>
+</body>
+</html>
