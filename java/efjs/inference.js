@@ -142,11 +142,11 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		var conclusions = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
 
 		this.acceptTags.pop();
-		
+
 		/**
 		 * here we save the ids of all given assertions
 		 */
-		
+
 		var assertions = {};
 
 		var log_data = this.name + " check answer triggered.\nPoints:\n";
@@ -162,21 +162,21 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				log_data += "[correct] ";
 				points[int].MarkAsGood();
 			}
-			
+
 			if (this.hypergraph.IsTrivial(point_id)) {
 				log_data += "[trivial] ";
 			}
-			
+
 			if (this.hypergraph.IsConcluding(point_id)) {
 				log_data += "[concluding] ";
 			}
-			
+
 			if (this.hypergraph.IsJustified(point_id)) {
 				log_data += "[justified] ";
 			}
 
 			log_data += "\n";
-			
+
 			assertions[point_id] = true;
 
 		}
@@ -187,7 +187,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			var point = conclusions[int].token;
 			var point_id = this.stringids.ToId(point);
 			log_data += point + " [" + point_id + "] ";
-			
+
 			conclusions[int].MarkNeutral();
 
 			if (this.hypergraph.IsCorrect(point_id)) {
@@ -195,83 +195,122 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 				conclusions[int].MarkAsGood();
 			}
-			
+
 			if (this.hypergraph.IsTrivial(point_id)) {
 				log_data += "[trivial] ";
 			}
-			
+
 			if (this.hypergraph.IsConcluding(point_id)) {
 				log_data += "[concluding] ";
 			}
-			
+
 			if (this.hypergraph.IsJustified(point_id)) {
 				log_data += "[justified] ";
 			}
-			
+
 			log_data += "\n";
 
 			assertions[point_id] = true;
 		}
 
 		log_data += "Result:\n";
-		
-		var closed_points = this.hypergraph.CloseJustification(Object.keys(assertions));
-		
+
+		/**
+		 * first, we calculate whether all points given are justified
+		 */
+
+		var closed_points = this.hypergraph.CloseJustification(Object
+				.keys(assertions));
+
 		log_data += "Justified Points:\n";
-		
+
 		for ( var int2 = 0; int2 < closed_points.justified.length; int2++) {
 			var point_id = closed_points.justified[int2];
 			var s = this.stringids.FromId(point_id);
-			
-			log_data += s + " ["+point_id+"] ";
-			
+
+			log_data += s + " [" + point_id + "] ";
+
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
 			}
-			
+
 			if (this.hypergraph.IsTrivial(point_id)) {
 				log_data += "[trivial] ";
 			}
-			
+
 			if (this.hypergraph.IsConcluding(point_id)) {
 				log_data += "[concluding] ";
 			}
-			
+
 			if (this.hypergraph.IsJustified(point_id)) {
 				log_data += "[justified] ";
 			}
-			
+
 			log_data += "\n";
 		}
-		
-		
+
 		log_data += "Unjustified Points:\n";
-		
+
 		for ( var int2 = 0; int2 < closed_points.unjustified.length; int2++) {
 			var point_id = closed_points.unjustified[int2];
 			var s = this.stringids.FromId(point_id);
-			
-			log_data += s + " ["+point_id+"] ";
-			
+
+			log_data += s + " [" + point_id + "] ";
+
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
 			}
-			
+
 			if (this.hypergraph.IsTrivial(point_id)) {
 				log_data += "[trivial] ";
 			}
-			
+
 			if (this.hypergraph.IsConcluding(point_id)) {
 				log_data += "[concluding] ";
 			}
-			
+
 			if (this.hypergraph.IsJustified(point_id)) {
 				log_data += "[justified] ";
 			}
-			
+
 			log_data += "\n";
 		}
+
+		/**
+		 * now we check for a small set of points that need to be justified such
+		 * that the given points would have been all justified if those points
+		 * were present
+		 */
 		
+		var need_justification = this.hypergraph.WhichPointsNeedJustification(closed_points);
+		
+		log_data += "Justification Hint:\n";
+		
+		for ( var int2 = 0; int2 < need_justification.length; int2++) {
+			var point_id = need_justification[int2];
+			var s = this.stringids.FromId(point_id);
+
+			log_data += s + " [" + point_id + "] ";
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct] ";
+			}
+
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial] ";
+			}
+
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding] ";
+			}
+
+			if (this.hypergraph.IsJustified(point_id)) {
+				log_data += "[justified] ";
+			}
+
+			log_data += "\n";
+		}
+
 
 		/**
 		 * log the results
