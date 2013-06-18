@@ -29,18 +29,26 @@ import java.util.Set;
  */
 
 public class DirectedHyperEdgePremise {
+
 	/**
 	 * premise or source of the hyper edge
 	 */
 	private Set<Integer> premise;
 
 	/**
+	 * is this a trivial rule, in this case we should not merge the conclusions
+	 * with non-trivial rules, so we keep track of that fact, too.
+	 */
+	private boolean isTrivial;
+
+	/**
 	 * 
 	 * @param premise
 	 */
 
-	public DirectedHyperEdgePremise(Set<Integer> premise) {
+	public DirectedHyperEdgePremise(Set<Integer> premise, boolean trivial) {
 		this.premise = premise;
+		this.isTrivial = trivial;
 	}
 
 	/**
@@ -52,25 +60,16 @@ public class DirectedHyperEdgePremise {
 		return this.premise;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = (prime * result) + (this.isTrivial ? 1231 : 1237);
 		result = (prime * result)
 				+ ((this.premise == null) ? 0 : this.premise.hashCode());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -79,10 +78,13 @@ public class DirectedHyperEdgePremise {
 		if (obj == null) {
 			return false;
 		}
-		if (this.getClass() != obj.getClass()) {
+		if (!(obj instanceof DirectedHyperEdgePremise)) {
 			return false;
 		}
 		DirectedHyperEdgePremise other = (DirectedHyperEdgePremise) obj;
+		if (this.isTrivial != other.isTrivial) {
+			return false;
+		}
 		if (this.premise == null) {
 			if (other.premise != null) {
 				return false;
@@ -92,5 +94,6 @@ public class DirectedHyperEdgePremise {
 		}
 		return true;
 	}
+
 
 }

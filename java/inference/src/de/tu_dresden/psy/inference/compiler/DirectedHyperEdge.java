@@ -45,12 +45,39 @@ public class DirectedHyperEdge {
 	private Set<Integer> conclusion;
 
 	/**
+	 * flag this inference rule as trivial
+	 */
+
+	private boolean isTrivialRule;
+
+	/**
 	 * common initialization code for various constructors
 	 */
 
 	private void initialize() {
 		this.premise = new TreeSet<Integer>();
 		this.conclusion = new TreeSet<Integer>();
+		this.isTrivialRule = false;
+	}
+
+	/**
+	 * 
+	 * @return true, if this rule is considered to be trivial; e.g. A equals B
+	 *         --> B equals A
+	 */
+
+	public boolean isTrivial() {
+		return this.isTrivialRule;
+	}
+
+	/**
+	 * sets the triviality parameter of this rule
+	 * 
+	 * @param isTrivial
+	 */
+
+	public void setTriviality(boolean isTrivial) {
+		this.isTrivialRule = isTrivial;
 	}
 
 	/**
@@ -147,7 +174,7 @@ public class DirectedHyperEdge {
 	}
 
 	public DirectedHyperEdgePremise getPremise() {
-		return new DirectedHyperEdgePremise(this.premise);
+		return new DirectedHyperEdgePremise(this.premise, this.isTrivialRule);
 	}
 
 	public Set<Integer> getConclusions() {

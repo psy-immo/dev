@@ -33,6 +33,13 @@ function InferenceGraph() {
 	this.inferences = [];
 
 	/**
+	 * this array contains a sorted list of ids of trivial inferences, i.e.
+	 * inferences that are marked trivial
+	 */
+	
+	this.trivial_inference_ids = [];
+
+	/**
 	 * maps assertion ids to an array of inference ids that have the given
 	 * assertion in the premises
 	 */
@@ -170,7 +177,7 @@ function InferenceGraph() {
 	 * 
 	 * @returns this
 	 */
-	this.AddInference = function(premises, conclusions) {
+	this.AddInference = function(premises, conclusions, isTrivial) {
 		var sorted_premises = [];
 		var sorted_conclusions = [];
 		for ( var int = 0; int < premises.length; int++) {
@@ -212,6 +219,14 @@ function InferenceGraph() {
 			}
 
 			this.conclusion_based[conclusion_id].push(inference_id);
+		}
+		
+		/**
+		 * if this is a trivial inference, add it to the list
+		 */
+		
+		if (isTrivial) {
+			this.trivial_inference_ids.push(inference_id);
 		}
 
 		return this;
@@ -355,22 +370,22 @@ function InferenceGraph() {
 		var would_be_justified = [];
 		var unjustified_left = [];
 		var premise = [];
-		
+
 		/** copy justified to premise buffer */
 		for ( var int = 0; int < closed_results.length; int++) {
 			var id = closed_results[int];
 			premise.push(id);
 		}
-		
+
 		/** copy unjustified to working buffer */
 		for ( var int = 0; int < closed_results.unjustified.length; int++) {
 			var id = closed_results.unjustified[int];
 			unjustified_left.push(id);
 		}
-		
+
 		/** determinize order */
 		unjustified_left.sort();
-		
+
 		while (unjustified_left.length > 0) {
 			var new_unjustifieds = [];
 			var count_unjustifieds = unjustified_left.length;
@@ -378,7 +393,7 @@ function InferenceGraph() {
 			for ( var int2 = 0; int2 < unjustified_left.length; int2++) {
 				var id = unjustified_left[int2];
 				premise.push(id);
-				
+
 				var inference_ids = this.GetConcludibleInferences(premise);
 				var still_unjustified = [];
 				for ( var int3 = 0; int3 < unjustified_left.length; int3++) {
@@ -388,7 +403,7 @@ function InferenceGraph() {
 					else
 						still_unjustified.push(true);
 				}
-				
+
 				for ( var int4 = 0; int4 < inference_ids.length; int4++) {
 					var infer_id = inference_ids[int4];
 					var conclusions = this.inferences[infer_id].c;
@@ -399,8 +414,8 @@ function InferenceGraph() {
 							still_unjustified[idx] = false;
 						}
 					}
-				}				
-				
+				}
+
 				premise.pop(id);
 				var count_this_unjustifieds = 0;
 				for ( var int6 = 0; int6 < still_unjustified.length; int6++) {
@@ -408,7 +423,7 @@ function InferenceGraph() {
 					if (unj)
 						count_this_unjustifieds += 1;
 				}
-				
+
 				if (count_this_unjustifieds < count_unjustifieds) {
 					new_unjustifieds = still_unjustified;
 					count_unjustifieds = count_this_unjustifieds;
@@ -422,13 +437,12 @@ function InferenceGraph() {
 					new_left.push(unjustified_left[int7]);
 				}
 			}
-			
+
 			unjustified_left = new_left;
 			premise.push(added_id);
 			would_be_justified.push(added_id);
 		}
-		
-		
+
 		return would_be_justified;
 	};
 

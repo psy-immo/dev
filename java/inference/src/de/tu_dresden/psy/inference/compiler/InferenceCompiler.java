@@ -243,7 +243,14 @@ public class InferenceCompiler {
 				writer.write(StringEscape.obfuscateInt(c) + ",");
 			}
 
-			writer.write("])");
+			writer.write("], ");
+			if (e.isTrivial()) {
+				writer.write("true");
+			} else {
+				writer.write("false");
+			}
+
+			writer.write(")");
 		}
 
 		/**
@@ -679,6 +686,11 @@ public class InferenceCompiler {
 							edge.addPremise(id_p);
 						}
 					}
+
+					/**
+					 * TODO: find out, whether this premise is trivial or not
+					 * *uh oh*
+					 */
 
 					singletonTargetEdges.add(edge);
 				}
