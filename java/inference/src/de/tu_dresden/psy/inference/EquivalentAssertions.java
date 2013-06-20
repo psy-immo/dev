@@ -21,7 +21,7 @@ package de.tu_dresden.psy.inference;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.tu_dresden.psy.inference.forms.DisjunctiveNormalForm;
+import de.tu_dresden.psy.inference.forms.AnnotableDisjunctiveNormalForm;
 
 /**
  * implements an AssertionInterface that will take care of differently derived
@@ -41,9 +41,9 @@ public class EquivalentAssertions implements AssertionInterface {
 
 	private boolean old;
 
-	private DisjunctiveNormalForm<EquivalentAssertions> directAncestors;
-	private DisjunctiveNormalForm<EquivalentAssertions> ruleAncestors;
-	private DisjunctiveNormalForm<EquivalentAssertions> allAncestors;
+	private AnnotableDisjunctiveNormalForm<EquivalentAssertions> directAncestors;
+	private AnnotableDisjunctiveNormalForm<EquivalentAssertions> ruleAncestors;
+	private AnnotableDisjunctiveNormalForm<EquivalentAssertions> allAncestors;
 
 	public static int notJustified = -1;
 
@@ -85,9 +85,9 @@ public class EquivalentAssertions implements AssertionInterface {
 		hashPredicate = predicate.hashCode();
 		hashObject = object.hashCode();
 		justificationDepth = notJustified;
-		directAncestors = new DisjunctiveNormalForm<EquivalentAssertions>();
-		ruleAncestors = new DisjunctiveNormalForm<EquivalentAssertions>();
-		allAncestors = new DisjunctiveNormalForm<EquivalentAssertions>();
+		directAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
+		ruleAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
+		allAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class EquivalentAssertions implements AssertionInterface {
 
 				if (all_equivalence_classes_and_precursors == true) {
 					directAncestors
-							.join(new DisjunctiveNormalForm<EquivalentAssertions>(
+							.join(new AnnotableDisjunctiveNormalForm<EquivalentAssertions>(
 									ancestors));
 				}
 			}
@@ -178,7 +178,7 @@ public class EquivalentAssertions implements AssertionInterface {
 
 				if (all_equivalence_classes_and_precursors == true) {
 					ruleAncestors
-							.join(new DisjunctiveNormalForm<EquivalentAssertions>(
+							.join(new AnnotableDisjunctiveNormalForm<EquivalentAssertions>(
 									ancestors));
 				}
 			}
@@ -299,9 +299,9 @@ public class EquivalentAssertions implements AssertionInterface {
 		hashPredicate = copyContents.hashPredicate;
 		hashObject = copyContents.hashObject;
 		justificationDepth = copyContents.justificationDepth;
-		directAncestors = new DisjunctiveNormalForm<EquivalentAssertions>();
-		allAncestors = new DisjunctiveNormalForm<EquivalentAssertions>();
-		ruleAncestors = new DisjunctiveNormalForm<EquivalentAssertions>();
+		directAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
+		allAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
+		ruleAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
 
 		directAncestors.join(copyContents.directAncestors);
 		allAncestors.join(copyContents.allAncestors);
@@ -419,7 +419,7 @@ public class EquivalentAssertions implements AssertionInterface {
 	 * @return allAncestors
 	 */
 
-	public DisjunctiveNormalForm<EquivalentAssertions> ancestors() {
+	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> ancestors() {
 		return allAncestors;
 	}
 
@@ -428,7 +428,7 @@ public class EquivalentAssertions implements AssertionInterface {
 	 * @return directAncestors
 	 */
 
-	public DisjunctiveNormalForm<EquivalentAssertions> precursors() {
+	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> precursors() {
 		return directAncestors;
 	}
 
@@ -437,7 +437,7 @@ public class EquivalentAssertions implements AssertionInterface {
 	 * @return ruleAncestors
 	 */
 
-	public DisjunctiveNormalForm<EquivalentAssertions> preimages() {
+	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> preimages() {
 		return ruleAncestors;
 	}
 }

@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import de.tu_dresden.psy.inference.forms.DisjunctiveNormalForm;
+import de.tu_dresden.psy.inference.forms.AnnotableDisjunctiveNormalForm;
 
 /**
  * implements the management of assertion equivalence classes
@@ -202,13 +202,13 @@ public class AssertionEquivalenceClasses {
 	 * @return ancestors of the equivalence class
 	 */
 
-	public DisjunctiveNormalForm<EquivalentAssertions> ancestors(
+	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> ancestors(
 			AssertionInterface assertion) {
 		EquivalentAssertions ec = new EquivalentAssertions(assertion);
 
 		EquivalentAssertions r = this.representants.get(ec);
 		if (r == null) {
-			return new DisjunctiveNormalForm<EquivalentAssertions>();
+			return new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
 		}
 
 		return r.ancestors();
@@ -219,13 +219,13 @@ public class AssertionEquivalenceClasses {
 	 * @param assertion
 	 * @return precursors of the equivalence class
 	 */
-	public DisjunctiveNormalForm<EquivalentAssertions> precursors(
+	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> precursors(
 			AssertionInterface assertion) {
 		EquivalentAssertions ec = new EquivalentAssertions(assertion);
 
 		EquivalentAssertions r = this.representants.get(ec);
 		if (r == null) {
-			return new DisjunctiveNormalForm<EquivalentAssertions>();
+			return new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
 		}
 
 		return r.precursors();
@@ -237,13 +237,13 @@ public class AssertionEquivalenceClasses {
 	 * @return all possible valid rule inputs that generate the equivalence
 	 *         class as output
 	 */
-	public DisjunctiveNormalForm<EquivalentAssertions> preimages(
+	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> preimages(
 			AssertionInterface assertion) {
 		EquivalentAssertions ec = new EquivalentAssertions(assertion);
 
 		EquivalentAssertions r = this.representants.get(ec);
 		if (r == null) {
-			return new DisjunctiveNormalForm<EquivalentAssertions>();
+			return new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
 		}
 
 		return r.preimages();

@@ -33,7 +33,7 @@ import de.tu_dresden.psy.inference.AssertionInterface;
 import de.tu_dresden.psy.inference.EquivalentAssertions;
 import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
-import de.tu_dresden.psy.inference.forms.DisjunctiveNormalForm;
+import de.tu_dresden.psy.inference.forms.AnnotableDisjunctiveNormalForm;
 import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
 import de.tu_dresden.psy.inference.regexp.xml.InferableAssertions;
 import de.tu_dresden.psy.inference.regexp.xml.InferableAssertions.State;
@@ -663,7 +663,7 @@ public class InferenceCompiler {
 		Set<DirectedHyperEdge> singletonTargetEdges = new HashSet<DirectedHyperEdge>();
 
 		for (AssertionInterface a : inferCorrectAssertions.getInferred()) {
-			DisjunctiveNormalForm<EquivalentAssertions> premises = inferCorrectAssertions
+			AnnotableDisjunctiveNormalForm<EquivalentAssertions> premises = inferCorrectAssertions
 					.getAncestors(a);
 			int id_a = this.assertionDomain.fromAssertion(a);
 

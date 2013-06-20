@@ -33,7 +33,7 @@ import de.tu_dresden.psy.inference.EquivalentAssertions;
 import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.InferenceMaps;
-import de.tu_dresden.psy.inference.forms.DisjunctiveNormalForm;
+import de.tu_dresden.psy.inference.forms.AnnotableDisjunctiveNormalForm;
 import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
 
 /**
@@ -256,7 +256,7 @@ public class InferableAssertions {
 	 * @return all ancestors of the assertion
 	 */
 
-	public DisjunctiveNormalForm<EquivalentAssertions> getAncestors(
+	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> getAncestors(
 			AssertionInterface assertion) {
 		return validAssertions.ancestors(assertion);
 	}
@@ -361,7 +361,7 @@ public class InferableAssertions {
 					if ((validAssertions.justification(ea) < 0)
 							&& (ask_for_justification.contains(ea)==false)
 							&& (expert.validAssertions.contains(ea))) {
-						DisjunctiveNormalForm<EquivalentAssertions> preimages = expert.validAssertions
+						AnnotableDisjunctiveNormalForm<EquivalentAssertions> preimages = expert.validAssertions
 								.preimages(ea);
 
 						/**

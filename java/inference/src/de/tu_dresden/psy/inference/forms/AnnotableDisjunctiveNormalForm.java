@@ -23,21 +23,45 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * implements a disjunctive normal form of Atoms
+ * implements a disjunctive normal form of Atoms, i.e. a term of the form
+ * 
+ * (x1_1 ^ x1_2 ^ .. ^ x1_n1) v ( ... ) ... v (xm_1 ^ xm_2 ^ .. ^ x1_nm)
+ * 
+ * where every atom may be annotated as trivial. (We write a prime ' to signal
+ * this case.)
+ * 
+ * A term like
+ * 
+ * (m' ^ n) v (p ^ q) v (r' ^ s')
+ * 
+ * may be read in context of conclusion left-hand-sides
+ * 
+ * (m' ^ n) v (p ^ q) v (r' ^ s') => A
+ * 
+ * means, that if p and q is stated, A follows using rules that are not marked
+ * trivial; and that if r and s is stated, A follows using rules that are marked
+ * trivial; and that if m and n is stated, A follows using both marked and
+ * unmarked rules
+ * 
  * 
  * @author albrecht
  * 
  */
 
-public class DisjunctiveNormalForm<Atoms> {
+public class AnnotableDisjunctiveNormalForm<Atoms> {
+
+	/**
+	 * store the annotated Atoms
+	 */
 
 	private Set<Set<Atoms>> termForm;
+
 
 	/**
 	 * create empty form
 	 */
-	public DisjunctiveNormalForm() {
-		termForm = new HashSet<Set<Atoms>>();
+	public AnnotableDisjunctiveNormalForm() {
+		this.termForm = new HashSet<Set<Atoms>>();
 	}
 
 	/**
@@ -47,11 +71,11 @@ public class DisjunctiveNormalForm<Atoms> {
 	 *            atom
 	 */
 
-	public DisjunctiveNormalForm(Atoms a) {
-		termForm = new HashSet<Set<Atoms>>();
+	public AnnotableDisjunctiveNormalForm(Atoms a) {
+		this.termForm = new HashSet<Set<Atoms>>();
 		Set<Atoms> conj = new HashSet<Atoms>();
 		conj.add(a);
-		termForm.add(conj);
+		this.termForm.add(conj);
 	}
 
 	/**
@@ -60,37 +84,43 @@ public class DisjunctiveNormalForm<Atoms> {
 	 * @param initialConjunction
 	 */
 
-	public DisjunctiveNormalForm(Collection<? extends Atoms> initialConjunction) {
-		termForm = new HashSet<Set<Atoms>>();
+	public AnnotableDisjunctiveNormalForm(
+			Collection<? extends Atoms> initialConjunction) {
+		this.termForm = new HashSet<Set<Atoms>>();
 		Set<Atoms> conj = new HashSet<Atoms>();
 		conj.addAll(initialConjunction);
-		termForm.add(conj);
+		this.termForm.add(conj);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((termForm == null) ? 0 : termForm.hashCode());
+		result = (prime * result)
+				+ ((this.termForm == null) ? 0 : this.termForm.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (this.getClass() != obj.getClass()) {
 			return false;
+		}
 		@SuppressWarnings("rawtypes")
-		DisjunctiveNormalForm other = (DisjunctiveNormalForm) obj;
-		if (termForm == null) {
-			if (other.termForm != null)
+		AnnotableDisjunctiveNormalForm other = (AnnotableDisjunctiveNormalForm) obj;
+		if (this.termForm == null) {
+			if (other.termForm != null) {
 				return false;
-		} else if (!termForm.equals(other.termForm))
+			}
+		} else if (!this.termForm.equals(other.termForm)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -102,8 +132,8 @@ public class DisjunctiveNormalForm<Atoms> {
 	 * @param other
 	 */
 
-	public void join(DisjunctiveNormalForm<Atoms> other) {
-		termForm.addAll(other.termForm);
+	public void join(AnnotableDisjunctiveNormalForm<Atoms> other) {
+		this.termForm.addAll(other.termForm);
 	}
 
 	/**
@@ -114,10 +144,10 @@ public class DisjunctiveNormalForm<Atoms> {
 	 * @param other
 	 */
 
-	public void meet(DisjunctiveNormalForm<Atoms> other) {
+	public void meet(AnnotableDisjunctiveNormalForm<Atoms> other) {
 		Set<Set<Atoms>> new_term_form = new HashSet<Set<Atoms>>();
 
-		for (Set<Atoms> left : termForm) {
+		for (Set<Atoms> left : this.termForm) {
 			for (Set<Atoms> right : other.termForm) {
 				Set<Atoms> conjunction = new HashSet<Atoms>();
 				conjunction.addAll(left);
@@ -126,7 +156,7 @@ public class DisjunctiveNormalForm<Atoms> {
 			}
 		}
 
-		termForm = new_term_form;
+		this.termForm = new_term_form;
 	}
 
 	/**
@@ -137,12 +167,13 @@ public class DisjunctiveNormalForm<Atoms> {
 	 * @param replacement
 	 */
 
-	public void replaceJoin(Atoms atom, DisjunctiveNormalForm<Atoms> replacement) {
+	public void replaceJoin(Atoms atom,
+			AnnotableDisjunctiveNormalForm<Atoms> replacement) {
 		Set<Set<Atoms>> new_forms = new HashSet<Set<Atoms>>();
 
-		for (Set<Atoms> conjunction : termForm) {
+		for (Set<Atoms> conjunction : this.termForm) {
 			if (conjunction.contains(atom)) {
-				DisjunctiveNormalForm<Atoms> part = new DisjunctiveNormalForm<Atoms>(
+				AnnotableDisjunctiveNormalForm<Atoms> part = new AnnotableDisjunctiveNormalForm<Atoms>(
 						conjunction);
 				part.termForm.iterator().next().remove(atom);
 				part.meet(replacement);
@@ -150,7 +181,7 @@ public class DisjunctiveNormalForm<Atoms> {
 			}
 		}
 
-		termForm.addAll(new_forms);
+		this.termForm.addAll(new_forms);
 	}
 
 	/**
@@ -159,17 +190,18 @@ public class DisjunctiveNormalForm<Atoms> {
 	 */
 
 	public Set<Set<Atoms>> getTerm() {
-		return termForm;
+		return this.termForm;
 	}
 
 	@Override
 	public String toString() {
 		StringBuffer presentation = new StringBuffer();
-		for (Set<Atoms> conjs : termForm) {
+		for (Set<Atoms> conjs : this.termForm) {
 			if (presentation.length() == 0) {
 				presentation.append("     (");
-			} else
+			} else {
 				presentation.append(" or (");
+			}
 
 			boolean first = true;
 
@@ -177,8 +209,9 @@ public class DisjunctiveNormalForm<Atoms> {
 				if (first) {
 					first = false;
 					presentation.append("   ");
-				} else
+				} else {
 					presentation.append("   and   ");
+				}
 
 				presentation.append(a.toString());
 				presentation.append("\n");
