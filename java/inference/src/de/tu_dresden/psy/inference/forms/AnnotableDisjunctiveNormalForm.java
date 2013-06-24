@@ -54,14 +54,14 @@ public class AnnotableDisjunctiveNormalForm<Atoms> {
 	 * store the annotated Atoms
 	 */
 
-	private Set<Set<Atoms>> termForm;
+	private Set<Set<Annotated<Atoms>>> termForm;
 
 
 	/**
 	 * create empty form
 	 */
 	public AnnotableDisjunctiveNormalForm() {
-		this.termForm = new HashSet<Set<Atoms>>();
+		this.termForm = new HashSet<Set<Annotated<Atoms>>>();
 	}
 
 	/**
@@ -72,8 +72,21 @@ public class AnnotableDisjunctiveNormalForm<Atoms> {
 	 */
 
 	public AnnotableDisjunctiveNormalForm(Atoms a) {
-		this.termForm = new HashSet<Set<Atoms>>();
-		Set<Atoms> conj = new HashSet<Atoms>();
+		this.termForm = new HashSet<Set<Annotated<Atoms>>>();
+		Set<Annotated<Atoms>> conj = new HashSet<Annotated<Atoms>>();
+		conj.add(new Annotated<Atoms>(a));
+		this.termForm.add(conj);
+	}
+
+	/**
+	 * create a form consisting of a single annotated atom
+	 * 
+	 * @param a
+	 */
+
+	public AnnotableDisjunctiveNormalForm(Annotated<Atoms> a) {
+		this.termForm = new HashSet<Set<Annotated<Atoms>>>();
+		Set<Annotated<Atoms>> conj = new HashSet<Annotated<Atoms>>();
 		conj.add(a);
 		this.termForm.add(conj);
 	}
@@ -82,47 +95,31 @@ public class AnnotableDisjunctiveNormalForm<Atoms> {
 	 * create a form consisting of a single conjunction
 	 * 
 	 * @param initialConjunction
+	 *            a collection of Atoms and Annotated<Atoms>
 	 */
 
 	public AnnotableDisjunctiveNormalForm(
-			Collection<? extends Atoms> initialConjunction) {
-		this.termForm = new HashSet<Set<Atoms>>();
-		Set<Atoms> conj = new HashSet<Atoms>();
-		conj.addAll(initialConjunction);
+			Collection<? extends Object> initialConjunction) {
+		this.termForm = new HashSet<Set<Annotated<Atoms>>>();
+		Set<Annotated<Atoms>> conj = new HashSet<Annotated<Atoms>>();
+		for (Object a : initialConjunction) {
+			if (a instanceof Annotated<?>) {
+				@SuppressWarnings("unchecked")
+				Annotated<Atoms> annotated = (Annotated<Atoms>) a;
+				conj.add(annotated);
+			} else {
+				@SuppressWarnings("unchecked")
+				Atoms atom = (Atoms) a;
+				conj.add(new Annotated<Atoms>(atom));
+			}
+
+		}
+
 		this.termForm.add(conj);
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result)
-				+ ((this.termForm == null) ? 0 : this.termForm.hashCode());
-		return result;
-	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (this.getClass() != obj.getClass()) {
-			return false;
-		}
-		@SuppressWarnings("rawtypes")
-		AnnotableDisjunctiveNormalForm other = (AnnotableDisjunctiveNormalForm) obj;
-		if (this.termForm == null) {
-			if (other.termForm != null) {
-				return false;
-			}
-		} else if (!this.termForm.equals(other.termForm)) {
-			return false;
-		}
-		return true;
-	}
+
 
 	/**
 	 * 
@@ -145,11 +142,11 @@ public class AnnotableDisjunctiveNormalForm<Atoms> {
 	 */
 
 	public void meet(AnnotableDisjunctiveNormalForm<Atoms> other) {
-		Set<Set<Atoms>> new_term_form = new HashSet<Set<Atoms>>();
+		Set<Set<Annotated<Atoms>>> new_term_form = new HashSet<Set<Annotated<Atoms>>>();
 
-		for (Set<Atoms> left : this.termForm) {
-			for (Set<Atoms> right : other.termForm) {
-				Set<Atoms> conjunction = new HashSet<Atoms>();
+		for (Set<Annotated<Atoms>> left : this.termForm) {
+			for (Set<Annotated<Atoms>> right : other.termForm) {
+				Set<Annotated<Atoms>> conjunction = new HashSet<Annotated<Atoms>>();
 				conjunction.addAll(left);
 				conjunction.addAll(right);
 				new_term_form.add(conjunction);
@@ -167,11 +164,11 @@ public class AnnotableDisjunctiveNormalForm<Atoms> {
 	 * @param replacement
 	 */
 
-	public void replaceJoin(Atoms atom,
+	public void replaceJoin(Annotated<Atoms> atom,
 			AnnotableDisjunctiveNormalForm<Atoms> replacement) {
-		Set<Set<Atoms>> new_forms = new HashSet<Set<Atoms>>();
+		Set<Set<Annotated<Atoms>>> new_forms = new HashSet<Set<Annotated<Atoms>>>();
 
-		for (Set<Atoms> conjunction : this.termForm) {
+		for (Set<Annotated<Atoms>> conjunction : this.termForm) {
 			if (conjunction.contains(atom)) {
 				AnnotableDisjunctiveNormalForm<Atoms> part = new AnnotableDisjunctiveNormalForm<Atoms>(
 						conjunction);
@@ -190,13 +187,33 @@ public class AnnotableDisjunctiveNormalForm<Atoms> {
 	 */
 
 	public Set<Set<Atoms>> getTerm() {
+		Set<Set<Atoms>> projectedTerm = new HashSet<Set<Atoms>>();
+
+		for (Set<Annotated<Atoms>> conj : this.termForm) {
+			Set<Atoms> p_conj = new HashSet<Atoms>();
+			for (Annotated<Atoms> annotated : conj) {
+				p_conj.add(annotated.getAtom());
+			}
+			projectedTerm.add(p_conj);
+		}
+
+		return projectedTerm;
+	}
+
+	/**
+	 * 
+	 * @return Set containing each conjunction represented as set of annotated
+	 *         atoms
+	 */
+
+	public Set<Set<Annotated<Atoms>>> getAnnotatedTerm() {
 		return this.termForm;
 	}
 
 	@Override
 	public String toString() {
 		StringBuffer presentation = new StringBuffer();
-		for (Set<Atoms> conjs : this.termForm) {
+		for (Set<Annotated<Atoms>> conjs : this.termForm) {
 			if (presentation.length() == 0) {
 				presentation.append("     (");
 			} else {
@@ -205,7 +222,7 @@ public class AnnotableDisjunctiveNormalForm<Atoms> {
 
 			boolean first = true;
 
-			for (Atoms a : conjs) {
+			for (Annotated<Atoms> a : conjs) {
 				if (first) {
 					first = false;
 					presentation.append("   ");
@@ -222,4 +239,37 @@ public class AnnotableDisjunctiveNormalForm<Atoms> {
 
 		return presentation.toString();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result)
+				+ ((this.termForm == null) ? 0 : this.termForm.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof AnnotableDisjunctiveNormalForm)) {
+			return false;
+		}
+		@SuppressWarnings("rawtypes")
+		AnnotableDisjunctiveNormalForm other = (AnnotableDisjunctiveNormalForm) obj;
+		if (this.termForm == null) {
+			if (other.termForm != null) {
+				return false;
+			}
+		} else if (!this.termForm.equals(other.termForm)) {
+			return false;
+		}
+		return true;
+	}
+
 }

@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.tu_dresden.psy.inference.forms.AnnotableDisjunctiveNormalForm;
+import de.tu_dresden.psy.inference.forms.Annotated;
 
 /**
  * implements an AssertionInterface that will take care of differently derived
@@ -60,12 +61,12 @@ public class EquivalentAssertions implements AssertionInterface {
 
 	@Override
 	public boolean isOld() {
-		return old;
+		return this.old;
 	}
 
 	@Override
 	public void markAsOld() {
-		old = true;
+		this.old = true;
 	}
 
 	/**
@@ -75,19 +76,19 @@ public class EquivalentAssertions implements AssertionInterface {
 	 * @param representant
 	 */
 	public EquivalentAssertions(AssertionInterface representant) {
-		assertions = new HashSet<AssertionInterface>();
-		assertions.add(representant);
-		subject = representant.getSubject();
-		object = representant.getObject();
-		predicate = representant.getPredicate();
-		old = false;
-		hashSubject = subject.hashCode();
-		hashPredicate = predicate.hashCode();
-		hashObject = object.hashCode();
-		justificationDepth = notJustified;
-		directAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
-		ruleAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
-		allAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
+		this.assertions = new HashSet<AssertionInterface>();
+		this.assertions.add(representant);
+		this.subject = representant.getSubject();
+		this.object = representant.getObject();
+		this.predicate = representant.getPredicate();
+		this.old = false;
+		this.hashSubject = this.subject.hashCode();
+		this.hashPredicate = this.predicate.hashCode();
+		this.hashObject = this.object.hashCode();
+		this.justificationDepth = notJustified;
+		this.directAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
+		this.ruleAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
+		this.allAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
 	}
 
 	/**
@@ -98,10 +99,11 @@ public class EquivalentAssertions implements AssertionInterface {
 
 	public void updateDirectAncestors(ExcessLimit excessLimit) {
 
-		for (AssertionInterface assertion : assertions) {
+		for (AssertionInterface assertion : this.assertions) {
 
-			if (excessLimit.continueTask() == false)
+			if (excessLimit.continueTask() == false) {
 				break;
+			}
 
 			if (assertion instanceof InferredAssertion) {
 
@@ -115,7 +117,7 @@ public class EquivalentAssertions implements AssertionInterface {
 						EquivalentAssertions ea = (EquivalentAssertions) premise;
 
 						if ((ea.getJustificationDepth() == notJustified)
-								|| (ea.getJustificationDepth() >= justificationDepth)) {
+								|| (ea.getJustificationDepth() >= this.justificationDepth)) {
 							all_equivalence_classes_and_precursors = false;
 							break;
 						}
@@ -129,14 +131,14 @@ public class EquivalentAssertions implements AssertionInterface {
 				}
 
 				if (all_equivalence_classes_and_precursors == true) {
-					directAncestors
-							.join(new AnnotableDisjunctiveNormalForm<EquivalentAssertions>(
-									ancestors));
+					this.directAncestors
+					.join(new AnnotableDisjunctiveNormalForm<EquivalentAssertions>(
+							ancestors));
 				}
 			}
 		}
 
-		allAncestors.join(directAncestors);
+		this.allAncestors.join(this.directAncestors);
 	}
 
 	/**
@@ -147,10 +149,11 @@ public class EquivalentAssertions implements AssertionInterface {
 
 	public void updateRuleAncestors(ExcessLimit excessLimit) {
 
-		for (AssertionInterface assertion : assertions) {
+		for (AssertionInterface assertion : this.assertions) {
 
-			if (excessLimit.continueTask() == false)
+			if (excessLimit.continueTask() == false) {
 				break;
+			}
 
 			if (assertion instanceof InferredAssertion) {
 
@@ -177,9 +180,9 @@ public class EquivalentAssertions implements AssertionInterface {
 				}
 
 				if (all_equivalence_classes_and_precursors == true) {
-					ruleAncestors
-							.join(new AnnotableDisjunctiveNormalForm<EquivalentAssertions>(
-									ancestors));
+					this.ruleAncestors
+					.join(new AnnotableDisjunctiveNormalForm<EquivalentAssertions>(
+							ancestors));
 				}
 			}
 		}
@@ -193,23 +196,30 @@ public class EquivalentAssertions implements AssertionInterface {
 	 */
 
 	public boolean updateAllAncestors(ExcessLimit excessLimit) {
-		int initial_size = allAncestors.getTerm().size();
-		
+		int initial_size = this.allAncestors.getTerm().size();
+
 		Set<EquivalentAssertions> current_ancestors = new HashSet<EquivalentAssertions>();
 
-		for (Set<EquivalentAssertions> c : allAncestors.getTerm()) {
+		for (Set<EquivalentAssertions> c : this.allAncestors.getTerm()) {
 			current_ancestors.addAll(c);
 		}
 
 		for (EquivalentAssertions a : current_ancestors) {
 
-			if (excessLimit.continueTask() == false)
+			if (excessLimit.continueTask() == false) {
 				break;
+			}
 
-			allAncestors.replaceJoin(a, a.allAncestors);
+			/**
+			 * Here, we simply ignore ancestors that have been marked trivial;
+			 * well well...
+			 */
+
+			this.allAncestors.replaceJoin(
+					new Annotated<EquivalentAssertions>(a), a.allAncestors);
 		}
 
-		return allAncestors.getTerm().size() > initial_size;
+		return this.allAncestors.getTerm().size() > initial_size;
 	}
 
 	/**
@@ -219,7 +229,7 @@ public class EquivalentAssertions implements AssertionInterface {
 	 */
 
 	public int getJustificationDepth() {
-		return justificationDepth;
+		return this.justificationDepth;
 	}
 
 	/**
@@ -227,7 +237,7 @@ public class EquivalentAssertions implements AssertionInterface {
 	 */
 
 	public void considerJustified() {
-		justificationDepth = 0;
+		this.justificationDepth = 0;
 	}
 
 	/**
@@ -237,12 +247,13 @@ public class EquivalentAssertions implements AssertionInterface {
 	 */
 
 	public boolean updateJustificationDepth() {
-		if ((justificationDepth >= 0) && (justificationDepth <= 1))
+		if ((this.justificationDepth >= 0) && (this.justificationDepth <= 1)) {
 			return false;
+		}
 
 		boolean better = false;
 
-		for (AssertionInterface assertion : assertions) {
+		for (AssertionInterface assertion : this.assertions) {
 			if (assertion instanceof InferredAssertion) {
 
 				InferredAssertion inferred = (InferredAssertion) assertion;
@@ -259,8 +270,9 @@ public class EquivalentAssertions implements AssertionInterface {
 							break;
 						}
 
-						if (max_level < ea.justificationDepth)
+						if (max_level < ea.justificationDepth) {
 							max_level = ea.justificationDepth;
+						}
 					} else {
 						all_justified = false;
 						break;
@@ -268,10 +280,10 @@ public class EquivalentAssertions implements AssertionInterface {
 				}
 
 				if (all_justified == true) {
-					if ((max_level + 1 < justificationDepth)
-							|| (justificationDepth == notJustified)) {
+					if (((max_level + 1) < this.justificationDepth)
+							|| (this.justificationDepth == notJustified)) {
 
-						justificationDepth = max_level + 1;
+						this.justificationDepth = max_level + 1;
 						better = true;
 					}
 				}
@@ -288,24 +300,24 @@ public class EquivalentAssertions implements AssertionInterface {
 	 */
 
 	public EquivalentAssertions(EquivalentAssertions copyContents) {
-		assertions = new HashSet<AssertionInterface>(
+		this.assertions = new HashSet<AssertionInterface>(
 				copyContents.assertions.size());
-		assertions.addAll(copyContents.assertions);
-		subject = copyContents.subject;
-		object = copyContents.object;
-		predicate = copyContents.predicate;
-		old = false;
-		hashSubject = copyContents.hashSubject;
-		hashPredicate = copyContents.hashPredicate;
-		hashObject = copyContents.hashObject;
-		justificationDepth = copyContents.justificationDepth;
-		directAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
-		allAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
-		ruleAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
+		this.assertions.addAll(copyContents.assertions);
+		this.subject = copyContents.subject;
+		this.object = copyContents.object;
+		this.predicate = copyContents.predicate;
+		this.old = false;
+		this.hashSubject = copyContents.hashSubject;
+		this.hashPredicate = copyContents.hashPredicate;
+		this.hashObject = copyContents.hashObject;
+		this.justificationDepth = copyContents.justificationDepth;
+		this.directAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
+		this.allAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
+		this.ruleAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
 
-		directAncestors.join(copyContents.directAncestors);
-		allAncestors.join(copyContents.allAncestors);
-		ruleAncestors.join(copyContents.ruleAncestors);
+		this.directAncestors.join(copyContents.directAncestors);
+		this.allAncestors.join(copyContents.allAncestors);
+		this.ruleAncestors.join(copyContents.ruleAncestors);
 	}
 
 	/**
@@ -314,59 +326,65 @@ public class EquivalentAssertions implements AssertionInterface {
 	 * @param a
 	 */
 	public void add(AssertionInterface a) {
-		if (isEqualTo(a) != true)
+		if (this.isEqualTo(a) != true) {
 			return;
-		if (a == this)
+		}
+		if (a == this) {
 			return;
+		}
 
 		if (a instanceof EquivalentAssertions) {
 			EquivalentAssertions ea = (EquivalentAssertions) a;
-			assertions.addAll(ea.assertions);
+			this.assertions.addAll(ea.assertions);
 		} else {
-			assertions.add(a);
+			this.assertions.add(a);
 		}
 	}
 
 	@Override
 	public Object getSubject() {
-		return subject;
+		return this.subject;
 	}
 
 	@Override
 	public Object getObject() {
-		return object;
+		return this.object;
 	}
 
 	@Override
 	public Object getPredicate() {
-		return predicate;
+		return this.predicate;
 	}
 
 	@Override
 	public boolean isEqualTo(AssertionInterface assertion) {
-		if (hashPredicate != assertion.getPredicate().hashCode())
+		if (this.hashPredicate != assertion.getPredicate().hashCode()) {
 			return false;
-		if (hashSubject != assertion.getSubject().hashCode())
+		}
+		if (this.hashSubject != assertion.getSubject().hashCode()) {
 			return false;
-		if (hashObject != assertion.getObject().hashCode())
-			return false;
-
-		if (assertion.getPredicate().equals(predicate) == false) {
+		}
+		if (this.hashObject != assertion.getObject().hashCode()) {
 			return false;
 		}
 
-		if (assertion.getSubject().equals(subject) == false) {
+		if (assertion.getPredicate().equals(this.predicate) == false) {
 			return false;
 		}
 
-		return assertion.getObject().equals(object);
+		if (assertion.getSubject().equals(this.subject) == false) {
+			return false;
+		}
+
+		return assertion.getObject().equals(this.object);
 	}
 
 	@Override
 	public boolean isPremise(AssertionInterface assertion) {
-		for (AssertionInterface a : assertions) {
-			if (a.isPremise(assertion))
+		for (AssertionInterface a : this.assertions) {
+			if (a.isPremise(assertion)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -375,30 +393,33 @@ public class EquivalentAssertions implements AssertionInterface {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + hashObject;
-		result = prime * result + hashPredicate;
-		result = prime * result + hashSubject;
+		result = (prime * result) + this.hashObject;
+		result = (prime * result) + this.hashPredicate;
+		result = (prime * result) + this.hashSubject;
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
+		}
 
-		if (getClass() != obj.getClass())
+		if (this.getClass() != obj.getClass()) {
 			return false;
+		}
 
-		return isEqualTo((EquivalentAssertions) obj);
+		return this.isEqualTo((EquivalentAssertions) obj);
 	}
 
 	@Override
 	public String toString() {
 
-		String p = subject.toString() + "·" + predicate.toString() + "·"
-				+ object.toString() + " [" + assertions.size() + "]";
+		String p = this.subject.toString() + "·" + this.predicate.toString() + "·"
+				+ this.object.toString() + " [" + this.assertions.size() + "]";
 
 		return p;
 
@@ -420,7 +441,7 @@ public class EquivalentAssertions implements AssertionInterface {
 	 */
 
 	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> ancestors() {
-		return allAncestors;
+		return this.allAncestors;
 	}
 
 	/**
@@ -429,7 +450,7 @@ public class EquivalentAssertions implements AssertionInterface {
 	 */
 
 	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> precursors() {
-		return directAncestors;
+		return this.directAncestors;
 	}
 
 	/**
@@ -438,6 +459,6 @@ public class EquivalentAssertions implements AssertionInterface {
 	 */
 
 	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> preimages() {
-		return ruleAncestors;
+		return this.ruleAncestors;
 	}
 }

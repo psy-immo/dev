@@ -129,4 +129,13 @@ public class Annotated<Atoms> {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		if (this.annotiation == Annotations.trivial) {
+			return this.atom.toString() + "'";
+		} else {
+			return this.atom.toString();
+		}
+	}
+
 }
