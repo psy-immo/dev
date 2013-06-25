@@ -36,7 +36,7 @@ import de.tu_dresden.psy.inference.InferredAssertion;
  */
 
 public class Phi1to2 implements InferenceMap {
-	
+
 	@Override
 	public String ruleName() {
 		return "1→2";
@@ -82,43 +82,47 @@ public class Phi1to2 implements InferenceMap {
 
 	public static void main(String[] args) {
 		Phi1to2 phi1to2 = new Phi1to2();
-		
+
 		Set<AssertionInterface> premises = new HashSet<AssertionInterface>();
-		
+
 		premises.add(new Assertion("bulb A", "is serial connected with", "bulb B"));
 		premises.add(new Assertion("bulb chain AB", "is connected in parallel with", "bulb A"));
 		premises.add(new Assertion("a bigger B", "means", "a smaller D"));
 		premises.add(new Assertion("a bigger A", "means", "a bigger E"));
 		premises.add(new Assertion("a bigger E", "means", "a bigger B"));
-		
+
 		Set<AssertionInterface> level1 = phi1to2.inferNew(premises, null);
-		
+
 		System.out.println("first degree: ");
-		
-		for (Iterator<AssertionInterface> it = level1.iterator();it.hasNext();) {
-			System.out.println(it.next());
+
+		for (AssertionInterface assertionInterface : level1) {
+			System.out.println(assertionInterface);
 		}
-		
+
 		level1.addAll(premises);
-		
+
 		Set<AssertionInterface> level2 = phi1to2.inferNew(level1, null);
-		
+
 		System.out.println("first+second degree: ");
-		
-		for (Iterator<AssertionInterface> it = level2.iterator();it.hasNext();) {
-			System.out.println(it.next());
+
+		for (AssertionInterface assertionInterface : level2) {
+			System.out.println(assertionInterface);
 		}
-		
+
 		level1.addAll(level2);
-		
+
 		level2 = phi1to2.inferNew(level1, null);
-		
+
 		System.out.println("first+second+third degree: ");
-		
-		for (Iterator<AssertionInterface> it = level2.iterator();it.hasNext();) {
-			System.out.println(it.next());
+
+		for (AssertionInterface assertionInterface : level2) {
+			System.out.println(assertionInterface);
 		}
 	}
 
-	
+	@Override
+	public boolean isTrivial() {
+		return false;
+	}
+
 }

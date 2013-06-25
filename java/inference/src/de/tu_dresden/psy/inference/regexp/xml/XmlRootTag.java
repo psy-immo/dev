@@ -522,11 +522,21 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processRule(XmlTag child) throws Exception {
-		RegExpInferenceMap rule = new RegExpInferenceMap(
-				child.getAttributeOrDefault("name", "#" + this.rules.size()));
+
+		/**
+		 * check whether this rule has been marked trivial
+		 */
 
 		boolean is_trivial = "trivial".equalsIgnoreCase(child
 				.getAttributeOrDefault("type", "non-trivial"));
+
+		/**
+		 * create the rule according to the xml description
+		 */
+
+		RegExpInferenceMap rule = new RegExpInferenceMap(
+				child.getAttributeOrDefault("name", "#" + this.rules.size()),
+				is_trivial);
 
 		Map<String, Integer> premise_id = new HashMap<String, Integer>();
 		int current_premise = 0;

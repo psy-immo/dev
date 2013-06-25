@@ -24,7 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -70,7 +69,7 @@ public class Main {
 				"the voltage of bulbchain BC·is bigger than·the voltage of bulb B",
 				"a bigger voltage·means·a bigger current",
 				"a bigger voltage·means·a bigger luminosity",
-				"the current through bulb A·is bigger than·the current through bulbchain BC" };
+		"the current through bulb A·is bigger than·the current through bulbchain BC" };
 
 		Set<AssertionInterface> valid = new HashSet<AssertionInterface>();
 		for (int i = 0; i < premises.length; ++i) {
@@ -104,15 +103,11 @@ public class Main {
 			}
 
 			TreeSet<String> ordered = new TreeSet<String>();
-			for (Iterator<AssertionInterface> it = eq_classes.getClasses()
-					.iterator(); it.hasNext();) {
-				AssertionInterface a = it.next();
-
+			for (AssertionInterface a : eq_classes.getClasses()) {
 				ordered.add(a.toString());
 			}
 
-			for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
-				String s = it.next();
+			for (String s : ordered) {
 				System.out.println(s);
 			}
 
@@ -121,7 +116,9 @@ public class Main {
 					+ eq_classes.getClasses().size());
 
 			if ((size == eq_classes.getClasses().size()) && (step > 1))
+			{
 				break; // nothing new
+			}
 		}
 	}
 
@@ -132,7 +129,7 @@ public class Main {
 		 * fill the map set
 		 */
 
-		RegExpInferenceMap phi3 = new RegExpInferenceMap("trans");
+		RegExpInferenceMap phi3 = new RegExpInferenceMap("trans", false);
 		phi3.addPremiseForm(".*", "means", ".*");
 		phi3.addPremiseForm(".*", "means", ".*");
 		phi3.addPremiseConstraint(0, AssertionPart.object, 1,
@@ -142,7 +139,7 @@ public class Main {
 
 		mapset.add(phi3);
 
-		RegExpInferenceMap phi2neg = new RegExpInferenceMap("neg");
+		RegExpInferenceMap phi2neg = new RegExpInferenceMap("neg", false);
 		phi2neg.addPremiseForm(".*", "is (as.*as|(bigger|smaller) than)", ".*");
 		phi2neg.addConclusion(0, AssertionPart.object, ".*→»1", 0,
 				AssertionPart.predicate,
@@ -151,7 +148,8 @@ public class Main {
 
 		mapset.add(phi2neg);
 
-		RegExpInferenceMap phi2monotone = new RegExpInferenceMap("monotone");
+		RegExpInferenceMap phi2monotone = new RegExpInferenceMap("monotone",
+				false);
 		phi2monotone.addPremiseForm(".*",
 				"is ((bigger|smaller) than|as big as)", ".*");
 		phi2monotone.addPremiseForm(".*",
@@ -168,7 +166,7 @@ public class Main {
 
 		mapset.add(phi2monotone);
 
-		RegExpInferenceMap phi1to2s = new RegExpInferenceMap("serial");
+		RegExpInferenceMap phi1to2s = new RegExpInferenceMap("serial", false);
 		phi1to2s.addPremiseForm(".*", "is serial connected with", ".*");
 		phi1to2s.addConclusion(0, AssertionPart.subject,
 				".*→the current through ·»1", 0, AssertionPart.predicate,
@@ -177,7 +175,7 @@ public class Main {
 
 		mapset.add(phi1to2s);
 
-		RegExpInferenceMap phi1to2p = new RegExpInferenceMap("parallel");
+		RegExpInferenceMap phi1to2p = new RegExpInferenceMap("parallel", false);
 		phi1to2p.addPremiseForm(".*", "is connected in parallel with", ".*");
 		phi1to2p.addConclusion(0, AssertionPart.subject,
 				".*→the voltage of ·»1", 0, AssertionPart.predicate,
@@ -191,7 +189,7 @@ public class Main {
 		 */
 
 		RegExpInferenceMap phi2_3to3m1 = new RegExpInferenceMap(
-				"combine-monotone");
+				"combine-monotone", false);
 		phi2_3to3m1.addPremiseForm("the.*(of|through).*",
 				"is (as big as|(small|bigg)er than)", "the.*(of|through).*");
 		phi2_3to3m1.addPremiseForm(".*", "means", ".*");
@@ -202,23 +200,23 @@ public class Main {
 		 */
 
 		phi2_3to3m1
-				.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
-						0, AssertionPart.subject, new SplittedStringRelation(
-								"the ·.*· (of|through).*→»2"), 0,
+		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+				0, AssertionPart.subject, new SplittedStringRelation(
+						"the ·.*· (of|through).*→»2"), 0,
 						AssertionPart.object, new SplittedStringRelation(
 								"the ·.*· (of|through).*→»2")));
 
 		phi2_3to3m1
-				.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
-						0, AssertionPart.subject, new SplittedStringRelation(
-								"the ·.*· (of|through).*→»2"), 1,
+		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+				0, AssertionPart.subject, new SplittedStringRelation(
+						"the ·.*· (of|through).*→»2"), 1,
 						AssertionPart.subject, new SplittedStringRelation(
 								"a (bigg|small)er ·.*→»2")));
 
 		phi2_3to3m1
-				.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
-						1, AssertionPart.subject, new SplittedStringRelation(
-								"a (bigg|small)er ·.*→»1"), 1,
+		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+				1, AssertionPart.subject, new SplittedStringRelation(
+						"a (bigg|small)er ·.*→»1"), 1,
 						AssertionPart.object, new SplittedStringRelation(
 								"a (bigg|small)er ·.*→»1")));
 
@@ -231,14 +229,14 @@ public class Main {
 				phi2_3to3m1);
 
 		conclusion
-				.addSubjectPart(
-						new StringRelationJoin(
-								"a (bigg|small)er current→the current through ¶a (bigg|small)er ·[^c].*→the ·»2· of "),
+		.addSubjectPart(
+				new StringRelationJoin(
+						"a (bigg|small)er current→the current through ¶a (bigg|small)er ·[^c].*→the ·»2· of "),
 						1, AssertionPart.object);
 		conclusion
-				.addObjectPart(
-						new StringRelationJoin(
-								"a (bigg|small)er current→the current through ¶a (bigg|small)er ·[^c].*→the ·»2· of "),
+		.addObjectPart(
+				new StringRelationJoin(
+						"a (bigg|small)er current→the current through ¶a (bigg|small)er ·[^c].*→the ·»2· of "),
 						1, AssertionPart.object);
 
 		conclusion.addSubjectPart(new SplittedStringRelation(
@@ -258,7 +256,7 @@ public class Main {
 		 */
 
 		RegExpInferenceMap phi2_3to3a1 = new RegExpInferenceMap(
-				"combine-antitone");
+				"combine-antitone", false);
 		phi2_3to3a1.addPremiseForm("the.*(of|through).*",
 				"is (as big as|(small|bigg)er than)", "the.*(of|through).*");
 		phi2_3to3a1.addPremiseForm(".*", "means", ".*");
@@ -269,23 +267,23 @@ public class Main {
 		 */
 
 		phi2_3to3a1
-				.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
-						0, AssertionPart.subject, new SplittedStringRelation(
-								"the ·.*· (of|through).*→»2"), 0,
+		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+				0, AssertionPart.subject, new SplittedStringRelation(
+						"the ·.*· (of|through).*→»2"), 0,
 						AssertionPart.object, new SplittedStringRelation(
 								"the ·.*· (of|through).*→»2")));
 
 		phi2_3to3a1
-				.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
-						0, AssertionPart.subject, new SplittedStringRelation(
-								"the ·.*· (of|through).*→»2"), 1,
+		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+				0, AssertionPart.subject, new SplittedStringRelation(
+						"the ·.*· (of|through).*→»2"), 1,
 						AssertionPart.subject, new SplittedStringRelation(
 								"a (bigg|small)er ·.*→»2")));
 
 		phi2_3to3a1
-				.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
-						1, AssertionPart.subject, new StringRelationJoin(
-								"a bigger.*→big¶a smaller.*→small"), 1,
+		.addConstraint(new RegExpInferenceMap.AdvancedCompatibleChecker(
+				1, AssertionPart.subject, new StringRelationJoin(
+						"a bigger.*→big¶a smaller.*→small"), 1,
 						AssertionPart.object, new StringRelationJoin(
 								"a bigger.*→small¶a smaller.*→big")));
 
@@ -298,14 +296,14 @@ public class Main {
 				phi2_3to3a1);
 
 		conclusion2
-				.addSubjectPart(
-						new StringRelationJoin(
-								"a (bigg|small)er current→the current through ¶a (bigg|small)er ·[^c].*→the ·»2· of "),
+		.addSubjectPart(
+				new StringRelationJoin(
+						"a (bigg|small)er current→the current through ¶a (bigg|small)er ·[^c].*→the ·»2· of "),
 						1, AssertionPart.object);
 		conclusion2
-				.addObjectPart(
-						new StringRelationJoin(
-								"a (bigg|small)er current→the current through ¶a (bigg|small)er ·[^c].*→the ·»2· of "),
+		.addObjectPart(
+				new StringRelationJoin(
+						"a (bigg|small)er current→the current through ¶a (bigg|small)er ·[^c].*→the ·»2· of "),
 						1, AssertionPart.object);
 
 		conclusion2.addSubjectPart(new SplittedStringRelation(
@@ -314,9 +312,9 @@ public class Main {
 				"the.*(of|through) ·.*→»2"), 0, AssertionPart.object);
 
 		conclusion2
-				.addPredicatePart(
-						new StringRelationJoin(
-								"is bigger than→is smaller than¶is smaller than→is bigger than"),
+		.addPredicatePart(
+				new StringRelationJoin(
+						"is bigger than→is smaller than¶is smaller than→is bigger than"),
 						0, AssertionPart.predicate);
 
 		phi2_3to3a1.addPremiseCombinator(conclusion2);
@@ -336,17 +334,17 @@ public class Main {
 				"a bigger voltage·means·a bigger luminosity",
 				"the current through bulb A·is bigger than·the current through bulbchain BC"
 
-		/*
-		 * "bulb A is connected in parallel with bulbchain BC",
-		 * "bulb B is serial connected with bulb C",
-		 * "the voltage of bulbchain BC is bigger than the voltage of bulb B",
-		 * "a bigger voltage means a smaller current",
-		 * "a bigger voltage means a bigger luminosity",
-		 * "the current through bulb A is bigger than the current through bulbchain BC"
-		 * , "my left leg is as crooked as my right leg", "X is as big as Y",
-		 * "Y is smaller than Z", "V is bigger than X", "X is as big as X2",
-		 * "Q means Q2", "Q2 means Q3", "Q4 means Q3"
-		 */
+				/*
+				 * "bulb A is connected in parallel with bulbchain BC",
+				 * "bulb B is serial connected with bulb C",
+				 * "the voltage of bulbchain BC is bigger than the voltage of bulb B",
+				 * "a bigger voltage means a smaller current",
+				 * "a bigger voltage means a bigger luminosity",
+				 * "the current through bulb A is bigger than the current through bulbchain BC"
+				 * , "my left leg is as crooked as my right leg", "X is as big as Y",
+				 * "Y is smaller than Z", "V is bigger than X", "X is as big as X2",
+				 * "Q means Q2", "Q2 means Q3", "Q4 means Q3"
+				 */
 
 		};
 
@@ -355,7 +353,7 @@ public class Main {
 		 */
 
 		SubjectPredicateObjectMatcher matchStrings = new SubjectPredicateObjectMatcher(
-		// subject starts with non-whitespace
+				// subject starts with non-whitespace
 				"\\S.*",
 				// predicate is of either form: is ... with, is ... than, is as
 				// ... as, means
@@ -363,7 +361,7 @@ public class Main {
 				// object starts with non-whitespace
 				"\\S.*"
 
-		);
+				);
 
 		Set<AssertionInterface> valid = new HashSet<AssertionInterface>();
 		for (int i = 0; i < premises.length; ++i) {
@@ -400,15 +398,11 @@ public class Main {
 			}
 
 			TreeSet<String> ordered = new TreeSet<String>();
-			for (Iterator<AssertionInterface> it = eq_classes.getClasses()
-					.iterator(); it.hasNext();) {
-				AssertionInterface a = it.next();
-
+			for (AssertionInterface a : eq_classes.getClasses()) {
 				ordered.add(a.toString());
 			}
 
-			for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
-				String s = it.next();
+			for (String s : ordered) {
 				System.out.println(s);
 			}
 
@@ -417,7 +411,9 @@ public class Main {
 					+ eq_classes.getClasses().size());
 
 			if ((size == eq_classes.getClasses().size()) && (step > 1))
+			{
 				break; // nothing new
+			}
 		}
 	}
 
@@ -482,22 +478,17 @@ public class Main {
 					if (invalid.isEmpty() == false) {
 
 						System.out
-								.println(" #### The following inferred assertions are invalid #### ");
+						.println(" #### The following inferred assertions are invalid #### ");
 
 						TreeSet<String> ordered = new TreeSet<String>();
-						for (Iterator<AssertionInterface> it = invalid
-								.iterator(); it.hasNext();) {
-							AssertionInterface a = it.next();
-
+						for (AssertionInterface a : invalid) {
 							ordered.add("!! " + a.getSubject() + "·"
 									+ a.getPredicate() + "·" + a.getObject()
 									+ "\n"
 									+ a.toString().replaceAll("\n", "\n!! "));
 						}
 
-						for (Iterator<String> it = ordered.iterator(); it
-								.hasNext();) {
-							String s = it.next();
+						for (String s : ordered) {
 							System.out.println(s);
 						}
 
@@ -505,8 +496,9 @@ public class Main {
 					}
 				}
 
-				if (cancel_further_steps)
+				if (cancel_further_steps) {
 					break;
+				}
 
 				int dropped_trivial = 0;
 
@@ -516,17 +508,13 @@ public class Main {
 					dropped_trivial += trivial.size();
 
 					TreeSet<String> ordered = new TreeSet<String>();
-					for (Iterator<AssertionInterface> it = trivial.iterator(); it
-							.hasNext();) {
-						AssertionInterface a = it.next();
-
+					for (AssertionInterface a : trivial) {
 						ordered.add("  ++ trivial ++ " + a.getSubject() + "·"
 								+ a.getPredicate() + "·" + a.getObject() + "\n"
 								+ a.toString().replaceAll("\n", "\n  ++ "));
 					}
 
-					for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
-						String s = it.next();
+					for (String s : ordered) {
 						System.out.println(s);
 					}
 
@@ -540,15 +528,11 @@ public class Main {
 			}
 
 			TreeSet<String> ordered = new TreeSet<String>();
-			for (Iterator<AssertionInterface> it = eq_classes.getClasses()
-					.iterator(); it.hasNext();) {
-				AssertionInterface a = it.next();
-
+			for (AssertionInterface a : eq_classes.getClasses()) {
 				ordered.add(a.toString());
 			}
 
-			for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
-				String s = it.next();
+			for (String s : ordered) {
 				System.out.println(s);
 			}
 
@@ -557,38 +541,36 @@ public class Main {
 					+ eq_classes.getClasses().size());
 
 			if ((size == eq_classes.getClasses().size()) && (step > 1))
+			{
 				break; // nothing new
+			}
 		}
 
 		if (cancel_further_steps) {
 			System.out
-					.println("\n\nIt was possible to infer invalid assertions from the given \n"
-							+ "initial set of assertions and the given inference rules! Please check!");
+			.println("\n\nIt was possible to infer invalid assertions from the given \n"
+					+ "initial set of assertions and the given inference rules! Please check!");
 
 			return;
 		}
 
 		System.out
-				.println("\n\n The following non-trivial assertions can be inferred\n\n");
+		.println("\n\n The following non-trivial assertions can be inferred\n\n");
 
 		TreeSet<String> ordered = new TreeSet<String>();
-		for (Iterator<AssertionInterface> it = eq_classes.getClasses()
-				.iterator(); it.hasNext();) {
-			AssertionInterface a = it.next();
-
+		for (AssertionInterface a : eq_classes.getClasses()) {
 			ordered.add(a.getSubject() + " " + a.getPredicate() + " "
 					+ a.getObject());
 		}
 
 		int count = 0;
 
-		for (Iterator<String> it = ordered.iterator(); it.hasNext();) {
-			String s = it.next();
+		for (String s : ordered) {
 			++count;
 
 			System.out.println(String.format("%6d", count) + "    " + s);
 		}
-		
+
 		if (limit.exceeded()) {
 			System.out.println("Stopped inference after time limit exceeded.");
 		}

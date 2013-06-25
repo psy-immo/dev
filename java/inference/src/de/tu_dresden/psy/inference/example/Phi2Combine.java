@@ -39,7 +39,7 @@ import de.tu_dresden.psy.inference.InferredAssertion;
  */
 
 public class Phi2Combine implements InferenceMap {
-	
+
 	@Override
 	public String ruleName() {
 		return "2,2→2";
@@ -87,17 +87,10 @@ public class Phi2Combine implements InferenceMap {
 			}
 		} // for it...
 
-		for (Iterator<Object> iy = by_object.keySet().iterator(); iy.hasNext();) {
-			Object y = iy.next();
-
-			for (Iterator<AssertionInterface> ixy = by_object.get(y).iterator(); ixy
-					.hasNext();) {
-				AssertionInterface xy = ixy.next();
-				if (by_subject.containsKey(y))
-					for (Iterator<AssertionInterface> iyz = by_subject.get(y)
-							.iterator(); iyz.hasNext();) {
-						AssertionInterface yz = iyz.next();
-
+		for (Object y : by_object.keySet()) {
+			for (AssertionInterface xy : by_object.get(y)) {
+				if (by_subject.containsKey(y)) {
+					for (AssertionInterface yz : by_subject.get(y)) {
 						int pred_xy = predicateToInt((String) xy.getPredicate());
 						int pred_yz = predicateToInt((String) yz.getPredicate());
 
@@ -109,7 +102,7 @@ public class Phi2Combine implements InferenceMap {
 							 */
 							inferred.add(new InferredAssertion(this,new Assertion(xy.getSubject(), xy
 									.getPredicate(), yz.getObject()),xy,yz));
-						} else if (pred_xy + pred_yz != 0) {
+						} else if ((pred_xy + pred_yz) != 0) {
 							/**
 							 * pred_xy + pred_yz == 0 if x < y & y > z or x > y
 							 * & y < z
@@ -119,11 +112,12 @@ public class Phi2Combine implements InferenceMap {
 							 */
 
 							inferred.add(new InferredAssertion(this,new Assertion(xy.getSubject(),
-									(pred_xy + pred_yz < 0 ? "is smaller than"
+									((pred_xy + pred_yz) < 0 ? "is smaller than"
 											: "is bigger than"), yz.getObject()),xy,yz));
 						}
 
 					}
+				}
 
 			}
 		}
@@ -139,11 +133,13 @@ public class Phi2Combine implements InferenceMap {
 	 *         bigger
 	 */
 	static int predicateToInt(String predicate) {
-		if (predicate.equals("is smaller than") == true)
+		if (predicate.equals("is smaller than") == true) {
 			return -1;
+		}
 
-		if (predicate.equals("is bigger than") == true)
+		if (predicate.equals("is bigger than") == true) {
 			return 1;
+		}
 
 		return 0;
 	}
@@ -163,8 +159,8 @@ public class Phi2Combine implements InferenceMap {
 
 		System.out.println("first degree: ");
 
-		for (Iterator<AssertionInterface> it = level1.iterator(); it.hasNext();) {
-			System.out.println(it.next());
+		for (AssertionInterface assertionInterface : level1) {
+			System.out.println(assertionInterface);
 		}
 
 		level1.addAll(premises);
@@ -173,8 +169,8 @@ public class Phi2Combine implements InferenceMap {
 
 		System.out.println("first+second degree: ");
 
-		for (Iterator<AssertionInterface> it = level2.iterator(); it.hasNext();) {
-			System.out.println(it.next());
+		for (AssertionInterface assertionInterface : level2) {
+			System.out.println(assertionInterface);
 		}
 
 		level1.addAll(level2);
@@ -183,9 +179,14 @@ public class Phi2Combine implements InferenceMap {
 
 		System.out.println("first+second+third degree: ");
 
-		for (Iterator<AssertionInterface> it = level2.iterator(); it.hasNext();) {
-			System.out.println(it.next());
+		for (AssertionInterface assertionInterface : level2) {
+			System.out.println(assertionInterface);
 		}
+	}
+
+	@Override
+	public boolean isTrivial() {
+		return false;
 	}
 
 }

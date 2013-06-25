@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.tu_dresden.psy.inference.forms.Annotated.Annotations;
+
 /**
  * implements a disjunctive normal form of Atoms, i.e. a term of the form
  * 
@@ -195,6 +197,63 @@ public class AnnotableDisjunctiveNormalForm<Atoms> {
 				p_conj.add(annotated.getAtom());
 			}
 			projectedTerm.add(p_conj);
+		}
+
+		return projectedTerm;
+	}
+
+	/**
+	 * 
+	 * @return Set containing each conjunction that is completely marked trivial
+	 */
+
+	public Set<Set<Atoms>> getTrivialPart() {
+		Set<Set<Atoms>> projectedTerm = new HashSet<Set<Atoms>>();
+
+		for (Set<Annotated<Atoms>> conj : this.termForm) {
+			Set<Atoms> p_conj = new HashSet<Atoms>();
+			boolean trivial = true;
+
+			for (Annotated<Atoms> annotated : conj) {
+				if (annotated.getAnnotiation() != Annotations.trivial) {
+					trivial = false;
+					break;
+				}
+
+				p_conj.add(annotated.getAtom());
+			}
+
+			if (trivial) {
+				projectedTerm.add(p_conj);
+			}
+		}
+
+		return projectedTerm;
+	}
+
+	/**
+	 * 
+	 * @return Set containing each conjunction that has an nontrivial atom
+	 */
+
+	public Set<Set<Atoms>> getNontrivialPart() {
+		Set<Set<Atoms>> projectedTerm = new HashSet<Set<Atoms>>();
+
+		for (Set<Annotated<Atoms>> conj : this.termForm) {
+			Set<Atoms> p_conj = new HashSet<Atoms>();
+			boolean trivial = true;
+
+			for (Annotated<Atoms> annotated : conj) {
+				if (annotated.getAnnotiation() != Annotations.trivial) {
+					trivial = false;
+				}
+
+				p_conj.add(annotated.getAtom());
+			}
+
+			if (trivial == false) {
+				projectedTerm.add(p_conj);
+			}
 		}
 
 		return projectedTerm;

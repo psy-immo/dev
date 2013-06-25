@@ -55,28 +55,38 @@ public class RegExpInferenceMap implements InferenceMap {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = (prime * result) + ((this.name == null) ? 0 : this.name.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (this.getClass() != obj.getClass()) {
 			return false;
+		}
 		RegExpInferenceMap other = (RegExpInferenceMap) obj;
-		if (name == null) {
-			if (other.name != null)
+		if (this.name == null) {
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!this.name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
 
 	private Vector<AssertionFilter> premiseForms;
+
+	/**
+	 * store, whether this rule has been marked trivial
+	 */
+	private boolean isTrivialRule;
 
 	/**
 	 * implements a check whether given premiseForms are compatible
@@ -94,18 +104,20 @@ public class RegExpInferenceMap implements InferenceMap {
 
 		@Override
 		public boolean check(Vector<AssertionInterface> premises) {
-			Object left = Assertion.getAssertionPart(premises.get(leftIndex),
-					leftPart);
-			Object right = Assertion.getAssertionPart(premises.get(rightIndex),
-					rightPart);
-			if (phi != null) {
+			Object left = Assertion.getAssertionPart(premises.get(this.leftIndex),
+					this.leftPart);
+			Object right = Assertion.getAssertionPart(premises.get(this.rightIndex),
+					this.rightPart);
+			if (this.phi != null) {
 				if (left instanceof String) {
 					String x = (String) left;
-					return phi.allMaps(x).contains(right);
-				} else
+					return this.phi.allMaps(x).contains(right);
+				} else {
 					return false;
-			} else
+				}
+			} else {
 				return left.equals(right);
+			}
 		}
 
 		/**
@@ -132,7 +144,7 @@ public class RegExpInferenceMap implements InferenceMap {
 	}
 
 	public static class AdvancedCompatibleChecker implements
-			ConstraintInterface {
+	ConstraintInterface {
 		private Assertion.AssertionPart leftPart;
 		private Assertion.AssertionPart rightPart;
 		private int leftIndex;
@@ -143,19 +155,19 @@ public class RegExpInferenceMap implements InferenceMap {
 
 		@Override
 		public boolean check(Vector<AssertionInterface> premises) {
-			Object left = Assertion.getAssertionPart(premises.get(leftIndex),
-					leftPart);
-			Object right = Assertion.getAssertionPart(premises.get(rightIndex),
-					rightPart);
+			Object left = Assertion.getAssertionPart(premises.get(this.leftIndex),
+					this.leftPart);
+			Object right = Assertion.getAssertionPart(premises.get(this.rightIndex),
+					this.rightPart);
 
 			if (left instanceof String) {
 				String x = (String) left;
 				if (right instanceof String) {
 					String y = (String) right;
 
-					Set<String> s = phi.allMaps(x);
+					Set<String> s = this.phi.allMaps(x);
 
-					s.retainAll(psi.allMaps(y));
+					s.retainAll(this.psi.allMaps(y));
 
 					return s.isEmpty() == false;
 				}
@@ -215,10 +227,10 @@ public class RegExpInferenceMap implements InferenceMap {
 
 		Set<String> getMorphed(Vector<AssertionInterface> premises) {
 			String input = (String) Assertion.getAssertionPart(
-					premises.get(index), part);
-			if (phi != null)
-				return phi.allMaps(input);
-			else {
+					premises.get(this.index), this.part);
+			if (this.phi != null) {
+				return this.phi.allMaps(input);
+			} else {
 				Set<String> result = new HashSet<String>();
 				result.add(input);
 				return result;
@@ -230,13 +242,13 @@ public class RegExpInferenceMap implements InferenceMap {
 		Set<String> value;
 
 		public MorpherConstant(String constant) {
-			value = new HashSet<String>();
-			value.add(constant);
+			this.value = new HashSet<String>();
+			this.value.add(constant);
 		}
 
 		@Override
 		Set<String> getMorphed(Vector<AssertionInterface> premises) {
-			return value;
+			return this.value;
 		}
 	}
 
@@ -285,14 +297,14 @@ public class RegExpInferenceMap implements InferenceMap {
 				Vector<AssertionInterface> premises) {
 			Set<AssertionInterface> results = new HashSet<AssertionInterface>();
 
-			Set<String> subjects = subject.getMorphed(premises);
-			Set<String> predicates = predicate.getMorphed(premises);
-			Set<String> objects = object.getMorphed(premises);
+			Set<String> subjects = this.subject.getMorphed(premises);
+			Set<String> predicates = this.predicate.getMorphed(premises);
+			Set<String> objects = this.object.getMorphed(premises);
 
 			for (String s : subjects) {
 				for (String p : predicates) {
 					for (String o : objects) {
-						results.add(new InferredAssertion(parentRule,
+						results.add(new InferredAssertion(this.parentRule,
 								new Assertion(s, p, o), premises));
 					}
 				}
@@ -311,7 +323,7 @@ public class RegExpInferenceMap implements InferenceMap {
 	 */
 
 	public static class AdvancedPremiseCombinator implements
-			PremiseCombinatorInterface {
+	PremiseCombinatorInterface {
 
 		private Vector<Morpher> subject;
 		private Vector<Morpher> predicate;
@@ -320,46 +332,46 @@ public class RegExpInferenceMap implements InferenceMap {
 		private InferenceMap parentRule;
 
 		public AdvancedPremiseCombinator(InferenceMap parent) {
-			parentRule = parent;
-			subject = new Vector<RegExpInferenceMap.Morpher>();
-			predicate = new Vector<RegExpInferenceMap.Morpher>();
-			object = new Vector<RegExpInferenceMap.Morpher>();
+			this.parentRule = parent;
+			this.subject = new Vector<RegExpInferenceMap.Morpher>();
+			this.predicate = new Vector<RegExpInferenceMap.Morpher>();
+			this.object = new Vector<RegExpInferenceMap.Morpher>();
 
 		}
 
 		public void addSubjectPart(StringRelationInterface phi, int idx,
 				AssertionPart part) {
-			subject.add(new Morpher(phi, idx, part));
+			this.subject.add(new Morpher(phi, idx, part));
 		}
 
 		public void addObjectPart(StringRelationInterface phi, int idx,
 				AssertionPart part) {
-			object.add(new Morpher(phi, idx, part));
+			this.object.add(new Morpher(phi, idx, part));
 		}
 
 		public void addPredicatePart(StringRelationInterface phi, int idx,
 				AssertionPart part) {
-			predicate.add(new Morpher(phi, idx, part));
+			this.predicate.add(new Morpher(phi, idx, part));
 		}
 
 		public void addPart(AssertionPart targetPart,
 				StringRelationInterface phi, int idx, AssertionPart sourcePart) {
 			if (targetPart == AssertionPart.subject) {
-				addSubjectPart(phi, idx, sourcePart);
+				this.addSubjectPart(phi, idx, sourcePart);
 			} else if (targetPart == AssertionPart.predicate) {
-				addPredicatePart(phi, idx, sourcePart);
+				this.addPredicatePart(phi, idx, sourcePart);
 			} else if (targetPart == AssertionPart.object) {
-				addObjectPart(phi, idx, sourcePart);
+				this.addObjectPart(phi, idx, sourcePart);
 			}
 		}
 
 		public void addConstantPart(AssertionPart targetPart, String value) {
 			if (targetPart == AssertionPart.subject) {
-				subject.add(new MorpherConstant(value));
+				this.subject.add(new MorpherConstant(value));
 			} else if (targetPart == AssertionPart.predicate) {
-				predicate.add(new MorpherConstant(value));
+				this.predicate.add(new MorpherConstant(value));
 			} else if (targetPart == AssertionPart.object) {
-				object.add(new MorpherConstant(value));
+				this.object.add(new MorpherConstant(value));
 			}
 		}
 
@@ -377,11 +389,11 @@ public class RegExpInferenceMap implements InferenceMap {
 			objects.add("");
 			predicates.add("");
 
-			for (int i = 0; i < subject.size(); i++) {
+			for (int i = 0; i < this.subject.size(); i++) {
 				concats.clear();
 
 				for (String s1 : subjects) {
-					for (String s2 : subject.get(i).getMorphed(premises)) {
+					for (String s2 : this.subject.get(i).getMorphed(premises)) {
 						concats.add(s1 + s2);
 					}
 				}
@@ -390,11 +402,11 @@ public class RegExpInferenceMap implements InferenceMap {
 				subjects.addAll(concats);
 			}
 
-			for (int i = 0; i < object.size(); i++) {
+			for (int i = 0; i < this.object.size(); i++) {
 				concats.clear();
 
 				for (String s1 : objects) {
-					for (String s2 : object.get(i).getMorphed(premises)) {
+					for (String s2 : this.object.get(i).getMorphed(premises)) {
 						concats.add(s1 + s2);
 					}
 				}
@@ -403,11 +415,11 @@ public class RegExpInferenceMap implements InferenceMap {
 				objects.addAll(concats);
 			}
 
-			for (int i = 0; i < predicate.size(); i++) {
+			for (int i = 0; i < this.predicate.size(); i++) {
 				concats.clear();
 
 				for (String s1 : predicates) {
-					for (String s2 : predicate.get(i).getMorphed(premises)) {
+					for (String s2 : this.predicate.get(i).getMorphed(premises)) {
 						concats.add(s1 + s2);
 					}
 				}
@@ -419,7 +431,7 @@ public class RegExpInferenceMap implements InferenceMap {
 			for (String s : subjects) {
 				for (String p : predicates) {
 					for (String o : objects) {
-						results.add(new InferredAssertion(parentRule,
+						results.add(new InferredAssertion(this.parentRule,
 								new Assertion(s, p, o), premises));
 					}
 				}
@@ -436,7 +448,7 @@ public class RegExpInferenceMap implements InferenceMap {
 	 * @author albrecht
 	 */
 	public static class CrossProductRecombinator implements
-			Iterable<Vector<AssertionInterface>> {
+	Iterable<Vector<AssertionInterface>> {
 
 		private Vector<Vector<AssertionInterface>> factors;
 
@@ -446,7 +458,7 @@ public class RegExpInferenceMap implements InferenceMap {
 		}
 
 		public static class CrossProductIterator implements
-				Iterator<Vector<AssertionInterface>> {
+		Iterator<Vector<AssertionInterface>> {
 
 			private Vector<Integer> currentIndices;
 
@@ -458,12 +470,12 @@ public class RegExpInferenceMap implements InferenceMap {
 			private Vector<AssertionInterface> nextElement;
 
 			private boolean nextIndex() {
-				for (int index = factorCount - 1; index >= 0; --index) {
-					int new_value = currentIndices.get(index) + 1;
-					if (new_value >= factors.get(index).size()) {
-						currentIndices.set(index, 0);
+				for (int index = this.factorCount - 1; index >= 0; --index) {
+					int new_value = this.currentIndices.get(index) + 1;
+					if (new_value >= this.factors.get(index).size()) {
+						this.currentIndices.set(index, 0);
 					} else {
-						currentIndices.set(index, new_value);
+						this.currentIndices.set(index, new_value);
 						return true;
 					}
 				}
@@ -471,12 +483,12 @@ public class RegExpInferenceMap implements InferenceMap {
 			}
 
 			private void retrieveNextElement() {
-				if (nextIndex() == false) {
+				if (this.nextIndex() == false) {
 					this.nextElement = null;
 				} else {
-					for (int i = 0; i < factorCount; ++i) {
+					for (int i = 0; i < this.factorCount; ++i) {
 						this.nextElement.set(i,
-								factors.get(i).get(currentIndices.get(i)));
+								this.factors.get(i).get(this.currentIndices.get(i)));
 					}
 				}
 			}
@@ -486,9 +498,9 @@ public class RegExpInferenceMap implements InferenceMap {
 				this.factors = factors;
 				this.factorCount = factors.size();
 				boolean noMore = false;
-				currentIndices = new Vector<Integer>(factorCount);
-				for (int i = 0; i < factorCount; ++i) {
-					currentIndices.add(0);
+				this.currentIndices = new Vector<Integer>(this.factorCount);
+				for (int i = 0; i < this.factorCount; ++i) {
+					this.currentIndices.add(0);
 					if (factors.get(i).isEmpty() == true) {
 						noMore = true;
 					}
@@ -499,7 +511,7 @@ public class RegExpInferenceMap implements InferenceMap {
 					this.currentElement = new Vector<AssertionInterface>();
 					this.nextElement = new Vector<AssertionInterface>();
 
-					for (int i = 0; i < factorCount; ++i) {
+					for (int i = 0; i < this.factorCount; ++i) {
 						this.currentElement.add(factors.get(i).get(0));
 						this.nextElement.add(factors.get(i).get(0));
 					}
@@ -509,12 +521,12 @@ public class RegExpInferenceMap implements InferenceMap {
 			@Override
 			public boolean hasNext() {
 
-				return currentElement != null;
+				return this.currentElement != null;
 			}
 
 			@Override
 			public Vector<AssertionInterface> next() {
-				retrieveNextElement();
+				this.retrieveNextElement();
 
 				Vector<AssertionInterface> swap = this.currentElement;
 				this.currentElement = this.nextElement;
@@ -532,7 +544,7 @@ public class RegExpInferenceMap implements InferenceMap {
 
 		@Override
 		public Iterator<Vector<AssertionInterface>> iterator() {
-			return new CrossProductIterator(factors);
+			return new CrossProductIterator(this.factors);
 		}
 	}
 
@@ -543,7 +555,7 @@ public class RegExpInferenceMap implements InferenceMap {
 	 * @author albrecht
 	 */
 	public static class CrossProductNewRecombinator implements
-			Iterable<Vector<AssertionInterface>> {
+	Iterable<Vector<AssertionInterface>> {
 
 		private Vector<Vector<AssertionInterface>> factors;
 
@@ -553,7 +565,7 @@ public class RegExpInferenceMap implements InferenceMap {
 		}
 
 		public static class CrossProductIfNewIterator implements
-				Iterator<Vector<AssertionInterface>> {
+		Iterator<Vector<AssertionInterface>> {
 
 			private Vector<Integer> currentIndices;
 			private Vector<Boolean> isNewAssertionLeftOfIndex;
@@ -569,22 +581,23 @@ public class RegExpInferenceMap implements InferenceMap {
 				boolean do_it_again = true;
 				while (do_it_again) {
 					do_it_again = false;
-					for (int index = factorCount - 1; index >= 0; --index) {
-						int new_value = currentIndices.get(index) + 1;
-						if (new_value >= factors.get(index).size()) {
-							currentIndices.set(index, 0);
+					for (int index = this.factorCount - 1; index >= 0; --index) {
+						int new_value = this.currentIndices.get(index) + 1;
+						if (new_value >= this.factors.get(index).size()) {
+							this.currentIndices.set(index, 0);
 						} else {
-							currentIndices.set(index, new_value);
+							this.currentIndices.set(index, new_value);
 
-							boolean have_new = isNewAssertionLeftOfIndex
+							boolean have_new = this.isNewAssertionLeftOfIndex
 									.get(index);
-							for (int i = index; i < factorCount; ++i) {
-								if (have_new == false)
-									if (factors.get(i)
-											.get(currentIndices.get(i)).isOld() == false) {
+							for (int i = index; i < this.factorCount; ++i) {
+								if (have_new == false) {
+									if (this.factors.get(i)
+											.get(this.currentIndices.get(i)).isOld() == false) {
 										have_new = true;
 									}
-								isNewAssertionLeftOfIndex.set(i + 1, have_new);
+								}
+								this.isNewAssertionLeftOfIndex.set(i + 1, have_new);
 							}
 
 							if (have_new) {
@@ -610,12 +623,12 @@ public class RegExpInferenceMap implements InferenceMap {
 			}
 
 			private void retrieveNextElement() {
-				if (nextIndex() == false) {
+				if (this.nextIndex() == false) {
 					this.nextElement = null;
 				} else {
-					for (int i = 0; i < factorCount; ++i) {
+					for (int i = 0; i < this.factorCount; ++i) {
 						this.nextElement.set(i,
-								factors.get(i).get(currentIndices.get(i)));
+								this.factors.get(i).get(this.currentIndices.get(i)));
 					}
 				}
 			}
@@ -626,10 +639,10 @@ public class RegExpInferenceMap implements InferenceMap {
 				this.factorCount = factors.size();
 				boolean noMore = false;
 
-				currentIndices = new Vector<Integer>(factorCount);
+				this.currentIndices = new Vector<Integer>(this.factorCount);
 
-				for (int i = 0; i < factorCount; ++i) {
-					currentIndices.add(0);
+				for (int i = 0; i < this.factorCount; ++i) {
+					this.currentIndices.add(0);
 
 					if (factors.get(i).isEmpty() == true) {
 						noMore = true;
@@ -641,17 +654,18 @@ public class RegExpInferenceMap implements InferenceMap {
 					return;
 				}
 
-				isNewAssertionLeftOfIndex = new Vector<Boolean>(factorCount + 1);
-				isNewAssertionLeftOfIndex.add(false);
+				this.isNewAssertionLeftOfIndex = new Vector<Boolean>(this.factorCount + 1);
+				this.isNewAssertionLeftOfIndex.add(false);
 
 				boolean haveNewAssertion = false;
 
-				for (int i = 0; i < factorCount; ++i) {
-					if (haveNewAssertion == false)
+				for (int i = 0; i < this.factorCount; ++i) {
+					if (haveNewAssertion == false) {
 						if (factors.get(i).get(0).isOld() == false) {
 							haveNewAssertion = true;
 						}
-					isNewAssertionLeftOfIndex.add(haveNewAssertion);
+					}
+					this.isNewAssertionLeftOfIndex.add(haveNewAssertion);
 				}
 
 				/**
@@ -659,17 +673,17 @@ public class RegExpInferenceMap implements InferenceMap {
 				 * that, set the current index to (0,..,0,-1).
 				 */
 
-				currentIndices.set(factorCount - 1, -1);
+				this.currentIndices.set(this.factorCount - 1, -1);
 
-				if (nextIndex() == false) {
+				if (this.nextIndex() == false) {
 					this.currentElement = null;
 				} else {
 					this.currentElement = new Vector<AssertionInterface>();
 					this.nextElement = new Vector<AssertionInterface>();
 
-					for (int i = 0; i < factorCount; ++i) {
+					for (int i = 0; i < this.factorCount; ++i) {
 						this.currentElement.add(factors.get(i).get(
-								currentIndices.get(i)));
+								this.currentIndices.get(i)));
 						this.nextElement.add(factors.get(i).get(0));
 					}
 				}
@@ -678,12 +692,12 @@ public class RegExpInferenceMap implements InferenceMap {
 			@Override
 			public boolean hasNext() {
 
-				return currentElement != null;
+				return this.currentElement != null;
 			}
 
 			@Override
 			public Vector<AssertionInterface> next() {
-				retrieveNextElement();
+				this.retrieveNextElement();
 
 				Vector<AssertionInterface> swap = this.currentElement;
 				this.currentElement = this.nextElement;
@@ -701,7 +715,7 @@ public class RegExpInferenceMap implements InferenceMap {
 
 		@Override
 		public Iterator<Vector<AssertionInterface>> iterator() {
-			return new CrossProductIfNewIterator(factors);
+			return new CrossProductIfNewIterator(this.factors);
 		}
 	}
 
@@ -760,32 +774,34 @@ public class RegExpInferenceMap implements InferenceMap {
 		Set<AssertionInterface> inferred = new HashSet<AssertionInterface>();
 		Vector<Vector<AssertionInterface>> premises = new Vector<Vector<AssertionInterface>>();
 
-		for (AssertionFilter filter : premiseForms) {
+		for (AssertionFilter filter : this.premiseForms) {
 			premises.add(new Vector<AssertionInterface>(filter
 					.filter(validPremises)));
 		}
 
 		int count = 0;
 
-		for (Vector<AssertionInterface> premiseVector : mergePremises
+		for (Vector<AssertionInterface> premiseVector : this.mergePremises
 				.getProduct(premises)) {
 			if (count == 100) {
 				count = 0;
-				if (limit.continueTask() == false)
+				if (limit.continueTask() == false) {
 					break;
+				}
 
-			} else
+			} else {
 				++count;
+			}
 
 			boolean passed = true;
-			for (ConstraintInterface check : checkPremises) {
+			for (ConstraintInterface check : this.checkPremises) {
 				if (check.check(premiseVector) == false) {
 					passed = false;
 					break;
 				}
 			}
 			if (passed) {
-				for (PremiseCombinatorInterface combine : conclusions) {
+				for (PremiseCombinatorInterface combine : this.conclusions) {
 					inferred.addAll(combine.combine(premiseVector));
 				}
 			}
@@ -807,17 +823,18 @@ public class RegExpInferenceMap implements InferenceMap {
 	 *            attached rule name
 	 */
 
-	public RegExpInferenceMap(String name) {
+	public RegExpInferenceMap(String name, boolean trivial) {
 		this.mergePremises = new CrossProductIfNew();
 		this.name = name;
 		this.conclusions = new HashSet<RegExpInferenceMap.PremiseCombinatorInterface>();
 		this.premiseForms = new Vector<AssertionFilter>();
 		this.checkPremises = new HashSet<ConstraintInterface>();
+		this.isTrivialRule = trivial;
 	}
 
 	public void addPremiseForm(String subjectPattern, String predicatePattern,
 			String objectPattern) {
-		premiseForms.add(new AssertionFilter(subjectPattern, predicatePattern,
+		this.premiseForms.add(new AssertionFilter(subjectPattern, predicatePattern,
 				objectPattern));
 	}
 
@@ -833,13 +850,13 @@ public class RegExpInferenceMap implements InferenceMap {
 	public void addPremiseConstraint(int leftIndex,
 			Assertion.AssertionPart leftPart, int rightIndex,
 			Assertion.AssertionPart rightPart) {
-		checkPremises.add(new IsCompatibleChecker(leftIndex, leftPart,
+		this.checkPremises.add(new IsCompatibleChecker(leftIndex, leftPart,
 				rightIndex, rightPart, null));
 	}
 
 	public void addConstraint(ConstraintInterface constraint) {
 
-		checkPremises.add(constraint);
+		this.checkPremises.add(constraint);
 
 	}
 
@@ -856,7 +873,7 @@ public class RegExpInferenceMap implements InferenceMap {
 	public void addPremiseConstraint(int leftIndex,
 			Assertion.AssertionPart leftPart, int rightIndex,
 			Assertion.AssertionPart rightPart, String delimitedRule) {
-		checkPremises.add(new IsCompatibleChecker(leftIndex, leftPart,
+		this.checkPremises.add(new IsCompatibleChecker(leftIndex, leftPart,
 				rightIndex, rightPart, new StringRelationJoin(delimitedRule)));
 	}
 
@@ -878,7 +895,7 @@ public class RegExpInferenceMap implements InferenceMap {
 	public void addConclusion(int idxS, AssertionPart partS, String phiS,
 			int idxP, AssertionPart partP, String phiP, int idxO,
 			AssertionPart partO, String phiO) {
-		conclusions.add(new PremiseCombinator(this, idxS, partS,
+		this.conclusions.add(new PremiseCombinator(this, idxS, partS,
 				new StringRelationJoin(phiS), idxP, partP,
 				new StringRelationJoin(phiP), idxO, partO,
 				new StringRelationJoin(phiO)));
@@ -890,7 +907,7 @@ public class RegExpInferenceMap implements InferenceMap {
 	 * @param conclusion
 	 */
 	public void addConclusion(PremiseCombinatorInterface conclusion) {
-		conclusions.add(conclusion);
+		this.conclusions.add(conclusion);
 	}
 
 	/**
@@ -907,7 +924,7 @@ public class RegExpInferenceMap implements InferenceMap {
 
 	public void addConclusion(int idxS, AssertionPart partS, int idxP,
 			AssertionPart partP, int idxO, AssertionPart partO) {
-		conclusions.add(new PremiseCombinator(this, idxS, partS, null, idxP,
+		this.conclusions.add(new PremiseCombinator(this, idxS, partS, null, idxP,
 				partP, null, idxO, partO, null));
 	}
 
@@ -918,7 +935,12 @@ public class RegExpInferenceMap implements InferenceMap {
 	 */
 
 	public void addPremiseCombinator(PremiseCombinatorInterface combinator) {
-		conclusions.add(combinator);
+		this.conclusions.add(combinator);
+	}
+
+	@Override
+	public boolean isTrivial() {
+		return this.isTrivialRule;
 	}
 
 }

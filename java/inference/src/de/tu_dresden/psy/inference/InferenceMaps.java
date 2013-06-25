@@ -73,4 +73,15 @@ public class InferenceMaps implements InferenceMap {
 		return "(ANY)";
 	}
 
+	@Override
+	public boolean isTrivial() {
+
+		for (InferenceMap m : this.maps) {
+			if (m.isTrivial() == false) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

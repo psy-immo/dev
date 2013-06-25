@@ -82,8 +82,8 @@ public class Phi2Neg implements InferenceMap {
 
 		System.out.println("first degree: ");
 
-		for (Iterator<AssertionInterface> it = level1.iterator(); it.hasNext();) {
-			System.out.println(it.next());
+		for (AssertionInterface assertionInterface : level1) {
+			System.out.println(assertionInterface);
 		}
 
 		level1.addAll(premises);
@@ -92,8 +92,8 @@ public class Phi2Neg implements InferenceMap {
 
 		System.out.println("first+second degree: ");
 
-		for (Iterator<AssertionInterface> it = level2.iterator(); it.hasNext();) {
-			System.out.println(it.next());
+		for (AssertionInterface assertionInterface : level2) {
+			System.out.println(assertionInterface);
 		}
 
 		level1.addAll(level2);
@@ -102,9 +102,14 @@ public class Phi2Neg implements InferenceMap {
 
 		System.out.println("first+second+third degree: ");
 
-		for (Iterator<AssertionInterface> it = level2.iterator(); it.hasNext();) {
-			System.out.println(it.next());
+		for (AssertionInterface assertionInterface : level2) {
+			System.out.println(assertionInterface);
 		}
+	}
+
+	@Override
+	public boolean isTrivial() {
+		return false;
 	}
 
 }

@@ -244,6 +244,7 @@ public class InferenceCompiler {
 			}
 
 			writer.write("], ");
+
 			if (e.isTrivial()) {
 				writer.write("true");
 			} else {
@@ -672,7 +673,8 @@ public class InferenceCompiler {
 				 * a belongs to the assertionDomain
 				 */
 
-				for (Set<EquivalentAssertions> premise : premises.getTerm()) {
+				for (Set<EquivalentAssertions> premise : premises
+						.getNontrivialPart()) {
 					DirectedHyperEdge edge = new DirectedHyperEdge(id_a);
 
 					for (AssertionInterface p : premise) {
@@ -688,12 +690,39 @@ public class InferenceCompiler {
 					}
 
 					/**
-					 * TODO: find out, whether this premise is trivial or not
-					 * *uh oh*
+					 * this premise is nontrivial
 					 */
+
+					edge.setTriviality(false);
 
 					singletonTargetEdges.add(edge);
 				}
+
+				for (Set<EquivalentAssertions> premise : premises
+						.getTrivialPart()) {
+					DirectedHyperEdge edge = new DirectedHyperEdge(id_a);
+
+					for (AssertionInterface p : premise) {
+						int id_p = this.assertionDomain.fromAssertion(p);
+
+						if (id_p >= 0) {
+							/**
+							 * if p is in the assertionDomain as well, it must
+							 * be specified to infer a
+							 */
+							edge.addPremise(id_p);
+						}
+					}
+
+					/**
+					 * this premise is trivial
+					 */
+
+					edge.setTriviality(true);
+
+					singletonTargetEdges.add(edge);
+				}
+
 			}
 		}
 
@@ -715,8 +744,9 @@ public class InferenceCompiler {
 		}
 
 		for (DirectedHyperEdgePremise p : conclusionsByPremise.keySet()) {
+
 			this.inferenceHyperGraph.add(new DirectedHyperEdge(p.getPremise(),
-					conclusionsByPremise.get(p)));
+					conclusionsByPremise.get(p), p.isTrivial()));
 		}
 
 		/**

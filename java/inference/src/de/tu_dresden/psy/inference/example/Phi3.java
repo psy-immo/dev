@@ -38,7 +38,7 @@ import de.tu_dresden.psy.inference.InferredAssertion;
  */
 
 public class Phi3 implements InferenceMap {
-	
+
 	@Override
 	public String ruleName() {
 		return "3+→3";
@@ -72,15 +72,17 @@ public class Phi3 implements InferenceMap {
 					s1 = subject.substring(10);
 				} else if (subject.startsWith("a bigger ")) {
 					s1 = subject.substring(9);
-				} else
+				} else {
 					filter = false;
+				}
 
 				if (object.startsWith("a smaller ")) {
 					o1 = object.substring(10);
 				} else if (object.startsWith("a bigger ")) {
 					o1 = object.substring(9);
-				} else
+				} else {
 					filter = false;
+				}
 
 				if ((predicate.equals("means") == true) && (filter == true)) {
 					if (by_subject.containsKey(s1)) {
@@ -110,7 +112,7 @@ public class Phi3 implements InferenceMap {
 				for (ixy = by_object.get(y).iterator(); ixy.hasNext();) {
 					AssertionInterface xy = ixy.next();
 					for (iyz = by_subject.get(y).iterator(); iyz.hasNext();) {
-						
+
 						AssertionInterface yz = iyz.next();
 
 						String x = (String) xy.getSubject();
@@ -120,20 +122,26 @@ public class Phi3 implements InferenceMap {
 
 						boolean monotone_xy = (x.startsWith("a smaller") == y1
 								.startsWith("a smaller"));
-						
+
 						boolean monotone_yz = (y2.startsWith("a smaller") == z
 								.startsWith("a smaller"));
-						
+
 						boolean monotone_xz = monotone_xy == monotone_yz;
-						
+
 						if (x.startsWith("a smaller")) {
 							x = x.substring(10);
-						} else x = x.substring(9); //x.startsWith("a bigger")
-						
+						}
+						else {
+							x = x.substring(9); //x.startsWith("a bigger")
+						}
+
 						if (z.startsWith("a smaller")) {
 							z = z.substring(10);
-						} else z = z.substring(9); //x.startsWith("a bigger")
-						
+						}
+						else {
+							z = z.substring(9); //x.startsWith("a bigger")
+						}
+
 						if (monotone_xz == true) {
 							inferred.add(new InferredAssertion(this,new Assertion("a smaller "+x, "means", "a smaller "+z),xy,yz));
 							inferred.add(new InferredAssertion(this,new Assertion("a bigger "+x, "means", "a bigger "+z),xy,yz));
@@ -148,46 +156,51 @@ public class Phi3 implements InferenceMap {
 
 		return inferred;
 	}
-	
-	
+
+
 	public static void main(String[] args) {
 		Phi3 phi3 = new Phi3();
-		
+
 		Set<AssertionInterface> premises = new HashSet<AssertionInterface>();
-		
+
 		premises.add(new Assertion("a smaller A", "means", "a bigger B"));
 		premises.add(new Assertion("a bigger B", "means", "a bigger C"));
 		premises.add(new Assertion("a bigger B", "means", "a smaller D"));
 		premises.add(new Assertion("a bigger A", "means", "a bigger E"));
 		premises.add(new Assertion("a bigger E", "means", "a bigger B"));
-		
+
 		Set<AssertionInterface> level1 = phi3.inferNew(premises, null);
-		
+
 		System.out.println("first degree: ");
-		
-		for (Iterator<AssertionInterface> it = level1.iterator();it.hasNext();) {
-			System.out.println(it.next());
+
+		for (AssertionInterface assertionInterface : level1) {
+			System.out.println(assertionInterface);
 		}
-		
+
 		level1.addAll(premises);
-		
+
 		Set<AssertionInterface> level2 = phi3.inferNew(level1, null);
-		
+
 		System.out.println("first+second degree: ");
-		
-		for (Iterator<AssertionInterface> it = level2.iterator();it.hasNext();) {
-			System.out.println(it.next());
+
+		for (AssertionInterface assertionInterface : level2) {
+			System.out.println(assertionInterface);
 		}
-		
+
 		level1.addAll(level2);
-		
+
 		level2 = phi3.inferNew(level1, null);
-		
+
 		System.out.println("first+second+third degree: ");
-		
-		for (Iterator<AssertionInterface> it = level2.iterator();it.hasNext();) {
-			System.out.println(it.next());
+
+		for (AssertionInterface assertionInterface : level2) {
+			System.out.println(assertionInterface);
 		}
+	}
+
+	@Override
+	public boolean isTrivial() {
+		return false;
 	}
 
 }

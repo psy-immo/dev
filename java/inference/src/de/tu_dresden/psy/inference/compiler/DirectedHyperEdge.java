@@ -97,10 +97,12 @@ public class DirectedHyperEdge {
 		this.conclusion.add(target);
 	}
 
-	public DirectedHyperEdge(Set<Integer> source, Set<Integer> target) {
+	public DirectedHyperEdge(Set<Integer> source, Set<Integer> target,
+			boolean isTrivial) {
 		this.initialize();
 		this.conclusion.addAll(target);
 		this.premise.addAll(source);
+		this.isTrivialRule = isTrivial;
 	}
 
 	/**
@@ -123,27 +125,26 @@ public class DirectedHyperEdge {
 		this.conclusion.add(v);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
+	public DirectedHyperEdgePremise getPremise() {
+		return new DirectedHyperEdgePremise(this.premise, this.isTrivialRule);
+	}
+
+	public Set<Integer> getConclusions() {
+		return this.conclusion;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = (prime * result)
 				+ ((this.conclusion == null) ? 0 : this.conclusion.hashCode());
+		result = (prime * result) + (this.isTrivialRule ? 1231 : 1237);
 		result = (prime * result)
 				+ ((this.premise == null) ? 0 : this.premise.hashCode());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -152,7 +153,7 @@ public class DirectedHyperEdge {
 		if (obj == null) {
 			return false;
 		}
-		if (this.getClass() != obj.getClass()) {
+		if (!(obj instanceof DirectedHyperEdge)) {
 			return false;
 		}
 		DirectedHyperEdge other = (DirectedHyperEdge) obj;
@@ -163,6 +164,9 @@ public class DirectedHyperEdge {
 		} else if (!this.conclusion.equals(other.conclusion)) {
 			return false;
 		}
+		if (this.isTrivialRule != other.isTrivialRule) {
+			return false;
+		}
 		if (this.premise == null) {
 			if (other.premise != null) {
 				return false;
@@ -171,14 +175,6 @@ public class DirectedHyperEdge {
 			return false;
 		}
 		return true;
-	}
-
-	public DirectedHyperEdgePremise getPremise() {
-		return new DirectedHyperEdgePremise(this.premise, this.isTrivialRule);
-	}
-
-	public Set<Integer> getConclusions() {
-		return this.conclusion;
 	}
 
 }

@@ -40,10 +40,10 @@ import de.tu_dresden.psy.inference.InferredAssertion;
 public class Phi2_3to2 implements InferenceMap {
 
 	static final String[] prefixes = { "the current through", "the voltage of",
-			"the resistance of", "the input power of", "the luminosity of" };
+		"the resistance of", "the input power of", "the luminosity of" };
 
 	static final String[] operands = { "current", "voltage", "resistance",
-			"input power", "luminosity" };
+		"input power", "luminosity" };
 
 	/**
 	 * map a prefix to the corresponding abstract noun
@@ -53,8 +53,9 @@ public class Phi2_3to2 implements InferenceMap {
 	 */
 	static final String prefixToOperand(String prefix) {
 		for (int i = 0; i < prefixes.length; ++i) {
-			if (prefix.equals(prefixes[i]))
+			if (prefix.equals(prefixes[i])) {
 				return operands[i];
+			}
 		}
 		return "";
 	}
@@ -67,8 +68,9 @@ public class Phi2_3to2 implements InferenceMap {
 	 */
 	static final String operandToPrefix(String operand) {
 		for (int i = 0; i < operands.length; ++i) {
-			if (operand.equals(operands[i]))
+			if (operand.equals(operands[i])) {
 				return prefixes[i];
+			}
 		}
 		return "";
 	}
@@ -113,10 +115,9 @@ public class Phi2_3to2 implements InferenceMap {
 					String subject = (String) a.getSubject();
 					if (a.getObject() instanceof String) {
 						String object = (String) a.getObject();
-						for (int i = 0; i < prefixes.length; i++) {
-							if (subject.startsWith(prefixes[i])
-									&& object.startsWith(prefixes[i])) {
-								String prefix = prefixes[i];
+						for (String prefix : prefixes) {
+							if (subject.startsWith(prefix)
+									&& object.startsWith(prefix)) {
 								if (by_prefix.containsKey(prefix)) {
 									by_prefix.get(prefix).add(a);
 								} else {
@@ -188,10 +189,11 @@ public class Phi2_3to2 implements InferenceMap {
 								inferred.add(new InferredAssertion(this,new Assertion(new_prefix + " "
 										+ subject_a, "is smaller than",
 										new_prefix + " " + object_a),a,b));
-							} else
+							} else {
 								inferred.add(new InferredAssertion(this,new Assertion(new_prefix + " "
 										+ subject_a, a.getPredicate(),
 										new_prefix + " " + object_a),a,b));
+							}
 
 						}
 
@@ -226,8 +228,8 @@ public class Phi2_3to2 implements InferenceMap {
 
 		System.out.println("first degree: ");
 
-		for (Iterator<AssertionInterface> it = level1.iterator(); it.hasNext();) {
-			System.out.println(it.next());
+		for (AssertionInterface assertionInterface : level1) {
+			System.out.println(assertionInterface);
 		}
 
 		level1.addAll(premises);
@@ -236,8 +238,8 @@ public class Phi2_3to2 implements InferenceMap {
 
 		System.out.println("first+second degree: ");
 
-		for (Iterator<AssertionInterface> it = level2.iterator(); it.hasNext();) {
-			System.out.println(it.next());
+		for (AssertionInterface assertionInterface : level2) {
+			System.out.println(assertionInterface);
 		}
 
 		level1.addAll(level2);
@@ -246,8 +248,14 @@ public class Phi2_3to2 implements InferenceMap {
 
 		System.out.println("first+second+third degree: ");
 
-		for (Iterator<AssertionInterface> it = level2.iterator(); it.hasNext();) {
-			System.out.println(it.next());
+		for (AssertionInterface assertionInterface : level2) {
+			System.out.println(assertionInterface);
 		}
 	}
+
+	@Override
+	public boolean isTrivial() {
+		return false;
+	}
+
 }

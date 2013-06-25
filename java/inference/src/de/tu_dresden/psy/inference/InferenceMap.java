@@ -29,7 +29,7 @@ import java.util.Set;
  */
 
 public interface InferenceMap {
-	
+
 	/**
 	 * do one inference step
 	 * 
@@ -48,4 +48,10 @@ public interface InferenceMap {
 	 * @return name of the inference rule
 	 */
 	public String ruleName();
+
+	/**
+	 * 
+	 * @return true, if this rule has been marked trivial
+	 */
+	public boolean isTrivial();
 }

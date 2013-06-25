@@ -60,6 +60,14 @@ public class DirectedHyperEdgePremise {
 		return this.premise;
 	}
 
+	/**
+	 * 
+	 * @return true, if this premise consists of assertions marked trivial
+	 */
+	public boolean isTrivial() {
+		return this.isTrivial;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
