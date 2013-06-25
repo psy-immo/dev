@@ -133,7 +133,8 @@ public class EquivalentAssertions implements AssertionInterface {
 				if (all_equivalence_classes_and_precursors == true) {
 					this.directAncestors
 					.join(new AnnotableDisjunctiveNormalForm<EquivalentAssertions>(
-							ancestors));
+							ancestors, inferred
+							.isInferredByTrivialRule()));
 				}
 			}
 		}
@@ -182,8 +183,28 @@ public class EquivalentAssertions implements AssertionInterface {
 				if (all_equivalence_classes_and_precursors == true) {
 					this.ruleAncestors
 					.join(new AnnotableDisjunctiveNormalForm<EquivalentAssertions>(
-							ancestors));
+							ancestors, inferred
+							.isInferredByTrivialRule()));
 				}
+
+				/**
+				 * 
+				 * TODO: WHY IS IT NOT WORKING? DEBUG CODE
+				 */
+				if (inferred.isInferredByTrivialRule()) {
+					System.err.println("Trivial Rule:" + inferred);
+					System.err
+					.println(new AnnotableDisjunctiveNormalForm<EquivalentAssertions>(
+							ancestors, inferred
+							.isInferredByTrivialRule()));
+					System.err.println(" *** ");
+					System.err.println(this.ruleAncestors);
+					System.err.println(" *** TRIVIAL PART *** ");
+					System.err.println(this.ruleAncestors.getTrivialPart());
+				}
+				/**
+				 * /DEBUGCODE
+				 */
 			}
 		}
 
@@ -213,6 +234,8 @@ public class EquivalentAssertions implements AssertionInterface {
 			/**
 			 * Here, we simply ignore ancestors that have been marked trivial;
 			 * well well...
+			 * 
+			 * TODO: needs fix??
 			 */
 
 			this.allAncestors.replaceJoin(

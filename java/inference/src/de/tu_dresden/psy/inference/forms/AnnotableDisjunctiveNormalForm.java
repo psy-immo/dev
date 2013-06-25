@@ -120,7 +120,32 @@ public class AnnotableDisjunctiveNormalForm<Atoms> {
 		this.termForm.add(conj);
 	}
 
+	/**
+	 * create a form consisting of a single conjunction
+	 * 
+	 * @param initialConjunction
+	 *            a collection of Atoms
+	 * @param annotateTrivial
+	 *            if true, all
+	 */
 
+	public AnnotableDisjunctiveNormalForm(
+			Collection<? extends Atoms> initialConjunction,
+			boolean annotateTrivial) {
+		this.termForm = new HashSet<Set<Annotated<Atoms>>>();
+		Set<Annotated<Atoms>> conj = new HashSet<Annotated<Atoms>>();
+		for (Atoms a : initialConjunction) {
+			Atoms atom = a;
+			if (annotateTrivial == false) {
+				conj.add(new Annotated<Atoms>(atom));
+			} else {
+				conj.add(new Annotated<Atoms>(atom, Annotations.trivial));
+			}
+
+		}
+
+		this.termForm.add(conj);
+	}
 
 
 	/**
