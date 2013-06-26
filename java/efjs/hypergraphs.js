@@ -36,7 +36,7 @@ function InferenceGraph() {
 	 * this array contains a sorted list of ids of trivial inferences, i.e.
 	 * inferences that are marked trivial
 	 */
-	
+
 	this.trivial_inference_ids = [];
 
 	/**
@@ -220,11 +220,11 @@ function InferenceGraph() {
 
 			this.conclusion_based[conclusion_id].push(inference_id);
 		}
-		
+
 		/**
 		 * if this is a trivial inference, add it to the list
 		 */
-		
+
 		if (isTrivial) {
 			this.trivial_inference_ids.push(inference_id);
 		}
@@ -237,11 +237,75 @@ function InferenceGraph() {
 	 * returns all inference rule ids that have the given premises or less
 	 */
 
-	this.GetConcludibleInferences = function(premises) {
+	this.GetConcludibleInferences = function(plain_premises) {
+
+		var premises = [];
+
+		/**
+		 * we have to take care of the trivial inference rules first, so we
+		 * close the premises under the trivial rules, and then take that closed
+		 * premise set and look for possible conclusions
+		 */
+
+		for ( var int_p = 0; int_p < plain_premises.length; int_p++) {
+			premises.push(plain_premises[int_p]);
+		}
+
+		var last_premise_length = 0;
+		var used_trivial_inferences = {};
+
+		while (premises.length > last_premise_length) {
+			/**
+			 * continue as long as we have new premises
+			 */
+			last_premise_length = premises.length;
+			
+			for ( var int_t = 0; int_t < this.trivial_inference_ids.length; int_t++) {
+				var inference_id = this.trivial_inference_ids[int_t];
+				if (inference_id in used_trivial_inferences) {
+					/**
+					 * skip this inference
+					 */
+				} else {
+					var got_all_premises = true;
+					for ( var int_pr = 0; int_pr < this.inferences[inference_id].p.length; int_pr++) {
+						var premise_needed = this.inferences[inference_id].p[int_pr];
+						if (premises.indexOf(premise_needed) < 0) {
+							got_all_premises = false;
+							break;
+						}
+					}
+					if (got_all_premises) {
+						/**
+						 * keep track of which inference ids we used
+						 */
+						used_trivial_inferences[inference_id] = true;
+						for ( var int_con = 0; int_con < this.inferences[inference_id].c.length; int_con++) {
+							var conclusion_id = this.inferences[inference_id].c[int_con];
+							if (premises.indexOf(conclusion_id)<0) {
+								premises.push(conclusion_id);
+							}
+						}
+					}
+				}
+
+			}
+		}
+		
+		
+		//console.log("given premises:");
+		//console.log(plain_premises);
+		//console.log("trivially inferred premises:");
+		//console.log(premises);
+
+		/**
+		 * check for conclusions
+		 */
+
 		var possible_keys = [];
 
 		for ( var int = 0; int < premises.length; int++) {
-			var premise_id = premises[int];
+			var premise_id = parseInt(premises[int]);
 
 			if (premise_id in this.premise_based) {
 				var inferences = this.premise_based[premise_id];
@@ -301,7 +365,7 @@ function InferenceGraph() {
 		 */
 
 		for ( var int = 0; int < points.length; int++) {
-			var id = points[int];
+			var id = parseInt(points[int]);
 			if (this.IsJustified(id))
 				result.justified.push(id);
 			else
@@ -316,6 +380,8 @@ function InferenceGraph() {
 		 */
 		var inference_used = {};
 
+		console.log("closing justification");
+
 		while ((result.justified.length != last_nbr_of_justified)
 				&& ((result.unjustified.length > 0))) {
 			/**
@@ -323,9 +389,16 @@ function InferenceGraph() {
 			 * assertions left
 			 */
 
+			// console.log("justified "+result.justified.length);
+			// console.log(result.justified);
+			// console.log("unjustified "+result.unjustified.length);
+			// console.log(result.unjustified);
 			last_nbr_of_justified = result.justified.length;
 
 			var inference_ids = this.GetConcludibleInferences(result.justified);
+
+			// console.log("ids");
+			// console.log(inference_ids);
 
 			/**
 			 * add the newly justified points from the new inference_ids
@@ -333,6 +406,7 @@ function InferenceGraph() {
 
 			for ( var int2 = 0; int2 < inference_ids.length; int2++) {
 				var infer_id = inference_ids[int2];
+
 				if (inference_used.hasOwnProperty(infer_id) == false) {
 					var conclusions = this.inferences[infer_id].c;
 
@@ -341,9 +415,11 @@ function InferenceGraph() {
 						var idx = result.unjustified.indexOf(conclusion_id);
 
 						if (idx >= 0) {
+							console.log("FOUND " + conclusion_id);
 							result.justified.push(conclusion_id);
 							/** remove the concludible assertion from unjustified */
 							result.unjustified.splice(idx, 1);
+							console.log(result.unjustified);
 						}
 					}
 
@@ -454,7 +530,7 @@ function InferenceGraph() {
 		var inferences = [];
 
 		for ( var int = 0; int < conclusions.length; int++) {
-			var conclusion_id = conclusions[int];
+			var conclusion_id = parseInt(conclusions[int]);
 
 			if (conclusion_id in this.conclusion_based) {
 				for ( var int2 = 0; int2 < this.conclusion_based[conclusion_id].length; int2++) {

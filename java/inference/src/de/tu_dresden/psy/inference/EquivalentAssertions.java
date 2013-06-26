@@ -189,19 +189,20 @@ public class EquivalentAssertions implements AssertionInterface {
 
 				/**
 				 * 
-				 * TODO: WHY IS IT NOT WORKING? DEBUG CODE
+				 * DEBUG CODE
 				 */
-				if (inferred.isInferredByTrivialRule()) {
-					System.err.println("Trivial Rule:" + inferred);
-					System.err
-					.println(new AnnotableDisjunctiveNormalForm<EquivalentAssertions>(
-							ancestors, inferred
-							.isInferredByTrivialRule()));
-					System.err.println(" *** ");
-					System.err.println(this.ruleAncestors);
-					System.err.println(" *** TRIVIAL PART *** ");
-					System.err.println(this.ruleAncestors.getTrivialPart());
-				}
+				// if (inferred.isInferredByTrivialRule()) {
+				// System.err.println("Trivial Rule:" + inferred);
+				// System.err
+				// .println(new
+				// AnnotableDisjunctiveNormalForm<EquivalentAssertions>(
+				// ancestors, inferred
+				// .isInferredByTrivialRule()));
+				// System.err.println(" *** ");
+				// System.err.println(this.ruleAncestors);
+				// System.err.println(" *** TRIVIAL PART *** ");
+				// System.err.println(this.ruleAncestors.getTrivialPart());
+				// }
 				/**
 				 * /DEBUGCODE
 				 */
@@ -212,6 +213,10 @@ public class EquivalentAssertions implements AssertionInterface {
 
 	/**
 	 * add new conjunctions to allAncestors
+	 * 
+	 * MIGHT NEED SOME FIX for triviality annotations in annotated disjunctive
+	 * normal forms, currently, we just ignore triviality annotated atoms and do
+	 * not replace them
 	 * 
 	 * @param excessLimit
 	 */
@@ -235,7 +240,8 @@ public class EquivalentAssertions implements AssertionInterface {
 			 * Here, we simply ignore ancestors that have been marked trivial;
 			 * well well...
 			 * 
-			 * TODO: needs fix??
+			 * needs fix?? since we don't use this structure anymore, I guess
+			 * not...
 			 */
 
 			this.allAncestors.replaceJoin(

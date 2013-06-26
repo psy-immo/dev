@@ -699,12 +699,12 @@ public class InferenceCompiler {
 				}
 
 				/**
-				 * TODO: DEBUG CODE
+				 * DEBUG CODE
 				 */
-				System.err.println(a + " INFERRED BY ");
-				System.err.println(premises.getAnnotatedTerm());
-				System.err.println("TRIVIAL PREMISES: "
-						+ premises.getTrivialPart());
+				// System.err.println(a + " INFERRED BY ");
+				// System.err.println(premises.getAnnotatedTerm());
+				// System.err.println("TRIVIAL PREMISES: "
+				// + premises.getTrivialPart());
 				/**
 				 * /DEBUGCODE
 				 */
