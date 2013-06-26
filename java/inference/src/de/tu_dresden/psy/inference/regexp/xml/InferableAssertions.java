@@ -93,35 +93,35 @@ public class InferableAssertions {
 			Set<AssertionInterface> given, Collection<InferenceMap> rules,
 			Set<ConstrainedAssertionFilter> invalid,
 			Set<ConstrainedAssertionFilter> trivial) {
-		givenAssertions = new AssertionEquivalenceClasses();
+		this.givenAssertions = new AssertionEquivalenceClasses();
 
-		givenAssertions.addNewAssertions(implicit);
+		this.givenAssertions.addNewAssertions(implicit);
 
-		for (AssertionInterface a : givenAssertions.getClasses()) {
+		for (AssertionInterface a : this.givenAssertions.getClasses()) {
 			if (a instanceof EquivalentAssertions) {
 				EquivalentAssertions ea = (EquivalentAssertions) a;
 				ea.considerJustified();
 			}
 		}
 
-		givenAssertions.addNewAssertions(given);
+		this.givenAssertions.addNewAssertions(given);
 
-		validAssertions = new AssertionEquivalenceClasses(givenAssertions);
+		this.validAssertions = new AssertionEquivalenceClasses(this.givenAssertions);
 
-		state = State.open;
+		this.state = State.open;
 
-		invalidInferredAssertions = new HashSet<AssertionInterface>();
+		this.invalidInferredAssertions = new HashSet<AssertionInterface>();
 
-		trivialInferred = new HashSet<AssertionInterface>();
+		this.trivialInferred = new HashSet<AssertionInterface>();
 
-		usedRules = new HashSet<InferenceMap>(rules.size());
-		usedRules.addAll(rules);
+		this.usedRules = new HashSet<InferenceMap>(rules.size());
+		this.usedRules.addAll(rules);
 
 		this.invalid = invalid;
 		this.trivial = trivial;
 
-		highestCount = 0;
-		highestDepth = 0;
+		this.highestCount = 0;
+		this.highestDepth = 0;
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class InferableAssertions {
 	 */
 
 	public AssertionEquivalenceClasses getValid() {
-		return validAssertions;
+		return this.validAssertions;
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class InferableAssertions {
 	 */
 
 	public AssertionEquivalenceClasses getGiven() {
-		return givenAssertions;
+		return this.givenAssertions;
 	}
 
 	/**
@@ -150,19 +150,19 @@ public class InferableAssertions {
 	public String getReport() {
 		String report = "";
 
-		if (state == State.open) {
+		if (this.state == State.open) {
 			report += "No inference attempts have been made so far.\n";
-		} else if (state == State.closed) {
+		} else if (this.state == State.closed) {
 			report += "All inferable assertions have been found.\n";
-		} else if (state == State.closed) {
+		} else if (this.state == State.closed) {
 			report += "It was possible to infer invalid assertions.\n";
-		} else if (state == State.excess) {
+		} else if (this.state == State.excess) {
 			report += "Inference was stopped because the process exceeded the time limit.\n";
 		}
 
-		if (invalidInferredAssertions.isEmpty() == false) {
+		if (this.invalidInferredAssertions.isEmpty() == false) {
 			report += "\nThe following invalid assertions could be inferred:\n";
-			for (AssertionInterface ia : invalidInferredAssertions) {
+			for (AssertionInterface ia : this.invalidInferredAssertions) {
 				report += " !> " + ia.getSubject() + "·" + ia.getPredicate()
 						+ "·" + ia.getObject() + "\n";
 			}
@@ -170,7 +170,7 @@ public class InferableAssertions {
 
 		Set<String> orderedOutput = new TreeSet<String>();
 
-		for (AssertionInterface a : validAssertions.getClasses()) {
+		for (AssertionInterface a : this.validAssertions.getClasses()) {
 			EquivalentAssertions ea = (EquivalentAssertions) a;
 			if (ea.getJustificationDepth() == EquivalentAssertions.notJustified) {
 				orderedOutput.add(" [unjustified] " + ea.getSubject() + "·"
@@ -199,7 +199,7 @@ public class InferableAssertions {
 	 */
 
 	public void calculateAncestors(ExcessLimit excessLimit) {
-		validAssertions.calculateAncestors(excessLimit);
+		this.validAssertions.calculateAncestors(excessLimit);
 	}
 
 	/**
@@ -208,7 +208,7 @@ public class InferableAssertions {
 	 */
 
 	public Set<AssertionInterface> getInferred() {
-		return validAssertions.getClasses();
+		return this.validAssertions.getClasses();
 	}
 
 	/**
@@ -217,7 +217,7 @@ public class InferableAssertions {
 	 */
 
 	public Set<AssertionInterface> getInvalid() {
-		return invalidInferredAssertions;
+		return this.invalidInferredAssertions;
 	}
 
 	/**
@@ -225,7 +225,7 @@ public class InferableAssertions {
 	 * @return closure state
 	 */
 	public InferableAssertions.State getState() {
-		return state;
+		return this.state;
 	}
 
 	/**
@@ -235,7 +235,7 @@ public class InferableAssertions {
 	 * @return true, if assertion has been inferred
 	 */
 	public boolean isInferable(AssertionInterface assertion) {
-		return validAssertions.contains(assertion);
+		return this.validAssertions.contains(assertion);
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class InferableAssertions {
 	 * @return justification level of the assertion
 	 */
 	public int justificationLevel(AssertionInterface assertion) {
-		return validAssertions.justification(assertion);
+		return this.validAssertions.justification(assertion);
 	}
 
 	/**
@@ -258,7 +258,20 @@ public class InferableAssertions {
 
 	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> getAncestors(
 			AssertionInterface assertion) {
-		return validAssertions.ancestors(assertion);
+		return this.validAssertions.ancestors(assertion);
+	}
+
+	/**
+	 * NOTE: close the valid assertions first, then update justification, and
+	 * then calculate the preimages
+	 * 
+	 * @param assertion
+	 * @return all ancestors of the assertion
+	 */
+
+	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> getPreimages(
+			AssertionInterface assertion) {
+		return this.validAssertions.preimages(assertion);
 	}
 
 	/**
@@ -276,15 +289,16 @@ public class InferableAssertions {
 	public void updateJustification(Set<ConstrainedAssertionFilter> justified,
 			AssertionEquivalenceClasses valid, boolean useClosure) {
 		for (ConstrainedAssertionFilter filter : justified) {
-			for (AssertionInterface a : filter.filter(validAssertions
+			for (AssertionInterface a : filter.filter(this.validAssertions
 					.getClasses())) {
-				if ((useClosure == true) || (givenAssertions.contains(a)))
+				if ((useClosure == true) || (this.givenAssertions.contains(a))) {
 					if (a instanceof EquivalentAssertions) {
 						if (valid.contains(a)) {
 							EquivalentAssertions ea = (EquivalentAssertions) a;
 							ea.considerJustified();
 						}
 					}
+				}
 			}
 		}
 
@@ -292,11 +306,12 @@ public class InferableAssertions {
 		while (keep_updating) {
 			keep_updating = false;
 
-			for (AssertionInterface a : validAssertions.getClasses()) {
+			for (AssertionInterface a : this.validAssertions.getClasses()) {
 				if (a instanceof EquivalentAssertions) {
 					EquivalentAssertions ea = (EquivalentAssertions) a;
-					if (ea.updateJustificationDepth())
+					if (ea.updateJustificationDepth()) {
 						keep_updating = true;
+					}
 				}
 			}
 		}
@@ -317,7 +332,7 @@ public class InferableAssertions {
 		 * mark all assertions that need no further justification as justified
 		 */
 
-		for (AssertionInterface a : validAssertions.getClasses()) {
+		for (AssertionInterface a : this.validAssertions.getClasses()) {
 			if (a instanceof EquivalentAssertions) {
 				EquivalentAssertions ea = (EquivalentAssertions) a;
 				if (expert.validAssertions.contains(ea)) {
@@ -355,10 +370,10 @@ public class InferableAssertions {
 			 * now update all relative justifications
 			 */
 
-			for (AssertionInterface a : validAssertions.getClasses()) {
+			for (AssertionInterface a : this.validAssertions.getClasses()) {
 				if (a instanceof EquivalentAssertions) {
 					EquivalentAssertions ea = (EquivalentAssertions) a;
-					if ((validAssertions.justification(ea) < 0)
+					if ((this.validAssertions.justification(ea) < 0)
 							&& (ask_for_justification.contains(ea)==false)
 							&& (expert.validAssertions.contains(ea))) {
 						AnnotableDisjunctiveNormalForm<EquivalentAssertions> preimages = expert.validAssertions
@@ -374,12 +389,12 @@ public class InferableAssertions {
 							boolean relative_justified = true;
 
 							for (EquivalentAssertions prea : cons) {
-								if (validAssertions.contains(prea) == false) {
+								if (this.validAssertions.contains(prea) == false) {
 									relative_justified = false;
 									break;
 								}
 
-								if ((validAssertions.justification(prea) < 0)
+								if ((this.validAssertions.justification(prea) < 0)
 										&& (ask_for_justification
 												.contains(prea) == false)) {
 									relative_justified = false;
@@ -414,10 +429,10 @@ public class InferableAssertions {
 				EquivalentAssertions ask_for_this = null;
 				int justification_of_this = -1;
 
-				for (AssertionInterface a : givenAssertions.getClasses()) {
+				for (AssertionInterface a : this.givenAssertions.getClasses()) {
 					if (a instanceof EquivalentAssertions) {
 						EquivalentAssertions ea = (EquivalentAssertions) a;
-						if ((validAssertions.justification(ea) < 0)
+						if ((this.validAssertions.justification(ea) < 0)
 								&& (ask_for_justification.contains(ea)==false)
 								&& (expert.validAssertions.contains(ea))) {
 							if (ask_for_this == null) {
@@ -432,11 +447,11 @@ public class InferableAssertions {
 						}
 					}
 				}
-				
+
 				/**
 				 * we found another good assertion that we will go and ask for justification
 				 */
-				
+
 				if (ask_for_this != null) {
 					keep_going = true;
 					ask_for_justification.add(ask_for_this);
@@ -457,12 +472,12 @@ public class InferableAssertions {
 	 */
 
 	public InferableAssertions.State closeValid(ExcessLimit limit) {
-		InferenceMaps maps = new InferenceMaps(usedRules);
+		InferenceMaps maps = new InferenceMaps(this.usedRules);
 
 		int lastCount = 0;
-		int validCount = validAssertions.getClasses().size();
+		int validCount = this.validAssertions.getClasses().size();
 
-		state = State.closed;
+		this.state = State.closed;
 
 		boolean close_again = true;
 
@@ -471,45 +486,46 @@ public class InferableAssertions {
 			close_again = (validCount > lastCount);
 
 			if (limit.exceeded()) {
-				state = State.excess;
+				this.state = State.excess;
 				break;
 			}
 
 			lastCount = validCount;
 
 			Set<AssertionInterface> inferred = maps.inferNew(
-					validAssertions.getClasses(), limit);
+					this.validAssertions.getClasses(), limit);
 
 			if (limit.exceeded()) {
-				state = State.excess;
+				this.state = State.excess;
 			}
 
-			trivialInferred.clear();
+			this.trivialInferred.clear();
 
-			for (ConstrainedAssertionFilter filter : trivial) {
-				trivialInferred.addAll(filter.filter(inferred));
+			for (ConstrainedAssertionFilter filter : this.trivial) {
+				this.trivialInferred.addAll(filter.filter(inferred));
 			}
 
 			for (Iterator<AssertionInterface> i_assertion = inferred.iterator(); i_assertion
 					.hasNext();) {
-				if (trivialInferred.contains(i_assertion.next()))
+				if (this.trivialInferred.contains(i_assertion.next())) {
 					i_assertion.remove();
+				}
 			}
 
-			for (ConstrainedAssertionFilter filter : invalid) {
-				invalidInferredAssertions.addAll(filter.filter(inferred));
+			for (ConstrainedAssertionFilter filter : this.invalid) {
+				this.invalidInferredAssertions.addAll(filter.filter(inferred));
 			}
 
-			validAssertions.addNewAssertions(inferred);
-			validCount = validAssertions.getClasses().size();
+			this.validAssertions.addNewAssertions(inferred);
+			validCount = this.validAssertions.getClasses().size();
 
-			if (invalidInferredAssertions.isEmpty() == false) {
-				state = State.invalid;
+			if (this.invalidInferredAssertions.isEmpty() == false) {
+				this.state = State.invalid;
 				break;
 			}
 		}
 
-		return state;
+		return this.state;
 	}
 
 	/**
@@ -527,15 +543,17 @@ public class InferableAssertions {
 			Set<EquivalentAssertions> otherGivenAssertions) {
 		Set<Set<EquivalentAssertions>> minimal_precursors = new HashSet<Set<EquivalentAssertions>>();
 
-		if (isInferable(justificationNeeded) == false)
+		if (this.isInferable(justificationNeeded) == false) {
 			return minimal_precursors;
+		}
 
-		if (justificationLevel(justificationNeeded) == EquivalentAssertions.notJustified)
+		if (this.justificationLevel(justificationNeeded) == EquivalentAssertions.notJustified) {
 			return minimal_precursors;
+		}
 
 		int minimal_depth = Integer.MAX_VALUE;
 
-		for (Set<EquivalentAssertions> precursors : validAssertions.precursors(
+		for (Set<EquivalentAssertions> precursors : this.validAssertions.precursors(
 				justificationNeeded).getTerm()) {
 
 			int depth_sum = 0;
@@ -589,10 +607,11 @@ public class InferableAssertions {
 			Set<EquivalentAssertions> forbidden, int currentDepth,
 			int maximumDepth) {
 
-		if (currentDepth == maximumDepth)
+		if (currentDepth == maximumDepth) {
 			return 0;
+		}
 
-		Set<Set<EquivalentAssertions>> ways = validAssertions.preimages(
+		Set<Set<EquivalentAssertions>> ways = this.validAssertions.preimages(
 				toJustify).getTerm();
 
 		int count = 0;
@@ -616,13 +635,14 @@ public class InferableAssertions {
 
 						forbidden.add(ea);
 
-						factor *= countJustificationDelta(ea, disregard,
+						factor *= this.countJustificationDelta(ea, disregard,
 								forbidden, currentDepth + 1, maximumDepth);
 
 						forbidden.remove(ea);
 
-						if (factor == 0)
+						if (factor == 0) {
 							break;
+						}
 					}
 				}
 
@@ -630,15 +650,15 @@ public class InferableAssertions {
 			}
 		}
 
-		if (count > highestCount) {
-			highestCount = count;
+		if (count > this.highestCount) {
+			this.highestCount = count;
 
 			System.err.println("C count=" + count + "  depth="
 					+ (currentDepth + 1));
 		}
 
-		if ((currentDepth > highestDepth) && (count > 0)) {
-			highestDepth = currentDepth;
+		if ((currentDepth > this.highestDepth) && (count > 0)) {
+			this.highestDepth = currentDepth;
 			System.err.println("D count=" + count + "  depth="
 					+ (currentDepth + 1));
 		}
@@ -653,15 +673,16 @@ public class InferableAssertions {
 	 */
 
 	public int countPossibleJustifications(AssertionInterface assertion) {
-		if (validAssertions.contains(assertion) == false)
+		if (this.validAssertions.contains(assertion) == false) {
 			return 0;
+		}
 
 		Set<EquivalentAssertions> disregard = new HashSet<EquivalentAssertions>();
 		Set<EquivalentAssertions> forbidden = new HashSet<EquivalentAssertions>();
 
 		forbidden.add(new EquivalentAssertions(assertion));
 
-		return countJustificationDelta(assertion, disregard, forbidden, 0, 5);
+		return this.countJustificationDelta(assertion, disregard, forbidden, 0, 5);
 	}
 
 	/**
@@ -675,8 +696,9 @@ public class InferableAssertions {
 		String justifications = "";
 
 		for (Set<EquivalentAssertions> combination : ways) {
-			if (justifications.isEmpty() == false)
+			if (justifications.isEmpty() == false) {
 				justifications += "\n  or";
+			}
 
 			boolean add_and = false;
 
@@ -701,12 +723,12 @@ public class InferableAssertions {
 	 * @param otherGivenAssertions
 	 * @return tips for justification
 	 */
-	
+
 	public String getJustificationTips(
 			Set<AssertionInterface> needJustification,
 			Set<EquivalentAssertions> otherGivenAssertions,
 			Map<String, ConstrainedAssertionFilter> qualities) {
-		return getJustificationTips(needJustification, otherGivenAssertions, qualities, false);
+		return this.getJustificationTips(needJustification, otherGivenAssertions, qualities, false);
 	}
 
 	public String getJustificationTips(
@@ -723,7 +745,7 @@ public class InferableAssertions {
 			EquivalentAssertions ea = new EquivalentAssertions(a);
 
 			justified_by.put(ea,
-					getMinimalDepthPrecursorSets(ea, otherGivenAssertions));
+					this.getMinimalDepthPrecursorSets(ea, otherGivenAssertions));
 		}
 
 		boolean is_closed = false;
@@ -737,7 +759,7 @@ public class InferableAssertions {
 						if (justified_by.containsKey(ea2) == false) {
 							justified_by.put(
 									ea2,
-									getMinimalDepthPrecursorSets(ea2,
+									this.getMinimalDepthPrecursorSets(ea2,
 											otherGivenAssertions));
 							is_closed = false;
 							continue do_again;
@@ -756,12 +778,14 @@ public class InferableAssertions {
 
 			Set<Set<EquivalentAssertions>> ways = justified_by.get(ea);
 
-			if (ways.isEmpty())
+			if (ways.isEmpty()) {
 				continue;
+			}
 
 			for (Set<EquivalentAssertions> combination : ways) {
-				if (justifications.isEmpty() == false)
+				if (justifications.isEmpty() == false) {
 					justifications += "\n  or";
+				}
 
 				boolean add_and = false;
 
@@ -819,9 +843,10 @@ public class InferableAssertions {
 
 		tips.append("\n\nThere are missing pieces of information regarding:");
 
-		for (String name : qualities_lacking)
+		for (String name : qualities_lacking) {
 			tips.append("\n     " + name);
-		
+		}
+
 		if (justQualities) {
 			String qs = "";
 			for (String name : qualities_lacking) {
@@ -830,9 +855,9 @@ public class InferableAssertions {
 				}
 				qs += name;
 			}
-			
+
 			return qs;
-			
+
 		}
 
 		return tips.toString();
@@ -847,7 +872,7 @@ public class InferableAssertions {
 	 */
 
 	public void calculateRuleAncestors(ExcessLimit result) {
-		validAssertions.calculateRuleAncestors(result);
+		this.validAssertions.calculateRuleAncestors(result);
 	}
 
 }

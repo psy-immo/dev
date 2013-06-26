@@ -665,7 +665,7 @@ public class InferenceCompiler {
 
 		for (AssertionInterface a : inferCorrectAssertions.getInferred()) {
 			AnnotableDisjunctiveNormalForm<EquivalentAssertions> premises = inferCorrectAssertions
-					.getAncestors(a);
+					.getPreimages(a);
 			int id_a = this.assertionDomain.fromAssertion(a);
 
 			if (id_a >= 0) {
@@ -697,6 +697,17 @@ public class InferenceCompiler {
 
 					singletonTargetEdges.add(edge);
 				}
+
+				/**
+				 * TODO: DEBUG CODE
+				 */
+				System.err.println(a + " INFERRED BY ");
+				System.err.println(premises.getAnnotatedTerm());
+				System.err.println("TRIVIAL PREMISES: "
+						+ premises.getTrivialPart());
+				/**
+				 * /DEBUGCODE
+				 */
 
 				for (Set<EquivalentAssertions> premise : premises
 						.getTrivialPart()) {
