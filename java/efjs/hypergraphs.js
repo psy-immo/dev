@@ -456,7 +456,17 @@ function InferenceGraph() {
 		/** copy unjustified to working buffer */
 		for ( var int = 0; int < closed_results.unjustified.length; int++) {
 			var id = closed_results.unjustified[int];
-			unjustified_left.push(id);
+			
+			if (this.IsCorrect(id) && (!this.IsTrivial(id))) {
+				
+				/**
+				 * there is no point in trying to justify an incorrect point,
+				 * or a trivial one
+				 */
+				
+				unjustified_left.push(id);
+			}
+				
 		}
 
 		/** determinize order */

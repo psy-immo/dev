@@ -309,6 +309,27 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			}
 
 			log_data += "\n";
+			
+			/**
+			 * Indicate that further justification is needed
+			 */
+			
+			for ( var int3 = 0; int3 < points.length; int3++) {
+				var p = points[int3];
+				if (this.stringids.ToId(p.token) == point_id) {
+					p.MarkAsOkay();
+					
+				}
+			}
+			
+			console.log("AA"); 
+			
+			for ( var int3 = 0; int3 < conclusions.length; int3++) {
+				var p = conclusions[int3];
+				if (this.stringids.ToId(p.token) == point_id) {
+					p.MarkAsOkay();
+				}
+			}
 		}
 
 
