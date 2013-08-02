@@ -157,6 +157,12 @@ public class InferenceCompiler {
 	private Set<Integer> concludingAssertionIds;
 
 	/**
+	 * save the ids that correspond to some special kind of conclusion
+	 */
+
+	private Map<String, Set<Integer>> solutionPartIds;
+
+	/**
 	 * keep track of the inference xml data structure
 	 */
 
@@ -191,6 +197,8 @@ public class InferenceCompiler {
 		this.inferenceHyperGraph = new HashSet<DirectedHyperEdge>();
 		this.trivialAssertionIds = new HashSet<Integer>();
 		this.concludingAssertionIds = new HashSet<Integer>();
+
+		this.solutionPartIds = new HashMap<String, Set<Integer>>();
 	}
 
 	/**
@@ -275,6 +283,26 @@ public class InferenceCompiler {
 		}
 
 		writer.write("])");
+
+		/**
+		 * solution parts
+		 */
+
+		for (String solution_part : this.solutionPartIds.keySet()) {
+
+			writer.write(".AddSolutionPart(");
+
+			writer.write(StringEscape.escapeToDecodeInJavaScript(solution_part));
+
+			writer.write(", [");
+
+			for (int id : this.solutionPartIds.get(solution_part)) {
+
+				writer.write(StringEscape.obfuscateInt(id) + ", ");
+			}
+
+			writer.write("])");
+		}
 
 		/**
 		 * correct assertions
@@ -527,8 +555,6 @@ public class InferenceCompiler {
 
 		InferableAssertions.State success = inferCorrectAssertions
 				.closeValid(new ExcessLimit(this.excessTimeLimit));
-
-
 
 		if (success != InferableAssertions.State.closed) {
 			errors.append("<div class=\"compilererror\">");
@@ -790,8 +816,37 @@ public class InferenceCompiler {
 
 			for (ConstrainedAssertionFilter f : this.concludingAssertionFilters) {
 				if (f.filter(as).isEmpty() == false) {
-					this.concludingAssertionIds.add(this.assertionDomain
-							.fromString(a));
+					int assertion_id = this.assertionDomain.fromString(a);
+					this.concludingAssertionIds.add(assertion_id);
+
+					/**
+					 * also, keep the solution parts for the concluding ids
+					 */
+
+					for (ConstrainedAssertionFilter part_filter : this.inferenceRoot
+							.getPartFilters().keySet()) {
+
+						if (part_filter.filter(as).isEmpty() == false) {
+							String solution_part = this.inferenceRoot
+									.getPartFilters().get(part_filter);
+
+							if (this.solutionPartIds.containsKey(solution_part) == false) {
+								this.solutionPartIds.put(solution_part,
+										new HashSet<Integer>());
+							}
+
+							this.solutionPartIds.get(solution_part).add(
+									assertion_id);
+
+						}
+
+					}
+
+					/**
+					 * we found a match for the given id, no need to check the
+					 * other conclusion filters anymore
+					 */
+					break;
 				}
 			}
 		}

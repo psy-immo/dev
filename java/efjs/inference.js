@@ -169,6 +169,13 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
+				
+				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
+					var part = solves_parts[int2];
+					
+					log_data += "[[" + part+"]] ";					
+				}
 				points[int].MarkAsGood();
 			} else {
 				points[int].MarkAsBad();
@@ -203,6 +210,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
+				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
+					var part = solves_parts[int2];
+					
+					log_data += "[[" + part+"]] ";					
+				}
 
 				conclusions[int].MarkAsGood();
 			} else {
@@ -245,6 +258,13 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
+				
+				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
+					var part = solves_parts[int2];
+					
+					log_data += "[[" + part+"]] ";					
+				}
 			}
 
 			if (this.hypergraph.IsTrivial(point_id)) {
@@ -272,6 +292,13 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
+				
+				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
+					var part = solves_parts[int2];
+					
+					log_data += "[[" + part+"]] ";					
+				}
 			}
 
 			if (this.hypergraph.IsTrivial(point_id)) {
@@ -308,6 +335,13 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
+				
+				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
+					var part = solves_parts[int2];
+					
+					log_data += "[[" + part+"]] ";					
+				}
 			}
 
 			if (this.hypergraph.IsTrivial(point_id)) {

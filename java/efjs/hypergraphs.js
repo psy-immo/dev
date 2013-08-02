@@ -70,6 +70,12 @@ function InferenceGraph() {
 	 * store the concluding assertions
 	 */
 	this.concluding = {};
+	
+	/**
+	 * store the solution part corresponding to some assertion
+	 */
+	
+	this.solution_parts = {};
 
 	/**
 	 * adds a list of justified assertion ids
@@ -101,6 +107,30 @@ function InferenceGraph() {
 		return this;
 	};
 
+	/**
+	 * adds a list of solution part assertion ids, for the given part
+	 * 
+	 * @returns this
+	 */
+
+	this.AddSolutionPart = function(part,ids) {
+		
+		for ( var int = 0; int < ids.length; int++) {
+			var assertion = ids[int];
+			if (this.solution_parts.hasOwnProperty(assertion)) {
+				if (this.solution_parts[assertion].lastIndexOf(part) < 0) {
+					this.solution_parts[assertion].push(part);
+				}
+			} else {
+				this.solution_parts[assertion] = [part];
+			}
+			
+		}
+
+		return this;
+	};
+
+	
 	/**
 	 * adds a list of correct assertion ids
 	 * 
@@ -139,6 +169,24 @@ function InferenceGraph() {
 
 	this.IsCorrect = function(id) {
 		return this.correct.hasOwnProperty(id);
+	};
+
+
+	/**
+	 * id assertion
+	 * 
+	 * @returns an array of solution parts associated with the assertion
+	 */
+
+	this.SolvesWhichParts = function(id) {
+		if (this.solution_parts.hasOwnProperty(id) == false) {
+			/**
+			 * the given assertion doesn't solve anything
+			 */
+			return [];
+		}
+		
+		return this.solution_parts[id];
 	};
 
 	/**
