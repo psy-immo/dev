@@ -380,7 +380,7 @@ function InferenceGraph() {
 		 */
 		var inference_used = {};
 
-		console.log("closing justification");
+		//console.log("closing justification");
 
 		while ((result.justified.length != last_nbr_of_justified)
 				&& ((result.unjustified.length > 0))) {
@@ -415,11 +415,11 @@ function InferenceGraph() {
 						var idx = result.unjustified.indexOf(conclusion_id);
 
 						if (idx >= 0) {
-							console.log("FOUND " + conclusion_id);
+							//console.log("FOUND " + conclusion_id);
 							result.justified.push(conclusion_id);
 							/** remove the concludible assertion from unjustified */
 							result.unjustified.splice(idx, 1);
-							console.log(result.unjustified);
+							//console.log(result.unjustified);
 						}
 					}
 
@@ -448,8 +448,8 @@ function InferenceGraph() {
 		var premise = [];
 
 		/** copy justified to premise buffer */
-		for ( var int = 0; int < closed_results.length; int++) {
-			var id = closed_results[int];
+		for ( var int = 0; int < closed_results.justified.length; int++) {
+			var id = closed_results.justified[int];
 			premise.push(id);
 		}
 
@@ -470,6 +470,7 @@ function InferenceGraph() {
 		}
 
 		/** determinize order */
+		premise.sort();
 		unjustified_left.sort();
 
 		while (unjustified_left.length > 0) {
@@ -501,6 +502,8 @@ function InferenceGraph() {
 						}
 					}
 				}
+				
+				//console.log("premises "+premise);
 
 				premise.pop(id);
 				var count_this_unjustifieds = 0;
@@ -509,6 +512,9 @@ function InferenceGraph() {
 					if (unj)
 						count_this_unjustifieds += 1;
 				}
+				
+				//console.log(id+": "+count_this_unjustifieds+" unjust'ds");
+				//console.log("which are: "+still_unjustified);
 
 				if (count_this_unjustifieds < count_unjustifieds) {
 					new_unjustifieds = still_unjustified;
@@ -524,6 +530,8 @@ function InferenceGraph() {
 				}
 			}
 
+			//console.log("Adding premise: "+added_id);
+			
 			unjustified_left = new_left;
 			premise.push(added_id);
 			would_be_justified.push(added_id);

@@ -322,8 +322,6 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				}
 			}
 			
-			console.log("AA"); 
-			
 			for ( var int3 = 0; int3 < conclusions.length; int3++) {
 				var p = conclusions[int3];
 				if (this.stringids.ToId(p.token) == point_id) {
