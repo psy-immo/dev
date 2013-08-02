@@ -54,6 +54,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 */
 	this.hypergraph = hypergraph;
 
+	/**
+	 * store the number of tries
+	 */
+
+	this.tryNumber = 1;
+
 	this.acceptTags = atags;
 	this.rejectTags = rtags;
 
@@ -149,7 +155,10 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 		var assertions = {};
 
-		var log_data = this.name + " check answer triggered.\nPoints:\n";
+		var log_data = this.name + " check answer triggered.\n";
+		log_data += "Try: " + this.tryNumber + "\n";
+		this.tryNumber += 1;
+		log_data += "Points:\n";
 
 		for ( var int = 0; int < points.length; ++int) {
 			var point = points[int].token;
@@ -161,6 +170,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
 				points[int].MarkAsGood();
+			} else {
+				points[int].MarkAsBad();
 			}
 
 			if (this.hypergraph.IsTrivial(point_id)) {
@@ -194,6 +205,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				log_data += "[correct] ";
 
 				conclusions[int].MarkAsGood();
+			} else {
+				conclusions[int].MarkAsBad();
 			}
 
 			if (this.hypergraph.IsTrivial(point_id)) {
@@ -281,11 +294,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		 * that the given points would have been all justified if those points
 		 * were present
 		 */
-		
-		var need_justification = this.hypergraph.WhichPointsNeedJustification(closed_points);
-		
+
+		var need_justification = this.hypergraph
+				.WhichPointsNeedJustification(closed_points);
+
 		log_data += "Justification Hint:\n";
-		
+
 		for ( var int2 = 0; int2 < need_justification.length; int2++) {
 			var point_id = need_justification[int2];
 			var s = this.stringids.FromId(point_id);
@@ -309,19 +323,19 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			}
 
 			log_data += "\n";
-			
+
 			/**
 			 * Indicate that further justification is needed
 			 */
-			
+
 			for ( var int3 = 0; int3 < points.length; int3++) {
 				var p = points[int3];
 				if (this.stringids.ToId(p.token) == point_id) {
 					p.MarkAsOkay();
-					
+
 				}
 			}
-			
+
 			for ( var int3 = 0; int3 < conclusions.length; int3++) {
 				var p = conclusions[int3];
 				if (this.stringids.ToId(p.token) == point_id) {
@@ -329,7 +343,6 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				}
 			}
 		}
-
 
 		/**
 		 * log the results
@@ -343,10 +356,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 * return the current state
 	 */
 	this.GetValue = function() {
-		return "";
-		/**
-		 * TODO
-		 */
+		return "" + this.tryNumber;
 	};
 
 	/**
@@ -354,9 +364,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 */
 
 	this.SetValue = function(contents) {
-		/**
-		 * TODO
-		 */
+		this.tryNumber = parseInt(contents);
 	};
 
 	/**
