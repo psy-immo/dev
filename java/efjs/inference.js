@@ -158,6 +158,13 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		var log_data = this.name + " check answer triggered.\n";
 		log_data += "Try: " + this.tryNumber + "\n";
 		this.tryNumber += 1;
+
+		/**
+		 * store which parts of the problem have been solved correctly
+		 */
+
+		var correctly_solved_parts = [];
+
 		log_data += "Points:\n";
 
 		for ( var int = 0; int < points.length; ++int) {
@@ -169,12 +176,16 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
-				
+
 				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
 				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
 					var part = solves_parts[int2];
-					
-					log_data += "[[" + part+"]] ";					
+
+					log_data += "[[" + part + "]] ";
+
+					if (correctly_solved_parts.indexOf(part) < 0) {
+						correctly_solved_parts.push(part);
+					}
 				}
 				points[int].MarkAsGood();
 			} else {
@@ -213,8 +224,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
 				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
 					var part = solves_parts[int2];
-					
-					log_data += "[[" + part+"]] ";					
+
+					log_data += "[[" + part + "]] ";
+
+					if (correctly_solved_parts.indexOf(part) < 0) {
+						correctly_solved_parts.push(part);
+					}
 				}
 
 				conclusions[int].MarkAsGood();
@@ -258,12 +273,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
-				
+
 				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
 				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
 					var part = solves_parts[int2];
-					
-					log_data += "[[" + part+"]] ";					
+
+					log_data += "[[" + part + "]] ";
 				}
 			}
 
@@ -292,12 +307,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
-				
+
 				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
 				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
 					var part = solves_parts[int2];
-					
-					log_data += "[[" + part+"]] ";					
+
+					log_data += "[[" + part + "]] ";
 				}
 			}
 
@@ -335,12 +350,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
-				
+
 				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
 				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
 					var part = solves_parts[int2];
-					
-					log_data += "[[" + part+"]] ";					
+
+					log_data += "[[" + part + "]] ";
 				}
 			}
 
@@ -376,6 +391,21 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 					p.MarkAsOkay();
 				}
 			}
+		}
+
+		/**
+		 * check the solution criteria
+		 */
+
+		correctly_solved_parts.sort();
+
+		log_data += "\nCorrect Solution Parts: ";
+
+		for ( var int4 = 0; int4 < correctly_solved_parts.length; int4++) {
+			var part = correctly_solved_parts[int4];
+			if (int4 > 0)
+				log_data += ", ";
+			log_data += part;
 		}
 
 		/**

@@ -242,7 +242,9 @@ dtd.write("\n<!ATTLIST arrow "+"""
  >
 """)
 
-dtd.write("\n<!ELEMENT feedback (#PCDATA|hint|correct|required|needjustification|incomplete|incorrect)* >\n")
+dtd.write("\n<!ELEMENT feedback (#PCDATA|hint|correct|allrequirements|onerequirement|required|needjustification|incomplete|incorrect)* >\n")
+dtd.write("\n<!ELEMENT allrequirements (#PCDATA|allrequirements|onerequirement|required)* >\n")
+dtd.write("\n<!ELEMENT onerequirement (#PCDATA|allrequirements|onerequirement|required)* >\n")
 dtd.write("\n<!ELEMENT required (#PCDATA)* >\n")
 dtd.write("\n<!ATTLIST required "+"""
 	count	CDATA			#IMPLIED

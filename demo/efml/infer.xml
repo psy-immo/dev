@@ -821,8 +821,12 @@
 			</domain>
 			
 			<feedback>
-				<required count="2" />
-				<required name="BC" />
+				<allrequirements>
+					<onerequirement>
+						<required count="2" />
+					</onerequirement>
+					<required name="BC" />
+				</allrequirements>
 				<correct><b>Correct!</b></correct>
 				<hint lack="parameters">How are the parameters related?<br/></hint>
 				<hint lack="schematic">What does the schematic tell you?<br/></hint>
