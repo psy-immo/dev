@@ -348,7 +348,11 @@
 	target	CDATA			#REQUIRED	
  >
 
-<!ELEMENT feedback (#PCDATA|hint|correct|required|needjustification|incomplete|incorrect)* >
+<!ELEMENT feedback (#PCDATA|hint|correct|allrequirements|onerequirement|required|needjustification|incomplete|incorrect)* >
+
+<!ELEMENT allrequirements (#PCDATA|allrequirements|onerequirement|required)* >
+
+<!ELEMENT onerequirement (#PCDATA|allrequirements|onerequirement|required)* >
 
 <!ELEMENT required (#PCDATA)* >
 

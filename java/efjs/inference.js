@@ -59,6 +59,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 */
 
 	this.tryNumber = 1;
+	
+	/**
+	 * store the correct solution check(s)
+	 */
+	
+	this.solutionRequirements = [];
 
 	this.acceptTags = atags;
 	this.rejectTags = rtags;
@@ -99,6 +105,17 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 	this.WriteHtml = function() {
 		document.write(this.GetHtml());
+	};
+	
+	/**
+	 * add a new requirement for solution checking
+	 */
+	
+	this.Requirement = function(fn) {
+		
+		this.solutionRequirements.push(fn);
+				
+		return this;
 	};
 
 	/**
@@ -178,8 +195,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				log_data += "[correct] ";
 
 				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
-				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
-					var part = solves_parts[int2];
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
 
 					log_data += "[[" + part + "]] ";
 
@@ -222,8 +239,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
 				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
-				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
-					var part = solves_parts[int2];
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
 
 					log_data += "[[" + part + "]] ";
 
@@ -254,7 +271,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			assertions[point_id] = true;
 		}
 
-		log_data += "Result:\n";
+		
 
 		/**
 		 * first, we calculate whether all points given are justified
@@ -262,7 +279,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 		var closed_points = this.hypergraph.CloseJustification(Object
 				.keys(assertions));
-
+		
+		log_data += "DEBUG: "+closed_points.justified+"\n";
 		log_data += "Justified Points:\n";
 
 		for ( var int2 = 0; int2 < closed_points.justified.length; int2++) {
@@ -275,8 +293,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				log_data += "[correct] ";
 
 				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
-				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
-					var part = solves_parts[int2];
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
 
 					log_data += "[[" + part + "]] ";
 				}
@@ -298,10 +316,13 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		}
 
 		log_data += "Unjustified Points:\n";
+		log_data += "DEBUG: "+closed_points.unjustified+"\n";
 
 		for ( var int2 = 0; int2 < closed_points.unjustified.length; int2++) {
 			var point_id = closed_points.unjustified[int2];
+			//log_data += "DEBUG: "+closed_points.unjustified[int2]+"\n";
 			var s = this.stringids.FromId(point_id);
+			//log_data += "DEBUG: "+int2+"\n";
 
 			log_data += s + " [" + point_id + "] ";
 
@@ -309,8 +330,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				log_data += "[correct] ";
 
 				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
-				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
-					var part = solves_parts[int2];
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
 
 					log_data += "[[" + part + "]] ";
 				}
@@ -352,8 +373,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				log_data += "[correct] ";
 
 				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
-				for ( var int2 = 0; int2 < solves_parts.length; int2++) {
-					var part = solves_parts[int2];
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
 
 					log_data += "[[" + part + "]] ";
 				}
@@ -406,6 +427,17 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			if (int4 > 0)
 				log_data += ", ";
 			log_data += part;
+		}
+		
+		for ( var int5 = 0; int5 < this.solutionRequirements.length; int5++) {
+			var fn = this.solutionRequirements[int5];
+			
+			if (fn(correctly_solved_parts)) {
+				log_data += "\nCriterion "+(1+int5)+" MET.";	
+			} else {
+				log_data += "\nCriterion "+(1+int5)+" NOT met.";
+			}
+			
 		}
 
 		/**

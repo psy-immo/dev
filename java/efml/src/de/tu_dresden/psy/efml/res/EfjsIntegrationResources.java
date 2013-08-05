@@ -22,6 +22,7 @@ package de.tu_dresden.psy.efml.res;
 import java.lang.reflect.InvocationTargetException;
 
 import de.tu_dresden.psy.efml.AirportTag;
+import de.tu_dresden.psy.efml.AllRequirementsTag;
 import de.tu_dresden.psy.efml.AnswerTag;
 import de.tu_dresden.psy.efml.AnyTag;
 import de.tu_dresden.psy.efml.ArrowTag;
@@ -52,6 +53,7 @@ import de.tu_dresden.psy.efml.JsUrlTag;
 import de.tu_dresden.psy.efml.LabelTag;
 import de.tu_dresden.psy.efml.MultilineTag;
 import de.tu_dresden.psy.efml.NeedJustificationTag;
+import de.tu_dresden.psy.efml.OneRequirementTag;
 import de.tu_dresden.psy.efml.OptionTag;
 import de.tu_dresden.psy.efml.PhpUrlTag;
 import de.tu_dresden.psy.efml.PlainTag;
@@ -113,9 +115,9 @@ public class EfjsIntegrationResources {
 		"multiline.js", "sniffybutton.js", "dropdown.js", "checkbox.js",
 		"radiobutton.js", "popupbutton.js", "freetext.js", "boxspace.js",
 		"trashcan.js", "sentencepattern.js", "airport.js",
-			"hypergraphs.js", "inference.js",
-		"efml.js", "efmlbuttons.js", "efmlboard.js", "efmlcheckbox.js",
-		"efmltag.js", "efmlquote.js", "efmlfactory.js" };
+		"hypergraphs.js", "inference.js", "efml.js", "efmlbuttons.js",
+		"efmlboard.js", "efmlcheckbox.js", "efmltag.js", "efmlquote.js",
+	"efmlfactory.js" };
 
 	/**
 	 * interface for constructing other classes
@@ -458,7 +460,11 @@ public class EfjsIntegrationResources {
 		new AttributeObjectConstructor(TemplateTag.class), "airport",
 		new AttributeObjectConstructor(AirportTag.class), "feedback",
 		new SimpleObjectConstructor(FeedbackTag.class), "required",
-		new AttributeObjectConstructor(RequiredTag.class), "parse",
+		new AttributeObjectConstructor(RequiredTag.class),
+		"allrequirements",
+		new AttributeObjectConstructor(AllRequirementsTag.class),
+		"onerequirement",
+		new AttributeObjectConstructor(OneRequirementTag.class), "parse",
 		new AttributeObjectConstructor(InferenceXmlTag.class), "subject",
 		new AttributeObjectConstructor(InferenceXmlTag.class), "object",
 		new AttributeObjectConstructor(InferenceXmlTag.class), "predicate",

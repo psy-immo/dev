@@ -403,6 +403,9 @@ function InferenceGraph() {
 	 */
 
 	this.CloseJustification = function(points) {
+		
+		//console.log("close just: "+points);
+		
 		var result = {};
 		result.justified = [];
 		result.unjustified = [];
@@ -419,8 +422,10 @@ function InferenceGraph() {
 			else
 				result.unjustified.push(id);
 		}
+		
+		//console.log(result);
 
-		var last_nbr_of_justified = 0;
+		var last_nbr_of_justified = -1;
 
 		/**
 		 * keep track which inferences have been used already, so we may skip
@@ -428,7 +433,7 @@ function InferenceGraph() {
 		 */
 		var inference_used = {};
 
-		//console.log("closing justification");
+		console.log("closing justification");
 
 		while ((result.justified.length != last_nbr_of_justified)
 				&& ((result.unjustified.length > 0))) {
@@ -437,16 +442,18 @@ function InferenceGraph() {
 			 * assertions left
 			 */
 
-			// console.log("justified "+result.justified.length);
-			// console.log(result.justified);
-			// console.log("unjustified "+result.unjustified.length);
-			// console.log(result.unjustified);
+			 console.log("justified "+result.justified.length);
+			 console.log(": "+result.justified);
+			 console.log("unjustified "+result.unjustified.length);
+			 console.log(": "+result.unjustified);
 			last_nbr_of_justified = result.justified.length;
 
 			var inference_ids = this.GetConcludibleInferences(result.justified);
+			
+			
 
-			// console.log("ids");
-			// console.log(inference_ids);
+			 console.log("ids");
+			 console.log(":-->> "+inference_ids);
 
 			/**
 			 * add the newly justified points from the new inference_ids
@@ -463,11 +470,11 @@ function InferenceGraph() {
 						var idx = result.unjustified.indexOf(conclusion_id);
 
 						if (idx >= 0) {
-							//console.log("FOUND " + conclusion_id);
+							console.log("FOUND " + conclusion_id);
 							result.justified.push(conclusion_id);
 							/** remove the concludible assertion from unjustified */
 							result.unjustified.splice(idx, 1);
-							//console.log(result.unjustified);
+							console.log(result.unjustified);
 						}
 					}
 
@@ -475,6 +482,11 @@ function InferenceGraph() {
 				}
 			}
 		}
+		
+		 console.log("FINAL justified "+result.justified.length);
+		 console.log(": "+result.justified);
+		 console.log("FINAL unjustified "+result.unjustified.length);
+		 console.log(": "+result.unjustified);
 
 		return result;
 	};

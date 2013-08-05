@@ -215,12 +215,16 @@ public class InferenceCompiler {
 	 *            points tag (as plain string)
 	 * @param conclusionsTag
 	 *            conclusion tag (as plain string)
+	 * @param machineOptions
+	 *            more options for the machine, this string is appended to the
+	 *            output just before the .WriteHtml() part
 	 * @throws IOException
 	 */
 
 	public void writeInferenceMachineCode(Writer writer,
 			String jsAcceptTagsArray, String jsRejectTagsArray,
-			String pointsTag, String conclusionsTag) throws IOException {
+			String pointsTag, String conclusionsTag, String machineOptions)
+					throws IOException {
 		writer.write("<script type=\"text/javascript\">");
 
 		writer.write("new InferenceMachine(");
@@ -376,6 +380,12 @@ public class InferenceCompiler {
 		writer.write("\"" + StringEscape.escapeToJavaScript(conclusionsTag)
 				+ "\"");
 		writer.write(")");
+
+		/**
+		 * add processed options from the efml file
+		 */
+
+		writer.write(machineOptions);
 
 		writer.write(".WriteHtml();");
 		writer.write("</script>");

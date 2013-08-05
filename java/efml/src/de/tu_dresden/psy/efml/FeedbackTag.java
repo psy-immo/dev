@@ -32,7 +32,7 @@ import javax.naming.OperationNotSupportedException;
 
 public class FeedbackTag implements AnyTag {
 
-	private ArrayList<RequiredTag> requires;
+	private ArrayList<InferenceSolutionRequirementTag> requires;
 	private CorrectTag correct;
 	private ArrayList<HintTag> hints;
 	private NeedJustificationTag needjustification;
@@ -40,54 +40,54 @@ public class FeedbackTag implements AnyTag {
 	private IncorrectTag incorrect;
 
 	public FeedbackTag() {
-		requires = new ArrayList<RequiredTag>();
-		hints = new ArrayList<HintTag>();
-		correct = null;
-		needjustification = null;
-		incomplete = null;
-		incorrect = null;
+		this.requires = new ArrayList<InferenceSolutionRequirementTag>();
+		this.hints = new ArrayList<HintTag>();
+		this.correct = null;
+		this.needjustification = null;
+		this.incomplete = null;
+		this.incorrect = null;
 	}
 
 	/**
 	 * @return the requires
 	 */
-	public ArrayList<RequiredTag> getRequires() {
-		return requires;
+	public ArrayList<InferenceSolutionRequirementTag> getRequires() {
+		return this.requires;
 	}
 
 	/**
 	 * @return the correct
 	 */
 	public CorrectTag getCorrect() {
-		return correct;
+		return this.correct;
 	}
-	
+
 	/**
 	 * @return the incorrect
 	 */
 	public IncorrectTag getIncorrect() {
-		return incorrect;
+		return this.incorrect;
 	}
-	
+
 	/**
 	 * @return the incomplete
 	 */
 	public IncompleteTag getIncomplete() {
-		return incomplete;
+		return this.incomplete;
 	}
 
 	/**
 	 * @return the hints
 	 */
 	public ArrayList<HintTag> getHints() {
-		return hints;
+		return this.hints;
 	}
 
 	/**
 	 * @return the needjustification
 	 */
 	public NeedJustificationTag getNeedjustification() {
-		return needjustification;
+		return this.needjustification;
 	}
 
 	@Override
@@ -103,25 +103,27 @@ public class FeedbackTag implements AnyTag {
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
-		if (innerTag.getClass() == PlainContent.class)
+		if (innerTag.getClass() == PlainContent.class) {
 			return;
+		}
 
-		if (innerTag.getClass() == CorrectTag.class)
+		if (innerTag.getClass() == CorrectTag.class) {
 			this.correct = (CorrectTag) innerTag;
-		else if (innerTag.getClass() == NeedJustificationTag.class)
+		} else if (innerTag.getClass() == NeedJustificationTag.class) {
 			this.needjustification = (NeedJustificationTag) innerTag;
-		else if (innerTag.getClass() == HintTag.class)
+		} else if (innerTag.getClass() == HintTag.class) {
 			this.hints.add((HintTag) innerTag);
-		else if (innerTag.getClass() == RequiredTag.class)
-			this.requires.add((RequiredTag) innerTag);
-		else if (innerTag.getClass() == IncompleteTag.class)
+		} else if (innerTag instanceof InferenceSolutionRequirementTag) {
+			this.requires.add((InferenceSolutionRequirementTag) innerTag);
+		} else if (innerTag.getClass() == IncompleteTag.class) {
 			this.incomplete = (IncompleteTag) innerTag;
-		else if (innerTag.getClass() == IncorrectTag.class)
+		} else if (innerTag.getClass() == IncorrectTag.class) {
 			this.incorrect = (IncorrectTag) innerTag;
-		else
+		} else {
 			throw new OperationNotSupportedException(
 					"<feedback> cannot enclose "
 							+ innerTag.getClass().toString());
+		}
 	}
 
 	@Override
@@ -129,18 +131,22 @@ public class FeedbackTag implements AnyTag {
 		StringBuffer representation = new StringBuffer();
 
 		representation.append("<feedback>");
-		if (correct != null)
-			representation.append(correct.getEfml());
-		if (incorrect != null)
-			representation.append(incorrect.getEfml());
-		if (incomplete != null)
-			representation.append(incomplete.getEfml());
-		if (needjustification != null)
-			representation.append(needjustification.getEfml());
-		for (AnyTag t : hints) {
+		if (this.correct != null) {
+			representation.append(this.correct.getEfml());
+		}
+		if (this.incorrect != null) {
+			representation.append(this.incorrect.getEfml());
+		}
+		if (this.incomplete != null) {
+			representation.append(this.incomplete.getEfml());
+		}
+		if (this.needjustification != null) {
+			representation.append(this.needjustification.getEfml());
+		}
+		for (AnyTag t : this.hints) {
 			representation.append(t.getEfml());
 		}
-		for (AnyTag t : requires) {
+		for (AnyTag t : this.requires) {
 			representation.append(t.getEfml());
 		}
 		representation.append("</feedback>");

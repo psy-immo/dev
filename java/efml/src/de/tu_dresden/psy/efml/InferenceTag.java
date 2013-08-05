@@ -65,6 +65,28 @@ public class InferenceTag implements AnyTag {
 			writer.write(compiler_errors);
 
 			/**
+			 * extend the inference machine code with efml document specific
+			 * stuff
+			 */
+
+			StringBuffer more_machine_options = new StringBuffer();
+
+			for (FeedbackTag feedback : this.feedbackData) {
+				for (InferenceSolutionRequirementTag require : feedback
+						.getRequires()) {
+					more_machine_options
+					.append(".Requirement("
+							+ require
+							.getRequirementJavaScriptCheckFunction()
+							+ ")");
+
+				}
+
+				// TODO process feedback and hint data here
+			}
+
+
+			/**
 			 * write the inference machine html code
 			 */
 
@@ -72,7 +94,7 @@ public class InferenceTag implements AnyTag {
 					.getAcceptTags(), this.attributes.getRejectTags(),
 					this.attributes.getValueOrDefault("pointstag", "points"),
 					this.attributes.getValueOrDefault("conclusionstag",
-							"conclusions"));
+							"conclusions"), more_machine_options.toString());
 
 		}
 
@@ -112,7 +134,7 @@ public class InferenceTag implements AnyTag {
 			writer.write("\""
 					+ StringEscape.escapeToJavaScript(this.attributes
 							.getValueOrDefault("conclusionstag", "conclusions"))
-					+ "\"");
+							+ "\"");
 
 			writer.write(").Feed(");
 
@@ -172,17 +194,12 @@ public class InferenceTag implements AnyTag {
 					writer.write(")");
 				}
 
-				for (RequiredTag require : feedback.getRequires()) {
-					if (require.requiresCount()) {
-						writer.write(".RequireCount(" + require.getCount()
-								+ ")");
-					}
-					if (require.requiresPart()) {
-						writer.write(".RequirePart("
-								+ StringEscape
-										.escapeToDecodeInJavaScript(require
-												.getPart()) + ")");
-					}
+				for (InferenceSolutionRequirementTag require : feedback
+						.getRequires()) {
+					writer.write(".Requirement("
+							+ require.getRequirementJavaScriptCheckFunction()
+							+ ")");
+
 				}
 			}
 

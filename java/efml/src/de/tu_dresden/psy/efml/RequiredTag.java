@@ -28,47 +28,47 @@ import javax.naming.OperationNotSupportedException;
  *
  */
 
-public class RequiredTag implements AnyTag {
-	
+public class RequiredTag implements InferenceSolutionRequirementTag {
+
 	private EfmlTagsAttribute attributes;
-	
+
 	public RequiredTag(EfmlTagsAttribute attributes) {
-		this.attributes = attributes;	
+		this.attributes = attributes;
 	}
-	
+
 	/**
 	 * 
 	 * @return true, if this tag requires a certain number of correct parts
 	 */
-	
+
 	boolean requiresCount() {
 		return this.attributes.hasAttribute("count");
 	}
-	
+
 	/**
 	 * 
 	 * @return required count of different correct solution parts
 	 */
-	
+
 	String getCount() {
 		return this.attributes.getValueOrDefault("count", "0");
 	}
-	
+
 
 	/**
 	 * 
 	 * @return true, if this tag requires a correct part identified by a name
 	 */
-	
+
 	boolean requiresPart() {
 		return this.attributes.hasAttribute("name");
 	}
-	
+
 	/**
 	 * 
 	 * @return required part's name
 	 */
-	
+
 	String getPart() {
 		return this.attributes.getValueOrDefault("name", "");
 	}
@@ -84,22 +84,44 @@ public class RequiredTag implements AnyTag {
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
-		if (innerTag.getClass() == PlainContent.class)
+		if (innerTag.getClass() == PlainContent.class) {
 			return;
-		
+		}
+
 		throw new OperationNotSupportedException("<required> cannot enclose "
 				+ innerTag.getClass().toString());
 	}
-	
+
 	@Override
 	public String getEfml() {
 		StringBuffer representation = new StringBuffer();
-		
+
 		representation.append("<required");
-		attributes.writeXmlAttributes(representation);
+		this.attributes.writeXmlAttributes(representation);
 		representation.append("/>");
-		
+
 		return representation.toString();
+	}
+
+	@Override
+	public String getRequirementJavaScriptCheckFunction() {
+		String fn = "function(parts) { return ";
+
+		if (this.requiresCount()) {
+			fn += "(parts.length >= " + this.getCount() + ")";
+			if (this.requiresPart()) {
+				fn += " && ";
+
+			}
+		}
+		if (this.requiresPart()) {
+			fn += "(parts.indexOf("
+					+ StringEscape.escapeToDecodeInJavaScript(this.getPart())
+					+ ") >= 0)";
+		}
+
+		fn += ";}";
+		return fn;
 	}
 
 }
