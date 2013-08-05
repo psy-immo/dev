@@ -280,7 +280,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		var closed_points = this.hypergraph.CloseJustification(Object
 				.keys(assertions));
 		
-		log_data += "DEBUG: "+closed_points.justified+"\n";
+		//log_data += "DEBUG: "+closed_points.justified+"\n";
 		log_data += "Justified Points:\n";
 
 		for ( var int2 = 0; int2 < closed_points.justified.length; int2++) {
@@ -316,7 +316,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		}
 
 		log_data += "Unjustified Points:\n";
-		log_data += "DEBUG: "+closed_points.unjustified+"\n";
+		//log_data += "DEBUG: "+closed_points.unjustified+"\n";
 
 		for ( var int2 = 0; int2 < closed_points.unjustified.length; int2++) {
 			var point_id = closed_points.unjustified[int2];
