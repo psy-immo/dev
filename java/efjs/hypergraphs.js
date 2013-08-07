@@ -62,6 +62,11 @@ function InferenceGraph() {
 	this.justified = {};
 
 	/**
+	 * store the depth of justification for correct assertions
+	 */
+	this.justificationDepth = {};
+
+	/**
 	 * store the trivially correct assertions
 	 */
 	this.trivial = {};
@@ -70,11 +75,11 @@ function InferenceGraph() {
 	 * store the concluding assertions
 	 */
 	this.concluding = {};
-	
+
 	/**
 	 * store the solution part corresponding to some assertion
 	 */
-	
+
 	this.solution_parts = {};
 
 	/**
@@ -87,6 +92,26 @@ function InferenceGraph() {
 		for ( var int = 0; int < ids.length; int++) {
 			var assertion = ids[int];
 			this.justified[assertion] = true;
+			this.justificationDepth[assertion] = 0;
+		}
+
+		return this;
+	};
+
+	/**
+	 * adds a list of justification depths
+	 * 
+	 * @param idval
+	 *            an array of the form [id1, depth1, id2, depth2, ...]
+	 * 
+	 * @returns this
+	 */
+	this.SetJustificationDepths = function(idval) {
+		for ( var int = 1; int < idval.length; int += 2) {
+			var assertion = idval[int - 1];
+			var depth = idval[int];
+
+			this.justificationDepth[assertion] = depth;
 		}
 
 		return this;
@@ -113,8 +138,8 @@ function InferenceGraph() {
 	 * @returns this
 	 */
 
-	this.AddSolutionPart = function(part,ids) {
-		
+	this.AddSolutionPart = function(part, ids) {
+
 		for ( var int = 0; int < ids.length; int++) {
 			var assertion = ids[int];
 			if (this.solution_parts.hasOwnProperty(assertion)) {
@@ -122,15 +147,14 @@ function InferenceGraph() {
 					this.solution_parts[assertion].push(part);
 				}
 			} else {
-				this.solution_parts[assertion] = [part];
+				this.solution_parts[assertion] = [ part ];
 			}
-			
+
 		}
 
 		return this;
 	};
 
-	
 	/**
 	 * adds a list of correct assertion ids
 	 * 
@@ -171,7 +195,6 @@ function InferenceGraph() {
 		return this.correct.hasOwnProperty(id);
 	};
 
-
 	/**
 	 * id assertion
 	 * 
@@ -185,7 +208,7 @@ function InferenceGraph() {
 			 */
 			return [];
 		}
-		
+
 		return this.solution_parts[id];
 	};
 
@@ -218,6 +241,21 @@ function InferenceGraph() {
 
 	this.IsJustified = function(id) {
 		return this.justified.hasOwnProperty(id);
+	};
+
+	/**
+	 * id assertion
+	 * 
+	 * @returns true, if the assertion corresponding to the id is justified by
+	 *          the problem itself
+	 */
+
+	this.GetJustificationDepth = function(id) {
+		if (this.justificationDepth.hasOwnProperty(id)) {
+			return this.justificationDepth[id];
+		} else {
+			return -1;
+		}
 	};
 
 	/**
@@ -307,7 +345,7 @@ function InferenceGraph() {
 			 * continue as long as we have new premises
 			 */
 			last_premise_length = premises.length;
-			
+
 			for ( var int_t = 0; int_t < this.trivial_inference_ids.length; int_t++) {
 				var inference_id = this.trivial_inference_ids[int_t];
 				if (inference_id in used_trivial_inferences) {
@@ -330,7 +368,7 @@ function InferenceGraph() {
 						used_trivial_inferences[inference_id] = true;
 						for ( var int_con = 0; int_con < this.inferences[inference_id].c.length; int_con++) {
 							var conclusion_id = this.inferences[inference_id].c[int_con];
-							if (premises.indexOf(conclusion_id)<0) {
+							if (premises.indexOf(conclusion_id) < 0) {
 								premises.push(conclusion_id);
 							}
 						}
@@ -339,12 +377,11 @@ function InferenceGraph() {
 
 			}
 		}
-		
-		
-		//console.log("given premises:");
-		//console.log(plain_premises);
-		//console.log("trivially inferred premises:");
-		//console.log(premises);
+
+		// console.log("given premises:");
+		// console.log(plain_premises);
+		// console.log("trivially inferred premises:");
+		// console.log(premises);
 
 		/**
 		 * check for conclusions
@@ -403,9 +440,9 @@ function InferenceGraph() {
 	 */
 
 	this.CloseJustification = function(points) {
-		
-		//console.log("close just: "+points);
-		
+
+		// console.log("close just: "+points);
+
 		var result = {};
 		result.justified = [];
 		result.unjustified = [];
@@ -422,8 +459,8 @@ function InferenceGraph() {
 			else
 				result.unjustified.push(id);
 		}
-		
-		//console.log(result);
+
+		// console.log(result);
 
 		var last_nbr_of_justified = -1;
 
@@ -433,7 +470,7 @@ function InferenceGraph() {
 		 */
 		var inference_used = {};
 
-		//console.log("closing justification");
+		// console.log("closing justification");
 
 		while ((result.justified.length != last_nbr_of_justified)
 				&& ((result.unjustified.length > 0))) {
@@ -442,18 +479,16 @@ function InferenceGraph() {
 			 * assertions left
 			 */
 
-			 //console.log("justified "+result.justified.length);
-			 //console.log(": "+result.justified);
-			 //console.log("unjustified "+result.unjustified.length);
-			 //console.log(": "+result.unjustified);
+			// console.log("justified "+result.justified.length);
+			// console.log(": "+result.justified);
+			// console.log("unjustified "+result.unjustified.length);
+			// console.log(": "+result.unjustified);
 			last_nbr_of_justified = result.justified.length;
 
 			var inference_ids = this.GetConcludibleInferences(result.justified);
-			
-			
 
-			 //console.log("ids");
-			 //console.log(":-->> "+inference_ids);
+			// console.log("ids");
+			// console.log(":-->> "+inference_ids);
 
 			/**
 			 * add the newly justified points from the new inference_ids
@@ -470,11 +505,11 @@ function InferenceGraph() {
 						var idx = result.unjustified.indexOf(conclusion_id);
 
 						if (idx >= 0) {
-							//console.log("FOUND " + conclusion_id);
+							// console.log("FOUND " + conclusion_id);
 							result.justified.push(conclusion_id);
 							/** remove the concludible assertion from unjustified */
 							result.unjustified.splice(idx, 1);
-							//console.log(result.unjustified);
+							// console.log(result.unjustified);
 						}
 					}
 
@@ -482,11 +517,11 @@ function InferenceGraph() {
 				}
 			}
 		}
-		
-		 //console.log("FINAL justified "+result.justified.length);
-		 //console.log(": "+result.justified);
-		 //console.log("FINAL unjustified "+result.unjustified.length);
-		 //console.log(": "+result.unjustified);
+
+		// console.log("FINAL justified "+result.justified.length);
+		// console.log(": "+result.justified);
+		// console.log("FINAL unjustified "+result.unjustified.length);
+		// console.log(": "+result.unjustified);
 
 		return result;
 	};
@@ -516,17 +551,17 @@ function InferenceGraph() {
 		/** copy unjustified to working buffer */
 		for ( var int = 0; int < closed_results.unjustified.length; int++) {
 			var id = closed_results.unjustified[int];
-			
+
 			if (this.IsCorrect(id) && (!this.IsTrivial(id))) {
-				
+
 				/**
-				 * there is no point in trying to justify an incorrect point,
-				 * or a trivial one
+				 * there is no point in trying to justify an incorrect point, or
+				 * a trivial one
 				 */
-				
+
 				unjustified_left.push(id);
 			}
-				
+
 		}
 
 		/** determinize order */
@@ -562,8 +597,8 @@ function InferenceGraph() {
 						}
 					}
 				}
-				
-				//console.log("premises "+premise);
+
+				// console.log("premises "+premise);
 
 				premise.pop(id);
 				var count_this_unjustifieds = 0;
@@ -572,9 +607,9 @@ function InferenceGraph() {
 					if (unj)
 						count_this_unjustifieds += 1;
 				}
-				
-				//console.log(id+": "+count_this_unjustifieds+" unjust'ds");
-				//console.log("which are: "+still_unjustified);
+
+				// console.log(id+": "+count_this_unjustifieds+" unjust'ds");
+				// console.log("which are: "+still_unjustified);
 
 				if (count_this_unjustifieds < count_unjustifieds) {
 					new_unjustifieds = still_unjustified;
@@ -590,8 +625,8 @@ function InferenceGraph() {
 				}
 			}
 
-			//console.log("Adding premise: "+added_id);
-			
+			// console.log("Adding premise: "+added_id);
+
 			unjustified_left = new_left;
 			premise.push(added_id);
 			would_be_justified.push(added_id);

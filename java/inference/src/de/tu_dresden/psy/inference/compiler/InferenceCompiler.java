@@ -163,6 +163,13 @@ public class InferenceCompiler {
 	private Map<String, Set<Integer>> solutionPartIds;
 
 	/**
+	 * save the justification depths for assertions that are not justified yet
+	 * justifyable
+	 */
+
+	private Map<Integer, Integer> justificationDepths;
+
+	/**
 	 * keep track of the inference xml data structure
 	 */
 
@@ -199,6 +206,7 @@ public class InferenceCompiler {
 		this.concludingAssertionIds = new HashSet<Integer>();
 
 		this.solutionPartIds = new HashMap<String, Set<Integer>>();
+		this.justificationDepths = new HashMap<Integer, Integer>();
 	}
 
 	/**
@@ -365,6 +373,20 @@ public class InferenceCompiler {
 				.println("WARNING: Correct and justified, yet not in domain: "
 						+ a.toString());
 			}
+		}
+
+		writer.write("])");
+
+		/**
+		 * write the justification depths for the correct assertions, that are
+		 * not justified themselves
+		 */
+
+		writer.write(".SetJustificationDepths([");
+
+		for (Integer assertion_id : this.justificationDepths.keySet()) {
+			writer.write(StringEscape.obfuscateInt(assertion_id) + ", "
+					+ this.justificationDepths.get(assertion_id) + ", ");
 		}
 
 		writer.write("])");
@@ -794,6 +816,23 @@ public class InferenceCompiler {
 
 			this.inferenceHyperGraph.add(new DirectedHyperEdge(p.getPremise(),
 					conclusionsByPremise.get(p), p.isTrivial()));
+		}
+
+		/**
+		 * copy the justification depth for unjustified yet justifiable
+		 * assertions
+		 */
+
+		for (AssertionInterface a : inferCorrectAssertions.getValid()
+				.getClasses()) {
+			int justification_level = inferCorrectAssertions.getValid()
+					.justification(a);
+			if ((justification_level != EquivalentAssertions.notJustified)
+					&& (justification_level != 0)) {
+				this.justificationDepths.put(
+						this.assertionDomain.fromAssertion(a),
+						justification_level);
+			}
 		}
 
 		/**
