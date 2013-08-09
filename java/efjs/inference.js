@@ -59,11 +59,11 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 */
 
 	this.tryNumber = 1;
-	
+
 	/**
 	 * store the correct solution check(s)
 	 */
-	
+
 	this.solutionRequirements = [];
 
 	this.acceptTags = atags;
@@ -106,15 +106,15 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	this.WriteHtml = function() {
 		document.write(this.GetHtml());
 	};
-	
+
 	/**
 	 * add a new requirement for solution checking
 	 */
-	
+
 	this.Requirement = function(fn) {
-		
+
 		this.solutionRequirements.push(fn);
-				
+
 		return this;
 	};
 
@@ -182,7 +182,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 		var correctly_solved_parts = [];
 
-		log_data += "Points:\n";
+		log_data += "\nPoints:\n";
 
 		for ( var int = 0; int < points.length; ++int) {
 			var point = points[int].token;
@@ -271,17 +271,15 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			assertions[point_id] = true;
 		}
 
-		
-
 		/**
 		 * first, we calculate whether all points given are justified
 		 */
 
 		var closed_points = this.hypergraph.CloseJustification(Object
 				.keys(assertions));
-		
-		//log_data += "DEBUG: "+closed_points.justified+"\n";
-		log_data += "Justified Points:\n";
+
+		// log_data += "DEBUG: "+closed_points.justified+"\n";
+		log_data += "\nJustified Points:\n";
 
 		for ( var int2 = 0; int2 < closed_points.justified.length; int2++) {
 			var point_id = closed_points.justified[int2];
@@ -315,14 +313,14 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			log_data += "\n";
 		}
 
-		log_data += "Unjustified Points:\n";
-		//log_data += "DEBUG: "+closed_points.unjustified+"\n";
+		log_data += "\nUnjustified Points:\n";
+		// log_data += "DEBUG: "+closed_points.unjustified+"\n";
 
 		for ( var int2 = 0; int2 < closed_points.unjustified.length; int2++) {
 			var point_id = closed_points.unjustified[int2];
-			//log_data += "DEBUG: "+closed_points.unjustified[int2]+"\n";
+			// log_data += "DEBUG: "+closed_points.unjustified[int2]+"\n";
 			var s = this.stringids.FromId(point_id);
-			//log_data += "DEBUG: "+int2+"\n";
+			// log_data += "DEBUG: "+int2+"\n";
 
 			log_data += s + " [" + point_id + "] ";
 
@@ -361,7 +359,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		var need_justification = this.hypergraph
 				.WhichPointsNeedJustification(closed_points);
 
-		log_data += "Justification Hint:\n";
+		log_data += "\nJustification Hint:\n";
 
 		for ( var int2 = 0; int2 < need_justification.length; int2++) {
 			var point_id = need_justification[int2];
@@ -415,10 +413,59 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		}
 
 		/**
+		 * close justified points and need_justification points
+		 */
+
+		var additional_points = this.hypergraph.GetAdditionalAssertions(
+				closed_points.justified, need_justification);
+		
+		var hints_for_parts = [];
+		
+		log_data += "\nPoints Missing:\n";
+		
+		for ( var intpts = 0; intpts < additional_points.length; intpts++) {
+			var point_id = additional_points[intpts];
+			
+			var s = this.stringids.FromId(point_id);
+
+			log_data += s + " [" + point_id + "] ";
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct] ";
+
+				var solves_parts = this.hypergraph.IndicatesWhichLacks(point_id);
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
+					
+					if (hints_for_parts.indexOf(part) < 0) {
+						hints_for_parts.push(part);
+					}
+
+					log_data += "[(" + part + ")] ";
+				}
+			}
+
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial] ";
+			}
+
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding] ";
+			}
+
+			if (this.hypergraph.IsJustified(point_id)) {
+				log_data += "[justified] ";
+			}
+
+			log_data += "\n";
+		}
+
+		/**
 		 * check the solution criteria
 		 */
 
 		correctly_solved_parts.sort();
+		hints_for_parts.sort();
 
 		log_data += "\nCorrect Solution Parts: ";
 
@@ -428,16 +475,26 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				log_data += ", ";
 			log_data += part;
 		}
-		
+
+		log_data += "\nPossible Hints: ";
+
+		for ( var int4 = 0; int4 < hints_for_parts.length; int4++) {
+			var part = hints_for_parts[int4];
+			if (int4 > 0)
+				log_data += ", ";
+			log_data += part;
+		}
+
+
 		for ( var int5 = 0; int5 < this.solutionRequirements.length; int5++) {
 			var fn = this.solutionRequirements[int5];
-			
+
 			if (fn(correctly_solved_parts)) {
-				log_data += "\nCriterion "+(1+int5)+" MET.";	
+				log_data += "\nCriterion " + (1 + int5) + " MET.";
 			} else {
-				log_data += "\nCriterion "+(1+int5)+" NOT met.";
+				log_data += "\nCriterion " + (1 + int5) + " NOT met.";
 			}
-			
+
 		}
 
 		/**

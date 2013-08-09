@@ -163,6 +163,12 @@ public class InferenceCompiler {
 	private Map<String, Set<Integer>> solutionPartIds;
 
 	/**
+	 * save the ids that correspond to some quality of lacking information
+	 */
+
+	private Map<String, Set<Integer>> lackingQualityIds;
+
+	/**
 	 * save the justification depths for assertions that are not justified yet
 	 * justifyable
 	 */
@@ -207,6 +213,8 @@ public class InferenceCompiler {
 
 		this.solutionPartIds = new HashMap<String, Set<Integer>>();
 		this.justificationDepths = new HashMap<Integer, Integer>();
+
+		this.lackingQualityIds = new HashMap<String, Set<Integer>>();
 	}
 
 	/**
@@ -309,6 +317,26 @@ public class InferenceCompiler {
 			writer.write(", [");
 
 			for (int id : this.solutionPartIds.get(solution_part)) {
+
+				writer.write(StringEscape.obfuscateInt(id) + ", ");
+			}
+
+			writer.write("])");
+		}
+
+		/**
+		 * lack qualities
+		 */
+
+		for (String quality_name : this.lackingQualityIds.keySet()) {
+
+			writer.write(".AddLackPart(");
+
+			writer.write(StringEscape.escapeToDecodeInJavaScript(quality_name));
+
+			writer.write(", [");
+
+			for (int id : this.lackingQualityIds.get(quality_name)) {
 
 				writer.write(StringEscape.obfuscateInt(id) + ", ");
 			}
@@ -872,9 +900,11 @@ public class InferenceCompiler {
 			Set<AssertionInterface> as = new HashSet<AssertionInterface>(
 					parser.match(a));
 
+			int assertion_id = this.assertionDomain.fromString(a);
+
 			for (ConstrainedAssertionFilter f : this.concludingAssertionFilters) {
 				if (f.filter(as).isEmpty() == false) {
-					int assertion_id = this.assertionDomain.fromString(a);
+
 					this.concludingAssertionIds.add(assertion_id);
 
 					/**
@@ -906,6 +936,26 @@ public class InferenceCompiler {
 					 */
 					break;
 				}
+			}
+
+			/**
+			 * store the information qualities of the correct assertions
+			 */
+
+			for (ConstrainedAssertionFilter quality_filter : this.inferenceRoot
+					.getQualityFilters().keySet()) {
+				if (quality_filter.filter(as).isEmpty() == false) {
+					String quality_name = this.inferenceRoot
+							.getQualityFilters().get(quality_filter);
+
+					if (this.lackingQualityIds.containsKey(quality_name) == false) {
+						this.lackingQualityIds.put(quality_name,
+								new HashSet<Integer>());
+					}
+
+					this.lackingQualityIds.get(quality_name).add(assertion_id);
+				}
+
 			}
 		}
 

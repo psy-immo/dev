@@ -16,13 +16,13 @@
         <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.example"/>
         <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.forms"/>
         <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.regexp"/>
+        <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.machine"/>
         <file path="/inference/inference.jarexport.jardesc"/>
-        <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.machine{InferenceMachine.java"/>
+        <file path="/inference/inferenceApplet.jardesc"/>
         <file path="/inference/jarexport.jardesc"/>
         <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference"/>
         <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.regexp"/>
         <file path="/inference/.project"/>
         <file path="/inference/example.jarexport.jardesc"/>
-        <file path="/inference/inferenceApplet.jardesc"/>
     </selectedElements>
 </jardesc>

@@ -83,6 +83,13 @@ function InferenceGraph() {
 	this.solution_parts = {};
 
 	/**
+	 * store the quality of information that is lacking when this assertion is
+	 * omitted as a point
+	 */
+
+	this.lack_parts = {};
+
+	/**
 	 * adds a list of justified assertion ids
 	 * 
 	 * @returns this
@@ -156,6 +163,29 @@ function InferenceGraph() {
 	};
 
 	/**
+	 * adds a list of lacking quality assertion ids, for the given part
+	 * 
+	 * @returns this
+	 */
+
+	this.AddLackPart = function(part, ids) {
+
+		for ( var int = 0; int < ids.length; int++) {
+			var assertion = ids[int];
+			if (this.lack_parts.hasOwnProperty(assertion)) {
+				if (this.lack_parts[assertion].lastIndexOf(part) < 0) {
+					this.lack_parts[assertion].push(part);
+				}
+			} else {
+				this.lack_parts[assertion] = [ part ];
+			}
+
+		}
+
+		return this;
+	};
+
+	/**
 	 * adds a list of correct assertion ids
 	 * 
 	 * @returns this
@@ -210,6 +240,24 @@ function InferenceGraph() {
 		}
 
 		return this.solution_parts[id];
+	};
+
+	/**
+	 * id assertion
+	 * 
+	 * @returns an array of qualities whose lacking is indicated by omitting the
+	 *          assertion
+	 */
+
+	this.IndicatesWhichLacks = function(id) {
+		if (this.lack_parts.hasOwnProperty(id) == false) {
+			/**
+			 * the given assertion doesn't indicate anything
+			 */
+			return [];
+		}
+
+		return this.lack_parts[id];
 	};
 
 	/**
@@ -775,6 +823,13 @@ function InferenceGraph() {
 	};
 
 	/**
+	 * Note that this function may in some cases not return the optimal set of
+	 * assertions that make the rationale all justified w.r.t. to its
+	 * cardinality, since it uses the absolute minimum depth values for premises
+	 * as estimate for the relative minimum depth (which is lower or equal).
+	 * This will lead to a closure that may be considered to be more
+	 * straight-forward in a way that the used new assertions are easier to
+	 * obtain from initially justified assertions.
 	 * 
 	 * @param given_justified_points
 	 *            array of ids of points that have been given and that are
@@ -803,9 +858,9 @@ function InferenceGraph() {
 		}
 
 		while (need_justification.length > 0) {
-			/** 
-			 * determine candidates and scores 
-			 **/
+			/**
+			 * determine candidates and scores
+			 */
 			var minimum_score = 9007199254740992;
 			var minimum_candidate = [];
 			var minimum_index = 0;
@@ -829,27 +884,34 @@ function InferenceGraph() {
 			 * choose minimum_index to be considered justified and add the
 			 * required premises
 			 */
-			var newly_justified_id = need_justification[minimum_index];
 
-			need_justification.splice(minimum_index,1);
-			
-			considered_justified.push(newly_justified_id);
+			if (minimum_candidate.length == 0) {
+				var newly_justified_id = need_justification[minimum_index];
+				need_justification.splice(minimum_index, 1);
+				considered_justified.push(newly_justified_id);
 
-			for ( var int4 = 0; int4 < minimum_candidate.length; int4++) {
-				var new_point_id = minimum_candidate[int4];
+				console.log("Added: " + newly_justified_id);
+			} else {
 
-				additional_assertions.push(new_point_id);
+				for ( var int4 = 0; int4 < minimum_candidate.length; int4++) {
+					var new_point_id = minimum_candidate[int4];
 
-				/**
-				 * if new_point_id may be justified by the points given in
-				 * considered_justified, then the best candidate will be empty
-				 * and its score will be 1, resulting in new_point_id to be
-				 * removed from need_justification and added to
-				 * considered_justified in the next iteration of the while loop
-				 */
-				
-				need_justification.push(new_point_id);
+					additional_assertions.push(new_point_id);
+
+					/**
+					 * if new_point_id may be justified by the points given in
+					 * considered_justified, then the best candidate will be
+					 * empty and its score will be 1, resulting in new_point_id
+					 * to be removed from need_justification and added to
+					 * considered_justified in the next iteration of the while
+					 * loop
+					 */
+
+					need_justification.push(new_point_id);
+				}
 			}
+
+			console.log("Left: " + need_justification);
 
 		}
 

@@ -103,7 +103,7 @@ public class XmlRootTag extends XmlTag {
 	 * quality filters for lacking assertions in rationales (e.g. assertions
 	 * that do not need to be given explicitly)
 	 */
-	private Map<String, ConstrainedAssertionFilter> lackQualities;
+	private Map<ConstrainedAssertionFilter, String> lackQualities;
 
 	/**
 	 * filters that identify different parts of the (compound) solution
@@ -123,7 +123,7 @@ public class XmlRootTag extends XmlTag {
 		this.conclusionAssertionsGiven = new HashSet<String>();
 
 		this.concludingFilter = new HashSet<ConstrainedAssertionFilter>();
-		this.lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
+		this.lackQualities = new HashMap<ConstrainedAssertionFilter, String>();
 		this.solutionParts = new HashMap<ConstrainedAssertionFilter, String>();
 	}
 
@@ -216,7 +216,7 @@ public class XmlRootTag extends XmlTag {
 	 * @return a set of qualities
 	 */
 
-	public Map<String, ConstrainedAssertionFilter> getQualityFilters() {
+	public Map<ConstrainedAssertionFilter, String> getQualityFilters() {
 		return this.lackQualities;
 	}
 
@@ -410,7 +410,7 @@ public class XmlRootTag extends XmlTag {
 	private void processQuality(XmlTag child) throws Exception {
 		String name = child.getAttributeOrDefault("name", "Q"
 				+ this.lackQualities.size());
-		this.lackQualities.put(name, this.processConstraintFilter(child));
+		this.lackQualities.put(this.processConstraintFilter(child), name);
 	}
 
 	/**
