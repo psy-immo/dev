@@ -667,6 +667,16 @@
 				<subject>the voltage of bulb (B|C)</subject>
 			 </justified>
 			 
+			 <justified>
+				 <subject>the current through bulb chain BC</subject>
+				 <predicate>is as big as</predicate>
+				 <object>the current through bulb (B|C)</object>
+			 </justified>
+			 <justified>
+				 <subject>the current through bulb (B|C)</subject>
+				 <predicate>is as big as</predicate>
+				 <object>the current through bulb chain BC</object>
+			 </justified>
 			 	 
 			 <conclusions>
 				 <subject>the luminosity of.*</subject>

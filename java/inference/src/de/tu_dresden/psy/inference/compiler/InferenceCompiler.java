@@ -827,8 +827,17 @@ public class InferenceCompiler {
 				.getClasses()) {
 			int justification_level = inferCorrectAssertions.getValid()
 					.justification(a);
-			if ((justification_level != EquivalentAssertions.notJustified)
-					&& (justification_level != 0)) {
+			if (justification_level == EquivalentAssertions.notJustified) {
+				/**
+				 * this assertion is correct, yet unjustifiable. This may
+				 * indicate incomplete or erroneous inference xml data. So we
+				 * warn.
+				 */
+
+				System.err.println("WARNING: " + a.toString()
+						+ " is correct yet unjustifiable!");
+
+			} else if (justification_level != 0) {
 				this.justificationDepths.put(
 						this.assertionDomain.fromAssertion(a),
 						justification_level);
