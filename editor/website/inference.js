@@ -1,6 +1,6 @@
 /**
- * inference.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
- * Professur für die Psychologie des Lernen und Lehrens
+ * inference.js, (c) 2012-13, Immanuel Albrecht; Dresden University of
+ * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -16,11 +16,564 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+myInferenceMachines = [];
+myInferenceMachineCount = 0;
+
+/**
+ * Creates a new inference machine
+ * 
+ * @param atags
+ *            tags for input acceptance
+ * @param rtags
+ *            tags for input rejection
+ * @param stringids
+ *            StringIds object that represents the assertion domain
+ * @param hypergraph
+ *            InferenceGraph object that represents all basic inference rules
+ *            wrt. the assertion domain
+ * @param points
+ *            additional tag for input acceptance as *points* (default:
+ *            "points")
+ * @param conclusions
+ *            additional tag for input acceptance as *conclusions* (default:
+ *            "conclusions")
+ * @returns this
+ */
+
+function InferenceMachine(atags, rtags, stringids, hypergraph, points,
+		conclusions) {
+	this.id = myInferenceMachineCount++;
+
+	/**
+	 * the assertion domain
+	 */
+	this.stringids = stringids;
+
+	/**
+	 * the inference hyper graph
+	 */
+	this.hypergraph = hypergraph;
+
+	/**
+	 * store the number of tries
+	 */
+
+	this.tryNumber = 1;
+
+	/**
+	 * store the correct solution check(s)
+	 */
+
+	this.solutionRequirements = [];
+
+	this.acceptTags = atags;
+	this.rejectTags = rtags;
+
+	this.name = "";
+	for ( var i = 0; i < atags.length; ++i) {
+		this.name += atags[i];
+	}
+	this.name += "_" + this.id;
+
+	if (typeof points == "undefined") {
+		this.points = "points";
+	} else {
+		this.points = points;
+	}
+
+	if (typeof conclusions == "undefined") {
+		this.conclusions = "conclusions";
+	} else {
+		this.conclusions = conclusions;
+	}
+
+	/**
+	 * wait for these other actions to trigger/complete before allowing using
+	 * the check answer button
+	 */
+
+	this.waitfor = [];
+
+	/**
+	 * button label
+	 */
+	this.text = "Check your answer";
+
+	/**
+	 * write all needed html elements to the document
+	 */
+
+	this.WriteHtml = function() {
+		document.write(this.GetHtml());
+	};
+
+	/**
+	 * add a new requirement for solution checking
+	 */
+
+	this.Requirement = function(fn) {
+
+		this.solutionRequirements.push(fn);
+
+		return this;
+	};
+
+	/**
+	 * get the html code for this inference machine button
+	 */
+
+	this.GetHtml = function() {
+		var html = "";
+
+		html += "<form onsubmit=\"return false;\" class=\"inference\">";
+		html += "<input class=\"inference\" type=\"button\" value=\""
+				+ this.text + "\" onclick=\"myInferenceMachines[" + this.id
+				+ "].StartMachine()\"/>";
+		html += "</form>";
+
+		return html;
+	};
+
+	/**
+	 * this handler is called when the Check-Answer button has been pressed
+	 */
+
+	this.StartMachine = function() {
+		/**
+		 * check, whether giving a solution is allowed
+		 */
+		for ( var int = 0; int < this.waitfor.length; int++) {
+			if (this.waitfor[int]() != true) {
+				myLogger.Log("myInferenceMachines[" + this.id + "] ("
+						+ this.name + ") start: check refused by " + int + ".");
+				return;
+			}
+		}
+
+		/**
+		 * fetch all inputs
+		 */
+
+		this.acceptTags.push(this.points);
+
+		var points = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
+
+		this.acceptTags.pop();
+
+		this.acceptTags.push(this.conclusions);
+
+		var conclusions = myTags.AllTagsBut(this.acceptTags, this.rejectTags);
+
+		this.acceptTags.pop();
+
+		/**
+		 * here we save the ids of all given assertions
+		 */
+
+		var assertions = {};
+
+		var log_data = this.name + " check answer triggered.\n";
+		log_data += "Try: " + this.tryNumber + "\n";
+		this.tryNumber += 1;
+
+		/**
+		 * store which parts of the problem have been solved correctly
+		 */
+
+		var correctly_solved_parts = [];
+
+		log_data += "\nPoints:\n";
+
+		for ( var int = 0; int < points.length; ++int) {
+			var point = points[int].token;
+			var point_id = this.stringids.ToId(point);
+			log_data += point + " [" + point_id + "] ";
+
+			points[int].MarkNeutral();
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct] ";
+
+				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
+
+					log_data += "[[" + part + "]] ";
+
+					if (correctly_solved_parts.indexOf(part) < 0) {
+						correctly_solved_parts.push(part);
+					}
+				}
+				points[int].MarkAsGood();
+			} else {
+				points[int].MarkAsBad();
+			}
+
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial] ";
+			}
+
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding] ";
+			}
+
+			if (this.hypergraph.IsJustified(point_id)) {
+				log_data += "[justified] ";
+			}
+
+			log_data += "\n";
+
+			assertions[point_id] = true;
+
+		}
+
+		log_data += "Conlusions:\n";
+
+		for ( var int = 0; int < conclusions.length; ++int) {
+			var point = conclusions[int].token;
+			var point_id = this.stringids.ToId(point);
+			log_data += point + " [" + point_id + "] ";
+
+			conclusions[int].MarkNeutral();
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct] ";
+				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
+
+					log_data += "[[" + part + "]] ";
+
+					if (correctly_solved_parts.indexOf(part) < 0) {
+						correctly_solved_parts.push(part);
+					}
+				}
+
+				conclusions[int].MarkAsGood();
+			} else {
+				conclusions[int].MarkAsBad();
+			}
+
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial] ";
+			}
+
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding] ";
+			}
+
+			if (this.hypergraph.IsJustified(point_id)) {
+				log_data += "[justified] ";
+			}
+
+			log_data += "\n";
+
+			assertions[point_id] = true;
+		}
+
+		/**
+		 * first, we calculate whether all points given are justified
+		 */
+
+		var closed_points = this.hypergraph.CloseJustification(Object
+				.keys(assertions));
+
+		// log_data += "DEBUG: "+closed_points.justified+"\n";
+		log_data += "\nJustified Points:\n";
+
+		for ( var int2 = 0; int2 < closed_points.justified.length; int2++) {
+			var point_id = closed_points.justified[int2];
+			var s = this.stringids.FromId(point_id);
+
+			log_data += s + " [" + point_id + "] ";
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct] ";
+
+				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
+
+					log_data += "[[" + part + "]] ";
+				}
+			}
+
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial] ";
+			}
+
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding] ";
+			}
+
+			if (this.hypergraph.IsJustified(point_id)) {
+				log_data += "[justified] ";
+			}
+
+			log_data += "\n";
+		}
+
+		log_data += "\nUnjustified Points:\n";
+		// log_data += "DEBUG: "+closed_points.unjustified+"\n";
+
+		for ( var int2 = 0; int2 < closed_points.unjustified.length; int2++) {
+			var point_id = closed_points.unjustified[int2];
+			// log_data += "DEBUG: "+closed_points.unjustified[int2]+"\n";
+			var s = this.stringids.FromId(point_id);
+			// log_data += "DEBUG: "+int2+"\n";
+
+			log_data += s + " [" + point_id + "] ";
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct] ";
+
+				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
+
+					log_data += "[[" + part + "]] ";
+				}
+			}
+
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial] ";
+			}
+
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding] ";
+			}
+
+			if (this.hypergraph.IsJustified(point_id)) {
+				log_data += "[justified] ";
+			}
+
+			log_data += "\n";
+		}
+
+		/**
+		 * now we check for a small set of points that need to be justified such
+		 * that the given points would have been all justified if those points
+		 * were present
+		 */
+
+		var need_justification = this.hypergraph
+				.WhichPointsNeedJustification(closed_points);
+
+		log_data += "\nJustification Hint:\n";
+
+		for ( var int2 = 0; int2 < need_justification.length; int2++) {
+			var point_id = need_justification[int2];
+			var s = this.stringids.FromId(point_id);
+
+			log_data += s + " [" + point_id + "] ";
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct] ";
+
+				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
+
+					log_data += "[[" + part + "]] ";
+				}
+			}
+
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial] ";
+			}
+
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding] ";
+			}
+
+			if (this.hypergraph.IsJustified(point_id)) {
+				log_data += "[justified] ";
+			}
+
+			log_data += "\n";
+
+			/**
+			 * Indicate that further justification is needed
+			 */
+
+			for ( var int3 = 0; int3 < points.length; int3++) {
+				var p = points[int3];
+				if (this.stringids.ToId(p.token) == point_id) {
+					p.MarkAsOkay();
+
+				}
+			}
+
+			for ( var int3 = 0; int3 < conclusions.length; int3++) {
+				var p = conclusions[int3];
+				if (this.stringids.ToId(p.token) == point_id) {
+					p.MarkAsOkay();
+				}
+			}
+		}
+
+		/**
+		 * close justified points and need_justification points
+		 */
+
+		var additional_points = this.hypergraph.GetAdditionalAssertions(
+				closed_points.justified, need_justification);
+		
+		var hints_for_parts = [];
+		
+		log_data += "\nPoints Missing:\n";
+		
+		for ( var intpts = 0; intpts < additional_points.length; intpts++) {
+			var point_id = additional_points[intpts];
+			
+			var s = this.stringids.FromId(point_id);
+
+			log_data += s + " [" + point_id + "] ";
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct] ";
+
+				var solves_parts = this.hypergraph.IndicatesWhichLacks(point_id);
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
+					
+					if (hints_for_parts.indexOf(part) < 0) {
+						hints_for_parts.push(part);
+					}
+
+					log_data += "[(" + part + ")] ";
+				}
+			}
+
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial] ";
+			}
+
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding] ";
+			}
+
+			if (this.hypergraph.IsJustified(point_id)) {
+				log_data += "[justified] ";
+			}
+
+			log_data += "\n";
+		}
+
+		/**
+		 * check the solution criteria
+		 */
+
+		correctly_solved_parts.sort();
+		hints_for_parts.sort();
+
+		log_data += "\nCorrect Solution Parts: ";
+
+		for ( var int4 = 0; int4 < correctly_solved_parts.length; int4++) {
+			var part = correctly_solved_parts[int4];
+			if (int4 > 0)
+				log_data += ", ";
+			log_data += part;
+		}
+
+		log_data += "\nPossible Hints: ";
+
+		for ( var int4 = 0; int4 < hints_for_parts.length; int4++) {
+			var part = hints_for_parts[int4];
+			if (int4 > 0)
+				log_data += ", ";
+			log_data += part;
+		}
+
+
+		for ( var int5 = 0; int5 < this.solutionRequirements.length; int5++) {
+			var fn = this.solutionRequirements[int5];
+
+			if (fn(correctly_solved_parts)) {
+				log_data += "\nCriterion " + (1 + int5) + " MET.";
+			} else {
+				log_data += "\nCriterion " + (1 + int5) + " NOT met.";
+			}
+
+		}
+
+		/**
+		 * log the results
+		 */
+
+		myLogger.Log(log_data);
+
+	};
+
+	/**
+	 * return the current state
+	 */
+	this.GetValue = function() {
+		return "" + this.tryNumber;
+	};
+
+	/**
+	 * restore the given state
+	 */
+
+	this.SetValue = function(contents) {
+		this.tryNumber = parseInt(contents);
+	};
+
+	/**
+	 * this function sets the text of the component
+	 * 
+	 * @returns this
+	 */
+	this.Text = function(text) {
+		this.text = text;
+		return this;
+	};
+
+	/**
+	 * this function sets the name of the component
+	 * 
+	 * @returns this
+	 */
+	this.Name = function(name) {
+		this.name = name;
+		return this;
+	};
+
+	/**
+	 * this function adds a waitfor-function of the component, which is called
+	 * whenever the answer button is clicked, and which has to return true in
+	 * order to check the answer. The given function is responsible to alert the
+	 * user that the answer will not be checked.
+	 * 
+	 * @returns this
+	 */
+
+	this.WaitFor = function(waitforfn) {
+		this.waitfor[this.waitfor.length] = waitforfn;
+
+		return this;
+	};
+
+	myStorage.RegisterField(this, "myInferenceMachines[" + this.id + "]");
+	myInferenceMachines[this.id] = this;
+
+	return this;
+}
+
+/*******************************************************************************
+ * **** OLD version
+ * 
+ * 
+ ******************************************************************************/
+
 myInferenceButtons = [];
 myInferenceId = 0;
 
 /**
  * generate a check inference button
+ * 
+ * (this is the old version of the inference machine using a java applet)
  * 
  * @param atags
  *            accept tags
