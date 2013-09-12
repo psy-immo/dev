@@ -51,6 +51,7 @@ import de.tu_dresden.psy.efml.InferenceXmlTag;
 import de.tu_dresden.psy.efml.InstructionsTag;
 import de.tu_dresden.psy.efml.JsUrlTag;
 import de.tu_dresden.psy.efml.LabelTag;
+import de.tu_dresden.psy.efml.UnknownHeadTag;
 import de.tu_dresden.psy.efml.MultilineTag;
 import de.tu_dresden.psy.efml.NeedJustificationTag;
 import de.tu_dresden.psy.efml.OneRequirementTag;
@@ -499,7 +500,8 @@ public class EfjsIntegrationResources {
 		"efmlquote", new AttributeObjectConstructor(EfmlQuoteTag.class),
 		"factor", new AttributeObjectConstructor(InferenceXmlTag.class),
 		"domain", new AttributeObjectConstructor(InferenceXmlTag.class),
-		"q", new AttributeObjectConstructor(InferenceXmlTag.class),
+		"q", new AttributeObjectConstructor(InferenceXmlTag.class), "link",
+		new AttributeObjectConstructor(UnknownHeadTag.class),
 
 	};
 

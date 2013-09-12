@@ -72,7 +72,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 		this.processingTags = new Stack<AnyTag>();
 
 		this.currentTags.push(this.root);
-		this.processingTags.push(body);
+		this.processingTags.push(this.body);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	 */
 
 	public HeadTag getHead() {
-		return head;
+		return this.head;
 	}
 
 	/**
@@ -91,13 +91,14 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	 *         html file
 	 */
 	public BodyTag getBody() {
-		return body;
+		return this.body;
 	}
 
 	/**
 	 * element starts, push it on the stack
 	 */
 
+	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 
@@ -113,7 +114,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 			if (qName.equals(name)) {
 
 				this.processingTags.push(cons.New(this.currentTags.peek(),
-						this.processingTags.peek(), body));
+						this.processingTags.peek(), this.body));
 				found = true;
 				break;
 			}
@@ -134,18 +135,24 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	 * element ends, add tags to html output
 	 */
 
+	@Override
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 		this.currentTags.pop();
 		AnyTag closing_tag = this.processingTags.pop();
 
 		try {
-			this.processingTags.peek().encloseTag(closing_tag);
+			if (closing_tag instanceof UnknownHeadTag) {
+				this.head.encloseTag(closing_tag);
+			} else {
+				this.processingTags.peek().encloseTag(closing_tag);
+			}
 
 			if (closing_tag instanceof GlobalModifier) {
 				GlobalModifier modifier = (GlobalModifier) closing_tag;
-				if (modifier.isDeferred() == false)
+				if (modifier.isDeferred() == false) {
 					modifier.DoAction();
+				}
 			}
 		} catch (OperationNotSupportedException e) {
 
@@ -157,6 +164,7 @@ public class EfmlToHtmlHandler extends DefaultHandler {
 	 * receive data
 	 */
 
+	@Override
 	public void characters(char ch[], int start, int length)
 			throws SAXException {
 		try {
