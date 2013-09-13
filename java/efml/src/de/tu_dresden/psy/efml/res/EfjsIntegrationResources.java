@@ -51,7 +51,6 @@ import de.tu_dresden.psy.efml.InferenceXmlTag;
 import de.tu_dresden.psy.efml.InstructionsTag;
 import de.tu_dresden.psy.efml.JsUrlTag;
 import de.tu_dresden.psy.efml.LabelTag;
-import de.tu_dresden.psy.efml.UnknownHeadTag;
 import de.tu_dresden.psy.efml.MultilineTag;
 import de.tu_dresden.psy.efml.NeedJustificationTag;
 import de.tu_dresden.psy.efml.OneRequirementTag;
@@ -67,6 +66,7 @@ import de.tu_dresden.psy.efml.SniffyTag;
 import de.tu_dresden.psy.efml.StudyIdTag;
 import de.tu_dresden.psy.efml.SubjectChangeTag;
 import de.tu_dresden.psy.efml.SubjectInfoTag;
+import de.tu_dresden.psy.efml.SubjectNotWorkingTag;
 import de.tu_dresden.psy.efml.SubjectPromptTag;
 import de.tu_dresden.psy.efml.TablesTag;
 import de.tu_dresden.psy.efml.TagsTag;
@@ -74,6 +74,7 @@ import de.tu_dresden.psy.efml.TemplateTag;
 import de.tu_dresden.psy.efml.TieTag;
 import de.tu_dresden.psy.efml.TitleTag;
 import de.tu_dresden.psy.efml.TrashcanTag;
+import de.tu_dresden.psy.efml.UnknownHeadTag;
 import de.tu_dresden.psy.efml.UnreadTag;
 import de.tu_dresden.psy.efml.UnusedTag;
 import de.tu_dresden.psy.efml.WaitForTag;
@@ -454,7 +455,10 @@ public class EfjsIntegrationResources {
 		new BodyObjectConstructor(DocumentIdTag.class), "jsurl",
 		new BodyObjectConstructor(JsUrlTag.class), "phpurl",
 		new BodyObjectConstructor(PhpUrlTag.class), "subjectinfo",
-		new BodyObjectConstructor(SubjectInfoTag.class), "subjectprompt",
+			new BodyObjectConstructor(SubjectInfoTag.class),
+			"subjectnotworking",
+			new BodyObjectConstructor(SubjectNotWorkingTag.class),
+			"subjectprompt",
 		new BodyObjectConstructor(SubjectPromptTag.class), "subjectchange",
 		new BodyObjectConstructor(SubjectChangeTag.class), "plain",
 		new SimpleObjectConstructor(PlainTag.class), "template",

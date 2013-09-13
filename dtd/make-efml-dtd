@@ -5,7 +5,8 @@ dtd = open("efml.0.0.1.0.dtd","w")
 html_elements = "i|b|br|p|div|span"
 efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|"+\
 				"phpurl|jsurl|documentid|studyid|subjectprompt|"+\
-				"subjectinfo|subjectchange|airport|template|freetext|"+\
+				"subjectinfo|subjectchange|subjectnotworking|airport|"+\
+				"template|freetext|"+\
 				"checkbox|radiobutton|multiline|popuphelp|"+\
 				"trashcan|boxspace|efmlboard|efmlpreview|cssurl"
 efml_extra = "tables"
@@ -170,7 +171,8 @@ dtd.write("\n<!ATTLIST option "+"""
 """)
 
 for tag in ["phpurl","jsurl","cssurl","documentid","studyid", \
-	        "subjectprompt","subjectinfo","subjectchange","plain"]:
+	        "subjectprompt","subjectinfo","subjectchange","plain",\
+	        "subjectnotworking"]:
 	dtd.write("\n<!ELEMENT "+tag+" (#PCDATA)* >\n")
 	#dtd.write("\n<!ATTLIST "+tag+" "+universal_attributes+" >\n")
 

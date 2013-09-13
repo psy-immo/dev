@@ -81,6 +81,12 @@ public class BodyTag implements AnyTag {
 	private String subjectChange;
 
 	/**
+	 * text that is shown when the current subject id is not working
+	 */
+
+	private String subjectNotWorking;
+
+	/**
 	 * include efml applet
 	 * */
 
@@ -96,6 +102,7 @@ public class BodyTag implements AnyTag {
 		this.subjectChange = null;
 		this.subjectInfo = null;
 		this.subjectPrompt = null;
+		this.subjectNotWorking = null;
 
 		this.include_efml_applet = false;
 
@@ -149,6 +156,16 @@ public class BodyTag implements AnyTag {
 
 	public void setPrompt(String prompt) {
 		this.subjectPrompt = prompt;
+	}
+
+	/**
+	 * 
+	 * @param msg
+	 *            subject not working message
+	 */
+
+	public void setNotWorkingMessage(String msg) {
+		this.subjectNotWorking = msg;
 	}
 
 	/**
@@ -238,6 +255,12 @@ public class BodyTag implements AnyTag {
 		if (this.subjectInfo != null) {
 			writer.write("  subjectIdInfo = \""
 					+ StringEscape.escapeToJavaScript(this.subjectInfo)
+					+ "\";\n");
+		}
+
+		if (this.subjectNotWorking != null) {
+			writer.write("  serverNotWorking = \""
+					+ StringEscape.escapeToJavaScript(this.subjectNotWorking)
 					+ "\";\n");
 		}
 
