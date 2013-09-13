@@ -36,7 +36,7 @@ public class DropdownTag implements AnyTag, NestedTag {
 
 	private EfmlTagsAttribute attributes;
 	private String label;
-	
+
 	private ArrayList<OptionTag> options;
 
 	public DropdownTag(EfmlTagsAttribute efmlAttributes) {
@@ -53,7 +53,7 @@ public class DropdownTag implements AnyTag, NestedTag {
 		 * create new javascript dropdown object with name, tags, label, token
 		 */
 
-		createNew(writer,"");
+		this.createNew(writer,"");
 
 		/**
 		 * finally let javascript create the html code
@@ -61,7 +61,7 @@ public class DropdownTag implements AnyTag, NestedTag {
 
 		writer.write(".WriteHtml();");
 	}
-	
+
 	@Override
 	public void createNew(Writer writer, String identificationToken ) throws IOException {
 		/**
@@ -71,14 +71,22 @@ public class DropdownTag implements AnyTag, NestedTag {
 		writer.write(" new Dropdown(");
 
 		writer.write("\""
-				+ StringEscape.escapeToJavaScript(attributes.getValueOrDefault(
+				+ StringEscape.escapeToJavaScript(this.attributes.getValueOrDefault(
 						"name", identificationToken)) + "\", ");
-		writer.write(attributes.getTags() + ", ");
+		writer.write(this.attributes.getTags() + ", ");
 
-		writer.write("\"" + StringEscape.escapeToJavaScript(label) + "\", ");
+		writer.write("\"" + StringEscape.escapeToJavaScript(this.label) + "\", ");
 
-		writer.write("\"" +StringEscape.escapeToJavaScript(attributes
+		writer.write("\"" +StringEscape.escapeToJavaScript(this.attributes
 				.getValueOrDefault("value", "")) + "\")");
+
+		/**
+		 * set the listbox mode
+		 */
+		if (this.attributes.getValueOrDefault("type", "drop")
+				.compareToIgnoreCase("list") == 0) {
+			writer.write(".Listbox()");
+		}
 
 
 		/**
@@ -88,10 +96,10 @@ public class DropdownTag implements AnyTag, NestedTag {
 		 * token
 		 */
 
-		if ((attributes.getValueOrDefault("color", null) != null)
-				|| (attributes.getValueOrDefault("filled", null) != null)) {
-			String empty = attributes.getValueOrDefault("color", "#CCCCCC");
-			String filled = attributes.getValueOrDefault("filled", "#CCCCFF");
+		if ((this.attributes.getValueOrDefault("color", null) != null)
+				|| (this.attributes.getValueOrDefault("filled", null) != null)) {
+			String empty = this.attributes.getValueOrDefault("color", "#CCCCCC");
+			String filled = this.attributes.getValueOrDefault("filled", "#CCCCFF");
 
 			writer.write(".Color(\"" + StringEscape.escapeToJavaScript(empty)
 					+ "\", \"" + StringEscape.escapeToJavaScript(filled)
@@ -104,22 +112,22 @@ public class DropdownTag implements AnyTag, NestedTag {
 		 * width, height (note: give CSS sizes, e.g. 200px)
 		 */
 
-		if ((attributes.getValueOrDefault("width", null) != null)
-				|| (attributes.getValueOrDefault("height", null) != null)) {
-			String width = attributes.getValueOrDefault("width", "");
-			String height = attributes.getValueOrDefault("height", "");
+		if ((this.attributes.getValueOrDefault("width", null) != null)
+				|| (this.attributes.getValueOrDefault("height", null) != null)) {
+			String width = this.attributes.getValueOrDefault("width", "");
+			String height = this.attributes.getValueOrDefault("height", "");
 
 			writer.write(".Size(\"" + StringEscape.escapeToJavaScript(width)
 					+ "\", \"" + StringEscape.escapeToJavaScript(height)
 					+ "\")");
 		}
-		
+
 		/**
 		 * now add all drop down box options
 		 */
-		
+
 		Iterator<OptionTag> it;
-		for (it=options.iterator();it.hasNext();){
+		for (it=this.options.iterator();it.hasNext();){
 			writer.write(it.next().getJsContent());
 		}
 
@@ -137,10 +145,11 @@ public class DropdownTag implements AnyTag, NestedTag {
 			this.label += ((PlainContent) innerTag).getPlainContent().trim();
 		} else if (innerTag.getClass() == OptionTag.class) {
 			this.options.add((OptionTag) innerTag);
-		} else
+		} else {
 			throw new OperationNotSupportedException(
 					"<dropdown> cannot enclose "
 							+ innerTag.getClass().toString());
+		}
 	}
 
 	@Override
@@ -148,10 +157,10 @@ public class DropdownTag implements AnyTag, NestedTag {
 		StringBuffer representation = new StringBuffer();
 
 		representation.append("<dropdown");
-		attributes.writeXmlAttributes(representation);
+		this.attributes.writeXmlAttributes(representation);
 		representation.append(">");
 		representation.append(StringEscape.escapeToXml(this.label));
-		for (AnyTag child : options) {
+		for (AnyTag child : this.options) {
 			representation.append(child.getEfml());
 		}
 		representation.append("</dropdown>");

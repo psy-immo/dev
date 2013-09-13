@@ -534,3 +534,32 @@ form.inference {
 input.inference {
 	display: inline-block;
 }
+
+/**
+  * style used to display listbox elements without the unnecessary 
+  * right-hand scrollbar
+  */
+  
+.norightscroll {
+	display:inline-block; 
+	border:solid grey 0px; 
+	overflow:hidden;
+	vertical-align: top;
+}
+
+.norightscroll select {
+	 padding:40px; 
+	 margin:-40px -40px -40px -40px; 
+}
+
+/**
+ * additional styles to prevent glitches
+ */
+
+option.listboxoption {
+	
+}
+
+option.dropdownoption {
+	
+}

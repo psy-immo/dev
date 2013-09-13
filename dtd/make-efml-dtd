@@ -112,6 +112,7 @@ dtd.write("\n<!ATTLIST dropdown "+universal_attributes+"""
 	filled	CDATA			#IMPLIED
 	width	CDATA			#IMPLIED
 	height	CDATA			#IMPLIED
+	type    (drop|list)     #IMPLIED
  >
 """)
 
