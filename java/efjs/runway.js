@@ -127,7 +127,7 @@ function Runway(name, tags, token, accept, reject) {
 		
 
 		if (this.token) {
-			document.write("runwayNonempty");
+			document.write(" runwayNonempty");
 		} 
 		
 		document.write("\" style=\" ");

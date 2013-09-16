@@ -460,6 +460,7 @@ span.runway {
 	width: 200px;
 	height: 20px;
 	background-color: #CCCCAA; /* was colorEmpty */
+	cursor: default;
 }
 
 /**
