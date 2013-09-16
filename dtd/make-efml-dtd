@@ -3,14 +3,14 @@
 dtd = open("efml.0.0.1.0.dtd","w")
 
 html_elements = "i|b|br|p|div|span"
-efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|"+\
+efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|"+\
 				"phpurl|jsurl|documentid|studyid|subjectprompt|"+\
 				"subjectinfo|subjectchange|subjectnotworking|airport|"+\
 				"template|freetext|"+\
 				"checkbox|radiobutton|multiline|popuphelp|"+\
 				"trashcan|boxspace|efmlboard|efmlpreview|cssurl"
 efml_extra = "tables"
-nested_elements = "plain|dropdown|freetext|checkbox|radiobutton|multiline"
+nested_elements = "plain|dropdown|freetext|checkbox|radiobutton|multiline|listselection"
 editor_contents = "efmlquote"
 
 efml_root_elements = "(#PCDATA|title|"+efml_elements+"|"+efml_extra+"|"+html_elements+")*"
@@ -112,9 +112,23 @@ dtd.write("\n<!ATTLIST dropdown "+universal_attributes+"""
 	filled	CDATA			#IMPLIED
 	width	CDATA			#IMPLIED
 	height	CDATA			#IMPLIED
-	type    (drop|list)     #IMPLIED
+	
  >
 """)
+# type    (drop|list)     #IMPLIED ... not working well
+
+dtd.write("\n<!ELEMENT listselection (#PCDATA|option)* >\n")
+dtd.write("\n<!ATTLIST listselection "+universal_attributes+"""
+	name	CDATA			#IMPLIED
+	value	CDATA			#IMPLIED
+	color	CDATA			#IMPLIED
+	filled	CDATA			#IMPLIED
+	width	CDATA			#IMPLIED
+	height	CDATA			#IMPLIED
+	
+ >
+""")
+
 
 dtd.write("\n<!ELEMENT radiobutton (#PCDATA|option)* >\n")
 dtd.write("\n<!ATTLIST radiobutton "+universal_attributes+"""

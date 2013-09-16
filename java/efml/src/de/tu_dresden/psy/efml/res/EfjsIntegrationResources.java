@@ -51,6 +51,7 @@ import de.tu_dresden.psy.efml.InferenceXmlTag;
 import de.tu_dresden.psy.efml.InstructionsTag;
 import de.tu_dresden.psy.efml.JsUrlTag;
 import de.tu_dresden.psy.efml.LabelTag;
+import de.tu_dresden.psy.efml.ListselectionTag;
 import de.tu_dresden.psy.efml.MultilineTag;
 import de.tu_dresden.psy.efml.NeedJustificationTag;
 import de.tu_dresden.psy.efml.OneRequirementTag;
@@ -117,9 +118,9 @@ public class EfjsIntegrationResources {
 		"multiline.js", "sniffybutton.js", "dropdown.js", "checkbox.js",
 		"radiobutton.js", "popupbutton.js", "freetext.js", "boxspace.js",
 		"trashcan.js", "sentencepattern.js", "airport.js",
-		"hypergraphs.js", "inference.js", "efml.js", "efmlbuttons.js",
-		"efmlboard.js", "efmlcheckbox.js", "efmltag.js", "efmlquote.js",
-	"efmlfactory.js" };
+		"listselection.js", "hypergraphs.js", "inference.js", "efml.js",
+		"efmlbuttons.js", "efmlboard.js", "efmlcheckbox.js", "efmltag.js",
+		"efmlquote.js", "efmlfactory.js" };
 
 	/**
 	 * interface for constructing other classes
@@ -444,7 +445,9 @@ public class EfjsIntegrationResources {
 		new SimpleObjectConstructor(InstructionsTag.class), "sniffy",
 		new SimpleObjectConstructor(SniffyTag.class), "waitfor",
 		new SimpleObjectConstructor(WaitForTag.class), "dropdown",
-		new AttributeObjectConstructor(DropdownTag.class), "radiobutton",
+			new AttributeObjectConstructor(DropdownTag.class), "listselection",
+			new AttributeObjectConstructor(ListselectionTag.class),
+			"radiobutton",
 		new AttributeObjectConstructor(RadiobuttonTag.class), "checkbox",
 		new AttributeObjectConstructor(CheckboxTag.class), "popuphelp",
 		new AttributeObjectConstructor(PopupHelpTag.class), "freetext",
@@ -455,13 +458,12 @@ public class EfjsIntegrationResources {
 		new BodyObjectConstructor(DocumentIdTag.class), "jsurl",
 		new BodyObjectConstructor(JsUrlTag.class), "phpurl",
 		new BodyObjectConstructor(PhpUrlTag.class), "subjectinfo",
-			new BodyObjectConstructor(SubjectInfoTag.class),
-			"subjectnotworking",
-			new BodyObjectConstructor(SubjectNotWorkingTag.class),
-			"subjectprompt",
-		new BodyObjectConstructor(SubjectPromptTag.class), "subjectchange",
-		new BodyObjectConstructor(SubjectChangeTag.class), "plain",
-		new SimpleObjectConstructor(PlainTag.class), "template",
+		new BodyObjectConstructor(SubjectInfoTag.class),
+		"subjectnotworking",
+		new BodyObjectConstructor(SubjectNotWorkingTag.class),
+		"subjectprompt", new BodyObjectConstructor(SubjectPromptTag.class),
+		"subjectchange", new BodyObjectConstructor(SubjectChangeTag.class),
+		"plain", new SimpleObjectConstructor(PlainTag.class), "template",
 		new AttributeObjectConstructor(TemplateTag.class), "airport",
 		new AttributeObjectConstructor(AirportTag.class), "feedback",
 		new SimpleObjectConstructor(FeedbackTag.class), "required",

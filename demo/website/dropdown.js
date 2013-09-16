@@ -20,10 +20,16 @@ var dropdownIdCounter = 0;
 var dropdownArray = [];
 
 /**
- * creates a drop down object, that represents a drop down list
+ * creates a drop down object, that represents a drop down list or - since it
+ * uses the same html tags - a list box
  */
 function Dropdown(name, tags, label, token) {
 	this.id = dropdownIdCounter++;
+
+	/**
+	 * default to dropdown mode
+	 */
+	this.islistbox = false;
 
 	/**
 	 * Provide automatic name generation: use provided tags
@@ -31,7 +37,7 @@ function Dropdown(name, tags, label, token) {
 
 	if ((name === undefined) || (name === "") || (name === false)) {
 		this.name = "";
-		for (var i = 0; i < tags.length; ++i) {
+		for ( var i = 0; i < tags.length; ++i) {
 			this.name += tags[i];
 		}
 	} else {
@@ -44,25 +50,24 @@ function Dropdown(name, tags, label, token) {
 	} else {
 		this.token = token;
 	}
-	
+
 	this.emptyToken = this.token;
-	
+
 	if (label === undefined) {
 		this.label = "";
 	} else {
 		this.label = label;
 	}
 
-	
 	this.width = "";
 	this.height = "";
 	this.colorEmpty = "#CCCCAA";
 	this.colorFilled = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
-	
+
 	this.contentLabels = [];
 	this.contentValues = [];
-	
+
 	/**
 	 * adds another option to the drop down box
 	 * 
@@ -75,7 +80,19 @@ function Dropdown(name, tags, label, token) {
 			this.contentValues[this.contentValues.length] = value;
 		}
 		this.contentLabels[this.contentLabels.length] = label;
-		
+
+		return this;
+	};
+
+	/**
+	 * this function sets up the list box mode
+	 * 
+	 * @returns this
+	 */
+
+	this.Listbox = function() {
+		this.islistbox = true;
+
 		return this;
 	};
 
@@ -90,8 +107,6 @@ function Dropdown(name, tags, label, token) {
 
 		return this;
 	};
-
-
 
 	/**
 	 * this function sets the color parameters
@@ -109,57 +124,104 @@ function Dropdown(name, tags, label, token) {
 	 * write the HTML code that will be used for displaying the drop down
 	 */
 	this.WriteHtml = function() {
-		var idstring = "dropdown"+this.id;
-		
+		var idstring = "dropdown" + this.id;
+
 		document.write("<form onsubmit=\"return false;\" class=\"dropdown\">");
-		
-		document.write("<select name=\""+idstring+ "\" id=\""+idstring+"\" " 
-				+ "class=\"dropdown\" style=\"");
-		if (this.width) {
-			document.write("width: "+this.width+"; ");
+
+		if (this.islistbox) {
+			document.write("<div class=\"norightscroll\" style=\"");
+
+			if (this.width) {
+				document.write("width: " + this.width + "; ");
+			}
+			if (this.height) {
+				document.write("height: " + this.height + "; ");
+			}
+
+			document.write("\">");
 		}
-		if (this.height){
-			document.write("height: "+this.height+"; ");
+
+		document.write("<select name=\"" + idstring + "\" id=\"" + idstring
+				+ "\" " + "class=\"dropdown\" style=\"");
+		if (!this.islistbox) {
+			if (this.width) {
+				document.write("width: " + this.width + "; ");
+			}
+			if (this.height) {
+				document.write("height: " + this.height + "; ");
+			}
 		}
-		document.write("\" "		
-				+ "onchange=\"dropdownArray["+this.id+"].OnChange();\" "
-				+ ">");
-		document.write("<option value=\""+this.token+"\">"+this.label+"</option>");
-		
+		document.write("\" " + "onchange=\"dropdownArray[" + this.id
+				+ "].OnChange();\" ");
+
+		if (this.islistbox) {
+			document.write(" size=\"" + this.contentLabels.length + "\"");
+		}
+
+		document.write(">");
+
+		if (!this.islistbox) {
+			document.write("<option class=\"dropdownoption\" value=\""
+					+ this.token + "\">" + this.label + "</option>");
+		}
+
 		for ( var int = 0; int < this.contentLabels.length; int++) {
-			document.write("<option value=\""+this.contentValues[int]+"\">");
+			if (this.islistbox) {
+				document.write("<option class=\"listboxoption\" value=\""
+						+ this.contentValues[int] + "\">");
+			} else {
+				document.write("<option class=\"dropdownoption\" value=\""
+						+ this.contentValues[int] + "\">");
+			}
 			document.write(this.contentLabels[int]);
 			document.write("</option>");
 		}
-		
-		document.write("</select>");	
-		
+
+		document.write("</select>");
+
+		if (this.islistbox) {
+			document.write("</div>");
+		}
+
 		document.write("</form>");
 	};
-	
+
 	/**
 	 * this function is called when the drop down box changes its contents
 	 */
 	this.OnChange = function() {
-		var html_element = $("dropdown"+this.id);
-	
-		
-		if (html_element.selectedIndex > 0) {
-			
-			html_element.addClassName("dropdownNonempty");
-			this.token = this.contentValues[html_element.selectedIndex - 1];
+		var html_element = $("dropdown" + this.id);
+
+		if (this.islistbox) {
+			if (html_element.selectedIndex >= 0) {
+
+				html_element.addClassName("dropdownNonempty");
+				this.token = this.contentValues[html_element.selectedIndex - 1];
+			} else {
+				html_element.removeClassName("dropdownNonempty");
+
+				this.token = this.emptyToken;
+			}
+
 		} else {
-			html_element.removeClassName("dropdownNonempty");
-			
-			this.token = this.emptyToken;
+
+			if (html_element.selectedIndex > 0) {
+
+				html_element.addClassName("dropdownNonempty");
+				this.token = this.contentValues[html_element.selectedIndex - 1];
+			} else {
+				html_element.removeClassName("dropdownNonempty");
+
+				this.token = this.emptyToken;
+			}
 		}
-		
+
 		/**
 		 * also demark the goodness of the dropdown
 		 */
-		
+
 		html_element.removeClassName("dropdownMarkedGood");
-		
+
 		myLogger.Log(this.name + " <- " + this.token);
 	};
 
@@ -167,7 +229,7 @@ function Dropdown(name, tags, label, token) {
 	 * this function marks the current drop down green
 	 */
 	this.MarkAsGood = function() {
-		var html_element = $("dropdown"+this.id);
+		var html_element = $("dropdown" + this.id);
 		html_element.addClassName("dropdownMarkedGood");
 	};
 
@@ -175,47 +237,46 @@ function Dropdown(name, tags, label, token) {
 	 * this function demarks the current drop down
 	 */
 	this.MarkNeutral = function() {
-		var html_element = $("dropdown"+this.id);
+		var html_element = $("dropdown" + this.id);
 		html_element.removeClassName("dropdownMarkedGood");
 	};
-	
+
 	/**
 	 * return the current contents of the drop down as string
 	 */
 	this.GetValue = function() {
-		var element = document.getElementById("dropdown"+this.id);
+		var element = document.getElementById("dropdown" + this.id);
 		return element.selectedIndex;
 	};
-	
+
 	/**
 	 * restore the drop down state from string
 	 */
-	
+
 	this.SetValue = function(contents) {
-		var html_element = $("dropdown"+this.id);
+		var html_element = $("dropdown" + this.id);
 		html_element.selectedIndex = contents;
-		
+
 		if (html_element.selectedIndex > 0) {
-			
+
 			html_element.addClassName("dropdownNonempty");
 			this.token = this.contentValues[html_element.selectedIndex - 1];
 		} else {
 			html_element.removeClassName("dropdownNonempty");
-			
+
 			this.token = this.emptyToken;
 		}
-		
+
 		/**
 		 * also demark the goodness of the dropdown
 		 */
-		
+
 		html_element.removeClassName("dropdownMarkedGood");
-	
+
 	};
 
 	dropdownArray[this.id] = this;
 	myTags.Add(this, this.tags);
-	
-	myStorage.RegisterField(this,"dropdownArray["+this.id+"]");
-}
 
+	myStorage.RegisterField(this, "dropdownArray[" + this.id + "]");
+}

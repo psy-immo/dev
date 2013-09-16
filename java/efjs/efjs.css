@@ -537,7 +537,7 @@ input.inference {
 
 /**
   * style used to display listbox elements without the unnecessary 
-  * right-hand scrollbar
+  * right-hand scrollbar... well its not working as expected...
   */
   
 .norightscroll {
@@ -553,13 +553,11 @@ input.inference {
 }
 
 /**
- * additional styles to prevent glitches
- */
+  * styles for list box selection
+  */
 
-option.listboxoption {
-	
-}
-
-option.dropdownoption {
-	
+table.listselectioncontainer {
+	display:inline-block;
+	border:solid grey 0px; 
+	vertical-align: top;
 }

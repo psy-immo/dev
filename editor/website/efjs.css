@@ -534,3 +534,30 @@ form.inference {
 input.inference {
 	display: inline-block;
 }
+
+/**
+  * style used to display listbox elements without the unnecessary 
+  * right-hand scrollbar... well its not working as expected...
+  */
+  
+.norightscroll {
+	display:inline-block; 
+	border:solid grey 0px; 
+	overflow:hidden;
+	vertical-align: top;
+}
+
+.norightscroll select {
+	 padding:40px; 
+	 margin:-40px -40px -40px -40px; 
+}
+
+/**
+  * styles for list box selection
+  */
+
+table.listselectioncontainer {
+	display:inline-block;
+	border:solid grey 0px; 
+	vertical-align: top;
+}
