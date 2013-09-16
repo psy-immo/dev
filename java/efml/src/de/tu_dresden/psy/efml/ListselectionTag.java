@@ -53,7 +53,7 @@ public class ListselectionTag implements AnyTag, NestedTag {
 		 * create new javascript dropdown object with name, tags, label, token
 		 */
 
-		this.createNew(writer,"");
+		this.createNew(writer, "");
 
 		/**
 		 * finally let javascript create the html code
@@ -63,7 +63,8 @@ public class ListselectionTag implements AnyTag, NestedTag {
 	}
 
 	@Override
-	public void createNew(Writer writer, String identificationToken ) throws IOException {
+	public void createNew(Writer writer, String identificationToken)
+			throws IOException {
 		/**
 		 * create new javascript dropdown object with name, tags, label, token
 		 */
@@ -71,16 +72,17 @@ public class ListselectionTag implements AnyTag, NestedTag {
 		writer.write(" new ListSelection(");
 
 		writer.write("\""
-				+ StringEscape.escapeToJavaScript(this.attributes.getValueOrDefault(
-						"name", identificationToken)) + "\", ");
+				+ StringEscape.escapeToJavaScript(this.attributes
+						.getValueOrDefault("name", identificationToken))
+						+ "\", ");
 		writer.write(this.attributes.getTags() + ", ");
 
-		writer.write("\"" + StringEscape.escapeToJavaScript(this.label) + "\", ");
+		writer.write("\"" + StringEscape.escapeToJavaScript(this.label)
+				+ "\", ");
 
-		writer.write("\"" +StringEscape.escapeToJavaScript(this.attributes
-				.getValueOrDefault("value", "")) + "\")");
-
-
+		writer.write("\""
+				+ StringEscape.escapeToJavaScript(this.attributes
+						.getValueOrDefault("value", "")) + "\")");
 
 		/**
 		 * set the background colors for the drop down box
@@ -91,8 +93,10 @@ public class ListselectionTag implements AnyTag, NestedTag {
 
 		if ((this.attributes.getValueOrDefault("color", null) != null)
 				|| (this.attributes.getValueOrDefault("filled", null) != null)) {
-			String empty = this.attributes.getValueOrDefault("color", "#CCCCCC");
-			String filled = this.attributes.getValueOrDefault("filled", "#CCCCFF");
+			String empty = this.attributes
+					.getValueOrDefault("color", "#CCCCCC");
+			String filled = this.attributes.getValueOrDefault("filled",
+					"#CCCCFF");
 
 			writer.write(".Color(\"" + StringEscape.escapeToJavaScript(empty)
 					+ "\", \"" + StringEscape.escapeToJavaScript(filled)
@@ -116,11 +120,21 @@ public class ListselectionTag implements AnyTag, NestedTag {
 		}
 
 		/**
+		 * add optional css class names for the td elements
+		 */
+
+		if (this.attributes.getValueOrDefault("tdclass", null) != null) {
+			writer.write(".TdClasses(\""
+					+ StringEscape.escapeToJavaScript(this.attributes
+							.getValueOrDefault("tdclass", "")) + "\")");
+		}
+
+		/**
 		 * now add all drop down box options
 		 */
 
 		Iterator<OptionTag> it;
-		for (it=this.options.iterator();it.hasNext();){
+		for (it = this.options.iterator(); it.hasNext();) {
 			writer.write(it.next().getJsContent());
 		}
 

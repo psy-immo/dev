@@ -125,7 +125,7 @@ dtd.write("\n<!ATTLIST listselection "+universal_attributes+"""
 	filled	CDATA			#IMPLIED
 	width	CDATA			#IMPLIED
 	height	CDATA			#IMPLIED
-	
+	tdclass CDATA			#IMPLIED
  >
 """)
 

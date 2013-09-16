@@ -553,11 +553,41 @@ input.inference {
 }
 
 /**
+ ***********************************
+ * styles for listselection.js
+ ***********************************
+ */
+
+/**
   * styles for list box selection
   */
 
-table.listselectioncontainer {
+table.listselection {
 	display:inline-block;
 	border:solid grey 0px; 
 	vertical-align: top;
+	
+	cursor: default;
+	
+	background-color: #CCCCAA;
+}
+
+tr.listselectionSelected {
+	background-color: #9999FF;	
+}
+
+table.listselectionNonEmpty {
+	background-color: #CCCCFF;	
+}
+
+td.align-center {
+	text-align: center;	
+}
+
+td.align-left {
+	text-align: left;	
+}
+
+td.align-right {
+	text-align: right;	
 }

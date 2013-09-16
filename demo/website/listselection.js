@@ -25,6 +25,12 @@ var listselectionArray = [];
  */
 function ListSelection(name, tags, label, token) {
 	this.id = listselectionIdCounter++;
+	
+	/**
+	 * allow addition td-classes
+	 */
+	
+	this.tdClasses = "";
 
 	/**
 	 * Provide automatic name generation: use provided tags
@@ -62,7 +68,7 @@ function ListSelection(name, tags, label, token) {
 
 	this.contentLabels = [];
 	this.contentValues = [];
-	
+
 	/**
 	 * store the current selection, -1 => nothing selected
 	 */
@@ -81,6 +87,19 @@ function ListSelection(name, tags, label, token) {
 		}
 		this.contentLabels[this.contentLabels.length] = label;
 
+		return this;
+	};
+	
+	/**
+	 *
+	 * adds some classes that are inherited by td, use it for alignment etc...
+	 * 
+	 * @returns this 
+	 */
+	
+	this.TdClasses = function(classlist) {
+		this.tdClasses = classlist;
+		
 		return this;
 	};
 
@@ -126,7 +145,7 @@ function ListSelection(name, tags, label, token) {
 	this.WriteHtml = function() {
 		var idstring = "listselection" + this.id;
 
-		document.write("<table class=\"listselectioncontainer\" id=\"" + idstring
+		document.write("<table class=\"listselection\" id=\"" + idstring
 				+ "\" style=\" ");
 
 		if (this.width) {
@@ -138,17 +157,30 @@ function ListSelection(name, tags, label, token) {
 
 		document.write("\">");
 
-		
 		for ( var int = 0; int < this.contentLabels.length; int++) {
-			document.write("<tr class=\"listselectioncontainer\" id=\""+idstring+"["+int+"]\">");
-			document.write("<td>");
+			document.write("<tr class=\"listselection\" id=\"" + idstring + "["
+					+ int + "]\" " + " onclick=\"listselectionArray[" + this.id
+					+ "].OnClick(" + int + ");\"" + ">");
+			document.write("<td class=\""+this.tdClasses+"\">");
 			document.write(this.contentValues[int]);
 			document.write("</td></tr>");
 		}
 
-		
 		document.write("</table>");
 
+	};
+
+	/**
+	 * this handler is called, whenever a row of the list selection is clicked
+	 */
+	this.OnClick = function(which) {
+		this.SetValue(which);
+
+		/**
+		 * log the interaction
+		 */
+
+		myLogger.Log(this.name + " <- " + this.token);
 	};
 
 	/**
@@ -187,7 +219,6 @@ function ListSelection(name, tags, label, token) {
 
 		html_element.removeClassName("listselectionMarkedGood");
 
-		myLogger.Log(this.name + " <- " + this.token);
 	};
 
 	/**
@@ -218,22 +249,31 @@ function ListSelection(name, tags, label, token) {
 	 */
 
 	this.SetValue = function(contents) {
-		
-		this.selection = contents;
-		
-		
-		
+		this.selection = parseInt(contents);
+
 		var html_element = $("listselection" + this.id);
 		html_element.selectedIndex = contents;
 
-		if (html_element.selectedIndex > 0) {
+		if (this.selection >= 0) {
+			html_element.addClassName("listselectionNonEmpty");
 
-			html_element.addClassName("listselectionNonempty");
-			this.token = this.contentValues[html_element.selectedIndex - 1];
+			this.token = this.contentValues[this.selection];
+
 		} else {
-			html_element.removeClassName("listselectionNonempty");
+
+			html_element.removeClassName("listselectionNonEmpty");
 
 			this.token = this.emptyToken;
+		}
+
+		for ( var int = 0; int < this.contentLabels.length; int++) {
+			var line_element = $("listselection" + this.id + "[" + int + "]");
+
+			if (int == this.selection) {
+				line_element.addClassName("listselectionSelected");
+			} else {
+				line_element.removeClassName("listselectionSelected");
+			}
 		}
 
 		/**

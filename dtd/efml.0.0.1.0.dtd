@@ -179,7 +179,7 @@
 	filled	CDATA			#IMPLIED
 	width	CDATA			#IMPLIED
 	height	CDATA			#IMPLIED
-	
+	tdclass CDATA			#IMPLIED
  >
 
 <!ELEMENT radiobutton (#PCDATA|option)* >
