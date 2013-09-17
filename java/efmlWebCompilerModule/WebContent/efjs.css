@@ -60,6 +60,11 @@ td.stacktraceline {
  * styles for airport.js
  ***********************************
  */
+ 
+ img.airportTrashcan {
+ 	width: 24px;
+ 	height: 24px;
+ }
 
 /**
  * outer object style
@@ -460,6 +465,14 @@ span.runway {
 	width: 200px;
 	height: 20px;
 	background-color: #CCCCAA; /* was colorEmpty */
+	cursor: default;
+}
+
+/**
+ * style change for empty run ways
+ */
+span.runwayEmpty {
+	
 }
 
 /**
@@ -492,14 +505,17 @@ span.sentencepatternBox {
 	background-color: #DDDDDD; /* was colorBox */
 }
 
+img.sentencepatterntakeoff {
+	width: 32px;
+	height: 32px;
+}
+
 /*
  * style for the UP box
  */
 span.sentencepattern {
 	display: inline-block;
-	background-color: #EEEEEE; /* was colorFilled */
-	width: 20px;
-	height: 20px;
+	
 }
 
 /**
@@ -507,12 +523,10 @@ span.sentencepattern {
  * styles for trashcan.js
  ***********************************
  */
-div.trashcan {
+img.trashcan {
 	display: inline-block;
-	background-color: #888888; /* was colorGround */
-	color: #CC0000; /* was colorBoxes */
-	width: 50px;
-	height: 50px;
+	width: 128px;
+	height: 128px;
 }
 
 /**

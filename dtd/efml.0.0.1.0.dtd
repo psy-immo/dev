@@ -92,7 +92,7 @@
 
 	name	CDATA			#IMPLIED
 	content	(respawn|refilling)	#IMPLIED
-	color	CDATA			#IMPLIED
+	empty	CDATA			#IMPLIED
 	filled	CDATA			#IMPLIED
 	width	CDATA			#IMPLIED
 	height	CDATA			#IMPLIED
@@ -271,7 +271,7 @@
 
 <!ELEMENT subjectnotworking (#PCDATA)* >
 
-<!ELEMENT template (plain|dropdown|freetext|checkbox|radiobutton|multiline|listselection)* >
+<!ELEMENT template (plain|dropdown|freetext|checkbox|radiobutton|multiline|listselection|runway)* >
 
 <!ATTLIST template 
 	tags	CDATA	#IMPLIED

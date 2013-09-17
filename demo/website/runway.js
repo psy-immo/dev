@@ -44,8 +44,8 @@ function Runway(name, tags, token, accept, reject) {
 	this.respawn = null;
 	this.width = "";
 	this.height = "";
-	this.colorEmpty = "#CCCCCC";
-	this.colorFilled = "#CCCCFF";
+	this.colorEmpty = "runwayEmpty";
+	this.colorFilled = "runwayNonempty";
 	this.colorGood = "#CCFFCC";
 	this.markedgood = false;
 	this.accept = accept;
@@ -127,8 +127,10 @@ function Runway(name, tags, token, accept, reject) {
 		
 
 		if (this.token) {
-			document.write("runwayNonempty");
-		} 
+			document.write(" "+this.colorFilled);
+		}  else {
+			document.write(" "+this.colorEmpty);
+		}
 		
 		document.write("\" style=\" ");
 		if (this.width) {
@@ -164,12 +166,15 @@ function Runway(name, tags, token, accept, reject) {
 		this.token = token;
 		var html_object = $("runway" + this.id);
 		if (token) {
-			html_object.addClassName("runwayNonempty");
+			html_object.addClassName(this.colorFilled);
+			html_object.removeClassName(this.colorEmpty);
+			html_object.innerHTML = token;
 		} else {
 			html_object.innerHTML = "&nbsp;";
-			html_object.removeClassName("runwayNonempty");
+			html_object.removeClassName(this.colorFilled);
+			html_object.addClassName(this.colorEmpty);
 		};
-
+		
 	};
 
 	/**
@@ -187,9 +192,11 @@ function Runway(name, tags, token, accept, reject) {
 	this.MarkNeutral = function() {
 		var html_object = $("runway" + this.id);
 		if (this.token) {
-			html_object.addClassName("runwayNonempty");
+			html_object.addClassName(this.colorFilled);
+			html_object.removeClassName(this.colorEmpty);
 		} else {
-			html_object.removeClassName("runwayNonempty");
+			html_object.removeClassName(this.colorFilled);
+			html_object.addClassName(this.colorEmpty);
 		}
 		html_object.removeClassName("runwayMarkedGood");
 		this.markedgood = false;

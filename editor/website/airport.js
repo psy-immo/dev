@@ -112,8 +112,7 @@ function Airport(name, tags, accept, reject) {
 	this.UpdateContents = function() {
 
 		var element = document.getElementById("airport" + this.id);
-		var contents =  "<table class=\"airport\" style=\"";
-
+		var contents = "<table class=\"airport\" style=\"";
 
 		contents += "\">";
 
@@ -126,7 +125,7 @@ function Airport(name, tags, accept, reject) {
 			 */
 
 			contents += "<tr class=\"airportGap\" style=\"";
-			
+
 			contents += "\" ";
 			contents += "onClick=\"airportArray[" + this.id + "].OnClickRow("
 					+ count + ")\"><td>";
@@ -149,17 +148,19 @@ function Airport(name, tags, accept, reject) {
 				contents += "airportNonempty";
 			else
 				contents += "airportEmpty";
-			
+
 			contents += "\"";
 			contents += " style=\"";
 			contents += "\" >";
-			
-			
+
 			contents += "<td class=\"airportButtonDel\" style=\"";
 			contents += " \" onClick=\"airportArray[" + this.id
 					+ "].OnDeleteRow(" + count + ")\">";
-			contents += "Del";
-			contents += "</td><td onClick=\"airportArray[" + this.id
+			contents += "<img class=\"airportTrashcan\" src=\""
+					+ logletBaseURL
+					+ "TRASH_FULL-CC-Attribution-Noncommercial-NoDerivate-3.0-Gordon-Irving--www.gordonirvingdesign.com.png\"/>";
+			contents += "</td>";
+			contents += "<td onClick=\"airportArray[" + this.id
 					+ "].OnClickRow(" + count + ")\">";
 			contents += this.content[int];
 
@@ -175,7 +176,7 @@ function Airport(name, tags, accept, reject) {
 
 		contents += "<tr class=\"airportGap\" style=\"";
 		contents += "\" ";
-		
+
 		contents += "onClick=\"airportArray[" + this.id + "].OnClickRow("
 				+ count + ")\"><td>&nbsp;";
 		contents += "</td><td>&nbsp;</td></tr>";
@@ -278,7 +279,7 @@ function Airport(name, tags, accept, reject) {
 		document.write(" class=\"airport\" ");
 
 		document.write(" style=\" ");
-		
+
 		if (this.width) {
 			document.write("width:" + this.width + "; ");
 		}
@@ -300,9 +301,9 @@ function Airport(name, tags, accept, reject) {
 		 */
 
 		contents += "<tr class=\"airportEmpty\" style=\"";
-		
+
 		contents += "\" ";
-		
+
 		contents += "onClick=\"airportArray[" + this.id
 				+ "].OnClickRow(0)\"><td>&nbsp;";
 		contents += "</td><td>&nbsp;</td></tr>";
@@ -418,13 +419,12 @@ function Airport(name, tags, accept, reject) {
 			 * the event handlers will be bubbling or capturing, depends on
 			 * browser, so handle it twice, this is the capturing part
 			 */
-			/** old
+			/**
+			 * old
 			 * 
 			 * 
-			  if (myHover.source.TakeAway) {
-				myHover.source.TakeAway();
-			}
-			*/
+			 * if (myHover.source.TakeAway) { myHover.source.TakeAway(); }
+			 */
 
 			/**
 			 * now crash down the plane

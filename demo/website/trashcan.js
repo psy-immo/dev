@@ -49,7 +49,7 @@ function Trashcan(name, tags, accept, reject) {
 	this.colorBoxes = "#CC0000";
 	this.colorGood = "#CCFFCC";
 	
-	this.label = "Re- cycle";
+	this.label = "Re- cycle!";
 
 	this.accept = accept;
 	this.reject = reject;
@@ -104,7 +104,7 @@ function Trashcan(name, tags, accept, reject) {
 	 * write the HTML code that will be used for displaying the trash can
 	 */
 	this.WriteHtml = function() {
-		document.write("<div id=\"trashcan" + this.id + "\" ");
+		document.write("<img id=\"trashcan" + this.id + "\" ");
 
 		document.write(" class=\"trashcan\" style=\" ");
 		
@@ -117,11 +117,10 @@ function Trashcan(name, tags, accept, reject) {
 		}
 
 
-		document.write("\">");
+		document.write("\" src=\""+logletBaseURL+"TRASH_FULL-CC-Attribution-Noncommercial-NoDerivate-3.0-Gordon-Irving--www.gordonirvingdesign.com.png\"/>");
 
 
-		document.write("Re- cycle !");
-		document.write("</div>");
+		
 
 		/**
 		 * ignore default click handlers, install own handlers

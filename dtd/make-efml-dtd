@@ -10,7 +10,7 @@ efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|listselecti
 				"checkbox|radiobutton|multiline|popuphelp|"+\
 				"trashcan|boxspace|efmlboard|efmlpreview|cssurl"
 efml_extra = "tables"
-nested_elements = "plain|dropdown|freetext|checkbox|radiobutton|multiline|listselection"
+nested_elements = "plain|dropdown|freetext|checkbox|radiobutton|multiline|listselection|runway"
 editor_contents = "efmlquote"
 
 efml_root_elements = "(#PCDATA|title|"+efml_elements+"|"+efml_extra+"|"+html_elements+")*"
@@ -63,7 +63,7 @@ dtd.write("\n<!ELEMENT runway (#PCDATA)* >\n")
 dtd.write("\n<!ATTLIST runway "+universal_attributes+"""
 	name	CDATA			#IMPLIED
 	content	(respawn|refilling)	#IMPLIED
-	color	CDATA			#IMPLIED
+	empty	CDATA			#IMPLIED
 	filled	CDATA			#IMPLIED
 	width	CDATA			#IMPLIED
 	height	CDATA			#IMPLIED

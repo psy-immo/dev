@@ -46,6 +46,10 @@ function SentencePattern(name, tags, generators, nonempty) {
 	this.colorFilled = "#EEEEEE";
 	this.colorBox = "#DDDDDD";
 	this.noTakeOff = false;
+	/**
+	 * if nonempty evaluates to true, then we may not take off until all parts
+	 * of the sentence box are filled.
+	 */
 	this.nonempty = nonempty;
 
 	/**
@@ -103,6 +107,20 @@ function SentencePattern(name, tags, generators, nonempty) {
 		document.write(" class=\"sentencepatternBox\" ");
 		document.write(" >");
 
+		document.write("<span class=\"sentencepattern\" id=\"sentencePattern"
+				+ this.id + "\" ");
+
+		document.write(" style=\" ");
+		document.write("\" ");
+
+		document.write("onClick=\"sentencePatternArray[" + this.id
+				+ "].OnClick()\">");
+
+		document.write("<img class=\"sentencepatterntakeoff\" src=\""
+				+ logletBaseURL
+				+ "plane-freeware-jonas-hellwig--softicons.com.png\">");
+		document.write("</span>");
+
 		for ( var int = 0; int < this.generators.length; ++int) {
 			var part = this.generators[int];
 			if (typeof part == "string") {
@@ -112,21 +130,12 @@ function SentencePattern(name, tags, generators, nonempty) {
 			}
 		}
 
-		document.write("&nbsp;<span class=\"sentencepattern\" id=\"sentencePattern" + this.id + "\" ");
+		document.write("</span>");
 
-		document.write(" style=\" ");
-		document.write("\" ");
-		
-		document.write("onClick=\"sentencePatternArray[" + this.id
-				+ "].OnClick()\">");
-		document.write("Up");
-		document.write("</span>");
-		document.write("</span>");
-		
 		/**
 		 * ignore default click handlers
 		 */
-		
+
 		addMouseClickHook("sentencePattern" + this.id, 0, null);
 
 	};

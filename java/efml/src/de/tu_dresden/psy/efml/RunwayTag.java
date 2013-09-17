@@ -30,7 +30,7 @@ import javax.naming.OperationNotSupportedException;
  * 
  */
 
-public class RunwayTag implements AnyTag {
+public class RunwayTag implements NestedTag {
 
 	private EfmlTagsAttribute attributes;
 	private String token;
@@ -42,7 +42,36 @@ public class RunwayTag implements AnyTag {
 
 	@Override
 	public void open(Writer writer) throws IOException {
+
+		/**
+		 * in stand-alone mode, we need to open a javascript tag first
+		 */
 		writer.write("<script type=\"text/javascript\">");
+
+		this.createNew(writer, "");
+
+		/**
+		 * finally, call the javascript code to render the html elements
+		 */
+
+		writer.write(".WriteHtml();");
+
+		/**
+		 * we close the script tag again
+		 */
+		writer.write(" </script>");
+	}
+
+	@Override
+	public void close(Writer writer) throws IOException {
+		/**
+		 * do nothing
+		 */
+	}
+
+	@Override
+	public void createNew(Writer writer, String identificationToken)
+			throws IOException {
 
 		/**
 		 * create new javascript Runway object with name, tags, token, accept,
@@ -52,14 +81,16 @@ public class RunwayTag implements AnyTag {
 		writer.write(" new Runway(");
 
 		writer.write("\""
-				+ StringEscape.escapeToJavaScript(attributes.getValueOrDefault(
-						"name", "")) + "\", ");
-		writer.write(attributes.getTags() + ", ");
+				+ StringEscape.escapeToJavaScript(this.attributes
+						.getValueOrDefault("name", identificationToken))
+						+ "\", ");
+		writer.write(this.attributes.getTags() + ", ");
 
-		writer.write("\"" + StringEscape.escapeToJavaScript(token) + "\", ");
+		writer.write("\"" + StringEscape.escapeToJavaScript(this.token)
+				+ "\", ");
 
-		writer.write(attributes.getAcceptTags() + ", ");
-		writer.write(attributes.getRejectTags() + ")");
+		writer.write(this.attributes.getAcceptTags() + ", ");
+		writer.write(this.attributes.getRejectTags() + ")");
 
 		/**
 		 * content attribute will change behavior,
@@ -68,7 +99,8 @@ public class RunwayTag implements AnyTag {
 		 * run way refill contents will be refilled instantly after take off
 		 */
 
-		String content = attributes.getValueOrDefault("content", "").trim();
+		String content = this.attributes.getValueOrDefault("content", "")
+				.trim();
 
 		if (content.equalsIgnoreCase("RESPAWN")) {
 			writer.write(".Respawn()");
@@ -78,16 +110,15 @@ public class RunwayTag implements AnyTag {
 		}
 
 		/**
-		 * set the background colors for the run way
-		 * 
-		 * color empty background color filled background color when filled with
-		 * token
+		 * set the run way CSS classes for empty and filled runways
 		 */
 
-		if ((attributes.getValueOrDefault("color", null) != null)
-				|| (attributes.getValueOrDefault("filled", null) != null)) {
-			String empty = attributes.getValueOrDefault("color", "#CCCCCC");
-			String filled = attributes.getValueOrDefault("filled", "#CCCCFF");
+		if ((this.attributes.getValueOrDefault("empty", null) != null)
+				|| (this.attributes.getValueOrDefault("filled", null) != null)) {
+			String empty = this.attributes.getValueOrDefault("empty",
+					"runwayEmpty");
+			String filled = this.attributes.getValueOrDefault("filled",
+					"runwayFilled");
 
 			writer.write(".Color(\"" + StringEscape.escapeToJavaScript(empty)
 					+ "\", \"" + StringEscape.escapeToJavaScript(filled)
@@ -100,26 +131,15 @@ public class RunwayTag implements AnyTag {
 		 * width, height (note: give CSS sizes, e.g. 200px)
 		 */
 
-		if ((attributes.getValueOrDefault("width", null) != null)
-				|| (attributes.getValueOrDefault("height", null) != null)) {
-			String width = attributes.getValueOrDefault("width", "200px");
-			String height = attributes.getValueOrDefault("height", "20px");
+		if ((this.attributes.getValueOrDefault("width", null) != null)
+				|| (this.attributes.getValueOrDefault("height", null) != null)) {
+			String width = this.attributes.getValueOrDefault("width", "200px");
+			String height = this.attributes.getValueOrDefault("height", "20px");
 
 			writer.write(".Size(\"" + StringEscape.escapeToJavaScript(width)
 					+ "\", \"" + StringEscape.escapeToJavaScript(height)
 					+ "\")");
 		}
-
-		/**
-		 * finally let javascript create the html code
-		 */
-
-		writer.write(".WriteHtml();");
-	}
-
-	@Override
-	public void close(Writer writer) throws IOException {
-		writer.write(" </script>");
 	}
 
 	@Override
@@ -127,21 +147,22 @@ public class RunwayTag implements AnyTag {
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
 			this.token += ((PlainContent) innerTag).getContent();
-		} else
+		} else {
 			throw new OperationNotSupportedException("<runway> cannot enclose "
 					+ innerTag.getClass().toString());
+		}
 	}
-	
+
 	@Override
 	public String getEfml() {
 		StringBuffer representation = new StringBuffer();
-		
+
 		representation.append("<runway");
-		attributes.writeXmlAttributes(representation);
+		this.attributes.writeXmlAttributes(representation);
 		representation.append(">");
 		representation.append(this.token);
 		representation.append("</runway>");
-		
+
 		return representation.toString();
 	}
 
