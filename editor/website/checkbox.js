@@ -66,6 +66,23 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked, embeddedMode)
 	this.colorGood = "#CCFFCC";
 
 	this.defaultChecked = false;
+	
+	/**
+	 * store subscription functions
+	 */
+	
+	this.subscribers = [];
+	
+	/**
+	 * add a function that is called everytime the contents change.
+	 * 
+	 * @param fn  function that is called on update
+	 */
+	
+	this.SubscribeUpdates = function(fn) {
+		this.subscribers.push(fn);
+	};
+
 
 	/**
 	 * this function makes the checkbox checked by default
@@ -150,6 +167,16 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked, embeddedMode)
 
 		this.MarkNeutral();
 		myLogger.Log(this.name + " <- " + this.token);
+		
+
+		/**
+		 * notify subscribers about the update
+		 */
+		
+		for ( var int = 0; int < this.subscribers.length; int++) {
+			var notificator = this.subscribers[int];
+			notificator();
+		}
 	};
 
 	/**
@@ -200,6 +227,16 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked, embeddedMode)
 		} else {
 			element.checked = true;
 			this.token = this.tokenChecked;
+		}
+		
+
+		/**
+		 * notify subscribers about the update
+		 */
+		
+		for ( var int = 0; int < this.subscribers.length; int++) {
+			var notificator = this.subscribers[int];
+			notificator();
 		}
 
 	};

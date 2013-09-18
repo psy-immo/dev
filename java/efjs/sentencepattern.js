@@ -97,6 +97,28 @@ function SentencePattern(name, tags, generators, nonempty) {
 
 		return this;
 	};
+	
+	/**
+	 * @returns true, if the sentence pattern may be dragged off
+	 */
+	
+	this.MayTakeoff = function() {
+		var may_takeoff = true;
+		for ( var int = 0; int < this.generators.length; ++int) {
+			var part = this.generators[int];
+			if (typeof part == "string") {
+			} else if (typeof part == "object") {
+				if (part.token) {
+				} else {
+					if (this.nonempty) {
+						may_takeoff = false;
+					}						
+				}
+			}
+		}
+		
+		return may_takeoff;
+	};
 
 	/**
 	 * write the HTML code that will be used for displaying the run way
@@ -104,7 +126,13 @@ function SentencePattern(name, tags, generators, nonempty) {
 	this.WriteHtml = function() {
 		document.write("<span id=\"sentencePatternBox" + this.id + "\" ");
 
-		document.write(" class=\"sentencepatternBox\" ");
+		document.write(" class=\"sentencepatternBox");
+		
+		if (this.MayTakeoff()) {
+			document.write(" sentencePatternMayTakeoff");
+		}
+		
+		document.write("\" ");
 		document.write(" >");
 
 		document.write("<span class=\"sentencepattern\" id=\"sentencePattern"
@@ -127,6 +155,19 @@ function SentencePattern(name, tags, generators, nonempty) {
 				document.write(part);
 			} else if (typeof part == "object") {
 				part.WriteHtml();
+
+				/**
+				 * if the child object allows update subscription, then
+				 * subscribe
+				 */
+
+				if (part.SubscribeUpdates) {
+					part.SubscribeUpdates(function(me) {
+						return function() {
+							me.UpdatedContents();
+						};
+					}(this));
+				}
 			}
 		}
 
@@ -138,6 +179,20 @@ function SentencePattern(name, tags, generators, nonempty) {
 
 		addMouseClickHook("sentencePattern" + this.id, 0, null);
 
+	};
+	
+
+	/**
+	 * callback if a child object has updated its data
+	 */
+
+	this.UpdatedContents = function() {
+		var html_container = $("sentencePatternBox" + this.id);
+		if (this.MayTakeoff()) {
+			html_container.addClassName("sentencePatternMayTakeoff");
+		} else {
+			html_container.removeClassName("sentencePatternMayTakeoff");
+		}
 	};
 
 	/**

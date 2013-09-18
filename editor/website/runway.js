@@ -53,6 +53,22 @@ function Runway(name, tags, token, accept, reject) {
 	this.doRespawn = null;
 	this.stayFilled = false;
 	this.noTakeOff = false;
+	
+	/**
+	 * store subscription functions
+	 */
+	
+	this.subscribers = [];
+	
+	/**
+	 * add a function that is called everytime the contents change.
+	 * 
+	 * @param fn  function that is called on update
+	 */
+	
+	this.SubscribeUpdates = function(fn) {
+		this.subscribers.push(fn);
+	};
 
 	/**
 	 * this function sets the bounding parameters
@@ -175,6 +191,15 @@ function Runway(name, tags, token, accept, reject) {
 			html_object.addClassName(this.colorEmpty);
 		};
 		
+
+		/**
+		 * notify subscribers about the update
+		 */
+		
+		for ( var int = 0; int < this.subscribers.length; int++) {
+			var notificator = this.subscribers[int];
+			notificator();
+		}
 	};
 
 	/**

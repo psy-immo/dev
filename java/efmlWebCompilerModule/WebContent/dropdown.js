@@ -67,6 +67,22 @@ function Dropdown(name, tags, label, token) {
 
 	this.contentLabels = [];
 	this.contentValues = [];
+	
+	/**
+	 * store subscription functions
+	 */
+	
+	this.subscribers = [];
+	
+	/**
+	 * add a function that is called everytime the contents change.
+	 * 
+	 * @param fn  function that is called on update
+	 */
+	
+	this.SubscribeUpdates = function(fn) {
+		this.subscribers.push(fn);
+	};
 
 	/**
 	 * adds another option to the drop down box
@@ -223,6 +239,15 @@ function Dropdown(name, tags, label, token) {
 		html_element.removeClassName("dropdownMarkedGood");
 
 		myLogger.Log(this.name + " <- " + this.token);
+		
+		/**
+		 * notify subscribers about the update
+		 */
+		
+		for ( var int = 0; int < this.subscribers.length; int++) {
+			var notificator = this.subscribers[int];
+			notificator();
+		}
 	};
 
 	/**
@@ -272,7 +297,15 @@ function Dropdown(name, tags, label, token) {
 		 */
 
 		html_element.removeClassName("dropdownMarkedGood");
-
+		
+		/**
+		 * notify subscribers about the update
+		 */
+		
+		for ( var int = 0; int < this.subscribers.length; int++) {
+			var notificator = this.subscribers[int];
+			notificator();
+		}
 	};
 
 	dropdownArray[this.id] = this;

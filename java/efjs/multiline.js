@@ -54,6 +54,23 @@ function Multiline(name, tags, label, embeddedMode) {
 	this.colorEmpty = "#CCCCAA";
 	this.colorFilled = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
+	
+	/**
+	 * store subscription functions
+	 */
+	
+	this.subscribers = [];
+	
+	/**
+	 * add a function that is called everytime the contents change.
+	 * 
+	 * @param fn  function that is called on update
+	 */
+	
+	this.SubscribeUpdates = function(fn) {
+		this.subscribers.push(fn);
+	};
+
 
 	/**
 	 * this function sets the bounding parameters
@@ -129,6 +146,16 @@ function Multiline(name, tags, label, embeddedMode) {
 			 */
 
 			this.MarkNeutral();
+			
+
+			/**
+			 * notify subscribers about the update
+			 */
+			
+			for ( var int = 0; int < this.subscribers.length; int++) {
+				var notificator = this.subscribers[int];
+				notificator();
+			}
 		}
 	};
 
@@ -186,12 +213,24 @@ function Multiline(name, tags, label, embeddedMode) {
 
 		element.value = contents;
 		this.token = contents;
+		
+		this.old = this.token;
 
 		/**
 		 * also update the coloring
 		 */
 
 		this.MarkNeutral();
+		
+
+		/**
+		 * notify subscribers about the update
+		 */
+		
+		for ( var int = 0; int < this.subscribers.length; int++) {
+			var notificator = this.subscribers[int];
+			notificator();
+		}
 	};
 
 	multilineArray[this.id] = this;

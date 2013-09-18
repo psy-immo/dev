@@ -63,6 +63,23 @@ function RadioButton(name, tags, type, token, embeddedMode) {
 	this.selected = -1;
 
 	this.label = null;
+	
+	/**
+	 * store subscription functions
+	 */
+	
+	this.subscribers = [];
+	
+	/**
+	 * add a function that is called everytime the contents change.
+	 * 
+	 * @param fn  function that is called on update
+	 */
+	
+	this.SubscribeUpdates = function(fn) {
+		this.subscribers.push(fn);
+	};
+
 
 	/**
 	 * adds another option to the radio button box
@@ -208,6 +225,16 @@ function RadioButton(name, tags, type, token, embeddedMode) {
 		selection.checked = true;
 
 		myLogger.Log(this.name + " <- " + this.token);
+		
+
+		/**
+		 * notify subscribers about the update
+		 */
+		
+		for ( var int = 0; int < this.subscribers.length; int++) {
+			var notificator = this.subscribers[int];
+			notificator();
+		}
 	};
 
 	/**
@@ -257,6 +284,16 @@ function RadioButton(name, tags, type, token, embeddedMode) {
 
 		if (selection >= 0) {
 			this.OnClick(selection);
+		}
+		
+
+		/**
+		 * notify subscribers about the update
+		 */
+		
+		for ( var int = 0; int < this.subscribers.length; int++) {
+			var notificator = this.subscribers[int];
+			notificator();
 		}
 	};
 

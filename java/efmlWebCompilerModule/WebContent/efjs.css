@@ -72,7 +72,7 @@ td.stacktraceline {
 span.airport {
 	display: inline-block;
 	padding: 2px;
-	background-color: #E8E8E8; /* was: colorAround */
+	background-color: #CCCCFF; /* was: colorAround */
 	width: 400px;
 	height: 400px;
 }
@@ -89,7 +89,7 @@ table.airport {
  * empty airport row
  */
 tr.airportEmpty {
-	background-color: #CCCCCC; /* was: colorEmpty */
+	background-color: #CCCCFF; /* was: colorEmpty */
 	width: 100%;
 }
 
@@ -97,7 +97,7 @@ tr.airportEmpty {
  * filled airport row
  */
 tr.airportNonempty {
-	background-color: #CCCCFF; /* was: colorFilled */
+	background-color: #9999FF; /* was: colorFilled */
 	width: 100%;
 }
 
@@ -128,7 +128,7 @@ tr.airportOkay {
  * padding airport gap
  */
 tr.airportGap {
-	background-color: #CCCCCC; /* was: colorEmpty */
+	background-color: #CCCCFF; /* was: colorEmpty */
 	width: 100%;
 	height: 12px;
 }
@@ -138,7 +138,7 @@ tr.airportGap {
  */
 td.airportButtonDel {
 	width: 20px;
-	background-color: #CCCCCC; /* was: colorEmpty */
+	background-color: #CCCCFF; /* was: colorEmpty */
 }
 
 /**
@@ -502,7 +502,11 @@ span.runwayMarkedGood {
 span.sentencepatternBox {
 	display: inline-block;
 	padding: 2px;
-	background-color: #DDDDDD; /* was colorBox */
+	background-color: #CCCCFF;
+}
+
+span.sentencePatternMayTakeoff {
+	background-color: #9999FF;
 }
 
 img.sentencepatterntakeoff {

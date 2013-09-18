@@ -73,6 +73,22 @@ function ListSelection(name, tags, label, token) {
 	 * store the current selection, -1 => nothing selected
 	 */
 	this.selection = -1;
+	
+	/**
+	 * store subscription functions
+	 */
+	
+	this.subscribers = [];
+	
+	/**
+	 * add a function that is called everytime the contents change.
+	 * 
+	 * @param fn  function that is called on update
+	 */
+	
+	this.SubscribeUpdates = function(fn) {
+		this.subscribers.push(fn);
+	};
 
 	/**
 	 * adds another option to the drop down box
@@ -281,6 +297,16 @@ function ListSelection(name, tags, label, token) {
 		 */
 
 		html_element.removeClassName("listselectionMarkedGood");
+		
+
+		/**
+		 * notify subscribers about the update
+		 */
+		
+		for ( var int = 0; int < this.subscribers.length; int++) {
+			var notificator = this.subscribers[int];
+			notificator();
+		}
 
 	};
 
