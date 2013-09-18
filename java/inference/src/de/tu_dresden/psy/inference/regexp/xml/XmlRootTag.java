@@ -38,6 +38,7 @@ import de.tu_dresden.psy.regexp.SplittedStringRelation.MapSplitting;
 import de.tu_dresden.psy.regexp.StringRelationJoin;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatchers;
+import de.tu_dresden.psy.regexp.UniformMatcher;
 
 /**
  * implements a virtual root tag for xml style notation of regexp inference
@@ -298,6 +299,9 @@ public class XmlRootTag extends XmlTag {
 			given.addAll(matcher.match(assertion));
 		}
 
+		System.err.println("<expert>-tags " + this.expert.size() + " -> "
+				+ given.size() + " assertions.");
+
 		return given;
 	}
 
@@ -354,6 +358,7 @@ public class XmlRootTag extends XmlTag {
 
 	private void processExpert(XmlTag child) {
 		this.expert.add(child.contents);
+		System.err.println("<expert>" + child.contents + "</expert>");
 	}
 
 	/**
@@ -683,6 +688,7 @@ public class XmlRootTag extends XmlTag {
 	 */
 
 	private void processParse(XmlTag child) {
+
 		String subject = "";
 		String predicate = "";
 		String object = "";
@@ -694,7 +700,12 @@ public class XmlRootTag extends XmlTag {
 				predicate += "(" + t.contents + ")";
 			} else if (t.tagName.equals("OBJECT")) {
 				object += "(" + t.contents + ")";
+			} else if (t.tagName.equals("UNIFORMLY")) {
+				this.parsers.add(new UniformMatcher());
+				System.err.println("Parse uniformly. (Subject only).");
+				return;
 			}
+
 		}
 
 		if (subject.isEmpty()) {
@@ -708,6 +719,9 @@ public class XmlRootTag extends XmlTag {
 		if (predicate.isEmpty()) {
 			predicate = ".*";
 		}
+
+		System.err.println("Parser: " + subject + " " + predicate + " "
+				+ object);
 
 		this.parsers.add(new SubjectPredicateObjectMatcher(subject, predicate,
 				object));
@@ -781,7 +795,6 @@ public class XmlRootTag extends XmlTag {
 		} else {
 			rule.addConstraint(new NegationOfConstraint(checker));
 		}
-
 
 	}
 

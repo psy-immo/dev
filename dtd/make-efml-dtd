@@ -282,6 +282,7 @@ dtd.write("\n<!ATTLIST "+ rootname + " "+universal_attributes+"""
 	name	CDATA			#IMPLIED
 	pointstag	CDATA		#IMPLIED
 	conclusionstag	CDATA		#IMPLIED
+	button  CDATA   #IMPLIED
  >
 """)
 

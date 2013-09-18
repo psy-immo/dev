@@ -74,10 +74,8 @@ public class InferenceTag implements AnyTag {
 			for (FeedbackTag feedback : this.feedbackData) {
 				for (InferenceSolutionRequirementTag require : feedback
 						.getRequires()) {
-					more_machine_options
-					.append(".Requirement("
-							+ require
-							.getRequirementJavaScriptCheckFunction()
+					more_machine_options.append(".Requirement("
+							+ require.getRequirementJavaScriptCheckFunction()
 							+ ")");
 
 				}
@@ -85,6 +83,14 @@ public class InferenceTag implements AnyTag {
 				// TODO process feedback and hint data here
 			}
 
+			/**
+			 * set the button text
+			 */
+			if (this.attributes.getValueOrDefault("button", null) != null) {
+				more_machine_options.append(".Text(\""
+						+ StringEscape.escapeToJavaScript(this.attributes
+								.getValueOrDefault("button", null)) + "\")");
+			}
 
 			/**
 			 * write the inference machine html code

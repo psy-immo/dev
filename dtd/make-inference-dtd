@@ -15,7 +15,9 @@ dtd.write("\n<!ELEMENT " + rootname +" (parse|assert|expert|conclusion|implicit|
 	"justified|trivial|invalid|rule|conclusions|quality|solves|domain"+\
 	furtherchilds+") >\n")
 	
-dtd.write("\n<!ELEMENT parse (subject|predicate|object)* >\n")
+dtd.write("\n<!ELEMENT parse (subject|predicate|object|uniformly)* >\n")
+
+dtd.write("\n<!ELEMENT uniformly (#PCDATA)* >\n")
 
 dtd.write("\n<!ELEMENT subject (#PCDATA|rho)* >\n")
 

@@ -1,7 +1,9 @@
 
 <!ELEMENT root (parse|assert|expert|conclusion|implicit|justified|trivial|invalid|rule|conclusions|quality|solves|domain) >
 
-<!ELEMENT parse (subject|predicate|object)* >
+<!ELEMENT parse (subject|predicate|object|uniformly)* >
+
+<!ELEMENT uniformly (#PCDATA)* >
 
 <!ELEMENT subject (#PCDATA|rho)* >
 
