@@ -117,7 +117,7 @@ public class EfjsIntegrationResources {
 		"logic.js", "hover.js", "endecoder.js", "runway.js", "answer.js",
 		"multiline.js", "sniffybutton.js", "dropdown.js", "checkbox.js",
 		"radiobutton.js", "popupbutton.js", "freetext.js", "boxspace.js",
-		"trashcan.js", "sentencepattern.js", "airport.js",
+			"trashcan.js", "sentencepattern.js", "airport.js", "flextext.js",
 		"listselection.js", "hypergraphs.js", "inference.js", "efml.js",
 		"efmlbuttons.js", "efmlboard.js", "efmlcheckbox.js", "efmltag.js",
 		"efmlquote.js", "efmlfactory.js" };
