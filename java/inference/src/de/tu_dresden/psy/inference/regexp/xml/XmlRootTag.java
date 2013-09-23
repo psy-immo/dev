@@ -814,7 +814,13 @@ public class XmlRootTag extends XmlTag {
 
 				Map<String, Integer> ids = new HashMap<String, Integer>();
 				int input_part = 0;
+				// TODO HACK IN INMAP AND OUTMAP STUFF
 				Vector<String> input_regexps = new Vector<String>();
+				/**
+				 * store inmap tag data
+				 */
+				Vector<Vector<String>> input_maps_regexps = new Vector<Vector<String>>();
+				Vector<Map<String, Integer>> input_maps_ids = new Vector<Map<String, Integer>>();
 
 				Vector<MapSplitting> output = new Vector<SplittedStringRelation.MapSplitting>();
 
@@ -829,6 +835,20 @@ public class XmlRootTag extends XmlTag {
 						}
 						input_part++;
 						input_regexps.add(intags.contents);
+					} else if (intags.tagName.equals("INMAP")) {
+						int input_map_ids = 0;
+						if (intags.attributes.containsKey("id")) {
+							ids.put(intags.attributes.get("id"), input_part);
+						}
+						input_part++;
+
+						/**
+						 * evaluate sub tags
+						 */
+						Vector<String> regexps = new Vector<String>();
+						Map<String, Integer> mapids = new HashMap<String, Integer>();
+
+						input_maps.add(intags.contents);
 					}
 				}
 
