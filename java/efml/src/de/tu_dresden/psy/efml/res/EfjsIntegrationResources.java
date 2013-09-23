@@ -26,12 +26,14 @@ import de.tu_dresden.psy.efml.AllRequirementsTag;
 import de.tu_dresden.psy.efml.AnswerTag;
 import de.tu_dresden.psy.efml.AnyTag;
 import de.tu_dresden.psy.efml.ArrowTag;
+import de.tu_dresden.psy.efml.AutomaticTag;
 import de.tu_dresden.psy.efml.BodyTag;
 import de.tu_dresden.psy.efml.BoxspaceTag;
 import de.tu_dresden.psy.efml.CTag;
 import de.tu_dresden.psy.efml.CheckTag;
 import de.tu_dresden.psy.efml.CheckboxTag;
 import de.tu_dresden.psy.efml.CorrectTag;
+import de.tu_dresden.psy.efml.DefaultTag;
 import de.tu_dresden.psy.efml.DocumentIdTag;
 import de.tu_dresden.psy.efml.DropdownTag;
 import de.tu_dresden.psy.efml.EfmlBoardTag;
@@ -61,6 +63,7 @@ import de.tu_dresden.psy.efml.PlainTag;
 import de.tu_dresden.psy.efml.PopupHelpTag;
 import de.tu_dresden.psy.efml.RTag;
 import de.tu_dresden.psy.efml.RadiobuttonTag;
+import de.tu_dresden.psy.efml.RegexpTag;
 import de.tu_dresden.psy.efml.RequiredTag;
 import de.tu_dresden.psy.efml.RunwayTag;
 import de.tu_dresden.psy.efml.SniffyTag;
@@ -117,7 +120,7 @@ public class EfjsIntegrationResources {
 		"logic.js", "hover.js", "endecoder.js", "runway.js", "answer.js",
 		"multiline.js", "sniffybutton.js", "dropdown.js", "checkbox.js",
 		"radiobutton.js", "popupbutton.js", "freetext.js", "boxspace.js",
-			"trashcan.js", "sentencepattern.js", "airport.js", "flextext.js",
+		"trashcan.js", "sentencepattern.js", "airport.js", "flextext.js",
 		"listselection.js", "hypergraphs.js", "inference.js", "efml.js",
 		"efmlbuttons.js", "efmlboard.js", "efmlcheckbox.js", "efmltag.js",
 		"efmlquote.js", "efmlfactory.js" };
@@ -446,14 +449,16 @@ public class EfjsIntegrationResources {
 		new SimpleObjectConstructor(SniffyTag.class), "waitfor",
 		new SimpleObjectConstructor(WaitForTag.class), "dropdown",
 		new AttributeObjectConstructor(DropdownTag.class), "listselection",
-		new AttributeObjectConstructor(ListselectionTag.class),
+			new AttributeObjectConstructor(ListselectionTag.class),
+			"automatic", new AttributeObjectConstructor(AutomaticTag.class),
 		"radiobutton",
 		new AttributeObjectConstructor(RadiobuttonTag.class), "checkbox",
 		new AttributeObjectConstructor(CheckboxTag.class), "popuphelp",
 		new AttributeObjectConstructor(PopupHelpTag.class), "freetext",
 		new AttributeObjectConstructor(FreetextTag.class), "multiline",
 		new AttributeObjectConstructor(MultilineTag.class), "option",
-		new AttributeObjectConstructor(OptionTag.class), "studyid",
+			new AttributeObjectConstructor(OptionTag.class), "regexp",
+			new AttributeObjectConstructor(RegexpTag.class), "studyid",
 		new BodyObjectConstructor(StudyIdTag.class), "documentid",
 		new BodyObjectConstructor(DocumentIdTag.class), "jsurl",
 		new BodyObjectConstructor(JsUrlTag.class), "phpurl",
@@ -464,7 +469,8 @@ public class EfjsIntegrationResources {
 		"subjectprompt", new BodyObjectConstructor(SubjectPromptTag.class),
 		"subjectchange", new BodyObjectConstructor(SubjectChangeTag.class),
 		"plain", new SimpleObjectConstructor(PlainTag.class), "template",
-		new AttributeObjectConstructor(TemplateTag.class), "airport",
+		new AttributeObjectConstructor(TemplateTag.class), "default",
+		new SimpleObjectConstructor(DefaultTag.class), "airport",
 		new AttributeObjectConstructor(AirportTag.class), "feedback",
 		new SimpleObjectConstructor(FeedbackTag.class), "required",
 		new AttributeObjectConstructor(RequiredTag.class),

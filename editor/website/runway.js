@@ -53,19 +53,20 @@ function Runway(name, tags, token, accept, reject) {
 	this.doRespawn = null;
 	this.stayFilled = false;
 	this.noTakeOff = false;
-	
+
 	/**
 	 * store subscription functions
 	 */
-	
+
 	this.subscribers = [];
-	
+
 	/**
 	 * add a function that is called everytime the contents change.
 	 * 
-	 * @param fn  function that is called on update
+	 * @param fn
+	 *            function that is called on update
 	 */
-	
+
 	this.SubscribeUpdates = function(fn) {
 		this.subscribers.push(fn);
 	};
@@ -140,14 +141,12 @@ function Runway(name, tags, token, accept, reject) {
 	this.WriteHtml = function() {
 		document.write("<span id=\"runway" + this.id + "\" class=\"runway");
 
-		
-
 		if (this.token) {
-			document.write(" "+this.colorFilled);
-		}  else {
-			document.write(" "+this.colorEmpty);
+			document.write(" " + this.colorFilled);
+		} else {
+			document.write(" " + this.colorEmpty);
 		}
-		
+
 		document.write("\" style=\" ");
 		if (this.width) {
 			document.write("width:" + this.width + "; ");
@@ -180,22 +179,24 @@ function Runway(name, tags, token, accept, reject) {
 	this.SetToken = function(token) {
 
 		this.token = token;
+
 		var html_object = $("runway" + this.id);
-		if (token) {
-			html_object.addClassName(this.colorFilled);
-			html_object.removeClassName(this.colorEmpty);
-			html_object.innerHTML = token;
-		} else {
-			html_object.innerHTML = "&nbsp;";
-			html_object.removeClassName(this.colorFilled);
-			html_object.addClassName(this.colorEmpty);
-		};
-		
+		if (html_object)
+			if (token) {
+				html_object.addClassName(this.colorFilled);
+				html_object.removeClassName(this.colorEmpty);
+				html_object.innerHTML = token;
+			} else {
+				html_object.innerHTML = "&nbsp;";
+				html_object.removeClassName(this.colorFilled);
+				html_object.addClassName(this.colorEmpty);
+			}
+		;
 
 		/**
 		 * notify subscribers about the update
 		 */
-		
+
 		for ( var int = 0; int < this.subscribers.length; int++) {
 			var notificator = this.subscribers[int];
 			notificator();
@@ -298,12 +299,12 @@ function Runway(name, tags, token, accept, reject) {
 
 			/**
 			 * the event handlers will be bubbling or capturing, depends on
-			 * browser, so handle it twice, this is the capturing part
-			 * this is done by myHover.CrashDown now
+			 * browser, so handle it twice, this is the capturing part this is
+			 * done by myHover.CrashDown now
 			 */
-			/*if (myHover.source.TakeAway) {
-				myHover.source.TakeAway();
-			}*/
+			/*
+			 * if (myHover.source.TakeAway) { myHover.source.TakeAway(); }
+			 */
 
 			/**
 			 * remove the plane

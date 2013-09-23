@@ -46,6 +46,15 @@ function SentencePattern(name, tags, generators, nonempty) {
 	this.colorFilled = "#EEEEEE";
 	this.colorBox = "#DDDDDD";
 	this.noTakeOff = false;
+
+	/**
+	 * this saves the child elements that need feedback whenever some parts
+	 * change their contents
+	 */
+
+	this.feedback_children = [];
+	this.defy_feedback = false;
+
 	/**
 	 * if nonempty evaluates to true, then we may not take off until all parts
 	 * of the sentence box are filled.
@@ -97,11 +106,11 @@ function SentencePattern(name, tags, generators, nonempty) {
 
 		return this;
 	};
-	
+
 	/**
 	 * @returns true, if the sentence pattern may be dragged off
 	 */
-	
+
 	this.MayTakeoff = function() {
 		var may_takeoff = true;
 		for ( var int = 0; int < this.generators.length; ++int) {
@@ -112,11 +121,11 @@ function SentencePattern(name, tags, generators, nonempty) {
 				} else {
 					if (this.nonempty) {
 						may_takeoff = false;
-					}						
+					}
 				}
 			}
 		}
-		
+
 		return may_takeoff;
 	};
 
@@ -127,11 +136,11 @@ function SentencePattern(name, tags, generators, nonempty) {
 		document.write("<span id=\"sentencePatternBox" + this.id + "\" ");
 
 		document.write(" class=\"sentencepatternBox");
-		
+
 		if (this.MayTakeoff()) {
 			document.write(" sentencePatternMayTakeoff");
 		}
-		
+
 		document.write("\" ");
 		document.write(" >");
 
@@ -168,6 +177,10 @@ function SentencePattern(name, tags, generators, nonempty) {
 						};
 					}(this));
 				}
+
+				if (part.FeedbackChanges) {
+					this.feedback_children.push(part);
+				}
 			}
 		}
 
@@ -180,18 +193,31 @@ function SentencePattern(name, tags, generators, nonempty) {
 		addMouseClickHook("sentencePattern" + this.id, 0, null);
 
 	};
-	
 
 	/**
 	 * callback if a child object has updated its data
 	 */
 
 	this.UpdatedContents = function() {
-		var html_container = $("sentencePatternBox" + this.id);
-		if (this.MayTakeoff()) {
-			html_container.addClassName("sentencePatternMayTakeoff");
-		} else {
-			html_container.removeClassName("sentencePatternMayTakeoff");
+		if (!this.defy_feedback) {
+			this.defy_feedback = true;
+			for ( var int = 0; int < this.feedback_children.length; int++) {
+				var child = this.feedback_children[int];
+				child.FeedbackChanges(this.generators);
+			}
+			this.defy_feedback = false;
+
+			/**
+			 * wait for all changes to apply through.
+			 * 
+			 */
+			
+			var html_container = $("sentencePatternBox" + this.id);
+			if (this.MayTakeoff()) {
+				html_container.addClassName("sentencePatternMayTakeoff");
+			} else {
+				html_container.removeClassName("sentencePatternMayTakeoff");
+			}
 		}
 	};
 

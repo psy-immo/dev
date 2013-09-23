@@ -1,5 +1,5 @@
 /**
- * ListselectionTag.java, (c) 2013, Immanuel Albrecht; Dresden University of
+ * AutomaticTag.java, (c) 2013, Immanuel Albrecht; Dresden University of
  * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -26,23 +26,24 @@ import java.util.Iterator;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the &lt;listselection>-tag for having a list box selection
+ * implements the &lt;automatic>-tag for having a magically changing text
+ * element inside a &lt;template>-box
  * 
  * @author immanuel
  * 
  */
 
-public class ListselectionTag implements AnyTag, NestedTag {
+public class AutomaticTag implements AnyTag, NestedTag {
 
 	private EfmlTagsAttribute attributes;
-	private String label;
+	private String defaultToken;
 
-	private ArrayList<OptionTag> options;
+	private ArrayList<RegexpTag> patterns;
 
-	public ListselectionTag(EfmlTagsAttribute efmlAttributes) {
+	public AutomaticTag(EfmlTagsAttribute efmlAttributes) {
 		this.attributes = efmlAttributes;
-		this.label = "";
-		this.options = new ArrayList<OptionTag>();
+		this.defaultToken = "";
+		this.patterns = new ArrayList<RegexpTag>();
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class ListselectionTag implements AnyTag, NestedTag {
 		 * create new javascript dropdown object with name, tags, label, token
 		 */
 
-		writer.write(" new ListSelection(");
+		writer.write(" new FlexText(");
 
 		writer.write("\""
 				+ StringEscape.escapeToJavaScript(this.attributes
@@ -77,31 +78,13 @@ public class ListselectionTag implements AnyTag, NestedTag {
 						+ "\", ");
 		writer.write(this.attributes.getTags() + ", ");
 
-		writer.write("\"" + StringEscape.escapeToJavaScript(this.label)
+		writer.write("\"" + StringEscape.escapeToJavaScript(this.defaultToken)
 				+ "\", ");
 
 		writer.write("\""
 				+ StringEscape.escapeToJavaScript(this.attributes
 						.getValueOrDefault("value", "")) + "\")");
 
-		/**
-		 * set the background colors for the drop down box
-		 * 
-		 * color empty background color filled background color when filled with
-		 * token
-		 */
-
-		if ((this.attributes.getValueOrDefault("color", null) != null)
-				|| (this.attributes.getValueOrDefault("filled", null) != null)) {
-			String empty = this.attributes
-					.getValueOrDefault("color", "#CCCCCC");
-			String filled = this.attributes.getValueOrDefault("filled",
-					"#CCCCFF");
-
-			writer.write(".Color(\"" + StringEscape.escapeToJavaScript(empty)
-					+ "\", \"" + StringEscape.escapeToJavaScript(filled)
-					+ "\")");
-		}
 
 		/**
 		 * set the size parameter for the drop down
@@ -119,22 +102,14 @@ public class ListselectionTag implements AnyTag, NestedTag {
 					+ "\")");
 		}
 
-		/**
-		 * add optional css class names for the td elements
-		 */
 
-		if (this.attributes.getValueOrDefault("tdclass", null) != null) {
-			writer.write(".TdClasses(\""
-					+ StringEscape.escapeToJavaScript(this.attributes
-							.getValueOrDefault("tdclass", "")) + "\")");
-		}
 
 		/**
-		 * now add all drop down box options
+		 * now add all matcher patterns
 		 */
 
-		Iterator<OptionTag> it;
-		for (it = this.options.iterator(); it.hasNext();) {
+		Iterator<RegexpTag> it;
+		for (it = this.patterns.iterator(); it.hasNext();) {
 			writer.write(it.next().getJsContent());
 		}
 
@@ -149,12 +124,15 @@ public class ListselectionTag implements AnyTag, NestedTag {
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
-			this.label += ((PlainContent) innerTag).getPlainContent().trim();
-		} else if (innerTag.getClass() == OptionTag.class) {
-			this.options.add((OptionTag) innerTag);
+		} else if (innerTag.getClass() == DefaultTag.class) {
+			DefaultTag d = (DefaultTag) innerTag;
+
+			this.defaultToken += d.getPlainContent();
+		} else if (innerTag.getClass() == RegexpTag.class) {
+			this.patterns.add((RegexpTag) innerTag);
 		} else {
 			throw new OperationNotSupportedException(
-					"<listselection> cannot enclose "
+					"<automatic> cannot enclose "
 							+ innerTag.getClass().toString());
 		}
 	}
@@ -163,14 +141,16 @@ public class ListselectionTag implements AnyTag, NestedTag {
 	public String getEfml() {
 		StringBuffer representation = new StringBuffer();
 
-		representation.append("<listselection");
+		representation.append("<automatic");
 		this.attributes.writeXmlAttributes(representation);
 		representation.append(">");
-		representation.append(StringEscape.escapeToXml(this.label));
-		for (AnyTag child : this.options) {
+		representation.append("<default>");
+		representation.append(StringEscape.escapeToXml(this.defaultToken));
+		representation.append("</default>");
+		for (AnyTag child : this.patterns) {
 			representation.append(child.getEfml());
 		}
-		representation.append("</listselection>");
+		representation.append("</automatic>");
 
 		return representation.toString();
 	}

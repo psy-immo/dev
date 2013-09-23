@@ -10,7 +10,8 @@ efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|listselecti
 				"checkbox|radiobutton|multiline|popuphelp|"+\
 				"trashcan|boxspace|efmlboard|efmlpreview|cssurl"
 efml_extra = "tables"
-nested_elements = "plain|dropdown|freetext|checkbox|radiobutton|multiline|listselection|runway"
+# these elements may be nested inside a <template> tag
+nested_elements = "plain|dropdown|freetext|checkbox|radiobutton|multiline|listselection|runway|automatic"
 editor_contents = "efmlquote"
 
 efml_root_elements = "(#PCDATA|title|"+efml_elements+"|"+efml_extra+"|"+html_elements+")*"
@@ -187,7 +188,7 @@ dtd.write("\n<!ATTLIST option "+"""
 
 for tag in ["phpurl","jsurl","cssurl","documentid","studyid", \
 	        "subjectprompt","subjectinfo","subjectchange","plain",\
-	        "subjectnotworking"]:
+	        "subjectnotworking","default"]:
 	dtd.write("\n<!ELEMENT "+tag+" (#PCDATA)* >\n")
 	#dtd.write("\n<!ATTLIST "+tag+" "+universal_attributes+" >\n")
 
@@ -197,6 +198,23 @@ dtd.write("\n<!ATTLIST template "+universal_attributes+"""
 	nonempty	(allow|disallow)	#IMPLIED
  >
 """)
+
+dtd.write("\n<!ELEMENT automatic (#PCDATA|regexp|default)* >\n")
+dtd.write("\n<!ATTLIST automatic "+universal_attributes+"""
+	name	CDATA			#IMPLIED
+	width	CDATA			#IMPLIED
+	height	CDATA			#IMPLIED	
+ >
+""")
+
+dtd.write("\n<!ELEMENT regexp (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST regexp "+"""
+	direction	(right|left|both)			#IMPLIED
+	value   	CDATA			#IMPLIED
+ >
+""")
+
+
 
 dtd.write("\n<!ELEMENT airport (#PCDATA)* >\n")
 dtd.write("\n<!ATTLIST airport "+universal_attributes+"""

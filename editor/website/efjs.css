@@ -57,6 +57,21 @@ td.stacktraceline {
 
 /**
  ***********************************
+ * styles for flextext.js
+ ***********************************
+ */
+ 
+ span.flextext {
+ 	display: inline-block;
+ }
+ 
+ span.flextextMarkedGood {
+ 	
+ }
+
+
+/**
+ ***********************************
  * styles for airport.js
  ***********************************
  */

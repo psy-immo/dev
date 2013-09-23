@@ -55,17 +55,29 @@
 
 <!ELEMENT infer (subject|predicate|object)* >
 
-<!ELEMENT rho (in|out)* >
+<!ELEMENT rho (in|out|inmap|outmap)* >
 
 <!ELEMENT in (#PCDATA)* >
 
 <!ELEMENT out (#PCDATA)* >
 
+<!ELEMENT inmap (in)* >
+
+<!ELEMENT outmap (out)* >
+
 <!ATTLIST in 
 		id	CDATA	#IMPLIED
  >
 
+<!ATTLIST inmap 
+		id	CDATA	#IMPLIED
+ >
+
 <!ATTLIST out 
+		id	CDATA	#IMPLIED
+ >
+
+<!ATTLIST outmap 
 		id	CDATA	#IMPLIED
  >
 
