@@ -72,16 +72,23 @@ dtd.write("\n<!ELEMENT infer (subject|predicate|object)* >\n")
 dtd.write("\n<!ELEMENT rho (in|out|inmap|outmap)* >\n")
 
 
-dtd.write("\n<!ELEMENT in (#PCDATA)* >\n")
+dtd.write("\n<!ELEMENT in (#PCDATA|ifmatches)* >\n")
 dtd.write("\n<!ELEMENT out (#PCDATA)* >\n")
 
 dtd.write("\n<!ELEMENT inmap (in)* >\n")
 dtd.write("\n<!ELEMENT outmap (out)* >\n")
+dtd.write("\n<!ELEMENT ifmatches (#PCDATA)* >\n")
 
 dtd.write("\n<!ATTLIST in "+"""
 		id	CDATA	#IMPLIED
  >
 """)
+
+dtd.write("\n<!ATTLIST ifmatches "+"""
+		part	CDATA	#IMPLIED
+ >
+""")
+
 
 dtd.write("\n<!ATTLIST inmap "+"""
 		id	CDATA	#IMPLIED

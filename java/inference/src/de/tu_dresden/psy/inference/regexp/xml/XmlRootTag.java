@@ -39,6 +39,7 @@ import de.tu_dresden.psy.regexp.StringRelationJoin;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatchers;
 import de.tu_dresden.psy.regexp.UniformMatcher;
+import de.tu_dresden.psy.util.Union;
 
 /**
  * implements a virtual root tag for xml style notation of regexp inference
@@ -814,46 +815,74 @@ public class XmlRootTag extends XmlTag {
 
 				Map<String, Integer> ids = new HashMap<String, Integer>();
 				int input_part = 0;
-				// TODO HACK IN INMAP AND OUTMAP STUFF
+
+				Vector<Union<Integer, Integer>> inputs = new Vector<Union<Integer, Integer>>();
+
+				/**
+				 * store <in> tag data
+				 */
+
 				Vector<String> input_regexps = new Vector<String>();
 				/**
-				 * store inmap tag data
+				 * store <inmap> tag data
 				 */
 				Vector<Vector<String>> input_maps_regexps = new Vector<Vector<String>>();
-				Vector<Map<String, Integer>> input_maps_ids = new Vector<Map<String, Integer>>();
+				Vector<Vector<String>> input_maps_ids = new Vector<Vector<String>>();
 
 				Vector<MapSplitting> output = new Vector<SplittedStringRelation.MapSplitting>();
 
 				/**
-				 * process <IN> tags
+				 * process <IN> and <INMAP> tags
 				 */
 
 				for (XmlTag intags : rho.children) {
+					// System.err.println("RHO: " + intags.tagName);
 					if (intags.tagName.equals("IN")) {
 						if (intags.attributes.containsKey("id")) {
 							ids.put(intags.attributes.get("id"), input_part);
 						}
 						input_part++;
+						inputs.add(new Union<Integer, Integer>()
+								.setA(input_regexps.size()));
+
 						input_regexps.add(intags.contents);
+
 					} else if (intags.tagName.equals("INMAP")) {
-						int input_map_ids = 0;
+
 						if (intags.attributes.containsKey("id")) {
 							ids.put(intags.attributes.get("id"), input_part);
 						}
 						input_part++;
+						inputs.add(new Union<Integer, Integer>()
+								.setB(input_maps_regexps.size()));
+
+						// System.err.println("GOT INMAP");
+
+
 
 						/**
 						 * evaluate sub tags
 						 */
 						Vector<String> regexps = new Vector<String>();
-						Map<String, Integer> mapids = new HashMap<String, Integer>();
+						Vector<String> mapids = new Vector<String>();
 
-						input_maps.add(intags.contents);
+						for (XmlTag subtag : intags.children) {
+							if (subtag.tagName.equals("IN")) {
+
+								if (subtag.attributes.containsKey("id")) {
+									mapids.add(subtag.attributes.get("id"));
+								}
+								regexps.add(subtag.contents);
+							}
+						}
+
+						input_maps_ids.add(mapids);
+						input_maps_regexps.add(regexps);
 					}
 				}
 
 				/**
-				 * process <OUT> tags
+				 * process <OUT> and <OUTMAP> tags
 				 */
 
 				for (XmlTag outtags : rho.children) {
@@ -862,10 +891,22 @@ public class XmlRootTag extends XmlTag {
 
 							if (ids.containsKey((outtags.attributes.get("id"))) == false) {
 								throw new Exception(
-										"Rho output rule refers to unknown input part \""
+										"Rho output <OUT> rule refers to unknown input part \""
 												+ (outtags.attributes.get("id"))
 												+ "\".");
 							}
+							/**
+							 * since inmaps result in an regexp as well, there
+							 * is no problem using inmap ids for out tags
+							 */
+							// if (inputs.get(
+							// ids.get((outtags.attributes.get("id"))))
+							// .isA() == false) {
+							// throw new Exception(
+							// "Rho output <OUT> rule refers to <INMAP> input part \""
+							// + (outtags.attributes.get("id"))
+							// + "\".");
+							// }
 
 							output.add(new SplittedStringRelation.ProjectionMap(
 									ids.get(outtags.attributes.get("id"))));
@@ -873,10 +914,106 @@ public class XmlRootTag extends XmlTag {
 							output.add(new SplittedStringRelation.ConstantMap(
 									outtags.contents));
 						}
+					} else if (outtags.tagName.equals("OUTMAP")) {
+
+						if (outtags.attributes.containsKey("id")) {
+
+							if (ids.containsKey((outtags.attributes.get("id"))) == false) {
+								throw new Exception(
+										"Rho output <OUTMAP> rule refers to unknown input part \""
+												+ (outtags.attributes.get("id"))
+												+ "\".");
+							}
+
+							if (inputs.get(
+									ids.get((outtags.attributes.get("id"))))
+									.isB() == false) {
+								throw new Exception(
+										"Rho output <OUTMAP> rule refers to <IN> input part \""
+												+ (outtags.attributes.get("id"))
+												+ "\".");
+							}
+
+
+
+							Vector<String> in_regexps = new Vector<String>();
+							Vector<String> tokens = new Vector<String>();
+
+							/**
+							 * check the out tags
+							 */
+
+							Vector<String> inmap_ids = input_maps_ids
+									.get(inputs.get(
+											ids.get((outtags.attributes
+													.get("id")))).getB());
+							Vector<String> inmap_regexps = input_maps_regexps
+									.get(inputs.get(
+											ids.get((outtags.attributes
+													.get("id")))).getB());
+
+							// System.err.println("OUTMAP");
+
+							// for (int i = 0; i < inmap_ids.size(); ++i) {
+							// System.err.println(inmap_ids.get(i) + " ...");
+							// }
+
+							for (int i = 0; i < inmap_ids.size(); ++i) {
+								String inmap_ID = inmap_ids.get(i);
+								String inmap_RX = inmap_regexps.get(i);
+
+								for (XmlTag subtag : outtags.children) {
+									if (subtag.tagName.equals("OUT")) {
+										if (subtag.attributes.containsKey("id")) {
+											if (subtag.attributes.get("id")
+													.equals(inmap_ID)) {
+												in_regexps.add(inmap_RX);
+												tokens.add(subtag.contents);
+											}
+
+										}
+									}
+								}
+							}
+
+							// for (int i = 0; i < in_regexps.size(); ++i) {
+							// System.err.println(in_regexps.get(i) + " -> "
+							// + tokens.get(i));
+							// }
+
+							output.add(
+									new SplittedStringRelation.RegexpToTokenMap(
+											ids.get(outtags.attributes.get("id")),
+											in_regexps, tokens));
+
+						} else if (outtags.contents.isEmpty() == false) {
+							output.add(new SplittedStringRelation.ConstantMap(
+									outtags.contents));
+						}
 					}
 				}
 
-				relation.addInput(new KRegExp(input_regexps));
+				Vector<String> joint_pattern = new Vector<String>();
+
+				for (Union<Integer, Integer> part : inputs) {
+					if (part.isA()) {
+						joint_pattern.add(input_regexps.get(part.getA()));
+					} else {
+						String combined = "";
+						for (String regpart : input_maps_regexps.get(part
+								.getB())) {
+							if (combined.isEmpty() == false) {
+								combined += "|";
+							}
+							combined += "(";
+							combined += regpart;
+							combined += ")";
+						}
+						joint_pattern.add(combined);
+					}
+				}
+
+				relation.addInput(new KRegExp(joint_pattern));
 				relation.addOutput(output);
 				result.join(relation);
 			}

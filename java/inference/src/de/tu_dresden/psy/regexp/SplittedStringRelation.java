@@ -21,6 +21,7 @@ package de.tu_dresden.psy.regexp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 /**
  * implements a multiple chain pattern splitter that is able to map the
@@ -89,13 +90,78 @@ public class SplittedStringRelation implements StringRelationInterface {
 			this.empty = new HashSet<String>();
 		}
 
+		@Override
 		public Set<String> map(String[] splitting) {
-			if (splitting.length > part) {
+			if (splitting.length > this.part) {
 				Set<String> result = new HashSet<String>();
-				result.add(splitting[part]);
+				result.add(splitting[this.part]);
 				return result;
 			}
-			return empty;
+			return this.empty;
+		};
+	}
+
+	/**
+	 * 
+	 * implements a map which will send a string to some token, in case that
+	 * some given regexp matches the string.
+	 * 
+	 * @author immo
+	 * 
+	 */
+
+	public static class RegexpToTokenMap implements MapSplitting {
+		private int part;
+		private Set<String> empty;
+
+		private Pattern[] patterns;
+		private String[] tokens;
+		private Pattern[][] constraints;
+		private int[] constraintParts;
+
+		/**
+		 * create a projection
+		 * 
+		 * @param part
+		 *            splittings index of the projection
+		 */
+		public RegexpToTokenMap(int part, Vector<String> regexps,
+				Vector<String> tokens) {
+			this.part = part;
+			this.empty = new HashSet<String>();
+
+			int different_regexps = regexps.size();
+
+			this.patterns = new Pattern[different_regexps];
+			this.tokens = new String[different_regexps];
+			this.constraintParts = new int[different_regexps];
+			this.constraints = new Pattern[different_regexps][];
+			for (int i = 0; i < different_regexps; ++i) {
+				this.patterns[i] = Pattern.compile(regexps.get(i));
+				this.tokens[i] = tokens.get(i);
+				this.constraints[i] = new Pattern[0];
+				this.constraintParts = new int[0];
+				// TODO SUPPORT CONSTRAINTS HERE
+			}
+		}
+
+		@Override
+		public Set<String> map(String[] splitting) {
+
+			if (splitting.length > this.part) {
+				Set<String> result = new HashSet<String>();
+				String input = splitting[this.part];
+
+				for (int i = 0; i < this.patterns.length; ++i) {
+					if (this.patterns[i].matcher(input).matches()) {
+						result.add(this.tokens[i]);
+
+						return result;
+					}
+				}
+
+			}
+			return this.empty;
 		};
 	}
 
@@ -117,11 +183,12 @@ public class SplittedStringRelation implements StringRelationInterface {
 			this.relative_map = relativeMap;
 		}
 
+		@Override
 		public Set<String> map(String[] splitting) {
-			if (splitting.length > part) {
-				return relative_map.allMaps(splitting[part]);
+			if (splitting.length > this.part) {
+				return this.relative_map.allMaps(splitting[this.part]);
 			}
-			return empty;
+			return this.empty;
 		};
 	}
 
@@ -197,16 +264,16 @@ public class SplittedStringRelation implements StringRelationInterface {
 		Set<String> result = new HashSet<String>();
 		Set<String[]> splittings = new HashSet<String[]>();
 
-		for (StringSplitter splitter : splitters) {
+		for (StringSplitter splitter : this.splitters) {
 			splittings.addAll(splitter.split(s));
 		}
 
 		for (String[] split : splittings) {
-			for (Vector<MapSplitting> map_vector : maps) {
+			for (Vector<MapSplitting> map_vector : this.maps) {
 				Set<String> prefixes = new HashSet<String>();
 				Set<String> concat = new HashSet<String>();
 				prefixes.add("");
-				
+
 				for (MapSplitting map : map_vector) {
 					concat.clear();
 					for (String left : prefixes) {
@@ -214,7 +281,7 @@ public class SplittedStringRelation implements StringRelationInterface {
 							concat.add(left + right);
 						}
 					}
-					
+
 					Set<String> delta = prefixes;
 					prefixes = concat;
 					concat = delta;
@@ -254,9 +321,9 @@ public class SplittedStringRelation implements StringRelationInterface {
 		rel2.addOutput(map2);
 
 		System.out.println(rel2.allMaps("ABCDEFABCDEF").size());
-		
+
 		SplittedStringRelation fromStr = new SplittedStringRelation("A*B*·(AB)*·A*B*→middle part: ·»2");
-		
+
 		System.out.println(fromStr.allMaps("ABABABABAB"));
 	}
 
