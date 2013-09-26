@@ -828,6 +828,8 @@ public class XmlRootTag extends XmlTag {
 				 */
 				Vector<Vector<String>> input_maps_regexps = new Vector<Vector<String>>();
 				Vector<Vector<String>> input_maps_ids = new Vector<Vector<String>>();
+				Vector<Vector<Vector<String>>> input_maps_in_constraints = new Vector<Vector<Vector<String>>>();
+				Vector<Vector<Vector<Integer>>> input_maps_in_targets = new Vector<Vector<Vector<Integer>>>();
 
 				Vector<MapSplitting> output = new Vector<SplittedStringRelation.MapSplitting>();
 
@@ -858,13 +860,13 @@ public class XmlRootTag extends XmlTag {
 
 						// System.err.println("GOT INMAP");
 
-
-
 						/**
 						 * evaluate sub tags
 						 */
 						Vector<String> regexps = new Vector<String>();
 						Vector<String> mapids = new Vector<String>();
+						Vector<Vector<String>> constraints = new Vector<Vector<String>>();
+						Vector<Vector<Integer>> targets = new Vector<Vector<Integer>>();
 
 						for (XmlTag subtag : intags.children) {
 							if (subtag.tagName.equals("IN")) {
@@ -873,11 +875,38 @@ public class XmlRootTag extends XmlTag {
 									mapids.add(subtag.attributes.get("id"));
 								}
 								regexps.add(subtag.contents);
+
+								Vector<String> constr = new Vector<String>();
+								Vector<Integer> targ = new Vector<Integer>();
+
+								for (XmlTag ctags : subtag.children) {
+									if (ctags.tagName.equals("IFMATCHES")) {
+										constr.add(ctags.contents);
+										/**
+										 * default to check the next part of the
+										 * string split
+										 */
+										int part = 1;
+										if (ctags.attributes
+												.containsKey("part")) {
+											part = Integer
+													.parseInt(ctags.attributes
+															.get("part"));
+
+										}
+										targ.add(part);
+									}
+								}
+
+								constraints.add(constr);
+								targets.add(targ);
 							}
 						}
 
 						input_maps_ids.add(mapids);
 						input_maps_regexps.add(regexps);
+						input_maps_in_constraints.add(constraints);
+						input_maps_in_targets.add(targets);
 					}
 				}
 
@@ -925,6 +954,7 @@ public class XmlRootTag extends XmlTag {
 												+ "\".");
 							}
 
+
 							if (inputs.get(
 									ids.get((outtags.attributes.get("id"))))
 									.isB() == false) {
@@ -934,10 +964,10 @@ public class XmlRootTag extends XmlTag {
 												+ "\".");
 							}
 
-
-
 							Vector<String> in_regexps = new Vector<String>();
 							Vector<String> tokens = new Vector<String>();
+							Vector<Vector<String>> constraints = new Vector<Vector<String>>();
+							Vector<Vector<Integer>> c_targets = new Vector<Vector<Integer>>();
 
 							/**
 							 * check the out tags
@@ -951,6 +981,14 @@ public class XmlRootTag extends XmlTag {
 									.get(inputs.get(
 											ids.get((outtags.attributes
 													.get("id")))).getB());
+							Vector<Vector<String>> inmap_constraints = input_maps_in_constraints
+									.get(inputs.get(
+											ids.get((outtags.attributes
+													.get("id")))).getB());
+							Vector<Vector<Integer>> inmap_targets = input_maps_in_targets
+									.get(inputs.get(
+											ids.get((outtags.attributes
+													.get("id")))).getB());
 
 							// System.err.println("OUTMAP");
 
@@ -961,6 +999,9 @@ public class XmlRootTag extends XmlTag {
 							for (int i = 0; i < inmap_ids.size(); ++i) {
 								String inmap_ID = inmap_ids.get(i);
 								String inmap_RX = inmap_regexps.get(i);
+								Vector<String> inmap_CS = inmap_constraints
+										.get(i);
+								Vector<Integer> inmap_TR = inmap_targets.get(i);
 
 								for (XmlTag subtag : outtags.children) {
 									if (subtag.tagName.equals("OUT")) {
@@ -969,6 +1010,8 @@ public class XmlRootTag extends XmlTag {
 													.equals(inmap_ID)) {
 												in_regexps.add(inmap_RX);
 												tokens.add(subtag.contents);
+												constraints.add(inmap_CS);
+												c_targets.add(inmap_TR);
 											}
 
 										}
@@ -981,10 +1024,9 @@ public class XmlRootTag extends XmlTag {
 							// + tokens.get(i));
 							// }
 
-							output.add(
-									new SplittedStringRelation.RegexpToTokenMap(
-											ids.get(outtags.attributes.get("id")),
-											in_regexps, tokens));
+							output.add(new SplittedStringRelation.RegexpToTokenMap(
+									ids.get(outtags.attributes.get("id")),
+									in_regexps, tokens, constraints, c_targets));
 
 						} else if (outtags.contents.isEmpty() == false) {
 							output.add(new SplittedStringRelation.ConstantMap(

@@ -465,7 +465,7 @@
 
 <!ELEMENT rho (in|out|inmap|outmap)* >
 
-<!ELEMENT in (#PCDATA)* >
+<!ELEMENT in (#PCDATA|ifmatches)* >
 
 <!ELEMENT out (#PCDATA)* >
 
@@ -473,8 +473,14 @@
 
 <!ELEMENT outmap (out)* >
 
+<!ELEMENT ifmatches (#PCDATA)* >
+
 <!ATTLIST in 
 		id	CDATA	#IMPLIED
+ >
+
+<!ATTLIST ifmatches 
+		part	CDATA	#IMPLIED
  >
 
 <!ATTLIST inmap 

@@ -117,16 +117,25 @@ public class SplittedStringRelation implements StringRelationInterface {
 		private Pattern[] patterns;
 		private String[] tokens;
 		private Pattern[][] constraints;
-		private int[] constraintParts;
+		private int[][] constraintParts;
 
 		/**
-		 * create a projection
+		 * create a regexp mapping output
 		 * 
 		 * @param part
-		 *            splittings index of the projection
+		 *            which part is the inmap input
+		 * @param regexps
+		 *            regexps that select the output token
+		 * @param tokens
+		 *            output tokens
+		 * @param constraints
+		 *            constraints for each token
+		 * @param constraintTargets
+		 *            which input is taken for constraint checking
 		 */
 		public RegexpToTokenMap(int part, Vector<String> regexps,
-				Vector<String> tokens) {
+				Vector<String> tokens, Vector<Vector<String>> constraints,
+				Vector<Vector<Integer>> constraintTargets) {
 			this.part = part;
 			this.empty = new HashSet<String>();
 
@@ -134,14 +143,19 @@ public class SplittedStringRelation implements StringRelationInterface {
 
 			this.patterns = new Pattern[different_regexps];
 			this.tokens = new String[different_regexps];
-			this.constraintParts = new int[different_regexps];
+			this.constraintParts = new int[different_regexps][];
 			this.constraints = new Pattern[different_regexps][];
 			for (int i = 0; i < different_regexps; ++i) {
 				this.patterns[i] = Pattern.compile(regexps.get(i));
 				this.tokens[i] = tokens.get(i);
-				this.constraints[i] = new Pattern[0];
-				this.constraintParts = new int[0];
-				// TODO SUPPORT CONSTRAINTS HERE
+				this.constraints[i] = new Pattern[constraints.get(i).size()];
+				this.constraintParts[i] = new int[constraints.get(i).size()];
+				for (int j = 0; j < this.constraints[i].length; ++j) {
+					this.constraints[i][j] = Pattern.compile(constraints.get(i)
+							.get(j));
+					this.constraintParts[i][j] = constraintTargets.get(i)
+							.get(j);
+				}
 			}
 		}
 
@@ -154,9 +168,35 @@ public class SplittedStringRelation implements StringRelationInterface {
 
 				for (int i = 0; i < this.patterns.length; ++i) {
 					if (this.patterns[i].matcher(input).matches()) {
-						result.add(this.tokens[i]);
+						Pattern[] constraints = this.constraints[i];
+						int[] parts = this.constraintParts[i];
+						boolean good = true;
 
-						return result;
+						for (int j = 0; j < constraints.length; ++j) {
+							int part = parts[j] + this.part;
+							String c_input = "";
+							if (part == this.part) {
+								for (int k = 0; k < splitting.length; ++k) {
+									if (c_input.isEmpty() == false) {
+										c_input += " ";
+									}
+									c_input += splitting[k].trim();
+								}
+							} else if (part < splitting.length) {
+								c_input = splitting[part];
+							}
+
+							if (constraints[j].matcher(c_input).matches() == false) {
+								good = false;
+								break;
+							}
+						}
+
+						if (good) {
+							result.add(this.tokens[i]);
+							return result;
+						}
+
 					}
 				}
 
