@@ -598,7 +598,7 @@ input.inference {
 table.listselection {
 	display:inline-block;
 	border:solid grey 0px; 
-	vertical-align: top;
+	vertical-align: middle;
 	
 	cursor: default;
 	
