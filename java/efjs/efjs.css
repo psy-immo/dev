@@ -624,3 +624,71 @@ td.align-left {
 td.align-right {
 	text-align: right;	
 }
+
+/**
+ ***********************************
+ * styles for debug.js
+ ***********************************
+ */
+ 
+ 
+ 
+table.debug {
+    border-collapse: collapse;
+}
+table.debug td, table.debug th {
+    border: 1px solid black;
+}
+table.debug tr:first-child th {
+    border-top: 0;
+}
+table.debug tr:last-child td {
+    border-bottom: 0;
+}
+
+table.debug tr td:first-child,
+table.debug tr th:first-child {
+    border-left: 0;
+}
+table.debug tr td:last-child,
+table.debug tr th:last-child {
+    border-right: 0;
+}
+
+table.debug2, table.debug2 tr, table.debug2 td {
+	border: none;	
+}
+ 
+ td.debugNbr {
+ 	width: 60px;
+ 	text-align: right;
+ 	background-color: white;
+ 	color: blue;	
+ }
+ 
+  td.debugNbr2 {
+ 	width: 60px;
+ 	text-align: right;
+ 	background-color: white;
+ 	color: purple;	
+ }
+ 
+ td.debugNbr3 {
+ 	width: 60px;
+ 	text-align: right;
+ 	background-color: white;
+ 	color: lime;	
+ }
+ 
+ td.debugTxt {
+ 	background-color: white;
+ 	color: black;	
+ }
+ 
+ td.debugFlag {
+ 	background-color: white;
+ 	color: red;
+ 	width: 15px;
+ 	text-align: center;
+ }
+ 
