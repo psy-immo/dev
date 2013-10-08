@@ -70,9 +70,57 @@ function PrintAllCorrect(nbr) {
 	
 	var correct = Object.keys(h.correct);
 	for ( var int = 0; int < correct.length; int++) {
+		var id = correct[int];
+		if (h.IsTrivial(id))
+			continue;
 		html += "<tr>";
 		html += "<td class=\"debugNbr\">";
+		
+		html += id;
+		html += "</td><td class=\"debugTxt\">";
+		html += escapeSome(s.FromId(id));
+		html += "</td><td class=\"debugFlag\">";
+		if (h.IsTrivial(id))
+			html += "T";
+		html += "</td><td class=\"debugFlag\">";
+		if (h.IsJustified(id))
+			html += "J";
+		html += "</td><td class=\"debugFlag\">";
+		if (h.IsConcluding(id))
+			html += "C";	
+		html += "</td><td class=\"debugFlag\">";
+		var lacks = h.IndicatesWhichLacks(id);
+		for ( var int2 = 0; int2 < lacks.length; int2++) {
+			var array_element = lacks[int2];
+			html += escapeSome(array_element+" ");
+			
+		}
+		html += "</td>";
+		html += "</tr>";
+	}
+	
+	html += "</table>";
+	
+	document.write(html);		
+}
+
+function PrintAllTrivial(nbr) {
+	if (!nbr)
+		nbr = 0;
+	var machine = myInferenceMachines[nbr];
+	var h = machine.hypergraph;
+	var s = machine.stringids;
+	
+	var html = "<table class=\"debug\">";
+	
+	var correct = Object.keys(h.trivial);
+	for ( var int = 0; int < correct.length; int++) {
 		var id = correct[int];
+		if (!h.IsTrivial(id))
+			continue;
+		html += "<tr>";
+		html += "<td class=\"debugNbr\">";
+		
 		html += id;
 		html += "</td><td class=\"debugTxt\">";
 		html += escapeSome(s.FromId(id));

@@ -521,6 +521,10 @@ public class InferableAssertions {
 
 			if (this.invalidInferredAssertions.isEmpty() == false) {
 				this.state = State.invalid;
+				System.err.println("Inferred INVALID Assertions:");
+				for (AssertionInterface ai : this.invalidInferredAssertions) {
+					System.err.println("INVALID  " + ai.toString());
+				}
 				break;
 			}
 		}
