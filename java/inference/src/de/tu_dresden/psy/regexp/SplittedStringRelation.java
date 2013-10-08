@@ -79,6 +79,44 @@ public class SplittedStringRelation implements StringRelationInterface {
 		private int part;
 		private Set<String> empty;
 
+		public static enum TranscriptionMode {
+			PLAIN, UPPERCASE, LOWERCASE, TITLECASE, FIRSTUPPER, FIRSTLOWER
+		};
+
+		public static String toTitleCase(String input) {
+			StringBuilder titleCase = new StringBuilder();
+			boolean nextTitleCase = true;
+
+			for (char c : input.toCharArray()) {
+				if (Character.isSpaceChar(c)) {
+					nextTitleCase = true;
+				} else if (nextTitleCase) {
+					c = Character.toTitleCase(c);
+					nextTitleCase = false;
+				}
+
+				titleCase.append(c);
+			}
+
+			return titleCase.toString();
+		}
+
+		private TranscriptionMode mode;
+
+		/**
+		 * create a projection
+		 * 
+		 * @param part
+		 *            splittings index of the projection
+		 * @param mode
+		 *            copy transcription mode
+		 */
+		public ProjectionMap(int part, TranscriptionMode mode) {
+			this.part = part;
+			this.empty = new HashSet<String>();
+			this.mode = mode;
+		}
+
 		/**
 		 * create a projection
 		 * 
@@ -88,13 +126,46 @@ public class SplittedStringRelation implements StringRelationInterface {
 		public ProjectionMap(int part) {
 			this.part = part;
 			this.empty = new HashSet<String>();
+			this.mode = TranscriptionMode.PLAIN;
 		}
 
 		@Override
 		public Set<String> map(String[] splitting) {
 			if (splitting.length > this.part) {
 				Set<String> result = new HashSet<String>();
-				result.add(splitting[this.part]);
+
+				switch (this.mode) {
+				case UPPERCASE:
+					result.add(splitting[this.part].toUpperCase());
+					break;
+				case LOWERCASE:
+					result.add(splitting[this.part].toLowerCase());
+					break;
+				case TITLECASE:
+					result.add(toTitleCase(splitting[this.part]));
+					break;
+				case FIRSTUPPER:
+					if (splitting[this.part].length() > 1) {
+						result.add(Character.toUpperCase(splitting[this.part]
+								.charAt(0)) + splitting[this.part].substring(1));
+					} else {
+						result.add(splitting[this.part].toUpperCase());
+					}
+					break;
+				case FIRSTLOWER:
+					if (splitting[this.part].length() > 1) {
+						result.add(Character.toLowerCase(splitting[this.part]
+								.charAt(0)) + splitting[this.part].substring(1));
+					} else {
+						result.add(splitting[this.part].toLowerCase());
+					}
+					break;
+
+				case PLAIN:
+				default:
+					result.add(splitting[this.part]);
+				}
+
 				return result;
 			}
 			return this.empty;
@@ -362,7 +433,8 @@ public class SplittedStringRelation implements StringRelationInterface {
 
 		System.out.println(rel2.allMaps("ABCDEFABCDEF").size());
 
-		SplittedStringRelation fromStr = new SplittedStringRelation("A*B*·(AB)*·A*B*→middle part: ·»2");
+		SplittedStringRelation fromStr = new SplittedStringRelation(
+				"A*B*·(AB)*·A*B*→middle part: ·»2");
 
 		System.out.println(fromStr.allMaps("ABABABABAB"));
 	}

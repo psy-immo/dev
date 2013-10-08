@@ -97,6 +97,7 @@ dtd.write("\n<!ATTLIST inmap "+"""
 
 dtd.write("\n<!ATTLIST out "+"""
 		id	CDATA	#IMPLIED
+		mode (plain|upper|lower|title|1upper|1lower)    #IMPLIED
  >
 """)
 

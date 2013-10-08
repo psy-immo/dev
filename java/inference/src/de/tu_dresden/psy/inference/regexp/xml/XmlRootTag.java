@@ -35,6 +35,7 @@ import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
 import de.tu_dresden.psy.regexp.KRegExp;
 import de.tu_dresden.psy.regexp.SplittedStringRelation;
 import de.tu_dresden.psy.regexp.SplittedStringRelation.MapSplitting;
+import de.tu_dresden.psy.regexp.SplittedStringRelation.ProjectionMap.TranscriptionMode;
 import de.tu_dresden.psy.regexp.StringRelationJoin;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher;
 import de.tu_dresden.psy.regexp.SubjectPredicateObjectMatchers;
@@ -937,8 +938,26 @@ public class XmlRootTag extends XmlTag {
 							// + "\".");
 							// }
 
+							SplittedStringRelation.ProjectionMap.TranscriptionMode mode = TranscriptionMode.PLAIN;
+							if (outtags.attributes.containsKey("mode")) {
+								String m = outtags.attributes.get("mode");
+								// mode (plain|upper|lower|title|1upper|1lower)
+								if (m.equalsIgnoreCase("upper")) {
+									mode = TranscriptionMode.UPPERCASE;
+								} else if (m.equalsIgnoreCase("lower")) {
+									mode = TranscriptionMode.LOWERCASE;
+								} else if (m.equalsIgnoreCase("title")) {
+									mode = TranscriptionMode.TITLECASE;
+								} else if (m.equalsIgnoreCase("1upper")) {
+									mode = TranscriptionMode.FIRSTUPPER;
+								} else if (m.equalsIgnoreCase("1lower")) {
+									mode = TranscriptionMode.FIRSTLOWER;
+								}
+
+							}
+
 							output.add(new SplittedStringRelation.ProjectionMap(
-									ids.get(outtags.attributes.get("id"))));
+									ids.get(outtags.attributes.get("id")), mode));
 						} else if (outtags.contents.isEmpty() == false) {
 							output.add(new SplittedStringRelation.ConstantMap(
 									outtags.contents));
@@ -953,7 +972,6 @@ public class XmlRootTag extends XmlTag {
 												+ (outtags.attributes.get("id"))
 												+ "\".");
 							}
-
 
 							if (inputs.get(
 									ids.get((outtags.attributes.get("id"))))

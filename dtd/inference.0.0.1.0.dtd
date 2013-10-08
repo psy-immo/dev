@@ -81,6 +81,7 @@
 
 <!ATTLIST out 
 		id	CDATA	#IMPLIED
+		mode (plain|upper|lower|title|1upper|1lower)    #IMPLIED
  >
 
 <!ATTLIST outmap 

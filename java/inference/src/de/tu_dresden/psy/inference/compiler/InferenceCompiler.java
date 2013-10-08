@@ -529,7 +529,7 @@ public class InferenceCompiler {
 			errors.append(StringEscape.escapeToHtml(e.getClass().getName())
 					+ ": ");
 			errors.append("<em>"
-					+ StringEscape.escapeToHtml(e.getLocalizedMessage())
+ + StringEscape.escapeToHtml(e.getMessage())
 					+ "</em><br/>");
 			errors.append("<h3 class=\"compilererror\">Stack Trace</h3><br/>");
 			errors.append("<table class=\"stacktrace\">");

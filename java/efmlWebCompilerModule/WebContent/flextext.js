@@ -248,7 +248,7 @@ function FlexText(name, tags, tokenDefault, embeddedMode) {
 					break;
 				}
 			} else {
-				if (rexp.test(left + " " + right)) {
+				if (rexp.test(left + " -AUTOMATIC- " + right)) {
 					new_token = this.patternToken[int2];
 					break;
 				}

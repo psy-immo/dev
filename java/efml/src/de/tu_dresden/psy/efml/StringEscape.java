@@ -169,7 +169,9 @@ public class StringEscape {
 	 * @return escaped *
 	 */
 	public static String escapeToHtml(String unescaped) {
-
+		if (unescaped == null) {
+			return "(null)";
+		}
 		return unescaped.replaceAll("\\&", "\\&amp;")
 				.replaceAll("\\<", "\\&lt;").replaceAll("\\>", "\\&gt;")
 				.replaceAll("\\\"", "\\&quot;");
