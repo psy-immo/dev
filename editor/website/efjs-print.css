@@ -76,6 +76,7 @@ span.airport {
 	padding: 2px;
 	width: 400px;
 	height: 400px;
+	border: solid 1px black;
 }
 
 /**
@@ -438,6 +439,7 @@ span.runway {
 	width: 200px;
 	height: 20px;
 	cursor: default;
+	border: solid 1px black;
 }
 
 /**
@@ -472,6 +474,7 @@ span.runwayMarkedGood {
 span.sentencepatternBox {
 	display: inline-block;
 	padding: 2px;
+	border: solid 1px black;
 }
 
 span.sentencePatternMayTakeoff {
@@ -550,14 +553,15 @@ input.inference {
 
 table.listselection {
 	display:inline-block;
-	border:solid grey 0px; 
 	vertical-align: middle;
 	
 	cursor: default;
-	
+	border: solid 1px gray;
 }
 
 tr.listselectionSelected {
+	background-color: gray;
+	color: blue;
 }
 
 table.listselectionNonEmpty {
