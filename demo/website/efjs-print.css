@@ -560,8 +560,7 @@ table.listselection {
 }
 
 tr.listselectionSelected {
-	background-color: gray;
-	color: blue;
+	font-weight:bold;
 }
 
 table.listselectionNonEmpty {
