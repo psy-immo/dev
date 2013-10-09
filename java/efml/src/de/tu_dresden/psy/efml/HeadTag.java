@@ -88,13 +88,33 @@ public class HeadTag implements AnyTag {
 
 		if (this.cssLink != null) {
 
-			writer.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-					+ this.cssLink + "\" media=\"screen\" />");
+			if (this.cssLink.toLowerCase().endsWith(".css")) {
+				writer.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+						+ this.cssLink.substring(0, this.cssLink.length() - 4)
+						+ "-print"
+						+ this.cssLink.substring(this.cssLink.length() - 4)
+						+ "\" media=\"print\" />");
+
+				writer.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+						+ this.cssLink + "\" media=\"screen\" />");
+
+			} else {
+				writer.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+						+ this.cssLink + "\" media=\"print\" />");
+				writer.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+						+ this.cssLink + "\" media=\"screen\" />");
+
+			}
 
 		} else {
 
 			writer.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+					+ this.cssDefaultBase
+					+ "efjs-print.css\" media=\"print\" />");
+
+			writer.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""
 					+ this.cssDefaultBase + "efjs.css\" media=\"screen\" />");
+
 		}
 
 		/**
