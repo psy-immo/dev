@@ -470,7 +470,9 @@ public class InferenceCompiler {
 		try {
 
 			OUTER: for (EmbeddedInferenceXmlTag t : xml) {
+				// System.err.println("TAG: " + t.getTagClass());
 				if (t.getTagClass().equalsIgnoreCase("domain")) {
+					// System.err.println("DOMAIN TAG");
 					/**
 					 * the domain tags contain the information about how to
 					 * produce the assertion domain by point-wise concatenation
@@ -481,6 +483,8 @@ public class InferenceCompiler {
 						continue OUTER;
 					}
 
+					// System.err.println("FACTORS");
+
 					ArrayList<ArrayList<String>> factors = new ArrayList<ArrayList<String>>();
 
 					for (EmbeddedInferenceXmlTag f : t.getChildren()) {
@@ -490,14 +494,23 @@ public class InferenceCompiler {
 							 * add constant factor as singleton set
 							 */
 							factor.add(f.getStringContent());
+							// System.err.println("Q");
 						} else if (f.getTagClass().equalsIgnoreCase("factor")) {
+							// System.err.println("FACTOR");
 							if (f.hasChildren() == false) {
 								continue OUTER;
 							}
-
+							// System.err.println("NONEMPTY");
 							for (EmbeddedInferenceXmlTag q : f.getChildren()) {
 								factor.add(q.getStringContent());
 							}
+						} else {
+							if (f.getTagClass().equalsIgnoreCase("#PCDATA") == false) {
+								System.err
+										.println("Unrecognized domain subtag: "
+												+ f.getTagClass());
+							}
+							continue;
 						}
 
 						factors.add(factor);
@@ -507,7 +520,7 @@ public class InferenceCompiler {
 					 * update the assertionDomain object: add the new generating
 					 * product
 					 */
-
+					// System.err.println("ADD PRODUCT");
 					this.assertionDomain.addStringProduct(factors);
 				} else {
 					/**
@@ -529,7 +542,7 @@ public class InferenceCompiler {
 			errors.append(StringEscape.escapeToHtml(e.getClass().getName())
 					+ ": ");
 			errors.append("<em>"
- + StringEscape.escapeToHtml(e.getMessage())
+					+ StringEscape.escapeToHtml(e.getMessage())
 					+ "</em><br/>");
 			errors.append("<h3 class=\"compilererror\">Stack Trace</h3><br/>");
 			errors.append("<table class=\"stacktrace\">");

@@ -105,15 +105,22 @@ public class StringIds {
 	 */
 	public void addStringProduct(ArrayList<ArrayList<String>> factorwise) {
 
+
 		if (factorwise.isEmpty()) {
+			System.err.println("DOMAIN: Got empty factor LIST!");
 			/** empty product */
 			return;
 		}
+		int nbr = 0;
 		for (ArrayList<String> factor : factorwise) {
+			++nbr;
 			if (factor.isEmpty()) {
+				System.err.println("DOMAIN: Got empty FACTOR in list! " + nbr);
+
 				/** empty product */
 				return;
 			}
+
 		}
 
 		/**
@@ -122,9 +129,11 @@ public class StringIds {
 
 		@SuppressWarnings("unchecked")
 		ArrayList<ArrayList<String>> deep_copy = (ArrayList<ArrayList<String>>) factorwise
-				.clone();
+		.clone();
 
 		this.assertionDomain.add(deep_copy);
+
+
 
 		/**
 		 * furthermore, we add the concatenated strings to the database
