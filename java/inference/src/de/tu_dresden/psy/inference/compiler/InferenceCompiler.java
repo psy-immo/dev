@@ -507,8 +507,8 @@ public class InferenceCompiler {
 						} else {
 							if (f.getTagClass().equalsIgnoreCase("#PCDATA") == false) {
 								System.err
-										.println("Unrecognized domain subtag: "
-												+ f.getTagClass());
+								.println("Unrecognized domain subtag: "
+										+ f.getTagClass());
 							}
 							continue;
 						}
@@ -776,6 +776,8 @@ public class InferenceCompiler {
 						.getNontrivialPart()) {
 					DirectedHyperEdge edge = new DirectedHyperEdge(id_a);
 
+					boolean premise_contains_outside_domain = false;
+
 					for (AssertionInterface p : premise) {
 						int id_p = this.assertionDomain.fromAssertion(p);
 
@@ -785,16 +787,31 @@ public class InferenceCompiler {
 							 * be specified to infer a
 							 */
 							edge.addPremise(id_p);
+						} else {
+
+							if (this.implicitAssertions.contains(p) == false) {
+								System.err
+										.println("WARNING: Ignoring inference involving premise not in domain: "
+												+ p.toString());
+								premise_contains_outside_domain = true;
+							}
 						}
 					}
 
+					if (premise_contains_outside_domain == false) {
+						/**
+						 * this premise is nontrivial
+						 */
+
+						edge.setTriviality(false);
+
+						singletonTargetEdges.add(edge);
+					}
 					/**
-					 * this premise is nontrivial
+					 * else: we need an assertion as premise that is not part of
+					 * the assertion domain, so this conclusion may not be drawn
+					 * from the assertion domain anyway
 					 */
-
-					edge.setTriviality(false);
-
-					singletonTargetEdges.add(edge);
 				}
 
 				/**
