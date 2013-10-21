@@ -69,6 +69,13 @@ public class XmlRootTag extends XmlTag {
 	 * all given student assertions
 	 */
 	private Set<String> assertions;
+
+	/**
+	 * all given justification-todo assertions
+	 */
+
+	private Set<String> todoJustify;
+
 	/**
 	 * all filters for invalid assertions (self-contradictory etc.)
 	 */
@@ -118,6 +125,7 @@ public class XmlRootTag extends XmlTag {
 		this.trivialRules = new HashSet<InferenceMap>();
 		this.parsers = new HashSet<SubjectPredicateObjectMatcher>();
 		this.assertions = new HashSet<String>();
+		this.todoJustify = new HashSet<String>();
 		this.invalid = new HashSet<ConstrainedAssertionFilter>();
 		this.trivial = new HashSet<ConstrainedAssertionFilter>();
 		this.justified = new HashSet<ConstrainedAssertionFilter>();
@@ -202,6 +210,14 @@ public class XmlRootTag extends XmlTag {
 
 	public Set<ConstrainedAssertionFilter> getJustifiedFilters() {
 		return this.justified;
+	}
+
+	/**
+	 * @return a set of strings that have been given as justfication-todos
+	 */
+
+	public Set<String> getJustificationTodos() {
+		return this.todoJustify;
 	}
 
 	/**
@@ -330,6 +346,23 @@ public class XmlRootTag extends XmlTag {
 
 	private void processAssert(XmlTag child) {
 		this.assertions.add(child.contents);
+	}
+
+
+	/**
+	 * process a &lt;todo>-tag
+	 * 
+	 * @param child
+	 */
+	private void processTodo(XmlTag child) {
+		for (XmlTag what : child.children) {
+			if (what.tagName.equalsIgnoreCase("JUSTIFY")) {
+				this.todoJustify.add(what.contents);
+			} else {
+				System.err.println("ERROR: UNKNOWN <TODO> SUBTAG TYPE: "
+						+ what.tagName);
+			}
+		}
 	}
 
 	/**
@@ -1108,12 +1141,15 @@ public class XmlRootTag extends XmlTag {
 			this.processQuality(child);
 		} else if (child.tagName.equals("SOLVES")) {
 			this.processSolves(child);
+		} else if (child.tagName.equals("TODO")) {
+			this.processTodo(child);
 		}
 
 		/**
 		 * ignore unknown tags
 		 */
 	}
+
 
 	@Override
 	public String toString() {

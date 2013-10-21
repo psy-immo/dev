@@ -61,7 +61,7 @@ public class InferenceCompiler {
 
 	private float excessTimeLimit;
 
-	private static final float defaultExcessTimeLimit = 45;
+	private static final float defaultExcessTimeLimit = 12000;
 
 	/**
 	 * keep track of the assertion domain
@@ -152,6 +152,13 @@ public class InferenceCompiler {
 	private Set<Integer> trivialAssertionIds;
 
 	/**
+	 * save the ids of the assertions that have to be justified by the student
+	 * 
+	 */
+
+	private Set<Integer> todoJustifyIds;
+
+	/**
 	 * save the ids of the concluding assertions
 	 */
 	private Set<Integer> concludingAssertionIds;
@@ -215,6 +222,8 @@ public class InferenceCompiler {
 		this.justificationDepths = new HashMap<Integer, Integer>();
 
 		this.lackingQualityIds = new HashMap<String, Set<Integer>>();
+
+		this.todoJustifyIds = new HashSet<Integer>();
 	}
 
 	/**
@@ -436,6 +445,18 @@ public class InferenceCompiler {
 		 */
 
 		writer.write(machineOptions);
+
+		/**
+		 * if there are justifications in the to-do, write them down
+		 */
+
+		if (this.todoJustifyIds.isEmpty() == false) {
+			writer.write(".JustifyToDo([");
+			for (Integer id : this.todoJustifyIds) {
+				writer.write(StringEscape.obfuscateInt(id) + ", ");
+			}
+			writer.write("])");
+		}
 
 		writer.write(".WriteHtml();");
 		writer.write("</script>");
@@ -791,8 +812,8 @@ public class InferenceCompiler {
 
 							if (this.implicitAssertions.contains(p) == false) {
 								System.err
-										.println("WARNING: Ignoring inference involving premise not in domain: "
-												+ p.toString());
+								.println("WARNING: Ignoring inference involving premise not in domain: "
+										+ p.toString());
 								premise_contains_outside_domain = true;
 							}
 						}
@@ -987,6 +1008,22 @@ public class InferenceCompiler {
 				}
 
 			}
+		}
+
+		/**
+		 * add the todo justification ids
+		 */
+
+		for (String todo : this.inferenceRoot.getJustificationTodos()) {
+			int id = this.assertionDomain.fromString(todo);
+			if (id < 0) {
+				System.err
+				.println("ERROR!! Justification To-Do not in assertion domain: "
+						+ todo);
+			} else {
+				this.todoJustifyIds.add(id);
+			}
+
 		}
 
 		return errors.toString();

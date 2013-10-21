@@ -44,6 +44,8 @@ public class WaitForTag implements AnyTag {
 			return "myWaitForSniffy";
 		} else if (check.equals("instructions")) {
 			return "myWaitForInstructions";
+		} else if (check.equals("inferenceOrTimeout")) {
+			return "myWaitForInferenceOrTimeout";
 		}
 
 		/**
@@ -76,20 +78,21 @@ public class WaitForTag implements AnyTag {
 			throws OperationNotSupportedException {
 		if (innerTag.getClass() == PlainContent.class) {
 			this.token += ((PlainContent) innerTag).getPlainContent();
-		} else
+		} else {
 			throw new OperationNotSupportedException(
 					"<waitfor> cannot enclose "
 							+ innerTag.getClass().toString());
+		}
 	}
-	
+
 	@Override
 	public String getEfml() {
 		StringBuffer representation = new StringBuffer();
-		
+
 		representation.append("<waitfor>");
 		representation.append(StringEscape.escapeToXml(this.token));
 		representation.append("</waitfor>");
-		
+
 		return representation.toString();
 	}
 

@@ -9,11 +9,15 @@ if __name__ == '__main__':
 	rootname = "root"
 	furtherchilds = ""
 
-	
+todotasks = "justify"
 	
 dtd.write("\n<!ELEMENT " + rootname +" (parse|assert|expert|conclusion|implicit|"+\
-	"justified|trivial|invalid|rule|conclusions|quality|solves|domain"+\
+	"justified|trivial|invalid|rule|conclusions|quality|solves|domain|todo"+\
 	furtherchilds+") >\n")
+	
+dtd.write("\n<!ELEMENT todo ("+todotasks+")* >\n")
+
+dtd.write("\n<!ELEMENT justify (#PCDATA)* >\n")
 	
 dtd.write("\n<!ELEMENT parse (subject|predicate|object|uniformly)* >\n")
 
