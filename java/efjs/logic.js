@@ -27,3 +27,20 @@ function Exists(set, test) {
 	}
 	return null;
 }
+
+/**
+ * checks, whether in set is a value v, that gives test(v) implicit true
+ */
+function ExistsTrack(set, quantified, test) {
+	for (var int=0;int < set.length; ++int) {
+		var f = set[int];
+		if (quantified.indexOf(f) <= 0)
+			quantified.push(f);
+	}
+	for (var int=0;int < set.length; ++int) {
+		if (test(set[int])) {
+			return set[int];
+		}
+	}
+	return null;
+}

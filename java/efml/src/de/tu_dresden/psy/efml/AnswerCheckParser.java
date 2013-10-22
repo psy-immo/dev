@@ -70,7 +70,7 @@ public class AnswerCheckParser {
 	 */
 
 	static final String[] forbiddenTokens = new String[] { "tag", "in",
-			"field", "with", "and", "or" };
+		"field", "with", "and", "or" };
 
 	/**
 	 * Variable types:
@@ -109,9 +109,9 @@ public class AnswerCheckParser {
 
 		int current_level = 0;
 
-		levels = new ArrayList<Integer>();
+		this.levels = new ArrayList<Integer>();
 
-		for (Iterator<AnswerCheckTokenizer.Token> it = tokens.iterator(); it
+		for (Iterator<AnswerCheckTokenizer.Token> it = this.tokens.iterator(); it
 				.hasNext();) {
 			AnswerCheckTokenizer.Token token = it.next();
 			if (token.quoted == false) {
@@ -120,7 +120,7 @@ public class AnswerCheckParser {
 				}
 			}
 
-			levels.add(current_level);
+			this.levels.add(current_level);
 
 			if (token.quoted == false) {
 				if (token.value.equalsIgnoreCase(")")) {
@@ -138,16 +138,19 @@ public class AnswerCheckParser {
 	 */
 
 	public boolean isForbidden(String token) {
-		for (int i = 0; i < forbiddenTokens.length; ++i)
-			if (token.equalsIgnoreCase(forbiddenTokens[i]) == true)
+		for (int i = 0; i < forbiddenTokens.length; ++i) {
+			if (token.equalsIgnoreCase(forbiddenTokens[i]) == true) {
 				return true;
-		/**
-		 * test whether it is alphanumeric
-		 */
+				/**
+				 * test whether it is alphanumeric
+				 */
+			}
+		}
 
 		for (int c = 0; c < token.length(); ++c) {
-			if (Character.isLetterOrDigit(token.charAt(c)) == false)
+			if (Character.isLetterOrDigit(token.charAt(c)) == false) {
 				return true;
+			}
 		}
 
 		return Character.isLetter(token.charAt(0)) != true;
@@ -158,23 +161,47 @@ public class AnswerCheckParser {
 	 * @return corresponing javascript code
 	 */
 	public String getJsCode() {
-		if (checked == false) {
-			checkSyntaxAndParse();
+		if (this.checked == false) {
+			this.checkSyntaxAndParse();
 		}
-		if (error != null) {
+		if (this.error != null) {
 			/**
 			 * disable this check...
 			 */
 			return "function(){\nreturn true;\n}";
 		} else {
-			return "function(){\n var goodParts = [];\n var result = (function(){\n"
-					+ this.jsCode
-					+ "\n})();"
-					+ "if (result) {\n"
-					+ " for (var i=0;i<goodParts.length;++i) {\n"
-					+ " if (typeof goodParts[i].MarkAsGood != \"undefined\") {\n"
-					+ "goodParts[i].MarkAsGood();\n}\n"
-					+ " }\n}\nreturn result;}";
+
+			if (this.attributes.getValueOrDefault("type", "neutralgood")
+					.equalsIgnoreCase("neutralgood")) {
+
+				return "function(){\n var goodParts = [];"
+						+ "\n var consideredParts = [];"
+						+ "\n var result = (function(){\n"
+						+ this.jsCode
+						+ "\n})();"
+						+ "if (result) {\n"
+						+ " for (var i=0;i<goodParts.length;++i) {\n"
+						+ " if (typeof goodParts[i].MarkAsGood != \"undefined\") {\n"
+						+ "goodParts[i].MarkAsGood();\n}\n"
+						+ " }\n}\nreturn result;}";
+			} else {
+				return "function(){\n var goodParts = [];"
+						+ "\n var consideredParts = [];"
+						+ "\n var quantifiedParts = [];"
+						+ "\n var result = (function(){\n"
+						+ this.jsCode
+						+ "\n})();"
+						+ "if (result) {\n"
+						+ " for (var i=0;i<goodParts.length;++i) {\n"
+						+ " if (typeof goodParts[i].MarkAsGood != \"undefined\") {\n"
+						+ "goodParts[i].MarkAsGood();\n}\n"
+						+ " }\n} else {\n"
+						+ " for (var i=0;i<quantifiedParts.length;++i) {\n"
+						+ "   if (typeof quantifiedParts[i].MarkAsBad != \"undefined\") {\n"
+						+ "      quantifiedParts[i].MarkAsBad();\n}\n"
+						+ "   }\n}"
+						+"\nreturn result;}";
+			}
 		}
 	}
 
@@ -192,10 +219,10 @@ public class AnswerCheckParser {
 		this.variableType = new HashMap<String, Integer>();
 		this.variableValue = new HashMap<String, String>();
 		this.jsCode = "\n";
-		this.error = enterTerm(0, this.tokens.length());
+		this.error = this.enterTerm(0, this.tokens.length());
 		this.checked = true;
 
-		return error;
+		return this.error;
 	}
 
 	/**
@@ -204,11 +231,11 @@ public class AnswerCheckParser {
 	 * @param variable
 	 */
 	private void openTagVariable(String variable) {
-		if (variableValue.get(variable).isEmpty() == true) {
-			jsCode += "return Exists(myTags.tags, function(tVar" + variable
-					+ "){\n";
+		if (this.variableValue.get(variable).isEmpty() == true) {
+			this.jsCode += "return Exists(myTags.tags, function(tVar"
+					+ variable + "){\n";
 		} else {
-			jsCode += "return Exists([" + variableValue.get(variable)
+			this.jsCode += "return Exists([" + this.variableValue.get(variable)
 					+ "], function(tVar" + variable + "){\n";
 		}
 	}
@@ -219,7 +246,7 @@ public class AnswerCheckParser {
 	 * @param variable
 	 */
 	private void closeTagVariable(String variable) {
-		jsCode += "});";
+		this.jsCode += "});";
 	}
 
 	/**
@@ -228,11 +255,18 @@ public class AnswerCheckParser {
 	 * @param variable
 	 */
 	private void openFieldVariable(String variable) {
-
-		jsCode += "return Exists(myTags.AllTagsBut(["
-				+ variableValue.get(variable) + "],"
-				+ attributes.getRejectTags() + "), function(fVar" + variable
-				+ "){\n";
+		if (this.attributes.getValueOrDefault("type", "neutralgood")
+				.equalsIgnoreCase("neutralgood")) {
+			this.jsCode += "return Exists(myTags.AllTagsBut(["
+					+ this.variableValue.get(variable) + "],"
+					+ this.attributes.getRejectTags() + "), function(fVar"
+					+ variable + "){\n";
+		} else {
+			this.jsCode += "return ExistsTrack(myTags.AllTagsBut(["
+					+ this.variableValue.get(variable) + "],"
+					+ this.attributes.getRejectTags()
+					+ "), quantifiedParts, function(fVar" + variable + "){\n";
+		}
 	}
 
 	/**
@@ -241,7 +275,7 @@ public class AnswerCheckParser {
 	 * @param variable
 	 */
 	private void closeFieldVariable(String variable) {
-		jsCode += "});";
+		this.jsCode += "});";
 	}
 
 	/**
@@ -249,9 +283,9 @@ public class AnswerCheckParser {
 	 */
 
 	private void startAndSequence() {
-		jsCode += "var previous_good_count = goodParts.length;\n"
+		this.jsCode += "var previous_good_count = goodParts.length;\n"
 				+ "var failed = false;";
-		jsCode += "if ((function(){\n";
+		this.jsCode += "if ((function(){\n";
 	}
 
 	/**
@@ -259,8 +293,8 @@ public class AnswerCheckParser {
 	 */
 
 	private void betweenAndSequence() {
-		jsCode += "})()) {\n" + "} else {\n" + " failed = true;\n" + "}\n";
-		jsCode += "if ((function(){\n";
+		this.jsCode += "})()) {\n" + "} else {\n" + " failed = true;\n" + "}\n";
+		this.jsCode += "if ((function(){\n";
 	}
 
 	/**
@@ -268,11 +302,13 @@ public class AnswerCheckParser {
 	 */
 
 	private void endAndSequence() {
-		jsCode += "})()) {\n" + "} else {\n" + " failed = true;\n" + "}\n";
+		this.jsCode += "})()) {\n" + "} else {\n" + " failed = true;\n" + "}\n";
 
-		jsCode += " if (failed) {\n"
-				+ "  while (goodParts.length > previous_good_count) goodParts.pop();\n"
-				+ "  return null;\n" + "} else {\n" + "  return true;\n" + "}";
+		this.jsCode += " if (failed) {\n"
+				+ "  while (goodParts.length > previous_good_count) { var considered = goodParts.pop(); "
+				+ "     if (consideredParts.indexOf(considered) < 0) consideredParts.push(considered);"
+				+ " }\n" + "  return null;\n" + "} else {\n"
+				+ "  return true;\n" + "}";
 	}
 
 	/**
@@ -280,9 +316,9 @@ public class AnswerCheckParser {
 	 */
 
 	private void startOrSequence() {
-		jsCode += "var previous_good_count = goodParts.length;\n"
+		this.jsCode += "var previous_good_count = goodParts.length;\n"
 				+ "var succeeded = false;";
-		jsCode += "if ((function(){\n";
+		this.jsCode += "if ((function(){\n";
 	}
 
 	/**
@@ -290,8 +326,8 @@ public class AnswerCheckParser {
 	 */
 
 	private void betweenOrSequence() {
-		jsCode += "})()) {\n succeeded=true;" + "}\n";
-		jsCode += "if ((function(){\n";
+		this.jsCode += "})()) {\n succeeded=true;" + "}\n";
+		this.jsCode += "if ((function(){\n";
 	}
 
 	/**
@@ -299,8 +335,8 @@ public class AnswerCheckParser {
 	 */
 
 	private void endOrSequence() {
-		jsCode += "})()) {\n succeeded=true;" + "}\n";
-		jsCode += " return succeeded;";
+		this.jsCode += "})()) {\n succeeded=true;" + "}\n";
+		this.jsCode += " return succeeded;";
 	}
 
 	/**
@@ -343,16 +379,16 @@ public class AnswerCheckParser {
 			this.first = termFirst;
 			this.last = termLast;
 
-			error_description = "token utterly unrecognized";
-			where = tokens.getEndIndex(first);
+			this.error_description = "token utterly unrecognized";
+			this.where = AnswerCheckParser.this.tokens.getEndIndex(this.first);
 
 			/**
 			 * get the local depth of the term
 			 */
-			local_depth = levels.get(first);
-			for (int c = first; c < last; ++c) {
-				if (levels.get(c) < local_depth) {
-					local_depth = levels.get(c);
+			this.local_depth = AnswerCheckParser.this.levels.get(this.first);
+			for (int c = this.first; c < this.last; ++c) {
+				if (AnswerCheckParser.this.levels.get(c) < this.local_depth) {
+					this.local_depth = AnswerCheckParser.this.levels.get(c);
 				}
 			}
 
@@ -360,31 +396,33 @@ public class AnswerCheckParser {
 			 * create intermediate sub term structure
 			 */
 
-			subterm_start = new ArrayList<Integer>();
-			subterm_end = new ArrayList<Integer>();
-			subterm_rootlevel = new ArrayList<Boolean>();
+			this.subterm_start = new ArrayList<Integer>();
+			this.subterm_end = new ArrayList<Integer>();
+			this.subterm_rootlevel = new ArrayList<Boolean>();
 
-			int start = first;
-			boolean rootlevel = levels.get(first) == local_depth;
+			int start = this.first;
+			boolean rootlevel = AnswerCheckParser.this.levels.get(this.first) == this.local_depth;
 
-			for (int end = first + 1; end < last; ++end) {
-				if ((levels.get(end) == local_depth) || (rootlevel)) {
-					subterm_start.add(start);
-					subterm_end.add(end);
-					subterm_rootlevel.add(rootlevel);
+			for (int end = this.first + 1; end < this.last; ++end) {
+				if ((AnswerCheckParser.this.levels.get(end) == this.local_depth)
+						|| (rootlevel)) {
+					this.subterm_start.add(start);
+					this.subterm_end.add(end);
+					this.subterm_rootlevel.add(rootlevel);
 
-					rootlevel = levels.get(end) == local_depth;
+					rootlevel = AnswerCheckParser.this.levels.get(end) == this.local_depth;
 					start = end;
 				}
 			}
 
-			subterm_start.add(start);
-			subterm_end.add(last);
-			subterm_rootlevel.add(rootlevel);
+			this.subterm_start.add(start);
+			this.subterm_end.add(this.last);
+			this.subterm_rootlevel.add(rootlevel);
 
-			for (int c = 0; c < subterm_rootlevel.size(); ++c) {
-				if (subterm_rootlevel.get(c) == true) {
-					where = tokens.getEndIndex(subterm_start.get(c));
+			for (int c = 0; c < this.subterm_rootlevel.size(); ++c) {
+				if (this.subterm_rootlevel.get(c) == true) {
+					this.where = AnswerCheckParser.this.tokens
+							.getEndIndex(this.subterm_start.get(c));
 					break;
 				}
 			}
@@ -395,31 +433,35 @@ public class AnswerCheckParser {
 			 * format error message
 			 */
 
-			String message = "Syntax-Error: " + error_description
-					+ " just before the " + (2 + where) + "th character: ";
+			String message = "Syntax-Error: " + this.error_description
+					+ " just before the " + (2 + this.where) + "th character: ";
 
-			int end_index = where;
+			int end_index = this.where;
 
-			if (where > 16) {
+			if (this.where > 16) {
 				message += "[...]";
-			} else
-				where = 16;
+			} else {
+				this.where = 16;
+			}
 
-			int start_index = where - 16;
+			int start_index = this.where - 16;
 
-			message += inputTerm.substring(start_index, end_index + 1);
+			message += AnswerCheckParser.this.inputTerm.substring(start_index,
+					end_index + 1);
 
 			message += " <--HERE--|";
 
-			if (end_index + 1 < inputTerm.length()) {
+			if ((end_index + 1) < AnswerCheckParser.this.inputTerm.length()) {
 
-				if (inputTerm.length() - end_index - 1 > 16) {
+				if ((AnswerCheckParser.this.inputTerm.length() - end_index - 1) > 16) {
 					message += " "
-							+ inputTerm
-									.substring(end_index + 1, end_index + 17)
-							+ "[...]";
-				} else
-					message += " " + inputTerm.substring(end_index + 1);
+							+ AnswerCheckParser.this.inputTerm.substring(
+									end_index + 1, end_index + 17) + "[...]";
+				} else {
+					message += " "
+							+ AnswerCheckParser.this.inputTerm
+							.substring(end_index + 1);
+				}
 			}
 			return message;
 		}
@@ -437,7 +479,7 @@ public class AnswerCheckParser {
 			this.error_description = error;
 			this.where = where;
 
-			return getErrorMessage();
+			return this.getErrorMessage();
 		}
 	};
 
@@ -449,11 +491,11 @@ public class AnswerCheckParser {
 	 */
 	private String enterAnd(SubtermStructure term) {
 		for (int i = 0; i < term.subterm_rootlevel.size(); ++i) {
-			if (i % 2 == 0) {
+			if ((i % 2) == 0) {
 				if (term.subterm_rootlevel.get(i) != false) {
 
 					return term.errorFound("Token should be in parenthesis",
-							tokens.getEndIndex(term.subterm_start.get(i)));
+							this.tokens.getEndIndex(term.subterm_start.get(i)));
 				}
 			} else {
 
@@ -466,50 +508,49 @@ public class AnswerCheckParser {
 					 */
 					return term.errorFound(
 							"Two terms without connecting token",
-							tokens.getEndIndex(term.subterm_start.get(i)));
+							this.tokens.getEndIndex(term.subterm_start.get(i)));
 
-				} else if ("and".equalsIgnoreCase(tokens
+				} else if ("and".equalsIgnoreCase(this.tokens
 						.getValue(term.subterm_start.get(i))) != true) {
-					return term
-							.errorFound(
-									"Connective '"
-											+ "and"
-											+ "' may not be mixed with '"
-											+ tokens.getValue(term.subterm_start
-													.get(i)) + "'", tokens
-											.getEndIndex(term.subterm_start
-													.get(i)));
+					return term.errorFound(
+							"Connective '"
+									+ "and"
+									+ "' may not be mixed with '"
+									+ this.tokens.getValue(term.subterm_start
+											.get(i)) + "'",
+											this.tokens.getEndIndex(term.subterm_start.get(i)));
 
 				}
 			}
 		}
 
-		if (term.subterm_rootlevel.size() % 2 == 0) {
+		if ((term.subterm_rootlevel.size() % 2) == 0) {
 			return term.errorFound("Term connective without right hand term",
-					tokens.getEndIndex(term.subterm_start
+					this.tokens.getEndIndex(term.subterm_start
 							.get(term.subterm_start.size() - 1)));
 
 		} else {
 			/**
 			 * and/or n-ary term well-formed, if subterms are well-formed
 			 */
-			startAndSequence();
+			this.startAndSequence();
 
 			for (int i = 0; i < term.subterm_rootlevel.size(); i += 2) {
 				if (i > 0) {
 
-					betweenAndSequence();
+					this.betweenAndSequence();
 
 				}
 
-				String error = enterTerm(term.subterm_start.get(i),
+				String error = this.enterTerm(term.subterm_start.get(i),
 						term.subterm_end.get(i));
 
-				if (error != null)
+				if (error != null) {
 					return error;
+				}
 			}
 
-			endAndSequence();
+			this.endAndSequence();
 
 			return null;
 		}
@@ -523,10 +564,10 @@ public class AnswerCheckParser {
 	 */
 	private String enterOr(SubtermStructure term) {
 		for (int i = 0; i < term.subterm_rootlevel.size(); ++i) {
-			if (i % 2 == 0) {
+			if ((i % 2) == 0) {
 				if (term.subterm_rootlevel.get(i) != false) {
 					return term.errorFound("Token should be in parenthesis",
-							tokens.getEndIndex(term.subterm_start.get(i)));
+							this.tokens.getEndIndex(term.subterm_start.get(i)));
 
 				}
 			} else {
@@ -540,26 +581,24 @@ public class AnswerCheckParser {
 					 */
 					return term.errorFound(
 							"Two terms without connecting token",
-							tokens.getEndIndex(term.subterm_start.get(i)));
-				} else if ("or".equalsIgnoreCase(tokens
+							this.tokens.getEndIndex(term.subterm_start.get(i)));
+				} else if ("or".equalsIgnoreCase(this.tokens
 						.getValue(term.subterm_start.get(i))) != true) {
-					return term
-							.errorFound(
-									"Connective '"
-											+ "or"
-											+ "' may not be mixed with '"
-											+ tokens.getValue(term.subterm_start
-													.get(i)) + "'", tokens
-											.getEndIndex(term.subterm_start
-													.get(i)));
+					return term.errorFound(
+							"Connective '"
+									+ "or"
+									+ "' may not be mixed with '"
+									+ this.tokens.getValue(term.subterm_start
+											.get(i)) + "'",
+											this.tokens.getEndIndex(term.subterm_start.get(i)));
 
 				}
 			}
 		}
 
-		if (term.subterm_rootlevel.size() % 2 == 0) {
+		if ((term.subterm_rootlevel.size() % 2) == 0) {
 			return term.errorFound("Term connective without right hand term",
-					tokens.getEndIndex(term.subterm_start
+					this.tokens.getEndIndex(term.subterm_start
 							.get(term.subterm_start.size() - 1)));
 
 		} else {
@@ -567,22 +606,23 @@ public class AnswerCheckParser {
 			 * and/or n-ary term well-formed, if subterms are well-formed
 			 */
 
-			startOrSequence();
+			this.startOrSequence();
 
 			for (int i = 0; i < term.subterm_rootlevel.size(); i += 2) {
 				if (i > 0) {
 
-					betweenOrSequence();
+					this.betweenOrSequence();
 
 				}
 
-				String error = enterTerm(term.subterm_start.get(i),
+				String error = this.enterTerm(term.subterm_start.get(i),
 						term.subterm_end.get(i));
-				if (error != null)
+				if (error != null) {
 					return error;
+				}
 			}
 
-			endOrSequence();
+			this.endOrSequence();
 
 			return null;
 		}
@@ -597,15 +637,15 @@ public class AnswerCheckParser {
 	 */
 
 	private String enterSubterm(SubtermStructure term) {
-		if ((tokens.isQuoted(term.last - 1) == false)
-				&& (tokens.getValue(term.last - 1).equalsIgnoreCase(")"))) {
+		if ((this.tokens.isQuoted(term.last - 1) == false)
+				&& (this.tokens.getValue(term.last - 1).equalsIgnoreCase(")"))) {
 			/**
 			 * term in parenthesis is valid, if the enclosed subterm is valid
 			 */
-			return enterTerm(term.first + 1, term.last - 1);
+			return this.enterTerm(term.first + 1, term.last - 1);
 		} else {
 			return term.errorFound("Closing parenthesis is missing",
-					tokens.getEndIndex(term.last - 1));
+					this.tokens.getEndIndex(term.last - 1));
 
 		}
 	}
@@ -621,57 +661,63 @@ public class AnswerCheckParser {
 
 		if (term.subterm_rootlevel.size() < 2) {
 			return term.errorFound("missing variable name after 'tag'",
-					tokens.getEndIndex(term.first));
+					this.tokens.getEndIndex(term.first));
 		} else {
 			if (term.subterm_rootlevel.get(1) == true) {
-				if (tokens.isQuoted(term.subterm_start.get(1)) == true) {
+				if (this.tokens.isQuoted(term.subterm_start.get(1)) == true) {
 					return term.errorFound(
 							"String literals cannot be variable names",
-							tokens.getEndIndex(term.subterm_start.get(1)));
+							this.tokens.getEndIndex(term.subterm_start.get(1)));
 				} else {
-					String variable = tokens
-							.getValue(term.subterm_start.get(1)).toLowerCase();
-					if (boundVariables.contains(variable) == true) {
+					String variable = this.tokens.getValue(
+							term.subterm_start.get(1)).toLowerCase();
+					if (this.boundVariables.contains(variable) == true) {
 						return term.errorFound("Variable symbol '" + variable
-								+ "' is already taken ",
-								tokens.getEndIndex(term.subterm_start.get(1)));
-					} else if (isForbidden(variable) == true) {
-						return term.errorFound("'" + variable
-								+ "' connot be used as variable symbol",
-								tokens.getEndIndex(term.subterm_start.get(1)));
+								+ "' is already taken ", this.tokens
+								.getEndIndex(term.subterm_start.get(1)));
+					} else if (this.isForbidden(variable) == true) {
+						return term
+								.errorFound(
+										"'"
+												+ variable
+												+ "' connot be used as variable symbol",
+												this.tokens
+												.getEndIndex(term.subterm_start
+														.get(1)));
 					} else {
 						if (term.subterm_rootlevel.size() < 3) {
 							return term.errorFound("':' or 'in' missing",
-									tokens.getEndIndex(term.subterm_start
+									this.tokens.getEndIndex(term.subterm_start
 											.get(1)));
 						} else if (term.subterm_rootlevel.get(2) == true) {
-							String colon_or_in = tokens
+							String colon_or_in = this.tokens
 									.getValue(term.subterm_start.get(2));
-							if (tokens.isQuoted(term.subterm_start.get(2)) == false) {
+							if (this.tokens.isQuoted(term.subterm_start.get(2)) == false) {
 								if (colon_or_in.equalsIgnoreCase(":") == true) {
 									/**
 									 * tag VARNAME : RHS
 									 */
-									boundVariables.push(variable);
-									variableType.put(variable, VAR_TAG);
+									this.boundVariables.push(variable);
+									this.variableType.put(variable,
+											this.VAR_TAG);
 
-									variableValue.put(variable, "");
+									this.variableValue.put(variable, "");
 
-									openTagVariable(variable);
+									this.openTagVariable(variable);
 
 									/**
 									 * check RHS term
 									 */
 
-									String error = enterTerm(
+									String error = this.enterTerm(
 											term.subterm_start.get(2) + 1,
 											term.last);
 
-									closeTagVariable(variable);
+									this.closeTagVariable(variable);
 
-									boundVariables.pop();
-									variableType.remove(variable);
-									variableValue.remove(variable);
+									this.boundVariables.pop();
+									this.variableType.remove(variable);
+									this.variableValue.remove(variable);
 
 									return error;
 								} else if (colon_or_in.equalsIgnoreCase("in")) {
@@ -690,7 +736,8 @@ public class AnswerCheckParser {
 															"':' after 'tag "
 																	+ variable
 																	+ " in [...]' missing",
-															tokens.getEndIndex(term.last - 1));
+																	this.tokens
+																	.getEndIndex(term.last - 1));
 
 										}
 
@@ -699,18 +746,21 @@ public class AnswerCheckParser {
 											return term
 													.errorFound(
 															"Terms cannot be tags",
-															tokens.getEndIndex(term.subterm_start
+															this.tokens
+															.getEndIndex(term.subterm_start
 																	.get(colon_term)));
 
 										}
 
-										String tag_token = tokens.getValue(
-												term.subterm_start
+										String tag_token = this.tokens
+												.getValue(
+														term.subterm_start
 														.get(colon_term))
-												.toLowerCase();
+														.toLowerCase();
 
-										if (tokens.isQuoted(term.subterm_start
-												.get(colon_term)) == true) {
+										if (this.tokens
+												.isQuoted(term.subterm_start
+														.get(colon_term)) == true) {
 											/**
 											 * tag given by string literal
 											 */
@@ -720,16 +770,17 @@ public class AnswerCheckParser {
 											}
 											value += "\""
 													+ StringEscape
-															.escapeToJavaScript(tag_token)
+													.escapeToJavaScript(tag_token)
 													+ "\"";
 										} else {
 											if (tag_token.equalsIgnoreCase(":") == true) {
 												colon_found = true;
 												break;
 											}
-											if (boundVariables
+											if (this.boundVariables
 													.contains(tag_token)) {
-												if (variableType.get(tag_token) == VAR_TAG) {
+												if (this.variableType
+														.get(tag_token) == this.VAR_TAG) {
 													if (value.isEmpty() == false) {
 														value += ", ";
 													}
@@ -738,7 +789,7 @@ public class AnswerCheckParser {
 													term.error_description = "'"
 															+ tag_token
 															+ "' is a variable, but not a token variable";
-													term.where = tokens
+													term.where = this.tokens
 															.getEndIndex(term.subterm_start
 																	.get(colon_term));
 													break;
@@ -749,8 +800,9 @@ public class AnswerCheckParser {
 																"'"
 																		+ tag_token
 																		+ "' is neither a bound token variable nor a string literal",
-																tokens.getEndIndex(term.subterm_start
-																		.get(colon_term)));
+																		this.tokens
+																		.getEndIndex(term.subterm_start
+																				.get(colon_term)));
 
 											}
 										}
@@ -759,26 +811,27 @@ public class AnswerCheckParser {
 									}
 
 									if (colon_found) {
-										boundVariables.push(variable);
-										variableType.put(variable, VAR_TAG);
-										variableValue.put(variable, value);
+										this.boundVariables.push(variable);
+										this.variableType.put(variable,
+												this.VAR_TAG);
+										this.variableValue.put(variable, value);
 
-										openTagVariable(variable);
+										this.openTagVariable(variable);
 
 										/**
 										 * check RHS term
 										 */
 
-										String error = enterTerm(
+										String error = this.enterTerm(
 												term.subterm_start
-														.get(colon_term) + 1,
+												.get(colon_term) + 1,
 												term.last);
 
-										closeTagVariable(variable);
+										this.closeTagVariable(variable);
 
-										boundVariables.pop();
-										variableType.remove(variable);
-										variableValue.remove(variable);
+										this.boundVariables.pop();
+										this.variableType.remove(variable);
+										this.variableValue.remove(variable);
 
 										return error;
 									}
@@ -787,35 +840,38 @@ public class AnswerCheckParser {
 									return term
 											.errorFound(
 													"':' or 'in' expected",
-													tokens.getEndIndex(term.subterm_start
+													this.tokens
+													.getEndIndex(term.subterm_start
 															.get(2)));
 								}
 							} else {
 								return term
 										.errorFound(
 												"':' or 'in' expected, quoted string found",
-												tokens.getEndIndex(term.subterm_start
+												this.tokens
+												.getEndIndex(term.subterm_start
 														.get(2)));
 							}
 						} else {
 							return term
 									.errorFound(
 											"':' or 'in' expected, term in parenthesis found",
-											tokens.getEndIndex(term.subterm_start
+											this.tokens
+											.getEndIndex(term.subterm_start
 													.get(2)));
 						}
 					}
 				}
 			} else {
 				return term.errorFound("Terms cannot be variable names",
-						tokens.getEndIndex(term.subterm_start.get(1)));
+						this.tokens.getEndIndex(term.subterm_start.get(1)));
 			}
 		}
 
 		return term.getErrorMessage(); /*
-										 * SHOULD BE NEVER REACHED, STOP JAVA
-										 * COMPLAINTS
-										 */
+		 * SHOULD BE NEVER REACHED, STOP JAVA
+		 * COMPLAINTS
+		 */
 	}
 
 	private String enterExistsField(SubtermStructure term) {
@@ -829,57 +885,64 @@ public class AnswerCheckParser {
 
 		if (term.subterm_rootlevel.size() < 2) {
 			return term.errorFound("missing variable name after 'tag'",
-					tokens.getEndIndex(term.first));
+					this.tokens.getEndIndex(term.first));
 		} else {
 			if (term.subterm_rootlevel.get(1) == true) {
-				if (tokens.isQuoted(term.subterm_start.get(1)) == true) {
+				if (this.tokens.isQuoted(term.subterm_start.get(1)) == true) {
 					return term.errorFound(
 							"String literals cannot be variable names",
-							tokens.getEndIndex(term.subterm_start.get(1)));
+							this.tokens.getEndIndex(term.subterm_start.get(1)));
 				} else {
-					String variable = tokens
-							.getValue(term.subterm_start.get(1)).toLowerCase();
-					if (boundVariables.contains(variable) == true) {
+					String variable = this.tokens.getValue(
+							term.subterm_start.get(1)).toLowerCase();
+					if (this.boundVariables.contains(variable) == true) {
 						return term.errorFound("Variable symbol '" + variable
-								+ "' is already taken ",
-								tokens.getEndIndex(term.subterm_start.get(1)));
-					} else if (isForbidden(variable) == true) {
-						return term.errorFound("'" + variable
-								+ "' connot be used as variable symbol",
-								tokens.getEndIndex(term.subterm_start.get(1)));
+								+ "' is already taken ", this.tokens
+								.getEndIndex(term.subterm_start.get(1)));
+					} else if (this.isForbidden(variable) == true) {
+						return term
+								.errorFound(
+										"'"
+												+ variable
+												+ "' connot be used as variable symbol",
+												this.tokens
+												.getEndIndex(term.subterm_start
+														.get(1)));
 					} else {
 						if (term.subterm_rootlevel.size() < 3) {
 							return term.errorFound("':' or 'with' missing",
-									tokens.getEndIndex(term.subterm_start
+									this.tokens.getEndIndex(term.subterm_start
 											.get(1)));
 						} else if (term.subterm_rootlevel.get(2) == true) {
-							String colon_or_in = tokens
+							String colon_or_in = this.tokens
 									.getValue(term.subterm_start.get(2));
-							if (tokens.isQuoted(term.subterm_start.get(2)) == false) {
+							if (this.tokens.isQuoted(term.subterm_start.get(2)) == false) {
 								if (colon_or_in.equalsIgnoreCase(":") == true) {
 									/**
 									 * field VARNAME : RHS
 									 */
-									boundVariables.push(variable);
-									variableType.put(variable, VAR_FIELD);
-									variableValue.put(variable,
-											attributes.getAcceptTagsCommas());
+									this.boundVariables.push(variable);
+									this.variableType.put(variable,
+											this.VAR_FIELD);
+									this.variableValue.put(variable,
+											this.attributes
+											.getAcceptTagsCommas());
 
-									openFieldVariable(variable);
+									this.openFieldVariable(variable);
 
 									/**
 									 * check RHS term
 									 */
 
-									String error = enterTerm(
+									String error = this.enterTerm(
 											term.subterm_start.get(2) + 1,
 											term.last);
 
-									closeFieldVariable(variable);
+									this.closeFieldVariable(variable);
 
-									boundVariables.pop();
-									variableType.remove(variable);
-									variableValue.remove(variable);
+									this.boundVariables.pop();
+									this.variableType.remove(variable);
+									this.variableValue.remove(variable);
 
 									return error;
 								} else if (colon_or_in.equalsIgnoreCase("with")) {
@@ -889,7 +952,7 @@ public class AnswerCheckParser {
 									int colon_term = 3;
 									boolean colon_found = false;
 
-									String value = attributes
+									String value = this.attributes
 											.getAcceptTagsCommas();
 
 									while (colon_found != true) {
@@ -899,7 +962,8 @@ public class AnswerCheckParser {
 															"':' after 'field "
 																	+ variable
 																	+ " with [...]' missing",
-															tokens.getEndIndex(term.last - 1));
+																	this.tokens
+																	.getEndIndex(term.last - 1));
 
 										}
 
@@ -909,18 +973,21 @@ public class AnswerCheckParser {
 											return term
 													.errorFound(
 															"Terms cannot be tags",
-															tokens.getEndIndex(term.subterm_start
+															this.tokens
+															.getEndIndex(term.subterm_start
 																	.get(colon_term)));
 
 										}
 
-										String tag_token = tokens.getValue(
-												term.subterm_start
+										String tag_token = this.tokens
+												.getValue(
+														term.subterm_start
 														.get(colon_term))
-												.toLowerCase();
+														.toLowerCase();
 
-										if (tokens.isQuoted(term.subterm_start
-												.get(colon_term)) == true) {
+										if (this.tokens
+												.isQuoted(term.subterm_start
+														.get(colon_term)) == true) {
 											/**
 											 * tag given by string literal
 											 */
@@ -929,16 +996,17 @@ public class AnswerCheckParser {
 											}
 											value += "\""
 													+ StringEscape
-															.escapeToJavaScript(tag_token)
+													.escapeToJavaScript(tag_token)
 													+ "\"";
 										} else {
 											if (tag_token.equalsIgnoreCase(":") == true) {
 												colon_found = true;
 												break;
 											}
-											if (boundVariables
+											if (this.boundVariables
 													.contains(tag_token)) {
-												if (variableType.get(tag_token) == VAR_TAG) {
+												if (this.variableType
+														.get(tag_token) == this.VAR_TAG) {
 													if (value.isEmpty() == false) {
 														value += ", ";
 													}
@@ -949,8 +1017,9 @@ public class AnswerCheckParser {
 																	"'"
 																			+ tag_token
 																			+ "' is a variable, but not a token variable",
-																	tokens.getEndIndex(term.subterm_start
-																			.get(colon_term)));
+																			this.tokens
+																			.getEndIndex(term.subterm_start
+																					.get(colon_term)));
 
 												}
 											} else {
@@ -960,8 +1029,9 @@ public class AnswerCheckParser {
 																"'"
 																		+ tag_token
 																		+ "' is neither a bound token variable nor a string literal",
-																tokens.getEndIndex(term.subterm_start
-																		.get(colon_term)));
+																		this.tokens
+																		.getEndIndex(term.subterm_start
+																				.get(colon_term)));
 
 											}
 										}
@@ -970,26 +1040,27 @@ public class AnswerCheckParser {
 									}
 
 									if (colon_found) {
-										boundVariables.push(variable);
-										variableType.put(variable, VAR_FIELD);
-										variableValue.put(variable, value);
+										this.boundVariables.push(variable);
+										this.variableType.put(variable,
+												this.VAR_FIELD);
+										this.variableValue.put(variable, value);
 
-										openFieldVariable(variable);
+										this.openFieldVariable(variable);
 
 										/**
 										 * check RHS term
 										 */
 
-										String error = enterTerm(
+										String error = this.enterTerm(
 												term.subterm_start
-														.get(colon_term) + 1,
+												.get(colon_term) + 1,
 												term.last);
 
-										closeFieldVariable(variable);
+										this.closeFieldVariable(variable);
 
-										boundVariables.pop();
-										variableType.remove(variable);
-										variableValue.remove(variable);
+										this.boundVariables.pop();
+										this.variableType.remove(variable);
+										this.variableValue.remove(variable);
 
 										return error;
 									}
@@ -998,35 +1069,38 @@ public class AnswerCheckParser {
 									return term
 											.errorFound(
 													"':' or 'with' expected",
-													tokens.getEndIndex(term.subterm_start
+													this.tokens
+													.getEndIndex(term.subterm_start
 															.get(2)));
 								}
 							} else {
 								return term
 										.errorFound(
 												"':' or 'with' expected, quoted string found",
-												tokens.getEndIndex(term.subterm_start
+												this.tokens
+												.getEndIndex(term.subterm_start
 														.get(2)));
 							}
 						} else {
 							return term
 									.errorFound(
 											"':' or 'with' expected, term in parenthesis found",
-											tokens.getEndIndex(term.subterm_start
+											this.tokens
+											.getEndIndex(term.subterm_start
 													.get(2)));
 						}
 					}
 				}
 			} else {
 				return term.errorFound("Terms cannot be variable names",
-						tokens.getEndIndex(term.subterm_start.get(1)));
+						this.tokens.getEndIndex(term.subterm_start.get(1)));
 			}
 		}
 
 		return term.getErrorMessage(); /*
-										 * SHOULD BE NEVER REACHED, STOP JAVA
-										 * COMPLAINTS
-										 */
+		 * SHOULD BE NEVER REACHED, STOP JAVA
+		 * COMPLAINTS
+		 */
 	}
 
 	/**
@@ -1037,70 +1111,72 @@ public class AnswerCheckParser {
 	 */
 	private String enterCheckValue(SubtermStructure term) {
 
-		String first_token = tokens.getValue(term.first);
+		String first_token = this.tokens.getValue(term.first);
 
 		/**
 		 * term starts with a variable symbol
 		 */
 		String variable = first_token.toLowerCase();
-		if (variableType.get(variable) == VAR_FIELD) {
+		if (this.variableType.get(variable) == this.VAR_FIELD) {
 
 			if (term.subterm_rootlevel.size() != 3) {
 				return term
 						.errorFound(
 								"Field comparision must be of the form FIELD = FIELD or FIELD = \"STRING\"",
-								tokens.getEndIndex(term.first));
+								this.tokens.getEndIndex(term.first));
 			} else {
 				if (term.subterm_rootlevel.get(1) != true) {
 					return term.errorFound(
 							"'=' expected, term in parenthesis found",
-							tokens.getEndIndex(term.subterm_start.get(1)));
+							this.tokens.getEndIndex(term.subterm_start.get(1)));
 				} else {
-					if (tokens.isQuoted(term.subterm_start.get(1)) == true) {
+					if (this.tokens.isQuoted(term.subterm_start.get(1)) == true) {
 						return term.errorFound(
 								"'=' expected, string literal found",
-								tokens.getEndIndex(term.subterm_start.get(1)));
-					} else if (tokens.getValue(term.subterm_start.get(1))
+								this.tokens.getEndIndex(term.subterm_start
+										.get(1)));
+					} else if (this.tokens.getValue(term.subterm_start.get(1))
 							.equals("=")) {
 						if (term.subterm_rootlevel.get(2) != true) {
 							return term.errorFound(
 									"String literal or field variable needed",
-									tokens.getEndIndex(term.subterm_start
+									this.tokens.getEndIndex(term.subterm_start
 											.get(2)));
 						} else {
-							if (tokens.isQuoted(term.subterm_start.get(2)) == true) {
+							if (this.tokens.isQuoted(term.subterm_start.get(2)) == true) {
 								/**
 								 * FIELD = "STRING"
 								 */
 
-								jsCode += " if (fVar"
+								this.jsCode += " if (fVar"
 										+ variable
 										+ ".token) {\n"
 										+ "\nif (fVar"
 										+ variable
 										+ ".token == "
 										+ StringEscape
-												.escapeToDecodeInJavaScript(tokens
-														.getValue(term.subterm_start
-																.get(2)))
-										+ ") {\n goodParts.push(fVar"
-										+ variable
-										+ ");\n return true; } else {\n return false;\n}"
-										+ "\n} else {\n return false;\n }";
+										.escapeToDecodeInJavaScript(this.tokens
+												.getValue(term.subterm_start
+														.get(2)))
+														+ ") {\n goodParts.push(fVar"
+														+ variable
+														+ ");\n return true; } else {\n return false;\n}"
+														+ "\n} else {\n return false;\n }";
 
 								return null;
 							} else {
-								String comparison_variable = tokens.getValue(
-										term.subterm_start.get(2))
+								String comparison_variable = this.tokens
+										.getValue(term.subterm_start.get(2))
 										.toLowerCase();
-								if (boundVariables
+								if (this.boundVariables
 										.contains(comparison_variable) == true) {
-									if (variableType.get(comparison_variable) == VAR_FIELD) {
+									if (this.variableType
+											.get(comparison_variable) == this.VAR_FIELD) {
 										/**
 										 * FIELD = FIELD
 										 */
 
-										jsCode += " if (fVar"
+										this.jsCode += " if (fVar"
 												+ variable
 												+ ".token) {\n"
 												+ "\nif (fVar"
@@ -1121,21 +1197,23 @@ public class AnswerCheckParser {
 														"'"
 																+ comparison_variable
 																+ "' is variable, but not a field variable",
-														tokens.getEndIndex(term.subterm_start
-																.get(2)));
+																this.tokens
+																.getEndIndex(term.subterm_start
+																		.get(2)));
 									}
 								} else {
 									return term
 											.errorFound(
 													"Field variable or string literal needed",
-													tokens.getEndIndex(term.subterm_start
+													this.tokens
+													.getEndIndex(term.subterm_start
 															.get(2)));
 								}
 							}
 						}
 					} else {
-						return term.errorFound("'=' expected",
-								tokens.getEndIndex(term.subterm_start.get(1)));
+						return term.errorFound("'=' expected", this.tokens
+								.getEndIndex(term.subterm_start.get(1)));
 					}
 				}
 			}
@@ -1143,10 +1221,9 @@ public class AnswerCheckParser {
 		} else {
 			return term.errorFound("'" + first_token
 					+ "' is a variable, but not a field variable",
-					tokens.getEndIndex(term.first));
+					this.tokens.getEndIndex(term.first));
 		}
 
-		
 	}
 
 	/**
@@ -1165,7 +1242,7 @@ public class AnswerCheckParser {
 		 */
 		if (term_first >= term_last) {
 
-			jsCode += "return true;";
+			this.jsCode += "return true;";
 
 			return null;
 		}
@@ -1186,58 +1263,61 @@ public class AnswerCheckParser {
 			 * term
 			 */
 
-			String middle_token = tokens.getValue(term.subterm_start.get(1));
+			String middle_token = this.tokens.getValue(term.subterm_start
+					.get(1));
 
 			if (middle_token.equalsIgnoreCase("and") == true) {
 				/**
 				 * n-ary "and" operator
 				 */
 
-				return enterAnd(term);
+				return this.enterAnd(term);
 
 			} else if (middle_token.equalsIgnoreCase("or") == true) {
 				/**
 				 * n-ary "or" operator
 				 */
 
-				return enterOr(term);
-			} else
+				return this.enterOr(term);
+			} else {
 				return term.errorFound("Term connective unknown",
-						tokens.getEndIndex(term.subterm_start.get(1)));
+						this.tokens.getEndIndex(term.subterm_start.get(1)));
+			}
 
 		} else {
 			/**
 			 * term begins with a token
 			 */
-			if (tokens.isQuoted(term.first) == true) {
+			if (this.tokens.isQuoted(term.first) == true) {
 				/**
 				 * term begins with string literal
 				 */
 				return term.errorFound(
 						"A term may not start with a string literal",
-						tokens.getEndIndex(term.first));
+						this.tokens.getEndIndex(term.first));
 
 			} else {
-				String first_token = tokens.getValue(term.first);
+				String first_token = this.tokens.getValue(term.first);
 
 				if (first_token.equalsIgnoreCase("(") == true) {
-					return enterSubterm(term);
+					return this.enterSubterm(term);
 				} else if ((first_token.equalsIgnoreCase("or") == true)
 						|| (first_token.equalsIgnoreCase("and") == true)) {
 					return term.errorFound(
 							"Term connective without left hand term",
-							tokens.getEndIndex(term.first));
+							this.tokens.getEndIndex(term.first));
 
 				} else if (first_token.equalsIgnoreCase(")") == true) {
 					return term.errorFound(
 							"Two terms in parenthesis without term connective",
-							tokens.getEndIndex(term.first));
+							this.tokens.getEndIndex(term.first));
 				} else if (first_token.equalsIgnoreCase("tag") == true) {
-					return enterExistsTag(term);
+					return this.enterExistsTag(term);
 				} else if (first_token.equalsIgnoreCase("field") == true) {
-					return enterExistsField(term);
-				} else if (boundVariables.contains(first_token.toLowerCase())) {
-					return enterCheckValue(term);
+					return this.enterExistsField(term);
+				} else if (this.boundVariables.contains(first_token
+						.toLowerCase())) {
+					return this.enterCheckValue(term);
 				}
 			}
 		}

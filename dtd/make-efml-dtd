@@ -83,6 +83,10 @@ dtd.write("\n<!ATTLIST hint "+"""
 
 dtd.write("\n<!ELEMENT correct (#PCDATA|"+html_elements+")* >\n")
 dtd.write("\n<!ELEMENT check (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST check "+"""
+	type	(neutralgood|badgood)			#IMPLIED
+ >
+""")
 
 
 dtd.write("\n<!ELEMENT sniffy (#PCDATA|unused|label)* >\n")
