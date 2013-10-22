@@ -48,6 +48,11 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 * the assertion domain
 	 */
 	this.stringids = stringids;
+	
+	/**
+	 * ids that should be justified
+	 */
+	this.justify = [];
 
 	/**
 	 * the inference hyper graph
@@ -115,6 +120,24 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 		this.solutionRequirements.push(fn);
 
+		return this;
+	};
+	
+	/**
+	 * @param ids    list of ids that should be justified
+	 * 
+	 * @returns this
+	 */
+	
+	this.JustifyToDo = function(ids) {
+		
+		for ( var int = 0; int < ids.length; int++) {
+			var id = ids[int];
+			this.justify.push(id);
+		}
+		
+		this.justify.sort();
+		
 		return this;
 	};
 

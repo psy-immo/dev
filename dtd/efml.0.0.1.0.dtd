@@ -407,7 +407,11 @@
 
 <!ELEMENT incorrect (#PCDATA|i|b|br|p|div|span)* >
 
-<!ELEMENT inference (parse|assert|expert|conclusion|implicit|justified|trivial|invalid|rule|conclusions|quality|solves|domain|feedback) >
+<!ELEMENT inference (parse|assert|expert|conclusion|implicit|justified|trivial|invalid|rule|conclusions|quality|solves|domain|todo|feedback) >
+
+<!ELEMENT todo (justify)* >
+
+<!ELEMENT justify (#PCDATA)* >
 
 <!ELEMENT parse (subject|predicate|object|uniformly)* >
 
