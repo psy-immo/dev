@@ -480,34 +480,83 @@ function InferenceGraph() {
 	};
 
 	/**
-	 * @param points
+	 * @param in_points
 	 *            an array of the points given (as ids)
+	 *            
+	 * @param in_relative
+	 *            an array of point ids that should be justified,
+	 *            if undefined, the given points are used instead.
+	 *           
 	 * 
 	 * @returns an object that has the properties "justified" and "unjustified",
 	 *          that contain the respective ids
 	 */
 
-	this.CloseJustification = function(points) {
+	this.CloseJustification = function(in_points, in_relative) {
 
 		// console.log("close just: "+points);
 
 		var result = {};
 		result.justified = [];
 		result.unjustified = [];
-
+		
 		/**
-		 * initially add the points to justified if they are justified wrt to
-		 * the problem; all other points are added to unjustified
+		 * default to justify all points
 		 */
+		
+		if (typeof in_relative != "object") {
+			relative = [];
+			for (var int = 0; int < in_points.length; ++int) {
+				var id = parseInt(in_points[int]);
+				relative.push(id);
+			}
+			
+			/**
+			 * initially add the points to justified if they are justified wrt to
+			 * the problem; all other points are added to unjustified
+			 */
 
-		for ( var int = 0; int < points.length; int++) {
-			var id = parseInt(points[int]);
-			if (this.IsJustified(id))
-				result.justified.push(id);
-			else
-				result.unjustified.push(id);
+			for ( var int = 0; int < in_points.length; int++) {
+				var id = parseInt(in_points[int]);
+				if (this.IsJustified(id))
+					result.justified.push(id);
+				else
+					result.unjustified.push(id);
+			}
+		} else {
+			
+			/**
+			 * initially add the points to justified if they are justified wrt to
+			 * the problem; all other points are added to unjustified
+			 */
+
+			for ( var int = 0; int < in_points.length; int++) {
+				var id = parseInt(in_points[int]);
+				if (this.IsJustified(id))
+					result.justified.push(id);
+				else
+					result.unjustified.push(id);
+			}
+			
+			relative = [];
+			
+			/**
+			 * now add the ids to be justified as well
+			 */
+			
+			for (var int = 0; int < in_relative.length; ++int) {
+				var id = parseInt(in_relative[int]);
+				relative.push(id);
+				if (!((result.justified.indexOf(id) >= 0) ||
+						(result.unjustified.indexOf(id) >= 0))) {
+					if (this.IsJustified(id))
+						result.justified.push(id);
+					else
+						result.unjustified.push(id);
+				}
+			}
 		}
-
+			
 		// console.log(result);
 
 		var last_nbr_of_justified = -1;

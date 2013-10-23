@@ -76,6 +76,12 @@ public class InferenceCompiler {
 	private Set<AssertionInterface> implicitAssertions;
 
 	/**
+	 * ids of the implicit assertions
+	 */
+
+	private Set<Integer> implicitIds;
+
+	/**
 	 * these are correct assertions given by the expert, that are used to
 	 * determine the correct assertions wrt. the assertion domain
 	 */
@@ -224,6 +230,7 @@ public class InferenceCompiler {
 		this.lackingQualityIds = new HashMap<String, Set<Integer>>();
 
 		this.todoJustifyIds = new HashSet<Integer>();
+		this.implicitIds = new HashSet<Integer>();
 	}
 
 	/**
@@ -453,6 +460,17 @@ public class InferenceCompiler {
 		if (this.todoJustifyIds.isEmpty() == false) {
 			writer.write(".JustifyToDo([");
 			for (Integer id : this.todoJustifyIds) {
+				writer.write(StringEscape.obfuscateInt(id) + ", ");
+			}
+			writer.write("])");
+		}
+
+		/**
+		 * also, get the ids for the implicit assertions
+		 */
+		if (this.implicitIds.isEmpty() == false) {
+			writer.write(".ImplicitPoints([");
+			for (Integer id : this.implicitIds) {
 				writer.write(StringEscape.obfuscateInt(id) + ", ");
 			}
 			writer.write("])");
@@ -1023,7 +1041,19 @@ public class InferenceCompiler {
 			} else {
 				this.todoJustifyIds.add(id);
 			}
+		}
 
+		/**
+		 * keep track of the implicit assertions
+		 */
+
+		for (AssertionInterface a : this.implicitAssertions) {
+			int id = this.assertionDomain.fromAssertion(a);
+			if (id < 0) {
+				System.err.println("IMPLICIT NOT IN DOMAIN: " + a.toString());
+			} else {
+				this.implicitIds.add(id);
+			}
 		}
 
 		return errors.toString();

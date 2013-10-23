@@ -53,6 +53,11 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 * ids that should be justified
 	 */
 	this.justify = [];
+	
+	/**
+	 * ids that are given implicitly
+	 */
+	this.implicit = [];
 
 	/**
 	 * the inference hyper graph
@@ -64,6 +69,13 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 */
 
 	this.tryNumber = 1;
+	
+	/**
+	 * store the solution status
+	 * 
+	 */
+	
+	this.solved = 0;
 
 	/**
 	 * store the correct solution check(s)
@@ -140,6 +152,27 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		
 		return this;
 	};
+	
+	/**
+	 * @param ids    list of ids that should be considered to be given implicitly
+	 * 
+	 * @returns this
+	 */
+	
+	this.ImplicitPoints = function(ids) {
+		
+		for ( var int = 0; int < ids.length; int++) {
+			var id = ids[int];
+			this.implicit.push(id);
+		}
+		
+		this.implicit.sort();
+		
+		return this;
+	};
+	
+	
+	
 
 	/**
 	 * get the html code for this inference machine button
@@ -294,12 +327,89 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			assertions[point_id] = true;
 		}
 
+		log_data += "Implicit Points:\n";
+
+		for ( var int = 0; int < this.implicit.length; ++int) {
+			
+			var point_id = this.implicit[int];
+			var point = this.stringids.FromId(point_id);
+			log_data += point + " [" + point_id + "] ";
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct] ";
+				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
+
+					log_data += "[[" + part + "]] ";
+
+					if (correctly_solved_parts.indexOf(part) < 0) {
+						correctly_solved_parts.push(part);
+					}
+				}
+			}
+
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial] ";
+			}
+
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding] ";
+			}
+
+			if (this.hypergraph.IsJustified(point_id)) {
+				log_data += "[justified] ";
+			}
+
+			log_data += "\n";
+			
+			assertions[point_id] = true;
+		}
+		log_data += "\n";
+		
+		log_data += "Justification TO-DOs:\n";
+
+		for ( var int = 0; int < this.justify.length; ++int) {
+			
+			var point_id = this.justify[int];
+			var point = this.stringids.FromId(point_id);
+			log_data += point + " [" + point_id + "] ";
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct] ";
+				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
+
+					log_data += "[[" + part + "]] ";
+
+					if (correctly_solved_parts.indexOf(part) < 0) {
+						correctly_solved_parts.push(part);
+					}
+				}
+			}
+
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial] ";
+			}
+
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding] ";
+			}
+
+			if (this.hypergraph.IsJustified(point_id)) {
+				log_data += "[justified] ";
+			}
+
+			log_data += "\n";
+		}
+
 		/**
 		 * first, we calculate whether all points given are justified
 		 */
 
 		var closed_points = this.hypergraph.CloseJustification(Object
-				.keys(assertions));
+				.keys(assertions), this.justify);
 
 		// log_data += "DEBUG: "+closed_points.justified+"\n";
 		log_data += "\nJustified Points:\n";
@@ -532,7 +642,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 * return the current state
 	 */
 	this.GetValue = function() {
-		return "" + this.tryNumber;
+		return "" + this.tryNumber + ";" + this.solved;
 	};
 
 	/**
@@ -540,7 +650,9 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 */
 
 	this.SetValue = function(contents) {
-		this.tryNumber = parseInt(contents);
+		var parts = contents.split(";");
+		this.tryNumber = parseInt(parts[0]);
+		this.solved = parseInt(parts[1]);
 	};
 
 	/**
