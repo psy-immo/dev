@@ -48,12 +48,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 * the assertion domain
 	 */
 	this.stringids = stringids;
-	
+
 	/**
 	 * ids that should be justified
 	 */
 	this.justify = [];
-	
+
 	/**
 	 * ids that are given implicitly
 	 */
@@ -69,12 +69,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 */
 
 	this.tryNumber = 1;
-	
+
 	/**
 	 * store the solution status
 	 * 
 	 */
-	
+
 	this.solved = 0;
 
 	/**
@@ -134,45 +134,44 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 		return this;
 	};
-	
+
 	/**
-	 * @param ids    list of ids that should be justified
+	 * @param ids
+	 *            list of ids that should be justified
 	 * 
 	 * @returns this
 	 */
-	
+
 	this.JustifyToDo = function(ids) {
-		
+
 		for ( var int = 0; int < ids.length; int++) {
 			var id = ids[int];
 			this.justify.push(id);
 		}
-		
+
 		this.justify.sort();
-		
+
 		return this;
 	};
-	
+
 	/**
-	 * @param ids    list of ids that should be considered to be given implicitly
+	 * @param ids
+	 *            list of ids that should be considered to be given implicitly
 	 * 
 	 * @returns this
 	 */
-	
+
 	this.ImplicitPoints = function(ids) {
-		
+
 		for ( var int = 0; int < ids.length; int++) {
 			var id = ids[int];
 			this.implicit.push(id);
 		}
-		
+
 		this.implicit.sort();
-		
+
 		return this;
 	};
-	
-	
-	
 
 	/**
 	 * get the html code for this inference machine button
@@ -330,7 +329,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		log_data += "Implicit Points:\n";
 
 		for ( var int = 0; int < this.implicit.length; ++int) {
-			
+
 			var point_id = this.implicit[int];
 			var point = this.stringids.FromId(point_id);
 			log_data += point + " [" + point_id + "] ";
@@ -362,15 +361,15 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			}
 
 			log_data += "\n";
-			
+
 			assertions[point_id] = true;
 		}
 		log_data += "\n";
-		
+
 		log_data += "Justification TO-DOs:\n";
 
 		for ( var int = 0; int < this.justify.length; ++int) {
-			
+
 			var point_id = this.justify[int];
 			var point = this.stringids.FromId(point_id);
 			log_data += point + " [" + point_id + "] ";
@@ -551,14 +550,14 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 		var additional_points = this.hypergraph.GetAdditionalAssertions(
 				closed_points.justified, need_justification);
-		
+
 		var hints_for_parts = [];
-		
+
 		log_data += "\nPoints Missing:\n";
-		
+
 		for ( var intpts = 0; intpts < additional_points.length; intpts++) {
 			var point_id = additional_points[intpts];
-			
+
 			var s = this.stringids.FromId(point_id);
 
 			log_data += s + " [" + point_id + "] ";
@@ -566,10 +565,11 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
 
-				var solves_parts = this.hypergraph.IndicatesWhichLacks(point_id);
+				var solves_parts = this.hypergraph
+						.IndicatesWhichLacks(point_id);
 				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
 					var part = solves_parts[ints2];
-					
+
 					if (hints_for_parts.indexOf(part) < 0) {
 						hints_for_parts.push(part);
 					}
@@ -618,7 +618,6 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			log_data += part;
 		}
 
-
 		for ( var int5 = 0; int5 < this.solutionRequirements.length; int5++) {
 			var fn = this.solutionRequirements[int5];
 
@@ -628,6 +627,34 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				log_data += "\nCriterion " + (1 + int5) + " NOT met.";
 			}
 
+		}
+
+		var has_been_solved = true;
+
+		/**
+		 * TODO: CHECK WHETHER ALL PARTS WERE SOLVED
+		 */
+
+		/**
+		 * We check whether the justification to-do's have been met
+		 */
+
+		for ( var int6 = 0; int6 < this.justify.length; int6++) {
+			var id = this.justify[int6];
+			if (closed_points.justified.indexOf(id) < 0) {
+				has_been_solved = false;
+				log_data += "\n Justification-TO-DO not solved: "
+						+ this.stringids.FromId(id) + " [" + id + "]";
+			}
+		}
+
+		/**
+		 * log solve-status
+		 */
+
+		if (has_been_solved) {
+			log_data += "\nAll tasks have been SOLVED.\n";
+			this.solved = 1;
 		}
 
 		/**
