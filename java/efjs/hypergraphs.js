@@ -368,11 +368,11 @@ function InferenceGraph() {
 	};
 
 	/**
-	 * returns all inference rule ids that have the given premises or less
+	 * returns the plain_premises closed under all inferences that
+	 * are marked trivial
 	 */
-
-	this.GetConcludibleInferences = function(plain_premises) {
-
+	
+	this.CloseUnderTrivial = function(plain_premises) {
 		var premises = [];
 
 		/**
@@ -382,7 +382,7 @@ function InferenceGraph() {
 		 */
 
 		for ( var int_p = 0; int_p < plain_premises.length; int_p++) {
-			premises.push(plain_premises[int_p]);
+			premises.push(parseInt(plain_premises[int_p]));
 		}
 
 		var last_premise_length = 0;
@@ -425,11 +425,19 @@ function InferenceGraph() {
 
 			}
 		}
+		
+		return premises;
+	};
+	
+	
+	/**
+	 * returns all inference rule ids that have the given premises or less
+	 */
 
-		// console.log("given premises:");
-		// console.log(plain_premises);
-		// console.log("trivially inferred premises:");
-		// console.log(premises);
+	this.GetConcludibleInferences = function(plain_premises) {
+
+		
+		var premises = this.CloseUnderTrivial(plain_premises);
 
 		/**
 		 * check for conclusions
@@ -475,6 +483,9 @@ function InferenceGraph() {
 			if (all_premises_there)
 				good.push(inference_id);
 		}
+		
+		
+		
 
 		return good;
 	};
@@ -593,26 +604,39 @@ function InferenceGraph() {
 
 			for ( var int2 = 0; int2 < inference_ids.length; int2++) {
 				var infer_id = inference_ids[int2];
+				
+				var all_new_conclusions = {};
 
 				if (inference_used.hasOwnProperty(infer_id) == false) {
 					var conclusions = this.inferences[infer_id].c;
 
 					for ( var int3 = 0; int3 < conclusions.length; int3++) {
 						var conclusion_id = conclusions[int3];
-						var idx = result.unjustified.indexOf(conclusion_id);
-
-						if (idx >= 0) {
-							// console.log("FOUND " + conclusion_id);
-							result.justified.push(conclusion_id);
-							/** remove the concludible assertion from unjustified */
-							result.unjustified.splice(idx, 1);
-							// console.log(result.unjustified);
-						}
+						
+						all_new_conclusions[conclusion_id] = true;
+						
 					}
 
 					inference_used[infer_id] = true;
 				}
+				
+				var new_conclusion_list = this.CloseUnderTrivial(Object.keys(all_new_conclusions));
+				for ( var int4 = 0; int4 < new_conclusion_list.length; int4++) {
+					var new_id = new_conclusion_list[int4];
+					
+					var idx = result.unjustified.indexOf(new_id);
+					if (idx >= 0) {
+						//console.log("FOUND " + new_id);
+						result.justified.push(new_id);
+						/** remove the concludible assertion from unjustified */
+						result.unjustified.splice(idx, 1);
+						// console.log(result.unjustified);
+					}
+
+					
+				}
 			}
+			
 		}
 
 		// console.log("FINAL justified "+result.justified.length);
@@ -939,7 +963,7 @@ function InferenceGraph() {
 				need_justification.splice(minimum_index, 1);
 				considered_justified.push(newly_justified_id);
 
-				console.log("Added: " + newly_justified_id);
+				//console.log("Added: " + newly_justified_id);
 			} else {
 
 				for ( var int4 = 0; int4 < minimum_candidate.length; int4++) {
@@ -959,9 +983,7 @@ function InferenceGraph() {
 					need_justification.push(new_point_id);
 				}
 			}
-
-			console.log("Left: " + need_justification);
-
+			//console.log("Left: " + need_justification);
 		}
 
 		return additional_assertions;
