@@ -609,7 +609,23 @@ tr.listselectionSelected {
 	background-color: #9999FF;	
 }
 
+tr.listselectionSelectedGood {
+	background-color: #99FF99;	
+}
+
+tr.listselectionSelectedBad {
+	background-color: #FF9999;	
+}
+
 table.listselectionNonEmpty {
+	background-color: #CCCCFF;	
+}
+
+table.listselectionMarkedGood {
+	background-color: #CCCCFF;	
+}
+
+table.listselectionMarkedBad {
 	background-color: #CCCCFF;	
 }
 

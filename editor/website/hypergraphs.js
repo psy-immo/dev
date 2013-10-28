@@ -368,11 +368,11 @@ function InferenceGraph() {
 	};
 
 	/**
-	 * returns all inference rule ids that have the given premises or less
+	 * returns the plain_premises closed under all inferences that
+	 * are marked trivial
 	 */
-
-	this.GetConcludibleInferences = function(plain_premises) {
-
+	
+	this.CloseUnderTrivial = function(plain_premises) {
 		var premises = [];
 
 		/**
@@ -382,7 +382,7 @@ function InferenceGraph() {
 		 */
 
 		for ( var int_p = 0; int_p < plain_premises.length; int_p++) {
-			premises.push(plain_premises[int_p]);
+			premises.push(parseInt(plain_premises[int_p]));
 		}
 
 		var last_premise_length = 0;
@@ -425,11 +425,19 @@ function InferenceGraph() {
 
 			}
 		}
+		
+		return premises;
+	};
+	
+	
+	/**
+	 * returns all inference rule ids that have the given premises or less
+	 */
 
-		// console.log("given premises:");
-		// console.log(plain_premises);
-		// console.log("trivially inferred premises:");
-		// console.log(premises);
+	this.GetConcludibleInferences = function(plain_premises) {
+
+		
+		var premises = this.CloseUnderTrivial(plain_premises);
 
 		/**
 		 * check for conclusions
@@ -475,39 +483,91 @@ function InferenceGraph() {
 			if (all_premises_there)
 				good.push(inference_id);
 		}
+		
+		
+		
 
 		return good;
 	};
 
 	/**
-	 * @param points
+	 * @param in_points
 	 *            an array of the points given (as ids)
+	 *            
+	 * @param in_relative
+	 *            an array of point ids that should be justified,
+	 *            if undefined, the given points are used instead.
+	 *           
 	 * 
 	 * @returns an object that has the properties "justified" and "unjustified",
 	 *          that contain the respective ids
 	 */
 
-	this.CloseJustification = function(points) {
+	this.CloseJustification = function(in_points, in_relative) {
 
 		// console.log("close just: "+points);
 
 		var result = {};
 		result.justified = [];
 		result.unjustified = [];
-
+		
 		/**
-		 * initially add the points to justified if they are justified wrt to
-		 * the problem; all other points are added to unjustified
+		 * default to justify all points
 		 */
+		
+		if (typeof in_relative != "object") {
+			relative = [];
+			for (var int = 0; int < in_points.length; ++int) {
+				var id = parseInt(in_points[int]);
+				relative.push(id);
+			}
+			
+			/**
+			 * initially add the points to justified if they are justified wrt to
+			 * the problem; all other points are added to unjustified
+			 */
 
-		for ( var int = 0; int < points.length; int++) {
-			var id = parseInt(points[int]);
-			if (this.IsJustified(id))
-				result.justified.push(id);
-			else
-				result.unjustified.push(id);
+			for ( var int = 0; int < in_points.length; int++) {
+				var id = parseInt(in_points[int]);
+				if (this.IsJustified(id))
+					result.justified.push(id);
+				else
+					result.unjustified.push(id);
+			}
+		} else {
+			
+			/**
+			 * initially add the points to justified if they are justified wrt to
+			 * the problem; all other points are added to unjustified
+			 */
+
+			for ( var int = 0; int < in_points.length; int++) {
+				var id = parseInt(in_points[int]);
+				if (this.IsJustified(id))
+					result.justified.push(id);
+				else
+					result.unjustified.push(id);
+			}
+			
+			relative = [];
+			
+			/**
+			 * now add the ids to be justified as well
+			 */
+			
+			for (var int = 0; int < in_relative.length; ++int) {
+				var id = parseInt(in_relative[int]);
+				relative.push(id);
+				if (!((result.justified.indexOf(id) >= 0) ||
+						(result.unjustified.indexOf(id) >= 0))) {
+					if (this.IsJustified(id))
+						result.justified.push(id);
+					else
+						result.unjustified.push(id);
+				}
+			}
 		}
-
+			
 		// console.log(result);
 
 		var last_nbr_of_justified = -1;
@@ -544,26 +604,39 @@ function InferenceGraph() {
 
 			for ( var int2 = 0; int2 < inference_ids.length; int2++) {
 				var infer_id = inference_ids[int2];
+				
+				var all_new_conclusions = {};
 
 				if (inference_used.hasOwnProperty(infer_id) == false) {
 					var conclusions = this.inferences[infer_id].c;
 
 					for ( var int3 = 0; int3 < conclusions.length; int3++) {
 						var conclusion_id = conclusions[int3];
-						var idx = result.unjustified.indexOf(conclusion_id);
-
-						if (idx >= 0) {
-							// console.log("FOUND " + conclusion_id);
-							result.justified.push(conclusion_id);
-							/** remove the concludible assertion from unjustified */
-							result.unjustified.splice(idx, 1);
-							// console.log(result.unjustified);
-						}
+						
+						all_new_conclusions[conclusion_id] = true;
+						
 					}
 
 					inference_used[infer_id] = true;
 				}
+				
+				var new_conclusion_list = this.CloseUnderTrivial(Object.keys(all_new_conclusions));
+				for ( var int4 = 0; int4 < new_conclusion_list.length; int4++) {
+					var new_id = new_conclusion_list[int4];
+					
+					var idx = result.unjustified.indexOf(new_id);
+					if (idx >= 0) {
+						//console.log("FOUND " + new_id);
+						result.justified.push(new_id);
+						/** remove the concludible assertion from unjustified */
+						result.unjustified.splice(idx, 1);
+						// console.log(result.unjustified);
+					}
+
+					
+				}
 			}
+			
 		}
 
 		// console.log("FINAL justified "+result.justified.length);
@@ -890,7 +963,7 @@ function InferenceGraph() {
 				need_justification.splice(minimum_index, 1);
 				considered_justified.push(newly_justified_id);
 
-				console.log("Added: " + newly_justified_id);
+				//console.log("Added: " + newly_justified_id);
 			} else {
 
 				for ( var int4 = 0; int4 < minimum_candidate.length; int4++) {
@@ -910,12 +983,115 @@ function InferenceGraph() {
 					need_justification.push(new_point_id);
 				}
 			}
-
-			console.log("Left: " + need_justification);
-
+			//console.log("Left: " + need_justification);
 		}
 
 		return additional_assertions;
+	};
+	
+	/**
+	 * returns a subset of the assertions, that are necessary in order to
+	 * justify the relative_assertions
+	 */
+	
+	this.GetNecessarySubset = function(assertions, generated_assertions, relative_assertions) {
+		var left_assertions = [];
+		var gen_assertions = [];
+		var measuring_assertions = [];
+		
+		/**
+		 * initial copy & integer conversion
+		 */
+		
+		for ( var int = 0; int < assertions.length; int++) {
+			var id = parseInt(assertions[int]);
+			if (left_assertions.indexOf(id)<0)
+				left_assertions.push(id);
+		}
+		
+		for ( var int = 0; int < generated_assertions.length; int++) {
+			var id = parseInt(generated_assertions[int]);
+			if ((gen_assertions.indexOf(id)<0)&& (left_assertions.indexOf(id)<0))
+				gen_assertions.push(id);
+		}
+		
+		for ( var int2 = 0; int2 < relative_assertions.length; int2++) {
+			var id = parseInt(relative_assertions[int2]);
+			if (measuring_assertions.indexOf(id)<0)
+				measuring_assertions.push(id);
+		}
+		
+		/**
+		 * determinize processing order
+		 */
+		
+		left_assertions.sort();
+		gen_assertions.sort();
+		measuring_assertions.sort();
+		
+		/**
+		 * put the generated assertions ahead of the other assertions
+		 */
+		
+		for ( var int3 = 0; int3 < left_assertions.length; int3++) {
+			var id = left_assertions[int3];
+			gen_assertions.push(id);
+		}
+		
+		left_assertions = gen_assertions;
+		
+		/**
+		 * try to eliminate some assertions
+		 */
+		
+		var checked = {};
+		var continue_testing = true;
+		
+		while (continue_testing) {
+			var test_id = -1;
+			continue_testing = false;
+			/**
+			 * try to find an assertion we might test
+			 */
+			for ( var int3 = 0; int3 < left_assertions.length; int3++) {
+				var id = left_assertions[int3];
+				if (checked[id]) continue;
+				
+				checked[id] = true;
+				if (measuring_assertions.indexOf(id)<0) {
+					continue_testing = true;
+					test_id = id;
+					break;
+				}
+			}
+			
+			if (continue_testing) {
+				var smaller_set = [];
+				for ( var int4 = 0; int4 < left_assertions.length; int4++) {
+					var id = left_assertions[int4];
+					if (id != test_id)
+						smaller_set.push(id);
+				}
+				
+				var result = this.CloseJustification(smaller_set, measuring_assertions);
+				var good = true;
+				
+				for ( var int5 = 0; int5 < measuring_assertions.length; int5++) {
+					var id = measuring_assertions[int5];
+					if (result.justified.indexOf(id)<0)
+				    {
+						good = false;
+						break;
+				    }
+				}
+				if (good) {
+					left_assertions = smaller_set;
+				}
+			}
+		}
+		
+		return left_assertions;
+		
 	};
 
 	return this;

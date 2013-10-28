@@ -116,6 +116,10 @@
 
 <!ELEMENT check (#PCDATA)* >
 
+<!ATTLIST check 
+	type	(neutralgood|badgood)			#IMPLIED
+ >
+
 <!ELEMENT sniffy (#PCDATA|unused|label)* >
 
 <!ATTLIST sniffy 

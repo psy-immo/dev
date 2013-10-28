@@ -25,11 +25,11 @@ var listselectionArray = [];
  */
 function ListSelection(name, tags, label, token) {
 	this.id = listselectionIdCounter++;
-	
+
 	/**
 	 * allow addition td-classes
 	 */
-	
+
 	this.tdClasses = "";
 
 	/**
@@ -66,6 +66,8 @@ function ListSelection(name, tags, label, token) {
 	this.colorFilled = "#CCCCFF";
 	this.colorGood = "#CCFFCC";
 
+	this.marking = "N";
+
 	this.contentLabels = [];
 	this.contentValues = [];
 
@@ -73,19 +75,20 @@ function ListSelection(name, tags, label, token) {
 	 * store the current selection, -1 => nothing selected
 	 */
 	this.selection = -1;
-	
+
 	/**
 	 * store subscription functions
 	 */
-	
+
 	this.subscribers = [];
-	
+
 	/**
 	 * add a function that is called everytime the contents change.
 	 * 
-	 * @param fn  function that is called on update
+	 * @param fn
+	 *            function that is called on update
 	 */
-	
+
 	this.SubscribeUpdates = function(fn) {
 		this.subscribers.push(fn);
 	};
@@ -105,17 +108,17 @@ function ListSelection(name, tags, label, token) {
 
 		return this;
 	};
-	
+
 	/**
-	 *
+	 * 
 	 * adds some classes that are inherited by td, use it for alignment etc...
 	 * 
-	 * @returns this 
+	 * @returns this
 	 */
-	
+
 	this.TdClasses = function(classlist) {
 		this.tdClasses = classlist;
-		
+
 		return this;
 	};
 
@@ -177,7 +180,7 @@ function ListSelection(name, tags, label, token) {
 			document.write("<tr class=\"listselection\" id=\"" + idstring + "["
 					+ int + "]\" " + " onclick=\"listselectionArray[" + this.id
 					+ "].OnClick(" + int + ");\"" + ">");
-			document.write("<td class=\""+this.tdClasses+"\">");
+			document.write("<td class=\"" + this.tdClasses + "\">");
 			document.write(this.contentValues[int]);
 			document.write("</td></tr>");
 		}
@@ -190,7 +193,7 @@ function ListSelection(name, tags, label, token) {
 	 * this handler is called, whenever a row of the list selection is clicked
 	 */
 	this.OnClick = function(which) {
-		this.SetValue(which);
+		this.SetValue("N" + which);
 
 		/**
 		 * log the interaction
@@ -230,10 +233,10 @@ function ListSelection(name, tags, label, token) {
 		}
 
 		/**
-		 * also demark the goodness of the listselection
+		 * also demark the listselection
 		 */
 
-		html_element.removeClassName("listselectionMarkedGood");
+		this.MarkNeutral();
 
 	};
 
@@ -242,7 +245,41 @@ function ListSelection(name, tags, label, token) {
 	 */
 	this.MarkAsGood = function() {
 		var html_element = $("listselection" + this.id);
+		html_element.removeClassName("listselectionMarkedBad");
 		html_element.addClassName("listselectionMarkedGood");
+
+		if (this.selection >= 0) {
+			var line_element = $("listselection" + this.id + "["
+					+ this.selection + "]");
+			line_element.removeClassName("listselectionSelectedBad");
+			line_element.addClassName("listselectionSelectedGood");
+		}
+		
+		
+
+		this.marking = "G";
+	};
+
+	/**
+	 * this function marks the current drop down red
+	 */
+	this.MarkAsBad = function() {
+		var html_element = $("listselection" + this.id);
+		html_element.removeClassName("listselectionMarkedGood");
+		html_element.addClassName("listselectionMarkedBad");
+
+		if (this.selection >= 0) {
+
+			var line_element = $("listselection" + this.id + "["
+					+ this.selection + "]");
+			line_element.removeClassName("listselectionSelectedGood");
+			line_element.addClassName("listselectionSelectedBad");
+
+		}
+		
+		
+
+		this.marking = "B";
 	};
 
 	/**
@@ -251,13 +288,26 @@ function ListSelection(name, tags, label, token) {
 	this.MarkNeutral = function() {
 		var html_element = $("listselection" + this.id);
 		html_element.removeClassName("listselectionMarkedGood");
+		html_element.removeClassName("listselectionMarkedBad");
+
+		if (this.selection >= 0) {
+
+			var line_element = $("listselection" + this.id + "["
+					+ this.selection + "]");
+			line_element.removeClassName("listselectionSelectedBad");
+			line_element.removeClassName("listselectionSelectedGood");
+		}
+		
+		
+
+		this.marking = "N";
 	};
 
 	/**
 	 * return the current contents of the drop down as string
 	 */
 	this.GetValue = function() {
-		return this.selection;
+		return this.marking + this.selection;
 	};
 
 	/**
@@ -265,7 +315,10 @@ function ListSelection(name, tags, label, token) {
 	 */
 
 	this.SetValue = function(contents) {
-		this.selection = parseInt(contents);
+
+		this.marking = contents[0];
+
+		this.selection = parseInt(contents.substr(1));
 
 		var html_element = $("listselection" + this.id);
 		html_element.selectedIndex = contents;
@@ -287,22 +340,30 @@ function ListSelection(name, tags, label, token) {
 
 			if (int == this.selection) {
 				line_element.addClassName("listselectionSelected");
+				line_element.removeClassName("listselectionSelectedGood");
+				line_element.removeClassName("listselectionSelectedBad");
 			} else {
 				line_element.removeClassName("listselectionSelected");
+				line_element.removeClassName("listselectionSelectedGood");
+				line_element.removeClassName("listselectionSelectedBad");
 			}
 		}
 
 		/**
-		 * also demark the goodness of the listselection
+		 * also take care of the marking of the list (good or neutral)
 		 */
 
-		html_element.removeClassName("listselectionMarkedGood");
-		
+		if (this.marking == "G")
+			this.MarkAsGood();
+		else if (this.marking == "B")
+			this.MarkAsBad();
+		else
+			this.MarkNeutral();
 
 		/**
 		 * notify subscribers about the update
 		 */
-		
+
 		for ( var int = 0; int < this.subscribers.length; int++) {
 			var notificator = this.subscribers[int];
 			notificator();

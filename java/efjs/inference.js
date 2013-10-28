@@ -543,7 +543,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				}
 			}
 		}
-
+		
+		
 		/**
 		 * close justified points and need_justification points
 		 */
@@ -592,7 +593,66 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			log_data += "\n";
 		}
+		
+		/**
+		 * check both assertions plus missing points, which are necessary
+		 */
+		
+				
+		var check_for = closed_points.justified;
+		
+		if (this.justify)
+			check_for = this.justify;
+		
+		var necessary = this.hypergraph.GetNecessarySubset(Object.keys(assertions), additional_points, check_for);
 
+		log_data += "\nNecessary Augmented Points:\n";
+
+		for ( var intpts = 0; intpts < necessary.length; intpts++) {
+			var point_id = necessary[intpts];
+
+			var s = this.stringids.FromId(point_id);
+			
+			if (assertions[point_id])
+				log_data += "* ";
+			else
+				log_data += "  ";
+
+			log_data += s + " [" + point_id + "] ";
+
+			if (this.hypergraph.IsCorrect(point_id)) {
+				log_data += "[correct] ";
+
+				var solves_parts = this.hypergraph
+						.IndicatesWhichLacks(point_id);
+				for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+					var part = solves_parts[ints2];
+
+					if (hints_for_parts.indexOf(part) < 0) {
+						hints_for_parts.push(part);
+					}
+
+					log_data += "[(" + part + ")] ";
+				}
+			}
+
+			if (this.hypergraph.IsTrivial(point_id)) {
+				log_data += "[trivial] ";
+			}
+
+			if (this.hypergraph.IsConcluding(point_id)) {
+				log_data += "[concluding] ";
+			}
+
+			if (this.hypergraph.IsJustified(point_id)) {
+				log_data += "[justified] ";
+			}
+
+			log_data += "\n";
+		}
+		
+
+		
 		/**
 		 * check the solution criteria
 		 */
