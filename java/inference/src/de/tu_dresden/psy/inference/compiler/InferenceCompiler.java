@@ -1006,10 +1006,18 @@ public class InferenceCompiler {
 					break;
 				}
 			}
+		}
 
-			/**
-			 * store the information qualities of the correct assertions
-			 */
+		/**
+		 * store the information qualities of the correct assertions
+		 */
+
+		for (AssertionInterface ai : this.correctAssertions) {
+			Set<AssertionInterface> as = new HashSet<AssertionInterface>();
+			as.add(ai);
+
+			int assertion_id = this.assertionDomain.fromAssertion(ai);
+
 
 			for (ConstrainedAssertionFilter quality_filter : this.inferenceRoot
 					.getQualityFilters().keySet()) {

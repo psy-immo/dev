@@ -140,6 +140,30 @@ tr.airportOkay {
 }
 
 /**
+ * correct but unnecessary airport row
+ */
+tr.airportUnnecessary {
+	background-color: #88CC88;
+	width: 100%;
+}
+
+/**
+ * correct but trivial airport row
+ */
+tr.airportTrivial {
+	background-color: #B8B8B8;
+	width: 100%;
+}
+
+/**
+ * airport row that has been added as a hint by the inference machine
+ */
+tr.airportHint {
+	background-color: #FF914F;
+	width: 100%;
+}
+
+/**
  * padding airport gap
  */
 tr.airportGap {

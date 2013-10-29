@@ -49,6 +49,8 @@ function AirportRunway(airport, index, tags) {
 		this.airport.UpdateContents();
 	};
 
+	this.MarkAsUnjustified = this.MarkAsOkay;
+
 	this.MarkAsBad = function() {
 		this.airport.marked[this.index] = "B";
 		this.airport.UpdateContents();
@@ -56,6 +58,21 @@ function AirportRunway(airport, index, tags) {
 
 	this.MarkAsGood = function() {
 		this.airport.marked[this.index] = "G";
+		this.airport.UpdateContents();
+	};
+
+	this.MarkAsUnnecessary = function() {
+		this.airport.marked[this.index] = "U";
+		this.airport.UpdateContents();
+	};
+
+	this.MarkAsTrivial = function() {
+		this.airport.marked[this.index] = "T";
+		this.airport.UpdateContents();
+	};
+	
+	this.MarkAsHint = function() {
+		this.airport.marked[this.index] = "H";
 		this.airport.UpdateContents();
 	};
 
@@ -138,7 +155,13 @@ function Airport(name, tags, accept, reject) {
 			 */
 
 			contents += "<tr class=\"";
-			if (this.marked[int] == "G") {
+			if (this.marked[int] == "H") {
+				contents += "airportHint";
+			} else if (this.marked[int] == "T") {
+				contents += "airportTrivial";
+			} else if (this.marked[int] == "U") {
+				contents += "airportUnnecessary";
+			} else if (this.marked[int] == "G") {
 				contents += "airportGood";
 			} else if (this.marked[int] == "O") {
 				contents += "airportOkay";
