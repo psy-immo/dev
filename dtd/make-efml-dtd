@@ -6,7 +6,7 @@ html_elements = "i|b|br|p|div|span"
 efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|"+\
 				"phpurl|jsurl|documentid|studyid|subjectprompt|"+\
 				"subjectinfo|subjectchange|subjectnotworking|airport|"+\
-				"template|freetext|"+\
+				"template|freetext|timer|"+\
 				"checkbox|radiobutton|multiline|popuphelp|"+\
 				"trashcan|boxspace|efmlboard|efmlpreview|cssurl"
 efml_extra = "tables"
@@ -171,6 +171,15 @@ dtd.write("\n<!ATTLIST freetext "+universal_attributes+"""
 	height	CDATA			#IMPLIED
  >
 """)
+
+dtd.write("\n<!ELEMENT timer (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST timer """"
+	name	CDATA			#IMPLIED
+	value	CDATA			#IMPLIED
+	type	(down|up)		#IMPLIED
+ >
+""")
+
 
 dtd.write("\n<!ELEMENT multiline (#PCDATA)* >\n")
 dtd.write("\n<!ATTLIST multiline "+universal_attributes+"""

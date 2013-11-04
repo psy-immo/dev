@@ -76,6 +76,7 @@ import de.tu_dresden.psy.efml.TablesTag;
 import de.tu_dresden.psy.efml.TagsTag;
 import de.tu_dresden.psy.efml.TemplateTag;
 import de.tu_dresden.psy.efml.TieTag;
+import de.tu_dresden.psy.efml.TimerTag;
 import de.tu_dresden.psy.efml.TitleTag;
 import de.tu_dresden.psy.efml.TrashcanTag;
 import de.tu_dresden.psy.efml.UnknownHeadTag;
@@ -121,9 +122,9 @@ public class EfjsIntegrationResources {
 		"multiline.js", "sniffybutton.js", "dropdown.js", "checkbox.js",
 		"radiobutton.js", "popupbutton.js", "freetext.js", "boxspace.js",
 		"trashcan.js", "sentencepattern.js", "airport.js", "flextext.js",
-		"listselection.js", "hypergraphs.js", "inference.js", "efml.js",
-		"efmlbuttons.js", "efmlboard.js", "efmlcheckbox.js", "efmltag.js",
-		"efmlquote.js", "efmlfactory.js" };
+		"timer.js", "listselection.js", "hypergraphs.js", "inference.js",
+		"efml.js", "efmlbuttons.js", "efmlboard.js", "efmlcheckbox.js",
+		"efmltag.js", "efmlquote.js", "efmlfactory.js" };
 
 	/**
 	 * interface for constructing other classes
@@ -519,7 +520,8 @@ public class EfjsIntegrationResources {
 		"factor", new AttributeObjectConstructor(InferenceXmlTag.class),
 		"domain", new AttributeObjectConstructor(InferenceXmlTag.class),
 		"q", new AttributeObjectConstructor(InferenceXmlTag.class), "link",
-		new AttributeObjectConstructor(UnknownHeadTag.class),
+			new AttributeObjectConstructor(UnknownHeadTag.class), "timer",
+			new AttributeObjectConstructor(TimerTag.class)
 
 	};
 

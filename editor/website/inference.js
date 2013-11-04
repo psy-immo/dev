@@ -244,8 +244,6 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			var point_id = this.stringids.ToId(point);
 			log_data += point + " [" + point_id + "] ";
 
-			points[int].MarkNeutral();
-
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
 
@@ -259,9 +257,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 						correctly_solved_parts.push(part);
 					}
 				}
-				points[int].MarkAsGood();
-			} else {
-				points[int].MarkAsBad();
+
 			}
 
 			if (this.hypergraph.IsTrivial(point_id)) {
@@ -289,8 +285,6 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			var point_id = this.stringids.ToId(point);
 			log_data += point + " [" + point_id + "] ";
 
-			conclusions[int].MarkNeutral();
-
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
 				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
@@ -303,10 +297,6 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 						correctly_solved_parts.push(part);
 					}
 				}
-
-				conclusions[int].MarkAsGood();
-			} else {
-				conclusions[int].MarkAsBad();
 			}
 
 			if (this.hypergraph.IsTrivial(point_id)) {
@@ -524,27 +514,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			log_data += "\n";
 
-			/**
-			 * Indicate that further justification is needed
-			 */
-
-			for ( var int3 = 0; int3 < points.length; int3++) {
-				var p = points[int3];
-				if (this.stringids.ToId(p.token) == point_id) {
-					p.MarkAsOkay();
-
-				}
-			}
-
-			for ( var int3 = 0; int3 < conclusions.length; int3++) {
-				var p = conclusions[int3];
-				if (this.stringids.ToId(p.token) == point_id) {
-					p.MarkAsOkay();
-				}
-			}
 		}
-		
-		
+
 		/**
 		 * close justified points and need_justification points
 		 */
@@ -592,19 +563,22 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			}
 
 			log_data += "\n";
+
 		}
-		
+
 		/**
 		 * check both assertions plus missing points, which are necessary
 		 */
-		
-				
+
 		var check_for = closed_points.justified;
-		
+
 		if (this.justify)
 			check_for = this.justify;
+
+		var necessary = this.hypergraph.GetNecessarySubset(Object
+				.keys(assertions), additional_points, check_for);
 		
-		var necessary = this.hypergraph.GetNecessarySubset(Object.keys(assertions), additional_points, check_for);
+		var hint_points = [];
 
 		log_data += "\nNecessary Augmented Points:\n";
 
@@ -612,11 +586,14 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			var point_id = necessary[intpts];
 
 			var s = this.stringids.FromId(point_id);
-			
+
 			if (assertions[point_id])
 				log_data += "* ";
-			else
+			else {
 				log_data += "  ";
+				
+				hint_points.push(point_id);
+			}
 
 			log_data += s + " [" + point_id + "] ";
 
@@ -650,9 +627,36 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			log_data += "\n";
 		}
-		
 
-		
+		/**
+		 * change indication colors for given points
+		 */
+
+		var sources = [ points, conclusions ];
+
+		for ( var int9 = 0; int9 < sources.length; int9++) {
+			var points = sources[int9];
+
+			for ( var int3 = 0; int3 < points.length; int3++) {
+				var p = points[int3];
+				var id = this.stringids.ToId(p.token);
+				if (this.hypergraph.IsTrivial(id)) {
+					p.MarkAsTrivial();
+				} else if (this.hypergraph.IsCorrect(id) == false) {
+					p.MarkAsBad();
+				} else {
+					if (necessary.indexOf(id) >= 0) {
+						if (need_justification.indexOf(id) >= 0)
+							p.MarkAsUnjustified();
+						else
+							p.MarkAsGood();
+					} else {
+						p.MarkAsUnnecessary();
+					}
+				}
+			}
+		}
+
 		/**
 		 * check the solution criteria
 		 */

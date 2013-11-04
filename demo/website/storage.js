@@ -248,8 +248,8 @@ function Storage() {
 		 * periodically save current page state
 		 */
 
-		this.storageInterval = setInterval(this.AutoUpdateAndStore, 5000 + Math
-				.floor(Math.random() * 500));
+		this.storageInterval = setInterval(this.AutoUpdateAndStore, 900 + Math
+				.floor(Math.random() * 200));
 	};
 
 }
