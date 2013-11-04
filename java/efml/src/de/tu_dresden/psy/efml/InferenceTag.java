@@ -71,6 +71,24 @@ public class InferenceTag implements AnyTag {
 
 			StringBuffer more_machine_options = new StringBuffer();
 
+			String rectify_airport = this.attributes.getValueOrDefault(
+					"rectify", null);
+
+			if (rectify_airport != null) {
+				more_machine_options.append(".Rectify(\""
+						+ StringEscape.escapeToJavaScript(rectify_airport)
+						+ "\")");
+			}
+
+			String rectify_timer = this.attributes.getValueOrDefault(
+					"rectifytimer", null);
+
+			if (rectify_timer != null) {
+				more_machine_options.append(".RectifyTimer(\""
+						+ StringEscape.escapeToJavaScript(rectify_timer)
+						+ "\")");
+			}
+
 			for (FeedbackTag feedback : this.feedbackData) {
 				for (InferenceSolutionRequirementTag require : feedback
 						.getRequires()) {

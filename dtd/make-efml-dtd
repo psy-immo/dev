@@ -310,10 +310,12 @@ rootname = "inference"
 furtherchilds = "|feedback"
 execfile("make-inference-dtd")
 dtd.write("\n<!ATTLIST "+ rootname + " "+universal_attributes+"""
-	name	CDATA			#IMPLIED
-	pointstag	CDATA		#IMPLIED
-	conclusionstag	CDATA		#IMPLIED
-	button  CDATA   #IMPLIED
+	name	        CDATA	#IMPLIED
+	pointstag 	    CDATA	#IMPLIED
+	conclusionstag	CDATA	#IMPLIED
+	button          CDATA   #IMPLIED
+	rectify         CDATA   #IMPLIED
+	rectifytimer	CDATA   #IMPLIED
  >
 """)
 
