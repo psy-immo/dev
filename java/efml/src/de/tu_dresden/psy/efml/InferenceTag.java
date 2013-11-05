@@ -89,6 +89,15 @@ public class InferenceTag implements AnyTag {
 						+ "\")");
 			}
 
+			String feedback_target = this.attributes.getValueOrDefault(
+					"feedback", null);
+
+			if (feedback_target != null) {
+				more_machine_options.append(".Feedback(\""
+						+ StringEscape.escapeToJavaScript(feedback_target)
+						+ "\")");
+			}
+
 			for (FeedbackTag feedback : this.feedbackData) {
 				for (InferenceSolutionRequirementTag require : feedback
 						.getRequires()) {

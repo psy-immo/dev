@@ -40,6 +40,7 @@ import de.tu_dresden.psy.efml.EfmlBoardTag;
 import de.tu_dresden.psy.efml.EfmlPreviewButtonTag;
 import de.tu_dresden.psy.efml.EfmlQuoteTag;
 import de.tu_dresden.psy.efml.EfmlTagsAttribute;
+import de.tu_dresden.psy.efml.FeedbackDisplayTag;
 import de.tu_dresden.psy.efml.FeedbackTag;
 import de.tu_dresden.psy.efml.FloatboxTag;
 import de.tu_dresden.psy.efml.FreetextTag;
@@ -65,6 +66,7 @@ import de.tu_dresden.psy.efml.RTag;
 import de.tu_dresden.psy.efml.RadiobuttonTag;
 import de.tu_dresden.psy.efml.RegexpTag;
 import de.tu_dresden.psy.efml.RequiredTag;
+import de.tu_dresden.psy.efml.ResourceLanguageTag;
 import de.tu_dresden.psy.efml.RunwayTag;
 import de.tu_dresden.psy.efml.SniffyTag;
 import de.tu_dresden.psy.efml.StudyIdTag;
@@ -120,11 +122,12 @@ public class EfjsIntegrationResources {
 		"stringids.js", "loglet.js", "storage.js", "logger.js", "tags.js",
 		"logic.js", "hover.js", "endecoder.js", "runway.js", "answer.js",
 		"multiline.js", "sniffybutton.js", "dropdown.js", "checkbox.js",
-		"radiobutton.js", "popupbutton.js", "freetext.js", "boxspace.js",
-		"trashcan.js", "sentencepattern.js", "airport.js", "flextext.js",
-		"timer.js", "listselection.js", "hypergraphs.js", "inference.js",
-		"efml.js", "efmlbuttons.js", "efmlboard.js", "efmlcheckbox.js",
-		"efmltag.js", "efmlquote.js", "efmlfactory.js" };
+		"feedbackdisplay.js", "radiobutton.js", "popupbutton.js",
+		"resources.js", "freetext.js", "boxspace.js", "trashcan.js",
+		"sentencepattern.js", "airport.js", "flextext.js", "timer.js",
+		"listselection.js", "hypergraphs.js", "inference.js", "efml.js",
+		"efmlbuttons.js", "efmlboard.js", "efmlcheckbox.js", "efmltag.js",
+		"efmlquote.js", "efmlfactory.js" };
 
 	/**
 	 * interface for constructing other classes
@@ -462,7 +465,8 @@ public class EfjsIntegrationResources {
 		new AttributeObjectConstructor(RegexpTag.class), "studyid",
 		new BodyObjectConstructor(StudyIdTag.class), "documentid",
 		new BodyObjectConstructor(DocumentIdTag.class), "jsurl",
-		new BodyObjectConstructor(JsUrlTag.class), "phpurl",
+			new BodyObjectConstructor(JsUrlTag.class), "resourcelanguage",
+			new BodyObjectConstructor(ResourceLanguageTag.class), "phpurl",
 		new BodyObjectConstructor(PhpUrlTag.class), "subjectinfo",
 		new BodyObjectConstructor(SubjectInfoTag.class),
 		"subjectnotworking",
@@ -520,8 +524,9 @@ public class EfjsIntegrationResources {
 		"factor", new AttributeObjectConstructor(InferenceXmlTag.class),
 		"domain", new AttributeObjectConstructor(InferenceXmlTag.class),
 		"q", new AttributeObjectConstructor(InferenceXmlTag.class), "link",
-			new AttributeObjectConstructor(UnknownHeadTag.class), "timer",
-			new AttributeObjectConstructor(TimerTag.class)
+		new AttributeObjectConstructor(UnknownHeadTag.class), "timer",
+		new AttributeObjectConstructor(TimerTag.class), "feedbackdisplay",
+		new AttributeObjectConstructor(FeedbackDisplayTag.class)
 
 	};
 

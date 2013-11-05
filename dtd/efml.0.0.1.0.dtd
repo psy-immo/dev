@@ -1,5 +1,5 @@
 
-<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|subjectnotworking|airport|template|freetext|timer|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|cssurl|tables|i|b|br|p|div|span)* >
+<!ELEMENT efml (#PCDATA|title|tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|phpurl|jsurl|documentid|studyid|subjectprompt|resourcelanguage|subjectinfo|subjectchange|subjectnotworking|airport|template|freetext|timer|feedbackdisplay|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|cssurl|tables|i|b|br|p|div|span)* >
 
 <!ELEMENT br EMPTY >
 
@@ -53,7 +53,7 @@
 	rtags	CDATA	#IMPLIED
  >
 
-<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|subjectnotworking|airport|template|freetext|timer|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|cssurl|tables|i|b|br|p|div|span)* >
+<!ELEMENT tags (#PCDATA|tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|phpurl|jsurl|documentid|studyid|subjectprompt|resourcelanguage|subjectinfo|subjectchange|subjectnotworking|airport|template|freetext|timer|feedbackdisplay|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|cssurl|tables|i|b|br|p|div|span)* >
 
 <!ATTLIST tags 
 	tags	CDATA	#IMPLIED
@@ -61,7 +61,7 @@
 	rtags	CDATA	#IMPLIED
  >
 
-<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|subjectnotworking|airport|template|freetext|timer|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|cssurl|i|b|br|p|div|span)* >
+<!ELEMENT tables (#PCDATA|r|c|tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|phpurl|jsurl|documentid|studyid|subjectprompt|resourcelanguage|subjectinfo|subjectchange|subjectnotworking|airport|template|freetext|timer|feedbackdisplay|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|cssurl|i|b|br|p|div|span)* >
 
 <!ATTLIST tables 
 	tags	CDATA	#IMPLIED
@@ -75,7 +75,7 @@
 
 <!ELEMENT c EMPTY >
 
-<!ELEMENT tie (#PCDATA|i|b|br|p|div|span|tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|subjectnotworking|airport|template|freetext|timer|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|cssurl)* >
+<!ELEMENT tie (#PCDATA|i|b|br|p|div|span|tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|phpurl|jsurl|documentid|studyid|subjectprompt|resourcelanguage|subjectinfo|subjectchange|subjectnotworking|airport|template|freetext|timer|feedbackdisplay|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|cssurl)* >
 
 <!ATTLIST tie 
 	tags	CDATA	#IMPLIED
@@ -242,6 +242,12 @@
 	type	(down|up)		#IMPLIED
  >
 
+<!ELEMENT feedbackdisplay (#PCDATA)* >
+
+<!ATTLIST feedbackdisplay 
+	name	CDATA			#IMPLIED
+ >
+
 <!ELEMENT multiline (#PCDATA)* >
 
 <!ATTLIST multiline 
@@ -284,6 +290,8 @@
 <!ELEMENT subjectnotworking (#PCDATA)* >
 
 <!ELEMENT default (#PCDATA)* >
+
+<!ELEMENT resourcelanguage (#PCDATA)* >
 
 <!ELEMENT template (plain|dropdown|freetext|checkbox|radiobutton|multiline|listselection|runway|automatic)* >
 
@@ -341,7 +349,7 @@
 	height	CDATA			#IMPLIED
  >
 
-<!ELEMENT efmlquote (#PCDATA|title|tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|phpurl|jsurl|documentid|studyid|subjectprompt|subjectinfo|subjectchange|subjectnotworking|airport|template|freetext|timer|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|cssurl|tables|i|b|br|p|div|span)*>
+<!ELEMENT efmlquote (#PCDATA|title|tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|phpurl|jsurl|documentid|studyid|subjectprompt|resourcelanguage|subjectinfo|subjectchange|subjectnotworking|airport|template|freetext|timer|feedbackdisplay|checkbox|radiobutton|multiline|popuphelp|trashcan|boxspace|efmlboard|efmlpreview|cssurl|tables|i|b|br|p|div|span)*>
 
 <!ATTLIST efmlquote 
 	tags	CDATA	#IMPLIED
@@ -543,8 +551,11 @@
 	atags	CDATA	#IMPLIED
 	rtags	CDATA	#IMPLIED
 
-	name	CDATA			#IMPLIED
-	pointstag	CDATA		#IMPLIED
-	conclusionstag	CDATA		#IMPLIED
-	button  CDATA   #IMPLIED
+	name	        CDATA	#IMPLIED
+	pointstag 	    CDATA	#IMPLIED
+	conclusionstag	CDATA	#IMPLIED
+	button          CDATA   #IMPLIED
+	rectify         CDATA   #IMPLIED
+	rectifytimer	CDATA   #IMPLIED
+	feedback	    CDATA   #IMPLIED
  >

@@ -71,6 +71,13 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	this.tryNumber = 1;
 
 	/**
+	 * store the name of the FeedbackDisplay object, or false if no textual/html
+	 * feedback is given
+	 */
+
+	this.feedback = false;
+
+	/**
 	 * store the solution status
 	 * 
 	 */
@@ -153,6 +160,16 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 	this.Rectify = function(airport) {
 		this.rectify = airport;
+
+		return this;
+	};
+
+	/**
+	 * set the name of the feedback target
+	 */
+
+	this.Feedback = function(target_display) {
+		this.feedback = target_display;
 
 		return this;
 	};
@@ -608,7 +625,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			check_for = this.justify;
 
 		var necessary = this.hypergraph.GetNecessarySubset(Object
-				.keys(assertions), additional_points, check_for);
+				.keys(assertions), this.implicit, additional_points, check_for);
 
 		var hint_points = [];
 
@@ -619,8 +636,10 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			var s = this.stringids.FromId(point_id);
 
-			if (assertions[point_id])
-				log_data += "* ";
+			if (this.implicit.indexOf(point_id) >= 0) {
+				log_data += "i ";
+			} else if (assertions[point_id])
+				log_data += "X ";
 			else {
 				log_data += "  ";
 

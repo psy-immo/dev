@@ -45,6 +45,12 @@ public class BodyTag implements AnyTag {
 	private String idDoc;
 
 	/**
+	 * resource language id
+	 */
+
+	private String idLanguage;
+
+	/**
 	 * study id
 	 */
 
@@ -96,6 +102,7 @@ public class BodyTag implements AnyTag {
 		this.innerTags = new ArrayList<AnyTag>();
 
 		this.idDoc = UUID.randomUUID().toString();
+		this.idLanguage = null;
 		this.idStudy = UUID.randomUUID().toString();
 		this.logletUrl = null;
 		this.scriptUrl = "";
@@ -200,6 +207,16 @@ public class BodyTag implements AnyTag {
 
 	/**
 	 * 
+	 * @param id
+	 *            new language id
+	 */
+
+	public void setLanguage(String id) {
+		this.idLanguage = id.trim().toUpperCase();
+	}
+
+	/**
+	 * 
 	 * @param url
 	 *            new php base url
 	 */
@@ -267,6 +284,12 @@ public class BodyTag implements AnyTag {
 		if (this.subjectChange != null) {
 			writer.write("  subjectIdChange = \""
 					+ StringEscape.escapeToJavaScript(this.subjectChange)
+					+ "\";\n");
+		}
+
+		if (this.idLanguage != null) {
+			writer.write("  language = \""
+					+ StringEscape.escapeToJavaScript(this.idLanguage)
 					+ "\";\n");
 		}
 

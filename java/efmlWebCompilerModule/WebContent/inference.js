@@ -71,6 +71,13 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	this.tryNumber = 1;
 
 	/**
+	 * store the name of the FeedbackDisplay object, or false if no textual/html
+	 * feedback is given
+	 */
+
+	this.feedback = false;
+
+	/**
 	 * store the solution status
 	 * 
 	 */
@@ -117,6 +124,18 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	this.text = "Check your answer";
 
 	/**
+	 * store the name of the airport that is going to be rectified
+	 */
+
+	this.rectify = false;
+
+	/**
+	 * store the name of the timer that triggers rectification
+	 */
+
+	this.rectifyTimer = false;
+
+	/**
 	 * write all needed html elements to the document
 	 */
 
@@ -131,6 +150,36 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	this.Requirement = function(fn) {
 
 		this.solutionRequirements.push(fn);
+
+		return this;
+	};
+
+	/**
+	 * set the name of the airport that is rectified
+	 */
+
+	this.Rectify = function(airport) {
+		this.rectify = airport;
+
+		return this;
+	};
+
+	/**
+	 * set the name of the feedback target
+	 */
+
+	this.Feedback = function(target_display) {
+		this.feedback = target_display;
+
+		return this;
+	};
+
+	/**
+	 * set the name of the timer that triggers rectification
+	 */
+
+	this.RectifyTimer = function(timer) {
+		this.rectifyTimer = timer;
 
 		return this;
 	};
@@ -576,8 +625,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			check_for = this.justify;
 
 		var necessary = this.hypergraph.GetNecessarySubset(Object
-				.keys(assertions), additional_points, check_for);
-		
+				.keys(assertions), this.implicit, additional_points, check_for);
+
 		var hint_points = [];
 
 		log_data += "\nNecessary Augmented Points:\n";
@@ -587,11 +636,13 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			var s = this.stringids.FromId(point_id);
 
-			if (assertions[point_id])
-				log_data += "* ";
+			if (this.implicit.indexOf(point_id) >= 0) {
+				log_data += "i ";
+			} else if (assertions[point_id])
+				log_data += "X ";
 			else {
 				log_data += "  ";
-				
+
 				hint_points.push(point_id);
 			}
 
@@ -719,6 +770,36 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		if (has_been_solved) {
 			log_data += "\nAll tasks have been SOLVED.\n";
 			this.solved = 1;
+		}
+
+		if (this.rectify) {
+			var do_rectification = true;
+			if (this.rectifyTimer) {
+				if (timerNames[this.rectifyTimer].value) {
+					log_data += "\nRectification omitted due to timer.";
+					do_rectification = false;
+				}
+
+				if (do_rectification) {
+					var airport = airportNames[this.rectify];
+					log_data += "\nRectifying points.";
+
+					var keep = [];
+					var add = [];
+
+					for ( var int7 = 0; int7 < necessary.length; int7++) {
+						var id = necessary[int7];
+						var text = this.stringids.FromId(id);
+
+						keep.push(text);
+
+						if (this.implicit.indexOf(id) < 0) {
+							add.push(text);
+						}
+					}
+					airport.Rectify(keep, add);
+				}
+			}
 		}
 
 		/**

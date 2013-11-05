@@ -18,6 +18,7 @@
 
 var airportIdCounter = 0;
 var airportArray = [];
+var airportNames = {};
 
 /**
  * creates an object, that may contain token data, one at a time, for a given
@@ -70,7 +71,7 @@ function AirportRunway(airport, index, tags) {
 		this.airport.marked[this.index] = "T";
 		this.airport.UpdateContents();
 	};
-	
+
 	this.MarkAsHint = function() {
 		this.airport.marked[this.index] = "H";
 		this.airport.UpdateContents();
@@ -630,6 +631,67 @@ function Airport(name, tags, accept, reject) {
 	};
 
 	/**
+	 * this function is called in order to change the airport data for
+	 * rectification of the arguments
+	 * 
+	 * NOTE that this will most likely invalidate the airport row objects that
+	 * have been retrieved by GetAllTags... beforehand.
+	 */
+
+	this.Rectify = function(keep, add) {
+
+		var new_content = [];
+		var new_marked = [];
+		var new_respawn = [];
+
+		var do_not_add = [];
+		for ( var int = 0; int < add.length; int++) {
+			do_not_add.push(false);
+		}
+
+		/**
+		 * Remove unnecessary points
+		 */
+
+		for ( var int = 0; int < this.content.length; ++int) {
+
+			var add_index = add.indexOf(this.content[int]);
+
+			if (add_index >= 0)
+				do_not_add[add_index] = true;
+
+			if (keep.indexOf(this.content[int]) >= 0) {
+				new_content.push(this.content[int]);
+				new_marked.push(this.marked[int]);
+				new_respawn.push(this.respawn[int]);
+			} else {
+				if (this.respawn[int])
+					this.respawn[int].DoRespawn();
+			}
+		}
+
+		/**
+		 * Add missing points
+		 */
+
+		for ( var int2 = 0; int2 < add.length; int2++) {
+			var point = add[int2];
+			if (do_not_add[int2])
+				continue;
+
+			new_marked.push("H");
+			new_content.push(point);
+			new_respawn.push(null);
+		}
+
+		this.marked = new_marked;
+		this.content = new_content;
+		this.respawn = new_respawn;
+
+		this.UpdateContents();
+	};
+
+	/**
 	 * return the current contents of the airport as string
 	 */
 	this.GetValue = function() {
@@ -667,6 +729,7 @@ function Airport(name, tags, accept, reject) {
 	};
 
 	airportArray[this.id] = this;
+	airportNames[this.name] = this;
 
 	myStorage.RegisterField(this, "airportArray[" + this.id + "]");
 

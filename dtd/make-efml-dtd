@@ -5,8 +5,9 @@ dtd = open("efml.0.0.1.0.dtd","w")
 html_elements = "i|b|br|p|div|span"
 efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|"+\
 				"phpurl|jsurl|documentid|studyid|subjectprompt|"+\
+				"resourcelanguage|"+\
 				"subjectinfo|subjectchange|subjectnotworking|airport|"+\
-				"template|freetext|timer|"+\
+				"template|freetext|timer|feedbackdisplay|"+\
 				"checkbox|radiobutton|multiline|popuphelp|"+\
 				"trashcan|boxspace|efmlboard|efmlpreview|cssurl"
 efml_extra = "tables"
@@ -180,6 +181,12 @@ dtd.write("\n<!ATTLIST timer """"
  >
 """)
 
+dtd.write("\n<!ELEMENT feedbackdisplay (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST feedbackdisplay """"
+	name	CDATA			#IMPLIED
+ >
+""")
+
 
 dtd.write("\n<!ELEMENT multiline (#PCDATA)* >\n")
 dtd.write("\n<!ATTLIST multiline "+universal_attributes+"""
@@ -201,7 +208,7 @@ dtd.write("\n<!ATTLIST option "+"""
 
 for tag in ["phpurl","jsurl","cssurl","documentid","studyid", \
 	        "subjectprompt","subjectinfo","subjectchange","plain",\
-	        "subjectnotworking","default"]:
+	        "subjectnotworking","default","resourcelanguage"]:
 	dtd.write("\n<!ELEMENT "+tag+" (#PCDATA)* >\n")
 	#dtd.write("\n<!ATTLIST "+tag+" "+universal_attributes+" >\n")
 
@@ -316,6 +323,7 @@ dtd.write("\n<!ATTLIST "+ rootname + " "+universal_attributes+"""
 	button          CDATA   #IMPLIED
 	rectify         CDATA   #IMPLIED
 	rectifytimer	CDATA   #IMPLIED
+	feedback	    CDATA   #IMPLIED
  >
 """)
 
