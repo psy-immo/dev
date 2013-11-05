@@ -41,10 +41,12 @@ res_DE["inferenceJustify"] = "Deiner Lösung fehlen noch Argumente.";
 
 
 /**
- * default to US english as resource language
+ * default to US English as resource language
  */
-
-language = "US";
+if (!language)
+{
+	language = "US";
+}
 
 function getRes(which) {
 	return res[language][which];

@@ -243,6 +243,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 */
 
 	this.StartMachine = function() {
+		var feedback_info = "";
+		
 		/**
 		 * check, whether giving a solution is allowed
 		 */
@@ -771,6 +773,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			log_data += "\nAll tasks have been SOLVED.\n";
 			this.solved = 1;
 		}
+		
+		
+		
+		/**
+		 * probably 
+		 */
 
 		if (this.rectify) {
 			var do_rectification = true;
@@ -801,6 +809,19 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				}
 			}
 		}
+		
+		/**
+		 * put feedback to display
+		 */
+		
+		if (this.feedback) {
+			var display = feedbackNames[this.feedback];
+			
+			display.SetValue(feedback_info);
+			
+			log_data += "Feedback Display:\n" + feedback_info;
+		} else
+			log_data += "No feedback displayed.\n";
 
 		/**
 		 * log the results
