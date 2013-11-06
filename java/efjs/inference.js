@@ -65,6 +65,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	this.hypergraph = hypergraph;
 
 	/**
+	 * the hint feedback data
+	 */
+
+	this.hints = {};
+
+	/**
 	 * store the number of tries
 	 */
 
@@ -239,12 +245,22 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	};
 
 	/**
+	 * add the appropriate hint data
+	 */
+
+	this.AddHint = function(lack, hint) {
+		this.hints[lack] = hint;
+
+		return this;
+	};
+
+	/**
 	 * this handler is called when the Check-Answer button has been pressed
 	 */
 
 	this.StartMachine = function() {
 		var feedback_info = "";
-		
+
 		/**
 		 * check, whether giving a solution is allowed
 		 */
@@ -282,6 +298,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		log_data += "Try: " + this.tryNumber + "\n";
 		this.tryNumber += 1;
 
+		var incorrect_point_count = 0;
+
 		/**
 		 * store which parts of the problem have been solved correctly
 		 */
@@ -309,6 +327,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 					}
 				}
 
+			} else {
+				incorrect_point_count += 1;
 			}
 
 			if (this.hypergraph.IsTrivial(point_id)) {
@@ -348,6 +368,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 						correctly_solved_parts.push(part);
 					}
 				}
+			} else {
+				incorrect_point_count += 1;
 			}
 
 			if (this.hypergraph.IsTrivial(point_id)) {
@@ -630,6 +652,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				.keys(assertions), this.implicit, additional_points, check_for);
 
 		var hint_points = [];
+	
 
 		log_data += "\nNecessary Augmented Points:\n";
 
@@ -735,26 +758,32 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			log_data += part;
 		}
 
+		var requirements_met = 0;
+		var requirements_unmet = 0;
+
 		for ( var int5 = 0; int5 < this.solutionRequirements.length; int5++) {
 			var fn = this.solutionRequirements[int5];
 
 			if (fn(correctly_solved_parts)) {
 				log_data += "\nCriterion " + (1 + int5) + " MET.";
+				requirements_met += 1;
 			} else {
 				log_data += "\nCriterion " + (1 + int5) + " NOT met.";
+				requirements_unmet += 1;
 			}
 
 		}
+		
+		var need_some_justification = additional_points.length > 0;
 
-		var has_been_solved = true;
-
-		/**
-		 * TODO: CHECK WHETHER ALL PARTS WERE SOLVED
-		 */
+		var has_been_solved = (requirements_unmet == 0)
+				&& (incorrect_point_count == 0) && (!need_some_justification);
 
 		/**
 		 * We check whether the justification to-do's have been met
 		 */
+		
+		//TODO: Hack in a good feedback thing-ie
 
 		for ( var int6 = 0; int6 < this.justify.length; int6++) {
 			var id = this.justify[int6];
@@ -771,13 +800,17 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 		if (has_been_solved) {
 			log_data += "\nAll tasks have been SOLVED.\n";
+			feedback = getRes("inferenceCorrect");
 			this.solved = 1;
+		} else {
+			
+			if (incorrect_point_count > 0) {
+				feedback += getRes("inferenceErrors") + "<br/>";
+			}
 		}
-		
-		
-		
+
 		/**
-		 * probably 
+		 * probably
 		 */
 
 		if (this.rectify) {
@@ -809,16 +842,16 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				}
 			}
 		}
-		
+
 		/**
 		 * put feedback to display
 		 */
-		
+
 		if (this.feedback) {
 			var display = feedbackNames[this.feedback];
-			
+
 			display.SetValue(feedback_info);
-			
+
 			log_data += "Feedback Display:\n" + feedback_info;
 		} else
 			log_data += "No feedback displayed.\n";

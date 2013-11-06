@@ -36,8 +36,11 @@ res_DE["inferenceCorrect"] = "Sehr gut! Deine Lösung ist vollständig und richt
 res_US["inferenceErrors"] = "Your solution contains some errors.";
 res_DE["inferenceErrors"] = "Deine Lösung enthält noch Fehler.";
 
-res_US["inferenceJustify"] = "Your solution needs some further points.";
-res_DE["inferenceJustify"] = "Deiner Lösung fehlen noch Argumente.";
+res_US["inferenceJustify"] = "Your solution needs some more justifying points.";
+res_DE["inferenceJustify"] = "Deiner Lösung fehlen noch Argumente zur Begründung.";
+
+res_US["inferenceIncomplete"] = "Some parts of the solution are still missing.";
+res_DE["inferenceIncomplete"] = "Es fehlt noch ein Teil der Lösung.";
 
 
 /**

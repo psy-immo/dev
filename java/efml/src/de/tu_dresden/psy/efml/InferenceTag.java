@@ -107,8 +107,18 @@ public class InferenceTag implements AnyTag {
 
 				}
 
-				// TODO process feedback and hint data here
+				for (HintTag hint : feedback.getHints()) {
+					writer.write(".AddHint(");
+					writer.write(StringEscape.escapeToDecodeInJavaScript(hint
+							.getLack()));
+					writer.write(",");
+					writer.write(StringEscape
+							.escapeToDecodableInJavaScript(hint.getHint()));
+					writer.write(")");
+				}
+
 			}
+
 
 			/**
 			 * set the button text
