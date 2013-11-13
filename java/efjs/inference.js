@@ -69,6 +69,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 */
 
 	this.hints = {};
+	
+	/**
+	 * store the rectification count
+	 */
+	
+	this.rectifications = 0;
 
 	/**
 	 * store the number of tries
@@ -142,6 +148,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	this.rectifyTimer = false;
 
 	/**
+	 * store the count-down-counter that triggers rectification
+	 */
+
+	this.rectifyCounter = false;
+
+	/**
 	 * write all needed html elements to the document
 	 */
 
@@ -186,6 +198,16 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 	this.RectifyTimer = function(timer) {
 		this.rectifyTimer = timer;
+
+		return this;
+	};
+
+	/**
+	 * set the name of the counter that triggers rectification
+	 */
+
+	this.RectifyCounter = function(counter) {
+		this.rectifyCounter = counter;
 
 		return this;
 	};
@@ -258,7 +280,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 * this handler is called when the Check-Answer button has been pressed
 	 */
 
-	this.StartMachine = function() {
+	this.StartMachine = function(slave_call) {
 		var feedback_info = "";
 
 		/**
@@ -652,7 +674,6 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				.keys(assertions), this.implicit, additional_points, check_for);
 
 		var hint_points = [];
-	
 
 		log_data += "\nNecessary Augmented Points:\n";
 
@@ -773,7 +794,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			}
 
 		}
-		
+
 		var need_some_justification = additional_points.length > 0;
 
 		var has_been_solved = (requirements_unmet == 0)
@@ -782,9 +803,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		/**
 		 * We check whether the justification to-do's have been met
 		 */
-		
-		//TODO: Hack in a good feedback thing-ie
 
+		// TODO: Hack in a good feedback thing-ie
 		for ( var int6 = 0; int6 < this.justify.length; int6++) {
 			var id = this.justify[int6];
 			if (closed_points.justified.indexOf(id) < 0) {
@@ -803,7 +823,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			feedback = getRes("inferenceCorrect");
 			this.solved = 1;
 		} else {
-			
+
 			if (incorrect_point_count > 0) {
 				feedback += getRes("inferenceErrors") + "<br/>";
 			}
@@ -814,33 +834,50 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		 */
 
 		if (this.rectify) {
-			var do_rectification = true;
+			var do_rectification = false;
 			if (this.rectifyTimer) {
 				if (timerNames[this.rectifyTimer].value) {
-					log_data += "\nRectification omitted due to timer.";
-					do_rectification = false;
-				}
+					log_data += "\nRectification timer has not elapsed.";
 
-				if (do_rectification) {
-					var airport = airportNames[this.rectify];
-					log_data += "\nRectifying points.";
-
-					var keep = [];
-					var add = [];
-
-					for ( var int7 = 0; int7 < necessary.length; int7++) {
-						var id = necessary[int7];
-						var text = this.stringids.FromId(id);
-
-						keep.push(text);
-
-						if (this.implicit.indexOf(id) < 0) {
-							add.push(text);
-						}
-					}
-					airport.Rectify(keep, add);
-				}
+				} else
+					do_rectification = true;
 			}
+			
+			if (this.rectifyCounter) {
+				/**
+				 * reduce the number of tries, if this is not a slave call
+				 */
+				if (!(slave_call))
+					counterNames[this.rectifyCounter].SetValue(counterNames[this.rectifyCounter].value-1);
+				
+				if (counterNames[this.rectifyCounter].value) {
+					log_data +="\nRectification counter is non-zero.";
+				} else
+					do_rectification = true;
+			}
+
+			if (do_rectification) {
+				var airport = airportNames[this.rectify];
+				log_data += "\nRectifying points.";
+
+				var keep = [];
+				var add = [];
+
+				for ( var int7 = 0; int7 < necessary.length; int7++) {
+					var id = necessary[int7];
+					var text = this.stringids.FromId(id);
+
+					keep.push(text);
+
+					if (this.implicit.indexOf(id) < 0) {
+						add.push(text);
+					}
+				}
+				airport.Rectify(keep, add);
+				
+				this.rectifications += 1;
+			}
+
 		}
 
 		/**
@@ -852,9 +889,9 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 			display.SetValue(feedback_info);
 
-			log_data += "Feedback Display:\n" + feedback_info;
+			log_data += "\nFeedback Display:\n" + feedback_info;
 		} else
-			log_data += "No feedback displayed.\n";
+			log_data += "\nNo feedback displayed.\n";
 
 		/**
 		 * log the results
@@ -868,7 +905,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 * return the current state
 	 */
 	this.GetValue = function() {
-		return "" + this.tryNumber + ";" + this.solved;
+		return "" + this.tryNumber + ";" + this.solved+";"+this.rectifications;
 	};
 
 	/**
@@ -879,6 +916,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		var parts = contents.split(";");
 		this.tryNumber = parseInt(parts[0]);
 		this.solved = parseInt(parts[1]);
+		this.rectifications = parseInt(parts[2]);
 	};
 
 	/**

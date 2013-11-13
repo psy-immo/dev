@@ -33,6 +33,7 @@ import de.tu_dresden.psy.efml.CTag;
 import de.tu_dresden.psy.efml.CheckTag;
 import de.tu_dresden.psy.efml.CheckboxTag;
 import de.tu_dresden.psy.efml.CorrectTag;
+import de.tu_dresden.psy.efml.CounterTag;
 import de.tu_dresden.psy.efml.DefaultTag;
 import de.tu_dresden.psy.efml.DocumentIdTag;
 import de.tu_dresden.psy.efml.DropdownTag;
@@ -123,11 +124,11 @@ public class EfjsIntegrationResources {
 		"logic.js", "hover.js", "endecoder.js", "runway.js", "answer.js",
 		"multiline.js", "sniffybutton.js", "dropdown.js", "checkbox.js",
 		"feedbackdisplay.js", "radiobutton.js", "popupbutton.js",
-		"resources.js", "freetext.js", "boxspace.js", "trashcan.js",
-		"sentencepattern.js", "airport.js", "flextext.js", "timer.js",
-		"listselection.js", "hypergraphs.js", "inference.js", "efml.js",
-		"efmlbuttons.js", "efmlboard.js", "efmlcheckbox.js", "efmltag.js",
-		"efmlquote.js", "efmlfactory.js" };
+		"counter.js", "resources.js", "freetext.js", "boxspace.js",
+		"trashcan.js", "sentencepattern.js", "airport.js", "flextext.js",
+		"timer.js", "listselection.js", "hypergraphs.js", "inference.js",
+		"efml.js", "efmlbuttons.js", "efmlboard.js", "efmlcheckbox.js",
+		"efmltag.js", "efmlquote.js", "efmlfactory.js" };
 
 	/**
 	 * interface for constructing other classes
@@ -465,8 +466,8 @@ public class EfjsIntegrationResources {
 		new AttributeObjectConstructor(RegexpTag.class), "studyid",
 		new BodyObjectConstructor(StudyIdTag.class), "documentid",
 		new BodyObjectConstructor(DocumentIdTag.class), "jsurl",
-			new BodyObjectConstructor(JsUrlTag.class), "resourcelanguage",
-			new BodyObjectConstructor(ResourceLanguageTag.class), "phpurl",
+		new BodyObjectConstructor(JsUrlTag.class), "resourcelanguage",
+		new BodyObjectConstructor(ResourceLanguageTag.class), "phpurl",
 		new BodyObjectConstructor(PhpUrlTag.class), "subjectinfo",
 		new BodyObjectConstructor(SubjectInfoTag.class),
 		"subjectnotworking",
@@ -526,8 +527,8 @@ public class EfjsIntegrationResources {
 		"q", new AttributeObjectConstructor(InferenceXmlTag.class), "link",
 		new AttributeObjectConstructor(UnknownHeadTag.class), "timer",
 		new AttributeObjectConstructor(TimerTag.class), "feedbackdisplay",
-		new AttributeObjectConstructor(FeedbackDisplayTag.class)
-
+			new AttributeObjectConstructor(FeedbackDisplayTag.class),
+			"counter", new AttributeObjectConstructor(CounterTag.class),
 	};
 
 }

@@ -89,6 +89,15 @@ public class InferenceTag implements AnyTag {
 						+ "\")");
 			}
 
+			String rectify_counter = this.attributes.getValueOrDefault(
+					"rectifycounter", null);
+
+			if (rectify_counter != null) {
+				more_machine_options.append(".RectifyCounter(\""
+						+ StringEscape.escapeToJavaScript(rectify_counter)
+						+ "\")");
+			}
+
 			String feedback_target = this.attributes.getValueOrDefault(
 					"feedback", null);
 

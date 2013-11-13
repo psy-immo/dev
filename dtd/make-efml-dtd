@@ -5,7 +5,7 @@ dtd = open("efml.0.0.1.0.dtd","w")
 html_elements = "i|b|br|p|div|span"
 efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|"+\
 				"phpurl|jsurl|documentid|studyid|subjectprompt|"+\
-				"resourcelanguage|"+\
+				"resourcelanguage|counter|"+\
 				"subjectinfo|subjectchange|subjectnotworking|airport|"+\
 				"template|freetext|timer|feedbackdisplay|"+\
 				"checkbox|radiobutton|multiline|popuphelp|"+\
@@ -187,6 +187,13 @@ dtd.write("\n<!ATTLIST feedbackdisplay """"
  >
 """)
 
+dtd.write("\n<!ELEMENT counter (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST counter "+universal_attributes+"""
+	name	CDATA			#IMPLIED
+	value	CDATA			#IMPLIED
+ >
+""")
+
 
 dtd.write("\n<!ELEMENT multiline (#PCDATA)* >\n")
 dtd.write("\n<!ATTLIST multiline "+universal_attributes+"""
@@ -323,7 +330,9 @@ dtd.write("\n<!ATTLIST "+ rootname + " "+universal_attributes+"""
 	button          CDATA   #IMPLIED
 	rectify         CDATA   #IMPLIED
 	rectifytimer	CDATA   #IMPLIED
+	rectifycounter	CDATA	#IMPLIED
 	feedback	    CDATA   #IMPLIED
+	
  >
 """)
 

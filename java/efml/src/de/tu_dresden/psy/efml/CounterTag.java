@@ -1,5 +1,5 @@
 /**
- * FeedbackDisplayTag.java, (c) 2013, Immanuel Albrecht; Dresden University of
+ * CounterTag.java, (c) 2013, Immanuel Albrecht; Dresden University of
  * Technology, Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -24,18 +24,18 @@ import java.io.Writer;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * implements the &lt;feedbackdisplay>-tag that creates a feedback display
+ * implements the &lt;counter>-tag that creates a display for some counter
  * object
  * 
  * @author immanuel
  * 
  */
 
-public class FeedbackDisplayTag implements AnyTag {
+public class CounterTag implements AnyTag {
 
 	private EfmlTagsAttribute attributes;
 
-	public FeedbackDisplayTag(EfmlTagsAttribute efmlAttributes) {
+	public CounterTag(EfmlTagsAttribute efmlAttributes) {
 		this.attributes = efmlAttributes;
 	}
 
@@ -47,12 +47,12 @@ public class FeedbackDisplayTag implements AnyTag {
 		 * create new timer object
 		 */
 
-		writer.write(" new FeedbackDisplay(");
+		writer.write(" new Counter(");
 
 		writer.write("\""
 				+ StringEscape.escapeToJavaScript(this.attributes
-						.getValueOrDefault("name", "")) + "\"");
-
+						.getValueOrDefault("name", "")) + "\",");
+		writer.write(this.attributes.getValueOrDefault("value", "0"));
 		writer.write(").WriteHtml();");
 	}
 
@@ -68,8 +68,8 @@ public class FeedbackDisplayTag implements AnyTag {
 
 		} else {
 			throw new OperationNotSupportedException(
-					"<feedbackdisplay> cannot enclose "
-					+ innerTag.getClass().toString());
+					"<counter> cannot enclose "
+							+ innerTag.getClass().toString());
 		}
 	}
 
@@ -77,7 +77,7 @@ public class FeedbackDisplayTag implements AnyTag {
 	public String getEfml() {
 		StringBuffer representation = new StringBuffer();
 
-		representation.append("<feedbackdisplay");
+		representation.append("<counter");
 		this.attributes.writeXmlAttributes(representation);
 		representation.append(" />");
 
