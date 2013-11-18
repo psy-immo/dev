@@ -1,5 +1,5 @@
 /**
- * answer.js, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
+ * answer.js, (c) 2011-13, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -32,6 +32,92 @@ function Answer(testfn) {
 	this.testfn = testfn;
 	this.waitfor = [];
 	this.uncheckedbadgood = 0;
+	
+	/**
+	 * store the name of the FeedbackDisplay object, or false if no textual/html
+	 * feedback is given
+	 */
+
+	this.feedback = false;
+	
+	/**
+	 * contains the name of the counter object to check how many tries are left before rectification
+	 */
+	this.checkCounter = false;
+	
+	this.showAutoSpanAfterRect = [];
+	this.hideAutoSpanAfterRect = [];
+	this.lockAfterRectification = true;
+	
+	/**
+	 * set the name of the feedback target
+	 */
+
+	this.Feedback = function(target_display) {
+		this.feedback = target_display;
+
+		return this;
+	};
+
+	
+	/**
+	 * adds autospans to hide after rectification
+	 * 
+	 * @param namelist     a string with , separated names for autospan objects
+	 * 
+	 * @returns this
+	 */
+	
+	this.HideAfterRectification = function(namelist) {
+		var split = namelist.split(",");
+		for ( var int = 0; int < split.length; int++) {
+			var x = split[int];
+			this.hideAutoSpanAfterRect.push(x);
+		}
+		
+		
+		return this;
+	};
+	
+	/**
+	 * adds autospans to show after rectification
+	 * 
+	 * @param namelist     a string with , separated names for autospan objects
+	 * 
+	 * @returns this
+	 */
+	
+	this.ShowAfterRectification = function(namelist) {
+		var split = namelist.split(",");
+		for ( var int = 0; int < split.length; int++) {
+			var x = split[int];
+			this.showAutoSpanAfterRect.push(x);
+		}
+		
+		
+		return this;
+	};
+
+	/**
+	 * whether to lock the airport after the rectification of the solution
+	 */
+
+	this.LockAfterRectification = function(doLock) {
+		this.lockAfterRectification = doLock;
+
+		return this;
+	};
+	
+	/**
+	 * set the name of the counter object
+	 */
+	
+	this.Counter = function(name) {
+		this.checkCounter = name;
+		
+		return this;
+	};
+
 
 	/**
 	 * write the HTML code that will be used for displaying the answer button
@@ -117,6 +203,34 @@ function Answer(testfn) {
 		myStorage.AutoUpdateAndStore();
 		
 		/**
+		 * check the counter
+		 */
+		
+		var rectify = false;
+		
+		if (this.checkCounter) {
+			var counter = counterNames[this.checkCounter];
+			
+			/**
+			 * set new value
+			 */
+			
+			var value = counter.GetValue();
+			value -= 1;
+			counter.SetValue(value);
+			
+			/**
+			 * check for rectification
+			 */
+			
+			if (!value) {
+				rectify = true;
+			}
+		}
+		
+		var solved = false;
+		
+		/**
 		 * check the answer
 		 */
 
@@ -127,6 +241,8 @@ function Answer(testfn) {
 			myLogger.Log("Check answer " + this.id+ ": good (" + this.errorCount + ")");
 
 			this.uncheckedbadgood = 2;
+			
+			solved = true;
 		} else {
 			this.SetHint(this.feedbackErrors[Math.min(
 					this.feedbackErrors.length - 1, this.errorCount)]);
@@ -135,6 +251,47 @@ function Answer(testfn) {
 			myLogger.Log("Check answer " + this.id+ ": errors (" + this.errorCount + ")");
 
 			this.uncheckedbadgood = 1;
+			
+		}
+		
+		if (solved || rectify) {
+			myLogger.Log("Check answer " + this.id+ ": show/hide autospans.");
+			
+			/**
+			 * magically hide some elements
+			 */
+			
+			for ( var int99 = 0; int99 < this.hideAutoSpanAfterRect.length; int99++) {
+				var name = this.hideAutoSpanAfterRect[int99];
+				
+				var span = autoSpanNames[name];
+				
+				if (span)
+				{
+					span.SetValue(0);
+				}
+				
+			}
+			
+			/**
+			 * magically show some elements
+			 */
+			
+			for ( var int99 = 0; int99 < this.showAutoSpanAfterRect.length; int99++) {
+				var name = this.showAutoSpanAfterRect[int99];
+				
+				var span = autoSpanNames[name];
+				
+				if (span)
+				{
+					span.SetValue(1);
+				}
+				
+			}
+			
+			/**
+			 * TODO: Lock input mask; nicht so einfach...
+			 */
 		}
 	};
 

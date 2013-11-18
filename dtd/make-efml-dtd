@@ -73,7 +73,11 @@ dtd.write("\n<!ATTLIST runway "+universal_attributes+"""
 """)
 
 dtd.write("\n<!ELEMENT answer (#PCDATA|hint|correct|check)* >\n")
-dtd.write("\n<!ATTLIST answer "+universal_attributes+" >\n")
+dtd.write("\n<!ATTLIST answer "+universal_attributes+"""
+	hideautospan	CDATA	  #IMPLIED
+	showautospan	CDATA	  #IMPLIED
+ >
+""")
 
 dtd.write("\n<!ELEMENT hint (#PCDATA|"+html_elements+")* >\n")
 dtd.write("\n<!ATTLIST hint "+"""
@@ -333,15 +337,17 @@ rootname = "inference"
 furtherchilds = "|feedback"
 execfile("make-inference-dtd")
 dtd.write("\n<!ATTLIST "+ rootname + " "+universal_attributes+"""
-	name	        CDATA	#IMPLIED
-	pointstag 	    CDATA	#IMPLIED
-	conclusionstag	CDATA	#IMPLIED
-	button          CDATA   #IMPLIED
-	rectify         CDATA   #IMPLIED
-	rectifytimer	CDATA   #IMPLIED
-	rectifycounter	CDATA	#IMPLIED
-	feedback	    CDATA   #IMPLIED
-	
+	name	        CDATA	  #IMPLIED
+	pointstag 	    CDATA	  #IMPLIED
+	conclusionstag	CDATA	  #IMPLIED
+	button          CDATA     #IMPLIED
+	rectify         CDATA     #IMPLIED
+	rectifytimer	CDATA     #IMPLIED
+	rectifycounter	CDATA	  #IMPLIED
+	feedback	    CDATA     #IMPLIED
+	hideautospan	CDATA	  #IMPLIED
+	showautospan	CDATA	  #IMPLIED
+	lockairport		(on|off)  #IMPLIED
  >
 """)
 

@@ -27,8 +27,8 @@ res_DE = {};
 res["US"] = res_US;
 res["DE"] = res_DE;
 
-res_US["inferenceRectified"] = "Your solution has been corrected, unnecessary points have been removed and missing points are lit orange.";
-res_DE["inferenceRectified"] = "Deine Lösung wurde korrigiert. Unnötige Aussagen wurden entfernt und fehlende ergänzt und orange gekennzeichnet.";
+res_US["inferenceRectified"] = "Your solution has been corrected. Both incorrect and unnecessary points have been removed and missing points are lit orange.";
+res_DE["inferenceRectified"] = "Deine Lösung wurde korrigiert. Sowohl unrichtige als auch unnötige Aussagen wurden entfernt, sowie fehlende ergänzt und orange gekennzeichnet.";
 
 res_US["inferenceCorrect"] = "Congratulations! Your solution is correct and complete!";
 res_DE["inferenceCorrect"] = "Sehr gut! Deine Lösung ist vollständig und richtig!";

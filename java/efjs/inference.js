@@ -58,6 +58,13 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 * ids that are given implicitly
 	 */
 	this.implicit = [];
+	
+	/**
+	 * contains lists of names for autospan objects,
+	 * that are shown/hidden after rectification respectively
+	 */
+	this.hideAutoSpanAfterRect = [];
+	this.showAutoSpanAfterRect = [];
 
 	/**
 	 * the inference hyper graph
@@ -75,6 +82,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 	 */
 	
 	this.rectifications = 0;
+	
+	/**
+	 * whether to lock the airport after the rectification
+	 */
+	
+	this.lockAfterRectification = true;
 
 	/**
 	 * store the number of tries
@@ -171,7 +184,56 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 		return this;
 	};
+	
+	/**
+	 * adds autospans to hide after rectification
+	 * 
+	 * @param namelist     a string with , separated names for autospan objects
+	 * 
+	 * @returns this
+	 */
+	
+	this.HideAfterRectification = function(namelist) {
+		var split = namelist.split(",");
+		for ( var int = 0; int < split.length; int++) {
+			var x = split[int];
+			this.hideAutoSpanAfterRect.push(x);
+		}
+		
+		
+		return this;
+	};
+	
+	/**
+	 * adds autospans to show after rectification
+	 * 
+	 * @param namelist     a string with , separated names for autospan objects
+	 * 
+	 * @returns this
+	 */
+	
+	this.ShowAfterRectification = function(namelist) {
+		var split = namelist.split(",");
+		for ( var int = 0; int < split.length; int++) {
+			var x = split[int];
+			this.showAutoSpanAfterRect.push(x);
+		}
+		
+		
+		return this;
+	};
 
+	/**
+	 * whether to lock the airport after the rectification of the solution
+	 */
+
+	this.LockAfterRectification = function(doLock) {
+		this.lockAfterRectification = doLock;
+
+		return this;
+	};
+
+	
 	/**
 	 * set the name of the airport that is rectified
 	 */
@@ -820,12 +882,12 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 		if (has_been_solved) {
 			log_data += "\nAll tasks have been SOLVED.\n";
-			feedback = getRes("inferenceCorrect");
+			feedback_info = getRes("inferenceCorrect");
 			this.solved = 1;
 		} else {
 
 			if (incorrect_point_count > 0) {
-				feedback += getRes("inferenceErrors") + "<br/>";
+				feedback_info += getRes("inferenceErrors") + "<br/>";
 			}
 		}
 
@@ -873,9 +935,47 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 						add.push(text);
 					}
 				}
+				
 				airport.Rectify(keep, add);
 				
+				if (this.lockAfterRectification)
+					airport.Lock(true);
+				
+				/**
+				 * magically hide some elements
+				 */
+				
+				for ( var int99 = 0; int99 < this.hideAutoSpanAfterRect.length; int99++) {
+					var name = this.hideAutoSpanAfterRect[int99];
+					
+					var span = autoSpanNames[name];
+					
+					if (span)
+					{
+						span.SetValue(0);
+					}
+					
+				}
+				
+				/**
+				 * magically show some elements
+				 */
+				
+				for ( var int99 = 0; int99 < this.showAutoSpanAfterRect.length; int99++) {
+					var name = this.showAutoSpanAfterRect[int99];
+					
+					var span = autoSpanNames[name];
+					
+					if (span)
+					{
+						span.SetValue(1);
+					}
+					
+				}
+				
 				this.rectifications += 1;
+				
+				feedback_info = getRes("inferenceRectified");
 			}
 
 		}

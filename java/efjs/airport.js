@@ -100,6 +100,16 @@ function Airport(name, tags, accept, reject) {
 
 		this.name = name;
 	}
+	
+	/**
+	 * this member is true, if the airport is locked, i.e. no points may be added or removed anymore.
+	 */
+	
+	this.locked = false;
+	
+	/**
+	 * other members
+	 */
 
 	this.tags = tags;
 	this.token = null;
@@ -235,6 +245,18 @@ function Airport(name, tags, accept, reject) {
 		for ( var int = 0; int < this.content.length; ++int) {
 			this.tokenObjects[int].token = this.content[int];
 		}
+	};
+	
+	/**
+	 * this function sets the locked state of the airport
+	 * 
+	 * @returns this
+	 */
+	
+	this.Lock = function(isLocked) {
+		this.locked = isLocked;
+		
+		return this;
 	};
 
 	/**
@@ -393,6 +415,17 @@ function Airport(name, tags, accept, reject) {
 					+ myHover.token;
 
 			/**
+			 * check whether this airport is locked
+			 */
+			
+			if (this.locked) {
+				myHover.CrashDown();
+
+				myLogger.Log(log_data + " rejected because airport is locked.");
+				return;
+			}
+			
+			/**
 			 * check for correct token type
 			 */
 			if (myHover.GetType() != "text") {
@@ -489,6 +522,18 @@ function Airport(name, tags, accept, reject) {
 
 			return;
 		}
+		
+		/**
+		 * check whether airport is locked
+		 */
+		
+		if (this.locked) {
+			/**
+			 * no changes permitted
+			 */
+			return;
+		}
+		
 
 		/**
 		 * Allow take off
@@ -554,6 +599,22 @@ function Airport(name, tags, accept, reject) {
 			this.OnClickRow(row);
 			return;
 		}
+		
+		/**
+		 * check whether the airport is locked
+		 */
+		
+		if (this.locked)
+		{
+			/**
+			 * no changes permitted
+			 */
+			return;
+		}
+		
+		/**
+		 * delete the row
+		 */
 
 		var index = (row - 1) / 2;
 		var new_content = [];
@@ -695,7 +756,10 @@ function Airport(name, tags, accept, reject) {
 	 * return the current contents of the airport as string
 	 */
 	this.GetValue = function() {
-		var value = "";
+		var value = "F";
+		if (this.locked)
+			value = "L";
+		
 		for ( var int = 0; int < this.marked.length; ++int) {
 			if (int > 0) {
 				value += "\n";
@@ -712,6 +776,10 @@ function Airport(name, tags, accept, reject) {
 	 */
 
 	this.SetValue = function(contents) {
+		this.locked = contents[0] == "L";
+		
+		contents = contents.substr(1);
+		
 		this.marked = [];
 		this.content = [];
 

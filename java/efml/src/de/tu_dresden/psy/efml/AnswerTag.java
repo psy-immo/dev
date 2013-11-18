@@ -26,7 +26,8 @@ import java.util.Iterator;
 import javax.naming.OperationNotSupportedException;
 
 /**
- * handles &lt;answer>...&lt;/answer> tag, that can be used to create an answer button
+ * handles &lt;answer>...&lt;/answer> tag, that can be used to create an answer
+ * button
  * 
  * @author immanuel
  * 
@@ -66,21 +67,21 @@ public class AnswerTag implements AnyTag {
 		 */
 
 		javascript.append("Exists(myTags.AllTagsBut("
-				+ attributes.getAcceptTags() + "," + attributes.getRejectTags()
-				+ "),");
+				+ this.attributes.getAcceptTags() + ","
+				+ this.attributes.getRejectTags() + "),");
 		javascript.append("function(c) { \n");
-		javascript.append("if ( typeof c.MarkNeutral != \"undefined\" ) c.MarkNeutral();\n");
+		javascript
+		.append("if ( typeof c.MarkNeutral != \"undefined\" ) c.MarkNeutral();\n");
 		javascript.append("return false;\n});\n\n");
 
 		javascript.append("var good_count = 0;\n");
-		
-		for (Iterator<CheckTag> it=checks.iterator();it.hasNext();) {
-			CheckTag check = it.next();
-			
-			javascript.append("if ( ("+check.getJavaScriptTestFunction()+")()) good_count ++;\n");
+
+		for (CheckTag check : this.checks) {
+			javascript.append("if ( (" + check.getJavaScriptTestFunction()
+					+ ")()) good_count ++;\n");
 		}
 
-		javascript.append("return good_count == "+checks.size()+";");
+		javascript.append("return good_count == " + this.checks.size() + ";");
 		javascript.append("\n}");
 
 		return javascript.toString();
@@ -88,12 +89,12 @@ public class AnswerTag implements AnyTag {
 
 	@Override
 	public void open(Writer writer) throws IOException {
-		
+
 		/**
 		 * trim the button label
 		 */
 		this.buttonText = this.buttonText.trim();
-		
+
 		/**
 		 * write script code
 		 */
@@ -105,7 +106,7 @@ public class AnswerTag implements AnyTag {
 		 * write solution test code
 		 */
 
-		writer.write(generateTestSolutionCode());
+		writer.write(this.generateTestSolutionCode());
 		writer.write(")");
 
 		/**
@@ -113,7 +114,7 @@ public class AnswerTag implements AnyTag {
 		 */
 		if (this.buttonText.length() > 0) {
 			writer.write(".Text(\""
-					+ StringEscape.escapeToJavaScript(buttonText) + "\")");
+					+ StringEscape.escapeToJavaScript(this.buttonText) + "\")");
 		}
 
 		/**
@@ -122,11 +123,12 @@ public class AnswerTag implements AnyTag {
 
 		if ((this.goodText != null) || (this.hints.size() > 0)) {
 			writer.write(".Feedback(");
-			if (this.goodText != null)
+			if (this.goodText != null) {
 				writer.write(StringEscape
 						.escapeToDecodeInJavaScript(this.goodText));
-			else
+			} else {
 				writer.write("\"\"");
+			}
 
 			writer.write(",");
 
@@ -137,26 +139,69 @@ public class AnswerTag implements AnyTag {
 				for (int i = 1; i < this.hints.size(); ++i) {
 					writer.write(","
 							+ StringEscape
-									.escapeToDecodeInJavaScript(this.hints.get(
-											i).getHint()));
+							.escapeToDecodeInJavaScript(this.hints.get(
+									i).getHint()));
 				}
 				writer.write("]");
 
-			} else
+			} else {
 				writer.write("null");
+			}
 
 			writer.write(")");
 		}
-		
+
 		/**
 		 * add waitfor-checks
 		 */
-		
+
 		Iterator<WaitForTag> it_waitfor;
 		for (it_waitfor = this.waitfors.iterator(); it_waitfor.hasNext();) {
 			WaitForTag waitfor = it_waitfor.next();
-			
-			writer.write(".WaitFor("+waitfor.getJavaScriptFunction()+")");
+
+			writer.write(".WaitFor(" + waitfor.getJavaScriptFunction() + ")");
+		}
+
+		/**
+		 * show/hide autospans
+		 */
+
+		String show_auto = this.attributes.getValueOrDefault("showautospan",
+				null);
+
+		if (show_auto != null) {
+			writer.append(".ShowAfterRectification(\""
+					+ StringEscape.escapeToJavaScript(show_auto) + "\")");
+		}
+
+		String hide_auto = this.attributes.getValueOrDefault("hideautospan",
+				null);
+
+		if (hide_auto != null) {
+			writer.append(".HideAfterRectification(\""
+					+ StringEscape.escapeToJavaScript(hide_auto) + "\")");
+		}
+
+		/**
+		 * try counter object
+		 */
+
+		String counter = this.attributes.getValueOrDefault("counter", null);
+
+		if (counter != null) {
+			writer.append(".Counter(\""
+					+ StringEscape.escapeToJavaScript(counter) + "\")");
+		}
+
+		/**
+		 * feedback display name
+		 */
+		String feedback_target = this.attributes.getValueOrDefault("feedback",
+				null);
+
+		if (feedback_target != null) {
+			writer.append(".Feedback(\""
+					+ StringEscape.escapeToJavaScript(feedback_target) + "\")");
 		}
 
 		/**
@@ -187,10 +232,10 @@ public class AnswerTag implements AnyTag {
 			this.waitfors.add((WaitForTag) innerTag);
 		} else if (innerTag.getClass() == CorrectTag.class) {
 			this.goodText = ((CorrectTag) innerTag).getFeedback();
-		} else
-
+		} else {
 			throw new OperationNotSupportedException("<answer> cannot enclose "
 					+ innerTag.getClass().toString());
+		}
 	}
 
 	@Override
@@ -198,17 +243,17 @@ public class AnswerTag implements AnyTag {
 		StringBuffer representation = new StringBuffer();
 
 		representation.append("<answer");
-		attributes.writeXmlAttributes(representation);
+		this.attributes.writeXmlAttributes(representation);
 		representation.append(">");
 		representation.append(StringEscape.escapeToXml(this.buttonText));
 
-		for (AnyTag child : waitfors) {
+		for (AnyTag child : this.waitfors) {
 			representation.append(child.getEfml());
 		}
-		for (AnyTag child : checks) {
+		for (AnyTag child : this.checks) {
 			representation.append(child.getEfml());
 		}
-		for (AnyTag child : hints) {
+		for (AnyTag child : this.hints) {
 			representation.append(child.getEfml());
 		}
 		if (this.goodText != null) {

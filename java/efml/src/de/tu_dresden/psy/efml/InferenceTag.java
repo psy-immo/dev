@@ -107,6 +107,27 @@ public class InferenceTag implements AnyTag {
 						+ "\")");
 			}
 
+			String show_auto = this.attributes.getValueOrDefault(
+					"showautospan", null);
+
+			if (show_auto != null) {
+				more_machine_options.append(".ShowAfterRectification(\""
+						+ StringEscape.escapeToJavaScript(show_auto) + "\")");
+			}
+
+			String hide_auto = this.attributes.getValueOrDefault(
+					"hideautospan", null);
+
+			if (hide_auto != null) {
+				more_machine_options.append(".HideAfterRectification(\""
+						+ StringEscape.escapeToJavaScript(hide_auto) + "\")");
+			}
+
+			if (this.attributes.getValueOrDefault("lockairport", "on")
+					.equalsIgnoreCase("ON") == false) {
+				more_machine_options.append(".LockAfterRectification(false)");
+			}
+
 			for (FeedbackTag feedback : this.feedbackData) {
 				for (InferenceSolutionRequirementTag require : feedback
 						.getRequires()) {
