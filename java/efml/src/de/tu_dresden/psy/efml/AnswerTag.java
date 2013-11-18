@@ -200,7 +200,7 @@ public class AnswerTag implements AnyTag {
 				null);
 
 		if (feedback_target != null) {
-			writer.append(".Feedback(\""
+			writer.append(".FeedbackDisplay(\""
 					+ StringEscape.escapeToJavaScript(feedback_target) + "\")");
 		}
 

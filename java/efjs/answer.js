@@ -25,10 +25,11 @@ var answerArray = [];
 
 function Answer(testfn) {
 	this.id = answerIdCounter++;
-	this.feedbackAllGood = "Correct!";
+	this.feedbackAllGood = getRes("answerCorrect");
 	this.errorCount = 0;
-	this.feedbackErrors = [ "Your solution still contains an error. Correct parts of your solution are lit green." ];
-	this.text = "Check your answer";
+	this.feedbackErrors = [ getRes("answerErrors") ];
+	
+	this.text = getRes("answerButton");
 	this.testfn = testfn;
 	this.waitfor = [];
 	this.uncheckedbadgood = 0;
@@ -53,7 +54,7 @@ function Answer(testfn) {
 	 * set the name of the feedback target
 	 */
 
-	this.Feedback = function(target_display) {
+	this.FeedbackDisplay = function(target_display) {
 		this.feedback = target_display;
 
 		return this;
@@ -128,10 +129,6 @@ function Answer(testfn) {
 		document.write("<input type=\"button\" name=" + idstring + " id="
 				+ idstring + " value=\"" + this.text
 				+ "\" onclick=\"answerArray[" + this.id + "].OnClick()\"/>");
-		document
-				.write("<br /><table class=\"answerHint\"><tr><td id=\"AnswerHint"
-						+ this.id
-						+ "\" class=\"answerHint\"></td></tr></table>");
 		document.write("</form>");
 	};
 
@@ -177,8 +174,13 @@ function Answer(testfn) {
 	 * this function sets the contents of the hint area
 	 */
 	this.SetHint = function(contents) {
-		var td = document.getElementById("AnswerHint" + this.id);
-		td.innerHTML = contents;
+		if (this.feedback) {
+			var display = feedbackNames[this.feedback];
+			if (display) {
+				display.SetValue(contents);
+				myLogger.Log("Check answer " + this.id+ ": give feedback: " + contents);
+			}
+		}
 	};
 
 	/**

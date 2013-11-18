@@ -27,6 +27,15 @@ res_DE = {};
 res["US"] = res_US;
 res["DE"] = res_DE;
 
+res_US["answerError"] = "Your solution still contains an error. Correct parts of your solution are lit green.";
+res_DE["answerError"] = "Deine Lösung enthält noch Fehler. Richtige Lösungsfragmente wurden grün gekennzeichnet.";
+
+res_US["answerCorrect"] =  "Correct!";
+res_DE["answerCorrect"] = "Richtig!";
+
+res_US["answerButton"] = "Check your answer";
+res_DE["answerButton"] = "Antwort überprüfen";
+
 res_US["inferenceRectified"] = "Your solution has been corrected. Both incorrect and unnecessary points have been removed and missing points are lit orange.";
 res_DE["inferenceRectified"] = "Deine Lösung wurde korrigiert. Sowohl unrichtige als auch unnötige Aussagen wurden entfernt, sowie fehlende ergänzt und orange gekennzeichnet.";
 
