@@ -383,6 +383,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		this.tryNumber += 1;
 
 		var incorrect_point_count = 0;
+		
 
 		/**
 		 * store which parts of the problem have been solved correctly
@@ -594,6 +595,8 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 
 		log_data += "\nUnjustified Points:\n";
 		// log_data += "DEBUG: "+closed_points.unjustified+"\n";
+		
+		var unjustified_point_count =  closed_points.unjustified.length;
 
 		for ( var int2 = 0; int2 < closed_points.unjustified.length; int2++) {
 			var point_id = closed_points.unjustified[int2];
@@ -602,6 +605,9 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 			// log_data += "DEBUG: "+int2+"\n";
 
 			log_data += s + " [" + point_id + "] ";
+			
+			if (! (assertions[point_id]))
+				unjustified_point_count -= 1;
 
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
@@ -810,7 +816,10 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 						else
 							p.MarkAsGood();
 					} else {
-						p.MarkAsUnnecessary();
+						if (need_justification.indexOf(id) >= 0)
+							p.MarkAsUnjustified();
+						else
+							p.MarkAsUnnecessary();
 					}
 				}
 			}
@@ -866,14 +875,22 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		 * We check whether the justification to-do's have been met
 		 */
 
-		// TODO: Hack in a good feedback thing-ie
+		var some_todos_left = false;
+
 		for ( var int6 = 0; int6 < this.justify.length; int6++) {
 			var id = this.justify[int6];
 			if (closed_points.justified.indexOf(id) < 0) {
 				has_been_solved = false;
 				log_data += "\n Justification-TO-DO not solved: "
 						+ this.stringids.FromId(id) + " [" + id + "]";
+				some_todos_left = true;
 			}
+		}
+		
+		if (some_todos_left) {
+			if (feedback_info)
+				feedback_info += "<br/>";
+			feedback_info += getRes("inferenceMissingArguments");
 		}
 
 		/**
@@ -887,7 +904,15 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		} else {
 
 			if (incorrect_point_count > 0) {
-				feedback_info += getRes("inferenceErrors") + "<br/>";
+				if (feedback_info)
+					feedback_info += "<br/>";
+				feedback_info += getRes("inferenceErrors");
+			}
+			
+			if (unjustified_point_count > 0) {
+				if (feedback_info)
+					feedback_info += "<br/>";
+				feedback_info += getRes("inferenceJustify");
 			}
 		}
 
@@ -896,7 +921,7 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 		 */
 
 		if (this.rectify) {
-			var do_rectification = false;
+			var do_rectification = has_been_solved;
 			if (this.rectifyTimer) {
 				if (timerNames[this.rectifyTimer].value) {
 					log_data += "\nRectification timer has not elapsed.";
@@ -975,7 +1000,10 @@ function InferenceMachine(atags, rtags, stringids, hypergraph, points,
 				
 				this.rectifications += 1;
 				
-				feedback_info = getRes("inferenceRectified");
+				if (has_been_solved)
+					feedback_info = getRes("inferenceRectifiedAfterSolved");
+				else
+					feedback_info = getRes("inferenceRectified");
 			}
 
 		}
