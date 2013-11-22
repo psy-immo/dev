@@ -1,7 +1,6 @@
 package de.tu_dresden.psy.efml;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 
@@ -149,7 +148,6 @@ public class InferenceTag implements AnyTag {
 
 			}
 
-
 			/**
 			 * set the button text
 			 */
@@ -164,6 +162,7 @@ public class InferenceTag implements AnyTag {
 			 */
 
 			compiler.writeInferenceMachineCode(writer, this.attributes
+					.getValueOrDefault("name", ""), this.attributes
 					.getAcceptTags(), this.attributes.getRejectTags(),
 					this.attributes.getValueOrDefault("pointstag", "points"),
 					this.attributes.getValueOrDefault("conclusionstag",
@@ -173,116 +172,8 @@ public class InferenceTag implements AnyTag {
 
 		/**** OLD & OBSOLETE CODE */
 		if (useInferenceApplet) {
-
-			/**
-			 * get inner data string
-			 */
-
-			StringWriter xmlData = new StringWriter();
-
-			for (EmbeddedInferenceXmlTag tag : this.xmlMachineData) {
-				InferenceXmlTag backconvert = (InferenceXmlTag) tag;
-				backconvert.open(xmlData);
-				backconvert.close(xmlData);
-			}
-
-			/**
-			 * write script code
-			 */
-
-			writer.write("<script type=\"text/javascript\">");
-
-			writer.write("new InferenceButton(");
-
-			/**
-			 * write tags
-			 */
-
-			writer.write(this.attributes.getAcceptTags() + ", ");
-			writer.write(this.attributes.getRejectTags() + ", ");
-
-			writer.write("\""
-					+ StringEscape.escapeToJavaScript(this.attributes
-							.getValueOrDefault("pointstag", "points")) + "\", ");
-			writer.write("\""
-					+ StringEscape.escapeToJavaScript(this.attributes
-							.getValueOrDefault("conclusionstag", "conclusions"))
-							+ "\"");
-
-			writer.write(").Feed(");
-
-			/**
-			 * write content data
-			 */
-
-			writer.write(StringEscape.escapeToDecodableInJavaScript(xmlData
-					.toString()));
-
-			writer.write(")");
-
-			/**
-			 * write feedback data
-			 */
-
-			for (FeedbackTag feedback : this.feedbackData) {
-				if (feedback.getCorrect() != null) {
-					writer.write(".SetCorrect(");
-					writer.write(StringEscape
-							.escapeToDecodeInJavaScript((feedback.getCorrect()
-									.getFeedback())));
-					writer.write(")");
-				}
-
-				if (feedback.getIncorrect() != null) {
-					writer.write(".SetIncorrect(");
-					writer.write(StringEscape
-							.escapeToDecodeInJavaScript((feedback
-									.getIncorrect().getFeedback())));
-					writer.write(")");
-				}
-
-				if (feedback.getIncomplete() != null) {
-					writer.write(".SetIncomplete(");
-					writer.write(StringEscape
-							.escapeToDecodeInJavaScript((feedback
-									.getIncomplete().getFeedback())));
-					writer.write(")");
-				}
-
-				if (feedback.getNeedjustification() != null) {
-					writer.write(".SetInjustified(");
-					writer.write(StringEscape
-							.escapeToDecodeInJavaScript((feedback
-									.getNeedjustification().getFeedback())));
-					writer.write(")");
-				}
-
-				for (HintTag hint : feedback.getHints()) {
-					writer.write(".AddHint(");
-					writer.write(StringEscape.escapeToDecodeInJavaScript(hint
-							.getLack()));
-					writer.write(",");
-					writer.write(StringEscape
-							.escapeToDecodableInJavaScript(hint.getHint()));
-					writer.write(")");
-				}
-
-				for (InferenceSolutionRequirementTag require : feedback
-						.getRequires()) {
-					writer.write(".Requirement("
-							+ require.getRequirementJavaScriptCheckFunction()
-							+ ")");
-
-				}
-			}
-
-			/**
-			 * let java script create the html contents
-			 */
-			writer.write(".WriteHtml();");
-
-			writer.write("</script>");
-
+			System.err.println("The INFERNCE APPLET IS NO LONGER SUPPORTED!");
+			writer.write("<b>The INFERENCE APPLET IS NO LONGER SUPPORTED!</b>");
 		}
 
 	}

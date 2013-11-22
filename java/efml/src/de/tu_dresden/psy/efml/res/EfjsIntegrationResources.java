@@ -31,6 +31,7 @@ import de.tu_dresden.psy.efml.AutomaticTag;
 import de.tu_dresden.psy.efml.BodyTag;
 import de.tu_dresden.psy.efml.BoxspaceTag;
 import de.tu_dresden.psy.efml.CTag;
+import de.tu_dresden.psy.efml.CallTag;
 import de.tu_dresden.psy.efml.CheckTag;
 import de.tu_dresden.psy.efml.CheckboxTag;
 import de.tu_dresden.psy.efml.CorrectTag;
@@ -67,6 +68,7 @@ import de.tu_dresden.psy.efml.PopupHelpTag;
 import de.tu_dresden.psy.efml.RTag;
 import de.tu_dresden.psy.efml.RadiobuttonTag;
 import de.tu_dresden.psy.efml.RegexpTag;
+import de.tu_dresden.psy.efml.RemoteButtonTag;
 import de.tu_dresden.psy.efml.RequiredTag;
 import de.tu_dresden.psy.efml.ResourceLanguageTag;
 import de.tu_dresden.psy.efml.RunwayTag;
@@ -120,16 +122,17 @@ public class EfjsIntegrationResources {
 		/**
 		 * efjs scripts
 		 */
-		"crosscompat.js", "stylesheets.js", "mouse.js", "cssgraphics.js",
-		"stringids.js", "loglet.js", "storage.js", "logger.js", "tags.js",
-		"logic.js", "hover.js", "endecoder.js", "runway.js", "answer.js",
-		"multiline.js", "sniffybutton.js", "dropdown.js", "checkbox.js",
-		"feedbackdisplay.js", "radiobutton.js", "popupbutton.js",
-		"counter.js", "resources.js", "freetext.js", "boxspace.js",
-		"autospan.js", "trashcan.js", "sentencepattern.js", "airport.js",
-		"flextext.js", "timer.js", "listselection.js", "hypergraphs.js",
-		"inference.js", "efml.js", "efmlbuttons.js", "efmlboard.js",
-		"efmlcheckbox.js", "efmltag.js", "efmlquote.js", "efmlfactory.js" };
+		"remotebutton.js", "crosscompat.js", "stylesheets.js", "mouse.js",
+		"cssgraphics.js", "stringids.js", "loglet.js", "storage.js",
+		"logger.js", "tags.js", "logic.js", "hover.js", "endecoder.js",
+		"runway.js", "answer.js", "multiline.js", "sniffybutton.js",
+		"dropdown.js", "checkbox.js", "feedbackdisplay.js",
+		"radiobutton.js", "popupbutton.js", "counter.js", "resources.js",
+		"freetext.js", "boxspace.js", "autospan.js", "trashcan.js",
+		"sentencepattern.js", "airport.js", "flextext.js", "timer.js",
+		"listselection.js", "hypergraphs.js", "inference.js", "efml.js",
+		"efmlbuttons.js", "efmlboard.js", "efmlcheckbox.js", "efmltag.js",
+		"efmlquote.js", "efmlfactory.js" };
 
 	/**
 	 * interface for constructing other classes
@@ -437,8 +440,10 @@ public class EfjsIntegrationResources {
 		new SimpleObjectConstructor(RTag.class), "c",
 		new ParentObjectConstructor(CTag.class), "runway",
 		new AttributeObjectConstructor(RunwayTag.class), "answer",
-		new AttributeObjectConstructor(AnswerTag.class), "hint",
-		new AttributeObjectConstructor(HintTag.class), "correct",
+		new AttributeObjectConstructor(AnswerTag.class), "remotebutton",
+			new AttributeObjectConstructor(RemoteButtonTag.class), "hint",
+		new AttributeObjectConstructor(HintTag.class), "call",
+		new AttributeObjectConstructor(CallTag.class), "correct",
 		new SimpleObjectConstructor(CorrectTag.class), "needjustification",
 		new SimpleObjectConstructor(NeedJustificationTag.class),
 		"incomplete", new SimpleObjectConstructor(IncompleteTag.class),
@@ -529,7 +534,7 @@ public class EfjsIntegrationResources {
 		new AttributeObjectConstructor(UnknownHeadTag.class), "timer",
 		new AttributeObjectConstructor(TimerTag.class), "feedbackdisplay",
 		new AttributeObjectConstructor(FeedbackDisplayTag.class),
-			"counter", new AttributeObjectConstructor(CounterTag.class),
-			"autospan", new AttributeObjectConstructor(AutoSpanTag.class), };
+		"counter", new AttributeObjectConstructor(CounterTag.class),
+		"autospan", new AttributeObjectConstructor(AutoSpanTag.class), };
 
 }

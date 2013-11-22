@@ -39,6 +39,9 @@ res_DE["answerCorrect"] = "Richtig!";
 res_US["answerButton"] = "Check your answer";
 res_DE["answerButton"] = "Antwort überprüfen";
 
+res_US["remoteButtonText"] = "Check your answer";
+res_DE["remoteButtonText"] = "Antwort überprüfen";
+
 res_US["inferenceRectifiedAfterSolved"] = "Correct! Points that are not necessary for the solution may have been removed.";
 res_DE["inferenceRectifiedAfterSolved"] = "Richtig! Gegebenenfalls wurden unnötige Argumente aus deiner Lösung entfernt.";
 
@@ -62,7 +65,7 @@ res_DE["inferenceIncomplete"] = "Es fehlt noch ein Teil der Lösung.";
 /**
  * default to US English as resource language
  */
-if (!language)
+if (typeof language == "undefined")
 {
 	language = "US";
 }

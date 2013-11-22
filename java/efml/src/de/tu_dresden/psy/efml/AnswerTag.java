@@ -101,7 +101,10 @@ public class AnswerTag implements AnyTag {
 
 		writer.write("<script type=\"text/javascript\">");
 
-		writer.write("new Answer(");
+		writer.write("new Answer(\"");
+		writer.write(StringEscape.escapeToJavaScript(this.attributes
+				.getValueOrDefault("name", "")));
+		writer.write("\", ");
 		/**
 		 * write solution test code
 		 */

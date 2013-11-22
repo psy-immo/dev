@@ -3,7 +3,6 @@ package de.tu_dresden.psy.efml;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -23,7 +22,7 @@ public class HtmlTag implements AnyTag {
 
 
 	public HtmlTag() {
-		innerTags = new ArrayList<AnyTag>();
+		this.innerTags = new ArrayList<AnyTag>();
 
 
 	}
@@ -43,9 +42,9 @@ public class HtmlTag implements AnyTag {
 
 
 
-		for (int i = 0; i < EfjsIntegrationResources.javascript_includes.length; i++) {
+		for (String javascript_include : EfjsIntegrationResources.javascript_includes) {
 			writer.write("	<script type=\"text/javascript\" src=\"" + baseUrl
-					+ EfjsIntegrationResources.javascript_includes[i]
+					+ javascript_include
 					+ "\"></script>\n");
 		}
 
@@ -74,12 +73,6 @@ public class HtmlTag implements AnyTag {
 		writer.write("	<script type=\"text/javascript\">\n"
 				+ "  BoxspaceUpdateAllArrows();" + "  </script>\n");
 
-		/**
-		 * feed inference applets
-		 */
-
-		writer.write("	<script type=\"text/javascript\">\n"
-				+ "  FeedInferenceApplets();" + "  </script>\n");
 
 	}
 
@@ -97,8 +90,7 @@ public class HtmlTag implements AnyTag {
 		 * write inner tags
 		 */
 
-		for (Iterator<AnyTag> it = innerTags.iterator(); it.hasNext();) {
-			AnyTag innerTag = it.next();
+		for (AnyTag innerTag : this.innerTags) {
 			innerTag.open(writer);
 			innerTag.close(writer);
 		}
@@ -117,7 +109,7 @@ public class HtmlTag implements AnyTag {
 	@Override
 	public void encloseTag(AnyTag innerTag)
 			throws OperationNotSupportedException {
-		innerTags.add(innerTag);
+		this.innerTags.add(innerTag);
 	}
 	
 	@Override

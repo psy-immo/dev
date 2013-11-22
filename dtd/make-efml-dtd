@@ -6,6 +6,7 @@ html_elements = "i|b|br|p|div|span"
 efml_elements = "tags|tie|runway|answer|sniffy|instructions|dropdown|listselection|"+\
 				"phpurl|jsurl|documentid|studyid|subjectprompt|"+\
 				"resourcelanguage|counter|autospan|"+\
+				"remotebutton|"+\
 				"subjectinfo|subjectchange|subjectnotworking|airport|"+\
 				"template|freetext|timer|feedbackdisplay|"+\
 				"checkbox|radiobutton|multiline|popuphelp|"+\
@@ -72,10 +73,23 @@ dtd.write("\n<!ATTLIST runway "+universal_attributes+"""
  >
 """)
 
+dtd.write("\n<!ELEMENT remotebutton (#PCDATA|call)* >\n")
+dtd.write("\n<!ATTLIST remotebutton "+universal_attributes+"""	
+ >
+""")
+
+dtd.write("\n<!ELEMENT call (#PCDATA)* >\n")
+dtd.write("\n<!ATTLIST call "+universal_attributes+"""	
+    type    (inference|answer)	#REQUIRED
+ >
+""")
+
+
 dtd.write("\n<!ELEMENT answer (#PCDATA|hint|correct|check)* >\n")
 dtd.write("\n<!ATTLIST answer "+universal_attributes+"""
 	hideautospan	CDATA	  #IMPLIED
 	showautospan	CDATA	  #IMPLIED
+	name			CDATA     #IMPLIED
  >
 """)
 

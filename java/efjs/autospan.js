@@ -66,6 +66,10 @@ function AutoSpan(value,  classname, name) {
 		this.value = parseInt(value);
 		
 		element.addClassName(this.classname+""+this.value);
+		
+		if (value) {
+			element.scrollIntoView();
+		}
 	};
 	
 	this.GetValue = function() {

@@ -18,13 +18,22 @@
 
 var answerIdCounter = 0;
 var answerArray = [];
+answerNames = {};
 
 /**
  * returns an object that provides the operation of an answer button
  */
 
-function Answer(testfn) {
+function Answer(name,testfn) {
 	this.id = answerIdCounter++;
+	
+	if (name)
+	{
+		this.name = name;
+	} else {
+		this.name = "answer"+this.id;
+	}
+	
 	this.feedbackAllGood = getRes("answerCorrect");
 	this.errorCount = 0;
 	this.feedbackErrors = [ getRes("answerErrors") ];
@@ -325,4 +334,5 @@ function Answer(testfn) {
 
 	answerArray[this.id] = this;
 	myStorage.RegisterField(this, "answerArray[" + this.id + "]");
+	answerNames[this.name] = this;
 };

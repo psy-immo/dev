@@ -254,12 +254,14 @@ public class InferenceCompiler {
 	 */
 
 	public void writeInferenceMachineCode(Writer writer,
+ String name,
 			String jsAcceptTagsArray, String jsRejectTagsArray,
 			String pointsTag, String conclusionsTag, String machineOptions)
 					throws IOException {
 		writer.write("<script type=\"text/javascript\">");
 
 		writer.write("new InferenceMachine(");
+		writer.write("\"" + StringEscape.escapeToJavaScript(name) + "\", ");
 
 		writer.write(jsAcceptTagsArray + ", ");
 		writer.write(jsRejectTagsArray + ", ");
