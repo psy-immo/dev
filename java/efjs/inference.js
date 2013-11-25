@@ -64,6 +64,11 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 	 * ids that should be justified
 	 */
 	this.justify = [];
+	
+	/**
+	 * done?
+	 */
+	this.done = false;
 
 	/**
 	 * ids that are given implicitly
@@ -973,6 +978,8 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 				if (this.lockAfterRectification)
 					airport.Lock(true);
 				
+				this.done = true;
+				
 				/**
 				 * magically hide some elements
 				 */
@@ -1040,7 +1047,7 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 	 * return the current state
 	 */
 	this.GetValue = function() {
-		return "" + this.tryNumber + ";" + this.solved+";"+this.rectifications;
+		return "" + this.tryNumber + ";" + this.solved+";"+this.rectifications+";"+(this.done?1:0);
 	};
 
 	/**
@@ -1052,6 +1059,7 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 		this.tryNumber = parseInt(parts[0]);
 		this.solved = parseInt(parts[1]);
 		this.rectifications = parseInt(parts[2]);
+		this.done = parseInt(parts[3])!=0;
 	};
 
 	/**

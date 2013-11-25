@@ -75,6 +75,25 @@ public class RemoteButtonTag implements AnyTag {
 			writer.write(")");
 		}
 
+		/**
+		 * show/hide autospans
+		 */
+
+		String show_auto = this.attributes.getValueOrDefault("showautospan",
+				null);
+
+		if (show_auto != null) {
+			writer.append(".ShowAfter(\""
+					+ StringEscape.escapeToJavaScript(show_auto) + "\")");
+		}
+
+		String hide_auto = this.attributes.getValueOrDefault("hideautospan",
+				null);
+
+		if (hide_auto != null) {
+			writer.append(".HideAfter(\""
+					+ StringEscape.escapeToJavaScript(hide_auto) + "\")");
+		}
 
 		/**
 		 * let java script create the html contents

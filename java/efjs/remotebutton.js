@@ -29,7 +29,11 @@ function RemoteButton() {
 	this.text = getRes("remoteButtonText");
 	this.executeFns = [];
 	
-		/**
+	this.showAutoSpanAfterRect = [];
+	this.hideAutoSpanAfterRect = [];
+	
+	
+    /**
 	 * write the HTML code that will be used for displaying the remoteButton button
 	 */
 	this.WriteHtml = function() {
@@ -58,10 +62,92 @@ function RemoteButton() {
 		
 		myLogger.Log("remoteButton["+this.id+"] clicked.");
 		
+		var all_done = true;
+		
 		for ( var int = 0; int < this.executeFns.length; int++) {
 			var fn = this.executeFns[int];
-			fn();
+			var retval = fn();
+			if (typeof retval == "undefined") {
+				
+			} else
+			{
+				if (!retval)
+					all_done = false;
+			}
 		}
+		
+		if (all_done) {
+			myLogger.Log("Remote button " + this.id+ ": show/hide autospans.");
+			
+			/**
+			 * magically hide some elements
+			 */
+			
+			for ( var int99 = 0; int99 < this.hideAutoSpanAfterRect.length; int99++) {
+				var name = this.hideAutoSpanAfterRect[int99];
+				
+				var span = autoSpanNames[name];
+				
+				if (span)
+				{
+					span.SetValue(0);
+				}
+				
+			}
+			
+			/**
+			 * magically show some elements
+			 */
+			
+			for ( var int99 = 0; int99 < this.showAutoSpanAfterRect.length; int99++) {
+				var name = this.showAutoSpanAfterRect[int99];
+				
+				var span = autoSpanNames[name];
+				
+				if (span)
+				{
+					span.SetValue(1);
+				}	
+			}			
+		}
+	};
+	
+	/**
+	 * adds autospans to hide after rectification
+	 * 
+	 * @param namelist     a string with , separated names for autospan objects
+	 * 
+	 * @returns this
+	 */
+	
+	this.HideAfter = function(namelist) {
+		var split = namelist.split(",");
+		for ( var int = 0; int < split.length; int++) {
+			var x = split[int];
+			this.hideAutoSpanAfterRect.push(x);
+		}
+		
+		
+		return this;
+	};
+	
+	/**
+	 * adds autospans to show after rectification
+	 * 
+	 * @param namelist     a string with , separated names for autospan objects
+	 * 
+	 * @returns this
+	 */
+	
+	this.ShowAfter = function(namelist) {
+		var split = namelist.split(",");
+		for ( var int = 0; int < split.length; int++) {
+			var x = split[int];
+			this.showAutoSpanAfterRect.push(x);
+		}
+		
+		
+		return this;
 	};
 
 

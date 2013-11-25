@@ -75,6 +75,8 @@ dtd.write("\n<!ATTLIST runway "+universal_attributes+"""
 
 dtd.write("\n<!ELEMENT remotebutton (#PCDATA|call)* >\n")
 dtd.write("\n<!ATTLIST remotebutton "+universal_attributes+"""	
+	hideautospan	CDATA	  #IMPLIED
+	showautospan	CDATA	  #IMPLIED
  >
 """)
 

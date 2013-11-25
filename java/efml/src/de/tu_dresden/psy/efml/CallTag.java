@@ -49,15 +49,15 @@ public class CallTag implements AnyTag {
 	public String getJsCode() {
 		String type = this.attributes.getValueOrDefault("type", "");
 		if (type.equalsIgnoreCase("inference")) {
-			return "function(){myInferenceMachineNames[\""
+			return "function(){var x = myInferenceMachineNames[\""
 					+ StringEscape.escapeToJavaScript(this.token.trim())
-					+ "\"].StartMachine();}";
+					+ "\"]; x.StartMachine(); return x.done;}";
 		}
 
 		if (type.equalsIgnoreCase("answer")) {
-			return "function(){myInferenceMachineNames[\""
+			return "function(){var x = answerNames[\""
 					+ StringEscape.escapeToJavaScript(this.token.trim())
-					+ "\"].OnClick();}";
+					+ "\"]; x.OnClick(); return x.done;}";
 		}
 
 		return "function(){}";

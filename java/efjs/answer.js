@@ -43,6 +43,8 @@ function Answer(name,testfn) {
 	this.waitfor = [];
 	this.uncheckedbadgood = 0;
 	
+	this.done = false;
+	
 	/**
 	 * store the name of the FeedbackDisplay object, or false if no textual/html
 	 * feedback is given
@@ -268,6 +270,8 @@ function Answer(name,testfn) {
 		if (solved || rectify) {
 			myLogger.Log("Check answer " + this.id+ ": show/hide autospans.");
 			
+			this.done = true;
+			
 			/**
 			 * magically hide some elements
 			 */
@@ -310,7 +314,7 @@ function Answer(name,testfn) {
 	 * return the current state
 	 */
 	this.GetValue = function() {
-		return "" + this.uncheckedbadgood + "," + this.errorCount;
+		return "" + this.uncheckedbadgood + "," + this.errorCount+","+(this.done?1:0);
 	};
 
 	/**
@@ -319,9 +323,10 @@ function Answer(name,testfn) {
 
 	this.SetValue = function(contents) {
 		var data = ("" + contents).split(",");
-		if (data.length == 2) {
+		if (data.length == 3) {
 			this.uncheckedbadgood = parseInt(data[0]);
 			this.errorCount = parseInt(data[1]);
+			this.done = parseInt(data[2])!=0;
 
 			if (this.uncheckedbadgood == 2) {
 				this.SetHint(this.feedbackAllGood);
