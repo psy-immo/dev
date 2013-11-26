@@ -535,6 +535,6 @@ public class EfjsIntegrationResources {
 		new AttributeObjectConstructor(TimerTag.class), "feedbackdisplay",
 		new AttributeObjectConstructor(FeedbackDisplayTag.class),
 		"counter", new AttributeObjectConstructor(CounterTag.class),
-		"autospan", new AttributeObjectConstructor(AutoSpanTag.class), };
+		"autospan", new AttributeBodyObjectConstructor(AutoSpanTag.class), };
 
 }

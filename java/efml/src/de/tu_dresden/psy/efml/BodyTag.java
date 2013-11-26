@@ -37,6 +37,12 @@ public class BodyTag implements AnyTag {
 	private HeadTag headTag;
 
 	private ArrayList<AnyTag> innerTags;
+	
+	/**
+	 * keep track of current autoSpan ids
+	 */
+	
+	private int autoSpanId;
 
 	/**
 	 * document id
@@ -114,6 +120,17 @@ public class BodyTag implements AnyTag {
 		this.include_efml_applet = false;
 
 		this.headTag = head;
+		
+		this.autoSpanId = 0;
+	}
+	
+	/**
+	 * 
+	 * @return the next autoSpanId
+	 */
+	
+	public int nextAutoSpanId() {
+		return this.autoSpanId ++;
 	}
 
 	/**

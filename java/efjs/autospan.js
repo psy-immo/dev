@@ -27,36 +27,19 @@ function AutoSpan(value,  classname, name) {
 	 * initial value
 	 */
 	
-	if (value)
-		this.value = 1;
-	else
-		this.value = 0;
+	this.value = value;
+	
 	
 	/**
 	 * css class name
 	 */
 	
-	if (classname)
-		this.classname = classname;
-	else
-		this.classname="autoSpan";
+	this.classname = classname;
 	
 	if (name)
 		this.name = name;
 	else
 		this.name = "autoSpan"+this.id;
-	
-	this.WriteHtml = function() {
-		/**
-		 * write only the opening tag
-		 */
-		document.write("<span id=\"autoSpan"+this.id+"\" class=\""+this.classname+""+this.value+"\">");
-		
-		/**
-		 * the closing tag has to be written out by the efml compiler
-		 */
-				
-	};
 		
 	this.SetValue = function(value) {
 		var element = $("autoSpan"+this.id);

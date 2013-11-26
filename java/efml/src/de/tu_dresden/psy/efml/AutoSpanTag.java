@@ -37,14 +37,29 @@ public class AutoSpanTag implements AnyTag {
 	private EfmlTagsAttribute attributes;
 
 	private Vector<AnyTag> innerTags;
+	
+	private BodyTag body;
+	
+	
 
-	public AutoSpanTag(EfmlTagsAttribute efmlAttributes) {
+	public AutoSpanTag(EfmlTagsAttribute efmlAttributes, BodyTag body) {
 		this.attributes = efmlAttributes;
 		this.innerTags = new Vector<AnyTag>();
+		this.body = body;
 	}
 
 	@Override
 	public void open(Writer writer) throws IOException {
+
+		/**
+		 * calculate values & defaults
+		 */
+
+		String classname = StringEscape.escapeToJavaScript(this.attributes
+				.getValueOrDefault("class", "autoSpan"));
+
+		String value = this.attributes.getValueOrDefault("value", "0");
+
 		writer.write("<script type=\"text/javascript\">");
 
 		/**
@@ -53,16 +68,21 @@ public class AutoSpanTag implements AnyTag {
 
 		writer.write(" new AutoSpan(");
 
-		writer.write(this.attributes.getValueOrDefault("value", "0") + ", ");
-		writer.write("\""
-				+ StringEscape.escapeToJavaScript(this.attributes
-						.getValueOrDefault("class", "")) + "\",");
+		writer.write(value + ", ");
+		writer.write("\"" + classname + "\",");
 		writer.write("\""
 				+ StringEscape.escapeToJavaScript(this.attributes
 						.getValueOrDefault("name", "")) + "\"");
 
-		writer.write(").WriteHtml();");
+		writer.write(");");
 		writer.write(" </script>");
+
+		/**
+		 * create the contents of .WriteHtml();
+		 */
+
+		writer.write("<span id=\"autoSpan" + this.body.nextAutoSpanId() + "\" class=\""
+				+ classname + "" + value + "\">");
 
 		/**
 		 * create the contents inside the autospan <span> tag
@@ -72,18 +92,17 @@ public class AutoSpanTag implements AnyTag {
 			t.open(writer);
 			t.close(writer);
 		}
+
+
 	}
 
 	@Override
 	public void close(Writer writer) throws IOException {
 
 		/**
-		 * close the autospan <span> tag gracefully (just writing </span> would
-		 * break xml conformity of the resulting document)
+		 * close the autospan <span> tag 
 		 */
-		writer.write("<script type=\"text/javascript\">");
-		writer.write("document.write(\"</span>\");");
-		writer.write(" </script>");
+		writer.write("</span>");
 	}
 
 	@Override
