@@ -37,11 +37,22 @@ public class BodyTag implements AnyTag {
 	private HeadTag headTag;
 
 	private ArrayList<AnyTag> innerTags;
-	
+
+	/**
+	 * whether to include the loglet applet
+	 */
+	private boolean useLoglet;
+
+	/**
+	 * url to the servercom_js script, or null
+	 */
+
+	private String servercom_jsURL;
+
 	/**
 	 * keep track of current autoSpan ids
 	 */
-	
+
 	private int autoSpanId;
 
 	/**
@@ -120,17 +131,21 @@ public class BodyTag implements AnyTag {
 		this.include_efml_applet = false;
 
 		this.headTag = head;
-		
+
 		this.autoSpanId = 0;
+
+		this.useLoglet = false;
+
+		this.servercom_jsURL = "servercom/servercom.js";
 	}
-	
+
 	/**
 	 * 
 	 * @return the next autoSpanId
 	 */
-	
+
 	public int nextAutoSpanId() {
-		return this.autoSpanId ++;
+		return this.autoSpanId++;
 	}
 
 	/**
@@ -147,10 +162,13 @@ public class BodyTag implements AnyTag {
 		 * add loglet applet
 		 */
 
-		writer.write("  <applet id=\"loglet\" name=\"loglet\" archive=\""
-				+ baseUrl + "loglet.jar\""
-				+ " code=\"de.tu_dresden.psy.util.Loglet\" mayscript=\"\" "
-				+ "style=\"width: 1px; height: 1px\"></applet>\n");
+		if (this.useLoglet) {
+
+			writer.write("  <applet id=\"loglet\" name=\"loglet\" archive=\""
+					+ baseUrl + "loglet.jar\""
+					+ " code=\"de.tu_dresden.psy.util.Loglet\" mayscript=\"\" "
+					+ "style=\"width: 1px; height: 1px\"></applet>\n");
+		}
 
 		if (this.include_efml_applet) {
 			writer.write("  <applet id=\"efmlApplet\" name=\"efmlApplet\" archive=\""
@@ -264,6 +282,17 @@ public class BodyTag implements AnyTag {
 		writer.write("<body id=\"body\">\n");
 
 		this.writeAllApplets(writer, this.scriptUrl);
+
+		/**
+		 * write the servercom js script include
+		 * 
+		 */
+
+		if (this.servercom_jsURL != null) {
+			writer.write("<script src=\"" + this.servercom_jsURL
+					+ "\" type=\"text/javascript\" "
+					+ "id=\"servercom_js\"></script>");
+		}
 
 		/**
 		 * write the identification strings & base url & ...

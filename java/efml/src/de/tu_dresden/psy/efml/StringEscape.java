@@ -46,6 +46,10 @@ public class StringEscape {
 	 */
 
 	public static String obfuscateInt(int i) {
+		return "" + i;
+	}
+
+	public static String obfuscateInt2(int i) {
 		/**
 		 * deal with negative integers
 		 */
