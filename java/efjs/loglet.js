@@ -225,6 +225,10 @@ function doGet(name) {
 	return comLoad(logId,docId,name);
 }
 
+function didSave(name) {
+	return comInStorage(logId,docId,name);
+}
+
 function doGetAll() {
 
 	return {};
