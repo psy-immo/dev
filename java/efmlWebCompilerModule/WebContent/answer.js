@@ -1,5 +1,5 @@
 /**
- * answer.js, (c) 2011, Immanuel Albrecht; Dresden University of Technology,
+ * answer.js, (c) 2011-13, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -18,20 +18,118 @@
 
 var answerIdCounter = 0;
 var answerArray = [];
+answerNames = {};
 
 /**
  * returns an object that provides the operation of an answer button
  */
 
-function Answer(testfn) {
+function Answer(name,testfn) {
 	this.id = answerIdCounter++;
-	this.feedbackAllGood = "Correct!";
+	
+	if (name)
+	{
+		this.name = name;
+	} else {
+		this.name = "answer"+this.id;
+	}
+	
+	this.feedbackAllGood = getRes("answerCorrect");
 	this.errorCount = 0;
-	this.feedbackErrors = [ "Your solution still contains an error. Correct parts of your solution are lit green." ];
-	this.text = "Check your answer";
+	this.feedbackErrors = [ getRes("answerErrors") ];
+	
+	this.text = getRes("answerButton");
 	this.testfn = testfn;
 	this.waitfor = [];
 	this.uncheckedbadgood = 0;
+	
+	this.done = false;
+	
+	/**
+	 * store the name of the FeedbackDisplay object, or false if no textual/html
+	 * feedback is given
+	 */
+
+	this.feedback = false;
+	
+	/**
+	 * contains the name of the counter object to check how many tries are left before rectification
+	 */
+	this.checkCounter = false;
+	
+	this.showAutoSpanAfterRect = [];
+	this.hideAutoSpanAfterRect = [];
+	this.lockAfterRectification = false;
+	
+	/**
+	 * set the name of the feedback target
+	 */
+
+	this.FeedbackDisplay = function(target_display) {
+		this.feedback = target_display;
+
+		return this;
+	};
+
+	
+	/**
+	 * adds autospans to hide after rectification
+	 * 
+	 * @param namelist     a string with , separated names for autospan objects
+	 * 
+	 * @returns this
+	 */
+	
+	this.HideAfterRectification = function(namelist) {
+		var split = namelist.split(",");
+		for ( var int = 0; int < split.length; int++) {
+			var x = split[int];
+			this.hideAutoSpanAfterRect.push(x);
+		}
+		
+		
+		return this;
+	};
+	
+	/**
+	 * adds autospans to show after rectification
+	 * 
+	 * @param namelist     a string with , separated names for autospan objects
+	 * 
+	 * @returns this
+	 */
+	
+	this.ShowAfterRectification = function(namelist) {
+		var split = namelist.split(",");
+		for ( var int = 0; int < split.length; int++) {
+			var x = split[int];
+			this.showAutoSpanAfterRect.push(x);
+		}
+		
+		
+		return this;
+	};
+
+	/**
+	 * whether to lock the airport after the rectification of the solution
+	 */
+
+	this.LockAfterRectification = function(doLockTag) {
+		this.lockAfterRectification = doLockTag;
+
+		return this;
+	};
+	
+	/**
+	 * set the name of the counter object
+	 */
+	
+	this.Counter = function(name) {
+		this.checkCounter = name;
+		
+		return this;
+	};
+
 
 	/**
 	 * write the HTML code that will be used for displaying the answer button
@@ -42,10 +140,6 @@ function Answer(testfn) {
 		document.write("<input type=\"button\" name=" + idstring + " id="
 				+ idstring + " value=\"" + this.text
 				+ "\" onclick=\"answerArray[" + this.id + "].OnClick()\"/>");
-		document
-				.write("<br /><table class=\"answerHint\"><tr><td id=\"AnswerHint"
-						+ this.id
-						+ "\" class=\"answerHint\"></td></tr></table>");
 		document.write("</form>");
 	};
 
@@ -91,8 +185,13 @@ function Answer(testfn) {
 	 * this function sets the contents of the hint area
 	 */
 	this.SetHint = function(contents) {
-		var td = document.getElementById("AnswerHint" + this.id);
-		td.innerHTML = contents;
+		if (this.feedback) {
+			var display = feedbackNames[this.feedback];
+			if (display) {
+				display.SetValue(contents);
+				myLogger.Log("Check answer " + this.id+ ": give feedback: " + contents);
+			}
+		}
 	};
 
 	/**
@@ -117,6 +216,34 @@ function Answer(testfn) {
 		myStorage.AutoUpdateAndStore();
 		
 		/**
+		 * check the counter
+		 */
+		
+		var rectify = false;
+		
+		if (this.checkCounter) {
+			var counter = counterNames[this.checkCounter];
+			
+			/**
+			 * set new value
+			 */
+			
+			var value = counter.GetValue();
+			value -= 1;
+			counter.SetValue(value);
+			
+			/**
+			 * check for rectification
+			 */
+			
+			if (!value) {
+				rectify = true;
+			}
+		}
+		
+		var solved = false;
+		
+		/**
 		 * check the answer
 		 */
 
@@ -127,6 +254,8 @@ function Answer(testfn) {
 			myLogger.Log("Check answer " + this.id+ ": good (" + this.errorCount + ")");
 
 			this.uncheckedbadgood = 2;
+			
+			solved = true;
 		} else {
 			this.SetHint(this.feedbackErrors[Math.min(
 					this.feedbackErrors.length - 1, this.errorCount)]);
@@ -135,6 +264,54 @@ function Answer(testfn) {
 			myLogger.Log("Check answer " + this.id+ ": errors (" + this.errorCount + ")");
 
 			this.uncheckedbadgood = 1;
+			
+		}
+		
+		if (solved || rectify) {
+			myLogger.Log("Check answer " + this.id+ ": show/hide autospans.");
+			
+			this.done = true;
+			
+			/**
+			 * magically hide some elements
+			 */
+			
+			for ( var int99 = 0; int99 < this.hideAutoSpanAfterRect.length; int99++) {
+				var name = this.hideAutoSpanAfterRect[int99];
+				
+				var span = autoSpanNames[name];
+				
+				if (span)
+				{
+					span.SetValue(0);
+				}
+				
+			}
+			
+			/**
+			 * magically show some elements
+			 */
+			
+			for ( var int99 = 0; int99 < this.showAutoSpanAfterRect.length; int99++) {
+				var name = this.showAutoSpanAfterRect[int99];
+				
+				var span = autoSpanNames[name];
+				
+				if (span)
+				{
+					span.SetValue(1);
+				}
+				
+			}
+			
+			if (this.lockAfterRectification) {
+				var targets = myTags.AllTags([this.lockAfterRectification]);
+				for ( var int2 = 0; int2 < targets.length; int2++) {
+					var target = targets[int2];
+					if (target.LockInput)
+						target.LockInput();
+				}
+			}
 		}
 	};
 
@@ -142,7 +319,7 @@ function Answer(testfn) {
 	 * return the current state
 	 */
 	this.GetValue = function() {
-		return "" + this.uncheckedbadgood + "," + this.errorCount;
+		return "" + this.uncheckedbadgood + "," + this.errorCount+","+(this.done?1:0);
 	};
 
 	/**
@@ -151,9 +328,10 @@ function Answer(testfn) {
 
 	this.SetValue = function(contents) {
 		var data = ("" + contents).split(",");
-		if (data.length == 2) {
+		if (data.length == 3) {
 			this.uncheckedbadgood = parseInt(data[0]);
 			this.errorCount = parseInt(data[1]);
+			this.done = parseInt(data[2])!=0;
 
 			if (this.uncheckedbadgood == 2) {
 				this.SetHint(this.feedbackAllGood);
@@ -166,4 +344,5 @@ function Answer(testfn) {
 
 	answerArray[this.id] = this;
 	myStorage.RegisterField(this, "answerArray[" + this.id + "]");
+	answerNames[this.name] = this;
 };

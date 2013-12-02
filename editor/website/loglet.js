@@ -1,5 +1,5 @@
 /**
- * loglet.js, (c) 2012, Immanuel Albrecht; Dresden University of Technology,
+ * loglet.js, (c) 2012-13, Immanuel Albrecht; Dresden University of Technology,
  * Professur für die Psychologie des Lernen und Lehrens
  * 
  * This program is free software: you can redistribute it and/or modify it under
@@ -16,9 +16,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+
 /**
  * try to detect the server side php script base location
  */
+
 
 if (typeof logletBaseURL == 'undefined') {
 	var scripts = document.getElementsByTagName('script');
@@ -26,48 +29,8 @@ if (typeof logletBaseURL == 'undefined') {
 	logletBaseURL = logletBaseURL.replace("loglet.js\n", "");
 };
 
-/**
- * load the server communication applet, if not present
- */
 
-if (!$('loglet')) {
-	document.write("<applet id=\"loglet\" " + "name=\"loglet\"" + " archive=\""
-			+ logletBaseURL + "loglet.jar\" "
-			+ "code=\"de.tu_dresden.psy.util.Loglet\" "
-			+ "MAYSCRIPT style=\"width: 1px; height: 1px\"></applet>");
-}
 
-/**
- * check whether we are in preview mode
- */
-
-if (window.location.toString().toQueryParams()["preview"]) {
-	efmlPreview = true;
-
-	/**
-	 * change setup for preview mode
-	 */
-
-	studyId = "preview";
-	subjectId = "preview";
-
-} else {
-	efmlPreview = false;
-}
-
-/**
- * loglet server cache object
- */
-
-serverDataCache = {};
-
-/**
- * this is for bugfixing chromium + icedtea java interop bugs
- */
-
-function bugfixParam(param) {
-	return "" + param + "\0";
-}
 
 /**
  * fall back definitions / look ups
@@ -199,354 +162,6 @@ function unescapeBTNR(s) {
 }
 
 /**
- * query server for stored value (java applet version)
- * 
- * @param id
- * @param name
- * @param serverurl
- */
-
-function getServerApplet(id, name, serverurl) {
-	var applet = document.getElementById("loglet");
-
-	if (!applet) {
-		return "!! applet element not found";
-	}
-	
-	if (!applet.queryLogger) {
-		return "!! applet not running";
-	}
-
-	/**
-	 * java script to java interaction is buggy so add string termination
-	 * zeros....
-	 */
-
-	var val = applet.queryLogger(bugfixParam(id), bugfixParam(name),
-			bugfixParam(""), bugfixParam(serverurl));
-
-	var unescaped = unescapeSome(val);
-
-	return unescaped;
-}
-
-/**
- * query server for stored value (javascript version)
- * 
- * @param id
- * @param name
- * @param serverurl
- */
-
-function getServerJS(id, name, serverurl, throwIfUnavailable) {
-	var request;
-
-	/**
-	 * thanks to cssSandpaper getXMLHttpRequest :)
-	 */
-
-	if (window.XMLHttpRequest) {
-
-		request = new XMLHttpRequest();
-	} else if (window.ActiveXObject) {
-		try {
-			request = new ActiveXObject("Msxml2.XMLHTTP");
-		} catch (dummy) {
-			request = new ActiveXObject("Microsoft.XMLHTTP");
-		}
-	} else {
-		if (throwIfUnavailable) {
-			throw "!! XMLHttpRequest not supported by browser";
-		}
-		return "!! XMLHttpRequest not supported by browser";
-	}
-
-	/**
-	 * encode the post data
-	 */
-
-	var data = "";
-
-	data += encodeURIComponent("id") + "=" + encodeURIComponent(id);
-	data += "&" + encodeURIComponent("varname") + "="
-			+ encodeURIComponent(name);
-	data += "&" + encodeURIComponent("value") + "=" + encodeURIComponent("");
-
-	try {
-		request.open("POST", serverurl, false);
-
-		/**
-		 * is there a bug that requires
-		 * 
-		 * request.setRequestHeader("If-Modified-Since","Sat, 1 Jan 2000
-		 * 00:00:00 GMT");
-		 * 
-		 * here??
-		 */
-
-		request.send(data);
-	} catch (ex) {
-		var error = "" + ex + "";
-		if (throwIfUnavailable) {
-			throw "!! ERROR requesting " + serverurl + " with " + data + ":\n"
-					+ error;
-		}
-		return "!! ERROR requesting " + serverurl + " with " + data + ":\n"
-				+ error;
-	}
-
-	/**
-	 * skip the http header
-	 */
-
-	var val = request.responseText
-			.substr(request.responseText.indexOf("\n", 0) + 1);
-
-	if (request.statusText != "OK")
-		return "!! error in request: " + request.statusText + " .. " + val;
-
-	var unescaped = unescapeSome(val);
-
-	return unescaped;
-}
-
-/**
- * query server for stored value (choose which version to work with)
- * 
- * @param id
- * @param name
- * @param serverurl
- */
-
-function getServer(id, name, serverurl) {
-	var result = "";
-	try {
-		/** try JS first, and throw if unavailable */
-		result = getServerJS(id, name, serverurl, true);
-	} catch (unavailable) {
-		result = getServerApplet(id, name, serverurl);
-	}
-
-	return result;
-}
-
-/**
- * save data to local file
- * 
- * @param contents
- *            file contents
- */
-
-function writeLocalFile(contents) {
-	var applet = document.getElementById("loglet");
-
-	/**
-	 * java script to java interaction is buggy so add string termination
-	 * zeros....
-	 */
-
-	var val = applet.setLocalFileContents(bugfixParam(contents));
-	return val;
-}
-
-/**
- * copy data to clipboard
- * 
- * @param contents
- *            new contents of the clipboard
- */
-
-function setClipboardContents(contents) {
-	var applet = document.getElementById("loglet");
-
-	/**
-	 * java script to java interaction is buggy so add string termination
-	 * zeros....
-	 */
-
-	var val = applet.setClipboardContents(bugfixParam(contents));
-	return val;
-}
-
-/**
- * copy data from clipboard
- * 
- * @returns contents contents of the clipboard
- */
-
-function getClipboardContents() {
-	var applet = document.getElementById("loglet");
-
-	/**
-	 * java script to java interaction is buggy so add string termination
-	 * zeros....
-	 */
-
-	var val = applet.getClipboardContents();
-
-	return val;
-}
-
-/**
- * read data from local file
- * 
- * @returns contents contents of the file
- */
-
-function readLocalFile() {
-	var applet = document.getElementById("loglet");
-
-	/**
-	 * java script to java interaction is buggy so add string termination
-	 * zeros....
-	 */
-
-	var val = applet.getLocalFileContents();
-
-	return val;
-}
-
-/**
- * query server to change stored value (java applet version)
- * 
- * @param id
- * @param name
- * @param serverurl
- */
-
-/**
- * query server to change stored value (java applet version)
- * 
- * @param id
- * @param name
- * @param serverurl
- */
-
-function setServerApplet(id, name, value, serverurl) {
-	var applet = document.getElementById("loglet");
-
-	if (!applet) {
-		return "!! applet element not found";
-	}
-	
-	if (!applet.queryLogger) {
-		return "!! applet not running";
-	}
-
-	
-	/**
-	 * java script to java interaction is buggy so add string termination
-	 * zeros....
-	 */
-
-	var result = applet.queryLogger(bugfixParam(id), bugfixParam(name),
-			bugfixParam(escapeSome(value)), bugfixParam(serverurl));
-
-	return unescapeSome(result);
-}
-
-/**
- * query server to change stored value (java applet version)
- * 
- * @param id
- * @param name
- * @param serverurl
- */
-
-function setServerJS(id, name, value, serverurl, throwIfUnavailable) {
-	var request;
-
-	/**
-	 * thanks to cssSandpaper getXMLHttpRequest :)
-	 */
-
-	if (window.XMLHttpRequest) {
-
-		request = new XMLHttpRequest();
-	} else if (window.ActiveXObject) {
-		try {
-			request = new ActiveXObject("Msxml2.XMLHTTP");
-		} catch (dummy) {
-			request = new ActiveXObject("Microsoft.XMLHTTP");
-		}
-	} else {
-		if (throwIfUnavailable) {
-			throw "!! XMLHttpRequest not supported by browser";
-		}
-		return "!! XMLHttpRequest not supported by browser";
-	}
-
-	/**
-	 * encode the post data
-	 */
-
-	var data = "";
-
-	data += encodeURIComponent("id") + "=" + encodeURIComponent(id);
-	data += "&" + encodeURIComponent("varname") + "="
-			+ encodeURIComponent(name);
-	data += "&" + encodeURIComponent("value") + "=" + encodeURIComponent(value);
-
-	try {
-		request.open("POST", serverurl, false);
-
-		/**
-		 * is there a bug that requires
-		 * 
-		 * request.setRequestHeader("If-Modified-Since","Sat, 1 Jan 2000
-		 * 00:00:00 GMT");
-		 * 
-		 * here??
-		 */
-
-		request.send(data);
-	} catch (ex) {
-		var error = "" + ex + "";
-		if (throwIfUnavailable) {
-			throw "!! ERROR requesting " + serverurl + " with " + data + ":\n"
-					+ error;
-		}
-		return "!! ERROR requesting " + serverurl + " with " + data + ":\n"
-				+ error;
-	}
-
-	/**
-	 * skip the http header
-	 */
-
-	var val = request.responseText
-			.substr(request.responseText.indexOf("\n", 0) + 1);
-
-	if (request.statusText != "OK")
-		return "!! error in request: " + request.statusText + " .. " + val;
-
-	var unescaped = unescapeSome(val);
-
-	return unescaped;
-}
-
-/**
- * query server to change stored value (automatic version)
- * 
- * @param id
- * @param name
- * @param serverurl
- */
-
-function setServer(id, name, value, serverurl) {
-	var result = "";
-	
-	try {
-		result = setServerJS(id, name, value, serverurl, true);
-	}
-	catch (unavailable) {
-		result = setServerApplet(id, name, value, serverurl);
-	}
-	
-	return result;
-}
-
-/**
  * 
  * log the string using the global variables
  * 
@@ -555,10 +170,11 @@ function setServer(id, name, value, serverurl) {
  */
 
 function doLog(string) {
-	if (logletBaseURL) {
-		setServer(logId, docId, string, logletBaseURL + "log.php");
-	}
+	comLog(logId, docId, string);
 }
+
+
+serverDataCache = {};
 
 /**
  * 
@@ -570,11 +186,10 @@ function doLog(string) {
  */
 
 function doSet(name, value) {
-	if (logletBaseURL) {
-		var fullid = docId + "+" + name;
-		var result = setServer(logId, fullid, value, logletBaseURL + "push.php");
-		serverDataCache[fullid] = result;
-	}
+	comSave(logId, docId, name, value);
+	
+	var fullid = docId + "+" + name;
+	serverDataCache[fullid] = value;
 }
 
 /**
@@ -588,15 +203,13 @@ function doSet(name, value) {
  */
 
 function doSetIfDifferent(name, value) {
-	if (logletBaseURL) {
-		var fullid = docId + "+" + name;
-		if (fullid in serverDataCache) {
-			if (serverDataCache[fullid] == value)
+	var fullid = docId + "+" + name;
+	if (fullid in serverDataCache) {
+		if (serverDataCache[fullid] == value)
 				return;
-		}
-		var result = setServer(logId, fullid, value, logletBaseURL + "push.php");
-		serverDataCache[fullid] = result;
 	}
+	comSave(logId, docId, name, value);
+	serverDataCache[fullid] = value;
 }
 
 /**
@@ -609,85 +222,16 @@ function doSetIfDifferent(name, value) {
  */
 
 function doGet(name) {
-	if (logletBaseURL) {
-		var fullid = docId + "+" + name;
-		var result = getServer(logId, fullid, logletBaseURL + "pull.php");
+	return comLoad(logId,docId,name);
+}
 
-		return result;
-	}
-	return "";
+function didSave(name) {
+	return comInStorage(logId,docId,name);
 }
 
 function doGetAll() {
-	var urldecode = function(url) {
-		return decodeURIComponent(url.replace(/\+/g, ' '));
-	};
 
-	if (logletBaseURL) {
-		var raw = getServer(logId, docId + "+", logletBaseURL + "pullall.php")
-				.split('\n');
-		var entries = {};
-		var prefix_length = docId.length + 1;
-
-		for ( var int = 0; int < raw.length; ++int) {
-			var line = raw[int].split(' ');
-			if (line.length > 1) {
-				var fullid = urldecode(line[0]);
-				var key = fullid.substr(prefix_length);
-				var result = unescapeSome(urldecode(line[1]));
-				entries[key] = result;
-				serverDataCache[fullid] = result;
-			}
-		}
-		return entries;
-	}
 	return {};
-}
-
-/**
- * 
- * check whether the server storage works currently (using the javascript
- * XMLHttpRequest version)
- * 
- * @returns true, if storage works
- * 
- */
-
-function doesJSOperate() {
-	if (logletBaseURL) {
-		try {
-			if (getServerJS(logId, docId + "+" + name, logletBaseURL
-					+ "operates.php") == "okay") {
-				return true;
-			}
-		} catch (err) {
-			return false;
-		}
-	}
-	return false;
-}
-
-/**
- * 
- * check whether the server storage works currently (using the java applet
- * version)
- * 
- * @returns true, if storage works
- * 
- */
-
-function doesAppletOperate() {
-	if (logletBaseURL) {
-		try {
-			if (getServerApplet(logId, docId + "+" + name, logletBaseURL
-					+ "operates.php") == "okay") {
-				return true;
-			}
-		} catch (err) {
-			return false;
-		}
-	}
-	return false;
 }
 
 /**
@@ -699,10 +243,7 @@ function doesAppletOperate() {
  */
 
 function doesOperate() {
-	if (doesJSOperate()) {
-		return true;
-	}
-	return doesAppletOperate();
+	return comTest(logId);
 }
 
 /**
@@ -712,7 +253,7 @@ function doesOperate() {
  */
 
 function printChangeSubjectButton() {
-	if (myStorage.useLoglet()) {
+	if (doesOperate()) {
 		document.write("<div>" + subjectIdInfo + " <b>" + subjectId
 				+ "</b>. <a href=\"javascript:changeSubject()\">"
 				+ subjectIdChange + "</a></div>");

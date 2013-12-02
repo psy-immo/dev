@@ -76,6 +76,13 @@ function ListSelection(name, tags, label, token) {
 	 */
 	this.selection = -1;
 
+	
+	/**
+	 * check, whether we are locked
+	 */
+	
+	this.locked = false;
+	
 	/**
 	 * store subscription functions
 	 */
@@ -193,7 +200,12 @@ function ListSelection(name, tags, label, token) {
 	 * this handler is called, whenever a row of the list selection is clicked
 	 */
 	this.OnClick = function(which) {
-		this.SetValue("N" + which);
+		
+		
+		if (this.locked)
+			return;
+		
+		this.SetValue("UN" + which);
 
 		/**
 		 * log the interaction
@@ -206,6 +218,8 @@ function ListSelection(name, tags, label, token) {
 	 * this function is called when the drop down box changes its contents
 	 */
 	this.OnChange = function() {
+
+		
 		var html_element = $("listselection" + this.id);
 
 		if (this.islistbox) {
@@ -244,6 +258,11 @@ function ListSelection(name, tags, label, token) {
 	 * this function marks the current drop down green
 	 */
 	this.MarkAsGood = function() {
+		
+		if (this.locked)
+			if (this.marking != "G")
+				return;
+		
 		var html_element = $("listselection" + this.id);
 		html_element.removeClassName("listselectionMarkedBad");
 		html_element.addClassName("listselectionMarkedGood");
@@ -264,6 +283,11 @@ function ListSelection(name, tags, label, token) {
 	 * this function marks the current drop down red
 	 */
 	this.MarkAsBad = function() {
+		
+		if (this.locked)
+			if (this.marking != "B")
+				return;
+		
 		var html_element = $("listselection" + this.id);
 		html_element.removeClassName("listselectionMarkedGood");
 		html_element.addClassName("listselectionMarkedBad");
@@ -286,6 +310,11 @@ function ListSelection(name, tags, label, token) {
 	 * this function demarks the current drop down
 	 */
 	this.MarkNeutral = function() {
+		
+		if (this.locked)
+			if (this.marking != "N")
+				return;
+		
 		var html_element = $("listselection" + this.id);
 		html_element.removeClassName("listselectionMarkedGood");
 		html_element.removeClassName("listselectionMarkedBad");
@@ -302,19 +331,26 @@ function ListSelection(name, tags, label, token) {
 
 		this.marking = "N";
 	};
+	
+	this.LockInput = function() {
+		this.locked = true;
+		myLogger.Log(this.name + " locked.");
+	};
 
 	/**
 	 * return the current contents of the drop down as string
 	 */
 	this.GetValue = function() {
-		return this.marking + this.selection;
+		return (this.locked?"L":"U")+this.marking + this.selection;
 	};
 
 	/**
 	 * restore the drop down state from string
 	 */
 
-	this.SetValue = function(contents) {
+	this.SetValue = function(lockcontents) {
+		var contents = lockcontents.substr(1);
+		this.locked = lockcontents[0] == "L";
 
 		this.marking = contents[0];
 

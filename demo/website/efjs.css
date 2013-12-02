@@ -732,3 +732,18 @@ table.debug2, table.debug2 tr, table.debug2 td {
  	text-align: center;
  }
  
+ 
+ /**
+ ***********************************
+ * styles for automaticspan.js
+ ***********************************
+ */
+ 
+ span.autoSpan0 {
+  display: none;
+ }
+ 
+ span.autoSpan1 {
+  display: inline-block;
+ }
+ 

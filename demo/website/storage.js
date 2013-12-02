@@ -29,6 +29,8 @@ function Storage() {
 	this.tickingFields = [];
 
 	this.storageInterval = null;
+	
+	this.fallbackToLocal = false;
 
 	/**
 	 * return true, if we use the loglet applet to store/retrieve data on the
@@ -36,20 +38,7 @@ function Storage() {
 	 */
 
 	this.useLoglet = function() {
-		/**
-		 * implement singleton check pattern
-		 */
-		if (doesOperate()) {
-			this.useLoglet = function() {
-				return true;
-			};
-			return true;
-		} else {
-			this.useLoglet = function() {
-				return false;
-			};
-			return false;
-		}
+		return true;
 	};
 
 	/**
@@ -172,32 +161,34 @@ function Storage() {
 				myHover.CrashDown();
 			}
 		}
-
-		var server_entries = {};
-
-		if (this.useLoglet()) {
-			server_entries = doGetAll();
-		}
-
+		
+		/**
+		 * try to get all possible entries from server, and restore values
+		 */
+		
 		for ( var int = 0; int < this.dataFieldNames.length; int++) {
 			var obj = this.dataFields[int];
 
 			if (obj.SetValue) {
 				var spacedname = name + "---" + this.dataFieldNames[int];
 				var keyname = "myStorage" + spacedname;
+				
+				var found = false;
+				
+				if (this.useLoglet() && (this.localOnlyDataFields.lastIndexOf(obj) == -1)) {
 
-				if (this.useLoglet()
-						&& (this.localOnlyDataFields.lastIndexOf(obj) == -1)) {
-
-					if (spacedname in server_entries) {
-						var v = server_entries[spacedname];
+					if (didSave(spacedname)) {
+						var v = doGet(spacedname);
 
 						if (v.charAt(0) == 'v') {
 							obj.SetValue(v.substr(1));
 						}
 					}
 
-				} else {
+				} 
+				
+				
+				if ((!found) &&(this.fallbackToLocal)) {
 
 					var v;
 					try {
@@ -210,8 +201,7 @@ function Storage() {
 						obj.SetValue(v);
 					}
 				}
-			}
-
+			}	
 		}
 	};
 

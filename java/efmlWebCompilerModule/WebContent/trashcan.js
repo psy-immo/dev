@@ -30,11 +30,11 @@ function Trashcan(name, tags, accept, reject) {
 	 */
 
 	if ((name === undefined) || (name === "") || (name === false)) {
-		this.name = "";
+		this.name = "Trashcan{";
 		for ( var i = 0; i < tags.length; ++i) {
 			this.name += tags[i];
 		}
-		;
+		this.name +="}";
 	} else {
 
 		this.name = name;
