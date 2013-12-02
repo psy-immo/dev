@@ -148,7 +148,7 @@ function StringProduct(vfactor) {
 		var idx = sigma[0];
 		for (var i = 1; i < this.arity; ++i)
 		{
-			idx *= this.modules[i-1];
+			idx *= this.modules[i];
 			idx += sigma[i];
 		}
 		
