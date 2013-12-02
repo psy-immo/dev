@@ -187,6 +187,11 @@ public class StringIds {
 			this.toId.put(unified, this.currentId);
 			this.toCaseCorrectString.put(this.currentId, s);
 			this.currentId += 1;
+		} else {
+			/**
+			 * so stringids.js doesnt have to keep track of duplicate string ids
+			 */
+			this.currentId += 1;
 		}
 	}
 
