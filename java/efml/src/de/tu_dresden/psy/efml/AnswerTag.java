@@ -185,6 +185,13 @@ public class AnswerTag implements AnyTag {
 					+ StringEscape.escapeToJavaScript(hide_auto) + "\")");
 		}
 
+		String lock_after = this.attributes.getValueOrDefault("locktag", null);
+
+		if (lock_after != null) {
+			writer.append(".LockAfterRectification(\""
+					+ StringEscape.escapeToJavaScript(lock_after) + "\")");
+		}
+
 		/**
 		 * try counter object
 		 */

@@ -59,7 +59,7 @@ function Answer(name,testfn) {
 	
 	this.showAutoSpanAfterRect = [];
 	this.hideAutoSpanAfterRect = [];
-	this.lockAfterRectification = true;
+	this.lockAfterRectification = false;
 	
 	/**
 	 * set the name of the feedback target
@@ -114,8 +114,8 @@ function Answer(name,testfn) {
 	 * whether to lock the airport after the rectification of the solution
 	 */
 
-	this.LockAfterRectification = function(doLock) {
-		this.lockAfterRectification = doLock;
+	this.LockAfterRectification = function(doLockTag) {
+		this.lockAfterRectification = doLockTag;
 
 		return this;
 	};
@@ -304,9 +304,14 @@ function Answer(name,testfn) {
 				
 			}
 			
-			/**
-			 * TODO: Lock input mask; nicht so einfach...
-			 */
+			if (this.lockAfterRectification) {
+				var targets = myTags.AllTags([this.lockAfterRectification]);
+				for ( var int2 = 0; int2 < targets.length; int2++) {
+					var target = targets[int2];
+					if (target.LockInput)
+						target.LockInput();
+				}
+			}
 		}
 	};
 

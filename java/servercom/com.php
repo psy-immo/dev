@@ -90,7 +90,7 @@ if ($q == "test") {
 		} else {
 			echo "no";
 		}	
-	}  else if ($q == "load") {
+	} else if ($q == "load") {
 		$d = filter_input(INPUT_POST,'d',FILTER_SANITIZE_STRING,!FILTER_FLAG_STRIP_LOW);
 		$x = filter_input(INPUT_POST,'x',FILTER_SANITIZE_STRING,!FILTER_FLAG_STRIP_LOW);
 		
@@ -107,6 +107,12 @@ if ($q == "test") {
 		if ($value) {
 			echo $value['value'];
 		} 
+	} else if ($q == "purge") {
+		
+		safeguard_die();
+		
+		mysql_query("DELETE FROM `storage` WHERE `id`='" . $id . "'")
+		or debug_die("Purge from storage: ".mysql_error());
 	}
 	
 }

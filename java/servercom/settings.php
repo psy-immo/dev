@@ -31,6 +31,10 @@ function debug_die($x) {
 	die("Error " . $x);
 };
 
+function safeguard_die() {
+	error_log($GLOBALS["src"].": Overriding safeguard die!");
+};
+
 /**
  * check the given id
  */

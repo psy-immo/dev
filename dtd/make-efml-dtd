@@ -91,6 +91,7 @@ dtd.write("\n<!ELEMENT answer (#PCDATA|hint|correct|check)* >\n")
 dtd.write("\n<!ATTLIST answer "+universal_attributes+"""
 	hideautospan	CDATA	  #IMPLIED
 	showautospan	CDATA	  #IMPLIED
+	locktag			CDATA     #IMPLIED
 	name			CDATA     #IMPLIED
  >
 """)
