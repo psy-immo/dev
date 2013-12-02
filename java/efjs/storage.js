@@ -36,20 +36,7 @@ function Storage() {
 	 */
 
 	this.useLoglet = function() {
-		/**
-		 * implement singleton check pattern
-		 */
-		if (doesOperate()) {
-			this.useLoglet = function() {
-				return true;
-			};
-			return true;
-		} else {
-			this.useLoglet = function() {
-				return false;
-			};
-			return false;
-		}
+		return true;
 	};
 
 	/**
@@ -172,6 +159,10 @@ function Storage() {
 				myHover.CrashDown();
 			}
 		}
+		
+		/**
+		 * todo: try to get all possible entries from server, and restore values
+		 */
 
 		var server_entries = {};
 

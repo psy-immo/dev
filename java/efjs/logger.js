@@ -32,9 +32,7 @@ function Logger() {
 		var timestamp = new Date();
 		var logdata = timestamp + " = t0 + "+(timestamp - this.t0) + "ms: "+ logstring;
 		this.events[this.events.length] = logdata;
-		if (myStorage.useLoglet()) {
-			doLog(logdata);
-		}
+		doLog(logdata);
 	};
 	
 	/**
