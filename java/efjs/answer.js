@@ -273,6 +273,22 @@ function Answer(name,testfn) {
 			this.done = true;
 			
 			/**
+			 * magically show some elements
+			 */
+			
+			for ( var int99 = 0; int99 < this.showAutoSpanAfterRect.length; int99++) {
+				var name = this.showAutoSpanAfterRect[int99];
+				
+				var span = autoSpanNames[name];
+				
+				if (span)
+				{
+					span.SetValue(1);
+				}
+				
+			}
+			
+			/**
 			 * magically hide some elements
 			 */
 			
@@ -288,21 +304,6 @@ function Answer(name,testfn) {
 				
 			}
 			
-			/**
-			 * magically show some elements
-			 */
-			
-			for ( var int99 = 0; int99 < this.showAutoSpanAfterRect.length; int99++) {
-				var name = this.showAutoSpanAfterRect[int99];
-				
-				var span = autoSpanNames[name];
-				
-				if (span)
-				{
-					span.SetValue(1);
-				}
-				
-			}
 			
 			if (this.lockAfterRectification) {
 				var targets = myTags.AllTags([this.lockAfterRectification]);

@@ -25,6 +25,18 @@ if (typeof comURL == 'undefined') {
 console.log("comURL = " + comURL);
 
 /**
+ * this variable controls, whether asynchronous requests are allowed.
+ * (this may be useful to make sure all requests get through when 
+ *  unloading the page)
+ */
+
+comAllowAsync = true;
+
+function comAsyncMode(allow) {
+	comAllowAsync = allow;
+}
+
+/**
  * 
  * @param id
  *            id that is transmitted
@@ -45,7 +57,7 @@ function getComRequest(id, q, d, x, y, synchron) {
 
 	try {
 
-		request.open("POST", comURL, (synchron ? false : true));
+		request.open("POST", comURL, ((synchron||(!comAllowAsync)) ? false : true));
 		request.setRequestHeader("Content-type",
 				"application/x-www-form-urlencoded");
 

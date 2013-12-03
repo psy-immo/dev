@@ -15,6 +15,8 @@ $src = "com.php";
 
 mysql_connect($db_host, $db_user, $db_secret) or debug_die("MySQL-Connect: ".mysql_error());
 
+mysql_set_charset("utf8") or debug_die("MySQL-Set-UTF8: ".mysql_error());
+
 mysql_select_db($db_db) or debug_die("MySQL-Select-Db: ".mysql_error());
 
 /**
