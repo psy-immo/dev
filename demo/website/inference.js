@@ -981,6 +981,22 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 				this.done = true;
 				
 				/**
+				 * magically show some elements
+				 */
+				
+				for ( var int99 = 0; int99 < this.showAutoSpanAfterRect.length; int99++) {
+					var name = this.showAutoSpanAfterRect[int99];
+					
+					var span = autoSpanNames[name];
+					
+					if (span)
+					{
+						span.SetValue(1);
+					}
+					
+				}
+				
+				/**
 				 * magically hide some elements
 				 */
 				
@@ -996,21 +1012,6 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 					
 				}
 				
-				/**
-				 * magically show some elements
-				 */
-				
-				for ( var int99 = 0; int99 < this.showAutoSpanAfterRect.length; int99++) {
-					var name = this.showAutoSpanAfterRect[int99];
-					
-					var span = autoSpanNames[name];
-					
-					if (span)
-					{
-						span.SetValue(1);
-					}
-					
-				}
 				
 				this.rectifications += 1;
 				

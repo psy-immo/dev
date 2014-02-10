@@ -222,10 +222,19 @@ function Storage() {
 		myStorageLocation = storage;
 		myStorageName = name;
 
-		myStorageAncientUnloader = window.onunload;
+		myStorageAncientUnloader = window.onbeforeunload;
 
-		window.onunload = function() {
+		window.onbeforeunload = function() {
+			/**
+			 * force synchronous HttpRequests
+			 */
+			comAsyncMode(false);
+			
+			doLog("Unloading commenced...");
+			
 			myStorage.StoreIn(myStorageLocation, myStorageName);
+			
+			doLog("Unloading done.");
 
 			if (myStorageAncientUnloader) {
 				myStorageAncientUnloader();

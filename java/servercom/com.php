@@ -49,12 +49,17 @@ if ($q == "test") {
 		$timestamp = date('Y-m-d G:i:s T');
 
 		$d = filter_input(INPUT_POST,'d',FILTER_SANITIZE_STRING,!FILTER_FLAG_STRIP_LOW);
-		$x = filter_input(INPUT_POST,'x',FILTER_SANITIZE_STRING,!FILTER_FLAG_STRIP_LOW);
+		$x = filter_input(INPUT_POST,'x',FILTER_UNSAFE_RAW,0);
 
 		debug_log("d: ".$d);
 		debug_log("x: ".$x);
+		
+		$escaped_x = mysql_real_escape_string($x);
+		
+		debug_log("escaped_y: ".$escaped_x);
+		
 
-		mysql_query("INSERT INTO `logs` VALUES('" . $id . "','" . $d . "','" . $timestamp ."','" . $x . "')")
+		mysql_query("INSERT INTO `logs` VALUES('" . $id . "','" . $d . "','" . $timestamp ."','" . $escaped_x . "')")
 		or debug_die("Insert into logs: ".mysql_error());
 	} else if ($q == "save") {
 		$d = filter_input(INPUT_POST,'d',FILTER_SANITIZE_STRING,!FILTER_FLAG_STRIP_LOW);

@@ -47,7 +47,7 @@ res_DE["inferenceRectifiedAfterSolved"] = "Richtig! Gegebenenfalls wurden unnöt
 
 
 res_US["inferenceRectified"] = "Your solution has been corrected. Both incorrect and unnecessary points have been removed and missing points are lit orange.";
-res_DE["inferenceRectified"] = "Deine Lösung wurde korrigiert. Sowohl unrichtige als auch unnötige Aussagen wurden entfernt, sowie fehlende ergänzt und orange gekennzeichnet.";
+res_DE["inferenceRectified"] = "Deine Lösung wurde korrigiert. Sowohl unrichtige als auch unnötige Aussagen wurden entfernt. Fehlende Aussagen wurden ergänzt und orange gekennzeichnet. Richtige und vollständig begründete Aussagen wurden grün gekennzeichnet. Richtige Aussagen ohne Begründung wurden gelb gekennzeichnet.";
 
 res_US["inferenceCorrect"] = "Congratulations! Your solution is correct and complete!";
 res_DE["inferenceCorrect"] = "Sehr gut! Deine Lösung ist vollständig und richtig!";
