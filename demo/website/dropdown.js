@@ -238,7 +238,7 @@ function Dropdown(name, tags, label, token) {
 
 		html_element.removeClassName("dropdownMarkedGood");
 
-		myLogger.Log(this.name + " <- " + this.token);
+		myLogger.Log(this.name + " RECEIVES " + this.token);
 		
 		/**
 		 * notify subscribers about the update

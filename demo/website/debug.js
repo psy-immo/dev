@@ -16,11 +16,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 /**
  * log all correct assertion from the given machine
  * 
- * @param nbr
- *            machine number
+ * @param nbr  machine number
  */
 
 function AllCorrect(nbr) {
@@ -29,33 +29,32 @@ function AllCorrect(nbr) {
 	var machine = myInferenceMachines[nbr];
 	var h = machine.hypergraph;
 	var s = machine.stringids;
-
+	
 	var correct = Object.keys(h.correct);
 	for ( var int = 0; int < correct.length; int++) {
 		var id = correct[int];
-		console.log(id + " " + s.FromId(id));
+		console.log(id+" "+s.FromId(id));
 	}
 }
 
-function Domain(x, nbr) {
+function Domain(x,nbr) {
 	if (!nbr)
 		nbr = 0;
-	var machine = myInferenceMachines[nbr];
+	var machine = myInferenceMachines[nbr];	
 	var s = machine.stringids;
 
 	if (x) {
-		if (typeof (x) == "string")
+		if (typeof(x)=="string")
 			return s.ToId(x);
 		else
 			return s.FromId(x);
-	} else
-		return s.count;
+	} else return s.count;	
 }
 
 function Inferences(nbr) {
 	if (!nbr)
 		nbr = 0;
-	var machine = myInferenceMachines[nbr];
+	var machine = myInferenceMachines[nbr];	
 	var h = machine.hypergraph;
 	console.log(h.inferences);
 }
@@ -66,9 +65,9 @@ function PrintAllCorrect(nbr) {
 	var machine = myInferenceMachines[nbr];
 	var h = machine.hypergraph;
 	var s = machine.stringids;
-
+	
 	var html = "<table class=\"debug\">";
-
+	
 	var correct = Object.keys(h.correct);
 	for ( var int = 0; int < correct.length; int++) {
 		var id = correct[int];
@@ -76,7 +75,7 @@ function PrintAllCorrect(nbr) {
 			continue;
 		html += "<tr>";
 		html += "<td class=\"debugNbr\">";
-
+		
 		html += id;
 		html += "</td><td class=\"debugTxt\">";
 		html += escapeSome(s.FromId(id));
@@ -88,21 +87,21 @@ function PrintAllCorrect(nbr) {
 			html += "J";
 		html += "</td><td class=\"debugFlag\">";
 		if (h.IsConcluding(id))
-			html += "C";
+			html += "C";	
 		html += "</td><td class=\"debugFlag\">";
 		var lacks = h.IndicatesWhichLacks(id);
 		for ( var int2 = 0; int2 < lacks.length; int2++) {
 			var array_element = lacks[int2];
-			html += escapeSome(array_element + " ");
-
+			html += escapeSome(array_element+" ");
+			
 		}
 		html += "</td>";
 		html += "</tr>";
 	}
-
+	
 	html += "</table>";
-
-	document.write(html);
+	
+	document.write(html);		
 }
 
 function PrintAllTrivial(nbr) {
@@ -111,9 +110,9 @@ function PrintAllTrivial(nbr) {
 	var machine = myInferenceMachines[nbr];
 	var h = machine.hypergraph;
 	var s = machine.stringids;
-
+	
 	var html = "<table class=\"debug\">";
-
+	
 	var correct = Object.keys(h.trivial);
 	for ( var int = 0; int < correct.length; int++) {
 		var id = correct[int];
@@ -121,7 +120,7 @@ function PrintAllTrivial(nbr) {
 			continue;
 		html += "<tr>";
 		html += "<td class=\"debugNbr\">";
-
+		
 		html += id;
 		html += "</td><td class=\"debugTxt\">";
 		html += escapeSome(s.FromId(id));
@@ -133,21 +132,21 @@ function PrintAllTrivial(nbr) {
 			html += "J";
 		html += "</td><td class=\"debugFlag\">";
 		if (h.IsConcluding(id))
-			html += "C";
+			html += "C";	
 		html += "</td><td class=\"debugFlag\">";
 		var lacks = h.IndicatesWhichLacks(id);
 		for ( var int2 = 0; int2 < lacks.length; int2++) {
 			var array_element = lacks[int2];
-			html += escapeSome(array_element + " ");
-
+			html += escapeSome(array_element+" ");
+			
 		}
 		html += "</td>";
 		html += "</tr>";
 	}
-
+	
 	html += "</table>";
-
-	document.write(html);
+	
+	document.write(html);		
 }
 
 function PrintTrivialInferences(nbr) {
@@ -156,12 +155,12 @@ function PrintTrivialInferences(nbr) {
 	var machine = myInferenceMachines[nbr];
 	var h = machine.hypergraph;
 	var s = machine.stringids;
-
+	
 	var html = "<table class=\"debug\">";
-
+	
 	var inferences = h.trivial_inference_ids;
 	for ( var int = 0; int < inferences.length; int++) {
-
+		
 		html += "<tr>";
 		html += "<td class=\"debugNbr\">";
 		var id = inferences[int];
@@ -190,14 +189,14 @@ function PrintTrivialInferences(nbr) {
 			html += "</td></tr>";
 		}
 		html += "</table>";
-
+		
 		html += "</td>";
 		html += "</tr>";
 	}
-
+	
 	html += "</table>";
-
-	document.write(html);
+	
+	document.write(html);	
 }
 
 function PrintNonTrivialInferences(nbr) {
@@ -206,12 +205,12 @@ function PrintNonTrivialInferences(nbr) {
 	var machine = myInferenceMachines[nbr];
 	var h = machine.hypergraph;
 	var s = machine.stringids;
-
+	
 	var html = "<table class=\"debug\">";
-
+	
 	var trivial_inferences = h.trivial_inference_ids;
 	for ( var int = 0; int < h.inferences.length; int++) {
-		if (trivial_inferences.indexOf(int) > 0)
+		if (trivial_inferences.indexOf(int)> 0)
 			continue;
 		html += "<tr>";
 		html += "<td class=\"debugNbr\">";
@@ -241,82 +240,13 @@ function PrintNonTrivialInferences(nbr) {
 			html += "</td></tr>";
 		}
 		html += "</table>";
-
+		
 		html += "</td>";
 		html += "</tr>";
 	}
-
+	
 	html += "</table>";
-
-	document.write(html);
+	
+	document.write(html);	
 }
 
-function ExtractCodesAndEquivalenceClasses(nbr) {
-	if (!nbr)
-		nbr = 0;
-	var machine = myInferenceMachines[nbr];
-	var h = machine.hypergraph;
-	var s = machine.stringids;
-
-	var html = "";
-	html += "<h1> Argument Codes </h1>";
-	html += "<table name=\"codes" + nbr + "\" id=\"codes" + nbr + "\">";
-	html += "<tr><th>ID</th><th>Point</th><th>Correct</th><th>Trivial</th><th>Justified</th><th>Concluding</th></tr>";
-	for ( var id = 0; id < s.count; id++) {
-		var text = s.FromId(id);
-		html += "<tr><td>" + id + "</td><td>" + text + "</td>";
-		if (h.IsCorrect(id))
-			html += "<td>1</td>";
-		else
-			html += "<td>0</td>";
-		if (h.IsTrivial(id))
-			html += "<td>1</td>";
-		else
-			html += "<td>0</td>";
-
-		if (h.IsJustified(id))
-			html += "<td>1</td>";
-		else
-			html += "<td>0</td>";
-
-		if (h.IsConcluding(id))
-			html += "<td>1</td>";
-		else
-			html += "<td>0</td>";
-	}
-	html += "</table>";
-	
-	html += "<h1> Equivalence Classes for Non-Trivial Correct Points </h1>";
-	html += "<table name=\"classes" + nbr + "\" id=\"classes" + nbr + "\">";
-	html += "<tr><th>ID</th><th>Class</th></tr>";
-	
-	var correct = Object.keys(h.correct);
-	for ( var int = 0; int < correct.length; int++) {
-		var id = correct[int];
-		if (h.IsTrivial(id))
-			continue;
-		html += "<tr>";
-		html += "<td>";
-		html += id;
-		html += "</td>";
-		
-		var equivalent = h.CloseUnderTrivial([id]);
-		
-		for ( var int2 = 0; int2 < equivalent.length; int2++) {
-			var eid = equivalent[int2];
-			html += "<td>";
-			html += eid;
-			html += "</td>";
-				
-		}
-		
-		html += "</tr>";
-	}
-
-	html += "</table>";
-
-	html += "</table>";
-	
-
-	document.write(html);
-}

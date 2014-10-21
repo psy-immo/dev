@@ -211,7 +211,7 @@ function ListSelection(name, tags, label, token) {
 		 * log the interaction
 		 */
 
-		myLogger.Log(this.name + " <- " + this.token);
+		myLogger.Log(this.name + " RECEIVES " + this.token);
 	};
 
 	/**

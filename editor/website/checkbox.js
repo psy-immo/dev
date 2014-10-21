@@ -166,7 +166,7 @@ function Checkbox(name, tags, label, tokenChecked, tokenUnchecked, embeddedMode)
 		}
 
 		this.MarkNeutral();
-		myLogger.Log(this.name + " <- " + this.token);
+		myLogger.Log(this.name + " RECEIVES " + this.token);
 		
 
 		/**

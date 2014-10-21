@@ -250,7 +250,7 @@ function Runway(name, tags, token, accept, reject) {
 			if (myHover.source.name) {
 				log_data += myHover.source.name;
 			}
-			log_data += " -> " + this.name + ": " + myHover.token;
+			log_data += " SENDS " + this.name + ": " + myHover.token;
 
 			/**
 			 * check for correct token type

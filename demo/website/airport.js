@@ -411,7 +411,7 @@ function Airport(name, tags, accept, reject) {
 			if (myHover.source.name) {
 				log_data += myHover.source.name;
 			}
-			log_data += " -> " + this.name + " [" + index + "]: "
+			log_data += " SENDS " + this.name + " [" + index + "]: "
 					+ myHover.token;
 
 			/**

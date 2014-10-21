@@ -150,7 +150,7 @@ function Trashcan(name, tags, accept, reject) {
 			if (myHover.source.name) {
 				log_data += myHover.source.name;
 			}
-			log_data += " -> " + this.name + ": " + myHover.token;
+			log_data += " SENDS " + this.name + ": " + myHover.token;
 
 			var plane_type = myHover.GetType();
 

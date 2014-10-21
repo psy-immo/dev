@@ -298,7 +298,7 @@ function FloatBox(style, content) {
 
 		log_data += " [" + boxspaceArray[this.parent].BoxIndex(this) + "]";
 
-		log_data += " <- token returns: " + myHover.token;
+		log_data += " RECEIVES token returns: " + myHover.token;
 
 		var parent = document.getElementById("boxspace" + this.parent);
 
@@ -817,7 +817,7 @@ function Boxspace(name, tags, accept, reject) {
 
 		var log_data = this.name;
 
-		log_data += " add relation " + src + " -> " + tar + ": "
+		log_data += " add relation " + src + " SENDS " + tar + ": "
 				+ escapeBTNR(this.contents[src].content) + " before "
 				+ escapeBTNR(this.contents[tar].content);
 
@@ -894,7 +894,7 @@ function Boxspace(name, tags, accept, reject) {
 			if (myHover.source.name) {
 				log_data += myHover.source.name;
 			}
-			log_data += " -> " + this.name + ": " + myHover.token;
+			log_data += " SENDS " + this.name + ": " + myHover.token;
 
 			var plane_type = myHover.GetType();
 			var plane = myHover.token;
@@ -1162,7 +1162,7 @@ function Boxspace(name, tags, accept, reject) {
 					var log_data = bspace.name;
 
 					log_data += " delete relation " + bspace.BoxIndex(from)
-							+ " -> " + bspace.BoxIndex(to) + ": "
+							+ " SENDS " + bspace.BoxIndex(to) + ": "
 							+ escapeBTNR(from.content) + " before "
 							+ escapeBTNR(to.content);
 
