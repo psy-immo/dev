@@ -928,6 +928,11 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 			}
 		}
 
+        /**
+         * add general feedback info
+         */
+        feedback_info += getRes("inferenceFeedbackInfo");
+
 		/**
 		 * probably
 		 */
@@ -1032,7 +1037,7 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 
 			display.SetValue(feedback_info);
 
-			log_data += "\nFeedback Display:\n" + feedback_info;
+			log_data += "\nFeedback Display:\n" + escapeSome(feedback_info);
 		} else
 			log_data += "\nNo feedback displayed.\n";
 

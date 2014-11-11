@@ -40,6 +40,7 @@ function FeedbackDisplay(name) {
 	this.UpdateContents = function() {
 		var element = $("feedbackDisplay"+this.id);
 		element.innerHTML = this.contents;
+        element.scrollIntoView();
 	};
 	
 	this.SetValue = function(contents) {

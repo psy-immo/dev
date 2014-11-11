@@ -224,7 +224,7 @@ function RadioButton(name, tags, type, token, embeddedMode) {
 				+ this.selected);
 		selection.checked = true;
 
-		myLogger.Log(this.name + " RECEIVES " + this.token);
+		myLogger.Log(this.name + " <- " + this.token);
 		
 
 		/**
