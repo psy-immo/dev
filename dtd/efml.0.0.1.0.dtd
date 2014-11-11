@@ -587,6 +587,8 @@
 
 <!ELEMENT q (#PCDATA)* >
 
+<!ELEMENT samplesolution (q)* >
+
 <!ATTLIST inference 
 	tags	CDATA	#IMPLIED
 	atags	CDATA	#IMPLIED

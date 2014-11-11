@@ -117,3 +117,5 @@
 <!ELEMENT factor (q)* >
 
 <!ELEMENT q (#PCDATA)* >
+
+<!ELEMENT samplesolution (q)* >

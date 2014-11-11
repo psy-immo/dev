@@ -64,6 +64,12 @@ public class InferenceCompiler {
 	private static final float defaultExcessTimeLimit = 12000;
 
 	/**
+	 * keep track of sample solutions
+	 */
+
+	private Set<ArrayList<Integer>> sampleSolutionIds;
+
+	/**
 	 * keep track of the assertion domain
 	 */
 
@@ -206,6 +212,7 @@ public class InferenceCompiler {
 	 */
 
 	private void resetInferenceCompiler() {
+
 		this.assertionDomain = new StringIds();
 		this.inferenceRoot = new XmlRootTag();
 		this.implicitAssertions = new HashSet<AssertionInterface>();
@@ -231,6 +238,8 @@ public class InferenceCompiler {
 
 		this.todoJustifyIds = new HashSet<Integer>();
 		this.implicitIds = new HashSet<Integer>();
+
+		this.sampleSolutionIds = new HashSet<ArrayList<Integer>>();
 	}
 
 	/**
@@ -254,7 +263,7 @@ public class InferenceCompiler {
 	 */
 
 	public void writeInferenceMachineCode(Writer writer,
- String name,
+			String name,
 			String jsAcceptTagsArray, String jsRejectTagsArray,
 			String pointsTag, String conclusionsTag, String machineOptions)
 					throws IOException {
@@ -468,6 +477,22 @@ public class InferenceCompiler {
 		}
 
 		/**
+		 * if there are any sample solutions, write them down
+		 */
+
+		if (this.sampleSolutionIds.isEmpty() == false) {
+			writer.write(".SampleSolutions([");
+			for (ArrayList<Integer> solution : this.sampleSolutionIds) {
+				writer.write(" [");
+				for (Integer id : solution) {
+					writer.write(StringEscape.obfuscateInt(id) + ", ");
+				}
+				writer.write(" ], ");
+			}
+			writer.write("])");
+		}
+
+		/**
 		 * also, get the ids for the implicit assertions
 		 */
 		if (this.implicitIds.isEmpty() == false) {
@@ -590,16 +615,16 @@ public class InferenceCompiler {
 
 			StackTraceElement[] stackTrace = e.getStackTrace();
 
-			for (int i = 0; i < stackTrace.length; ++i) {
+			for (StackTraceElement element : stackTrace) {
 				errors.append("<tr><td class=\"stacktracefile\">");
-				errors.append(StringEscape.escapeToHtml(stackTrace[i]
+				errors.append(StringEscape.escapeToHtml(element
 						.getFileName()));
 				errors.append("</td><td class=\"stacktraceline\">");
 				errors.append(StringEscape.escapeToHtml(""
-						+ stackTrace[i].getLineNumber()));
+						+ element.getLineNumber()));
 				errors.append("</td><td class=\"stacktrace\">");
-				errors.append(StringEscape.escapeToHtml(stackTrace[i]
-						.getClassName() + "." + stackTrace[i].getMethodName()));
+				errors.append(StringEscape.escapeToHtml(element
+						.getClassName() + "." + element.getMethodName()));
 				errors.append("</td></tr>");
 			}
 
@@ -1051,6 +1076,28 @@ public class InferenceCompiler {
 			} else {
 				this.todoJustifyIds.add(id);
 			}
+		}
+
+		/**
+		 * add the sample solutions
+		 */
+
+		for (ArrayList<String> solution : this.inferenceRoot
+				.getSampleSolutions()) {
+			ArrayList<Integer> solutionIds = new ArrayList<Integer>();
+
+			for (String part : solution) {
+				int id = this.assertionDomain.fromString(part);
+				if (id < 0) {
+					System.err
+					.println("ERROR!! Sample Solution Point not in assertion domain: "
+							+ part);
+				} else {
+					solutionIds.add(id);
+				}
+			}
+
+			this.sampleSolutionIds.add(solutionIds);
 		}
 
 		/**

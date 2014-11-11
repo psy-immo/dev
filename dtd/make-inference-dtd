@@ -124,3 +124,5 @@ dtd.write("\n<!ELEMENT domain (factor|q)* >\n")
 dtd.write("\n<!ELEMENT factor (q)* >\n")
 dtd.write("\n<!ELEMENT q (#PCDATA)* >\n")
 
+dtd.write("\n<!ELEMENT samplesolution (q)* >\n")
+

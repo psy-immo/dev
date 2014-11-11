@@ -18,6 +18,7 @@
 
 package de.tu_dresden.psy.inference.regexp.xml;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -106,6 +107,12 @@ public class XmlRootTag extends XmlTag {
 	private Set<String> expert;
 
 	/**
+	 * all given sample solutions (which consist of a set of given
+	 * assertiations, in a particular order)
+	 */
+	private Set<ArrayList<String>> sampleSolutions;
+
+	/**
 	 * all given conclusions
 	 */
 	private Set<String> conclusionAssertionsGiven;
@@ -136,6 +143,8 @@ public class XmlRootTag extends XmlTag {
 		this.concludingFilter = new HashSet<ConstrainedAssertionFilter>();
 		this.lackQualities = new HashMap<ConstrainedAssertionFilter, String>();
 		this.solutionParts = new HashMap<ConstrainedAssertionFilter, String>();
+
+		this.sampleSolutions = new HashSet<ArrayList<String>>();
 	}
 
 	/**
@@ -201,6 +210,14 @@ public class XmlRootTag extends XmlTag {
 
 	public Set<ConstrainedAssertionFilter> getTrivialityFilters() {
 		return this.trivial;
+	}
+
+	/**
+	 * 
+	 * @return the set of given sample solutions
+	 */
+	public Set<ArrayList<String>> getSampleSolutions() {
+		return this.sampleSolutions;
 	}
 
 	/**
@@ -394,6 +411,27 @@ public class XmlRootTag extends XmlTag {
 	private void processExpert(XmlTag child) {
 		this.expert.add(child.contents);
 		System.err.println("<expert>" + child.contents + "</expert>");
+	}
+
+	/**
+	 * process a &lt;samplesolution>-tag
+	 * 
+	 */
+
+	private void processSampleSolution(XmlTag child) {
+		System.err.println("<samplesolution>");
+		ArrayList<String> solution = new ArrayList<String>();
+		for (XmlTag t : child.children) {
+			if (t.tagName.equals("Q")) {
+				System.err.println("  " + t.contents);
+				solution.add(t.contents);
+			} else {
+				System.err.println("  INVALID TAGNAME " + t.tagName
+						+ ": <q> EXPECTED!");
+			}
+		}
+		System.err.println("</samplesolution>");
+		this.sampleSolutions.add(solution);
 	}
 
 	/**
@@ -1143,6 +1181,8 @@ public class XmlRootTag extends XmlTag {
 			this.processSolves(child);
 		} else if (child.tagName.equals("TODO")) {
 			this.processTodo(child);
+		} else if (child.tagName.equals("SAMPLESOLUTION")) {
+			this.processSampleSolution(child);
 		}
 
 		/**

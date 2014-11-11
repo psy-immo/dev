@@ -14,7 +14,7 @@
         <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference"/>
         <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.regexp"/>
         <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.regexp.xml"/>
-        <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.forms"/>
         <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.regexp"/>
+        <javaElement handleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.forms"/>
     </selectedElements>
 </jardesc>

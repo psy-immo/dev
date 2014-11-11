@@ -264,7 +264,13 @@
 
 					
 					
-					
+					<samplesolution>
+					<q>Roberto Blanco ist ein Sänger, der mir bekannt ist.</q>
+					<q>Neil Armstrong ist ein Astronaut, der mir bekannt ist.</q>
+					<q>Maryam Mirzakhani ist eine Mathematikerin, die mir bekannt ist.</q>
+					<q>Elke Heidenreich ist eine Schriftstellerin, die mir bekannt ist.</q>
+					<q>Kevin Costner ist ein Schauspieler, der mir bekannt ist.</q>
+                    </samplesolution>
 				
 				</inference>
 				
