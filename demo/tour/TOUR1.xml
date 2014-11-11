@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE efml SYSTEM "https://raw.github.com/psy-immo/dev/master/dtd/efml.0.0.1.0.dtd">
+<efml>
+	<link rel="stylesheet" type="text/css" href="Tour.css" media="screen,print" />
+	<subjectchange>Code ändern</subjectchange>
+	<subjectinfo>Dein Versuchspersonencode ist </subjectinfo>
+	<subjectprompt>Bitte gib deinen Versuchspersonencode ein!</subjectprompt>
+	<subjectnotworking> Die Datenerfassung mit deinem Code &lt;b>funktioniert nicht!&lt;/b>
+	                   Bitte melde dich bei dem/r Versuchsleiter/in.</subjectnotworking>
+	<documentid>TOUR-01</documentid>
+	<studyid>b0349764-b610-461f-8931-9eaff6f15505</studyid>
+	<resourcelanguage>de</resourcelanguage>
+	
+
+	
+	<div class="default aufgabe">
+	<h1>Tour durch die Versuchsschnittstelle</h1>
+	
+    Bevor der eigentliche Versuch startet, bitten wir Sie, sich mit der Umgebung vertraut zu machen.<br/><br/>
+
+    <h3>Argument zusammenstellen</h3>
+    Um ein Argument zusammenzusetzen, müssen alle Lücken mit Satzteilen gefüllt
+    werden, sowie gegebenenfalls ein Element einer Mehrfachauswahl gewählt
+    werden. Die für jede Lücke zur Verfügung stehenden Satzteile sind am linken
+    Rand dargestellt, die Hintergrundfarbe gibt hierbei einen Hinweis darauf,
+    an welchen Stellen der jeweilige Teil Verwendung finden kann. Um eine Lücke
+    zu füllen, klicken Sie auf das gewünschte Fragment am linken Rand, um es
+    aufzuheben. Jetzt wird das gewählte Fragment neben dem Mauscursor
+    dargestellt. Danach klicken Sie auf die Lücke im Argumentbaukasten, die Sie
+    füllen oder ändern wollen, um das Fragment dort abzulegen.<br/>
+
+    Auf die selbe Art und Weise können Sie die Satzteile aus den Lücken im
+    Argumentbaukasten wieder aufnehmen, falls Sie einen Satzteil doch nicht
+    mehr verwenden wollen, können Sie diesen auch in den großen Mülleimer links
+    neben den Argumentekasten ablegen.<br/>
+
+    Eine Mehrfachauswahl kann durch einfaches klicken auf die gewünschte Textvariante getätigt werden. Sollte noch kein Element ausgewählt worden sein, ist der Hintergrund aller Elemente der Mehrfachauswahl grau. Ansonsten ist der Hintergrund der nicht gewählten Varianten hellblau und der Hintergrund der gewählten Variante dunkenblau.
+
+    <h3>Argumente auswählen</h3>
+    Wenn ein Argumentschema vollständig ist, das heisst, dass sämtliche Lücken
+    gefüllt worden sind und jede Mehrfachauswahl ein dunkelblau markiertes
+    Element besitzt, ändert sich die Hintergrundfarbe des Baukastens von
+    hellblau auf dunkelblau. Der so gebildete Satz kann nun durch einfachen
+    Klick auf das Flugzeugsymbol, welches sich direkt links vom ersten Satzteil
+    befindet, angehoben werden. Danach kann es entweder innerhalb des
+    hellblauen Rechtecks unter der Überschirft "Argumente" als Argument
+    abgelegt werden, oder aber in den großen Mülleimer links neben dem
+    Argumentekasten geworfen werden.<br/>
+    Falls Sie Argumente aus dem Argumentekasten entfernen möchten, können Sie
+    dies durch einfaches Klicken auf den jeweiligen kleinen Papierkorb links
+    neben dem Argument tun. Alternativ können Sie durch einfaches Klicken auf
+    den Argumenttext selbiges wieder anheben und im großen Mülleimer ablegen.
+    
+    <h2>Beispielaufgabe</h2>
+
+    Am linken Bildschirmrand befindet sich eine Liste mit Personen sowie eine Liste mit Berufen.
+    Bitte setzen Sie nun Sätze zusammen, die den Personen einen Beruf sowie eine Bewertung zuordnen!
+	
+	</div>
+	
+	<div class="default begruendung" tags="Begruendung" atags="Begruendung">	
+	<h1>Begründung</h1>
+	
+	<table class="layout1">
+	<tr><td>
+	
+	<table class="teile">
+		<tr>
+			<td><b>Personen</b></td>
+		</tr>
+		<tr>
+			<td>
+				
+				<table class="elemente" tags="Subjekt">
+					<tr><td>
+						<runway content="refilling" filled="subjektLeer">Roberto Blanco</runway>
+					</td></tr>
+					<tr><td>
+						<runway content="refilling" filled="subjektLeer">Neil Armstrong</runway>
+					</td></tr>
+					<tr><td>
+						<runway content="refilling" filled="subjektLeer">Maryam Mirzakhani</runway>
+					</td></tr>
+					<tr><td>
+						<runway content="refilling" filled="subjektLeer">Kevin Costner</runway>
+					</td></tr>
+					<tr><td>
+						<runway content="refilling" filled="subjektLeer">Elke Heidenreich</runway>
+					</td></tr>
+				</table>
+				
+			</td></tr><tr><td><b>Berufe</b></td></tr>
+            
+			<tr>
+			<td>
+				
+				<table class="elemente" tags="Parameter">
+					<tr><td>
+						<runway content="refilling" filled="parameterLeer">Mathematikerin</runway>
+					</td></tr>
+					<tr><td>
+						<runway content="refilling" filled="parameterLeer">Sänger</runway>
+					</td></tr>
+					<tr><td>
+						<runway content="refilling" filled="parameterLeer">Astronaut</runway>
+					</td></tr>
+					<tr><td>
+						<runway content="refilling" filled="parameterLeer">Schauspieler</runway>
+					</td></tr>
+					<tr><td>
+						<runway content="refilling" filled="parameterLeer">Schriftstellerin</runway>
+					</td></tr>
+				</table>
+			</td>
+			
+			
+		</tr>
+	</table>
+	</td><td>
+
+	
+	<table class="kasten" tags="Argument">	
+		<tr>
+			<td><b>Argumentbaukasten</b></td>
+		</tr>
+		<tr>
+				<td>
+					<template>
+						<runway tags="Subjekt" atags="Subjekt" empty="subjektLeer" filled="subjektVoll"></runway>
+                        <plain> </plain>
+						<automatic>
+							<default>ist eine</default>
+                            <regexp value="ist ein" direction="left">.*(Roberto|Neil|Kevin).*</regexp>
+						</automatic> 
+                        <plain> </plain>
+						<runway tags="Parameter" atags="Parameter" empty="parameterLeer" filled="parameterVoll"></runway> 
+						<automatic>
+							<default>, die </default>
+                            <regexp value=", der " direction="left">.*(Roberto|Neil|Kevin).*</regexp>
+						</automatic>
+                        <plain>mir </plain>
+						<listselection>
+							<option>gefällt</option>
+							<option>bekannt ist</option>
+						</listselection>
+						<plain>.</plain>
+					</template>
+				</td>
+		</tr>
+		
+    </table>
+	</td></tr>
+    </table>
+
+	<table class="argumente">
+		<tr>
+			<td> </td>
+			<td>
+				<b>Argumente</b>
+			</td>
+		</tr>
+		<tr> <td class="argumente"> <trashcan/> </td>
+			<td class="argumente" tags="Argument">
+				<airport atags="Argument" tags="Argumente" name="Argumente"/>
+			</td>
+		</tr>
+		<tr><td></td>
+			<td>
+				<autospan name="Schritt1" value="1">
+				<inference pointstag="Argumente" button="Aussagen überprüfen!" rectify="Argumente" rectifycounter="Zaehler" feedback="Hinweise" showautospan="Schritt2" hideautospan="Schritt1" lockairport="on">
+					<todo>
+					<justify>Roberto Blanco zugeordnet.</justify>
+					<justify>Neil Armstrong zugeordnet.</justify>
+					<justify>Maryam Mirzakhani zugeordnet.</justify>
+					<justify>Elke Heidenreich zugeordnet.</justify>
+					<justify>Kevin Costner zugeordnet.</justify>
+					</todo>
+					
+					<parse>
+						<uniformly />
+					</parse>
+
+
+                    <domain>
+						<factor>
+							<q>Roberto Blanco</q>
+							<q>Neil Armstrong</q>
+							<q>Maryam Mirzakhani</q>
+							<q>Kevin Costner</q>
+							<q>Elke Heidenreich</q>
+						</factor>
+                        <q> zugeordnet.</q>
+                    </domain>
+										
+					<domain>
+						<factor>
+							<q>Roberto Blanco</q>
+							<q>Neil Armstrong</q>
+							<q>Maryam Mirzakhani</q>
+							<q>Kevin Costner</q>
+							<q>Elke Heidenreich</q>
+							
+						</factor>
+                        <factor>
+    						<q> ist ein </q>
+    						<q> ist eine </q>
+                        </factor>
+						<factor>
+							<q>Mathematikerin</q>
+							<q>Sänger</q>
+							<q>Astronaut</q>
+							<q>Schauspieler</q>
+							<q>Schriftstellerin</q>
+						</factor>
+						<q>, </q>
+						<factor>
+							<q>die</q>
+							<q>der</q>
+						</factor>
+						<q> mir </q>
+						<factor>
+							<q>gefällt.</q>
+							<q>bekannt ist.</q>
+						</factor>
+					</domain>
+					<rule name="Zuordnung">
+						<premise id="x">
+							<subject>.* ist.*</subject>
+						</premise>
+                        <infer>
+							<subject source="subject" id="x">
+								<rho>
+									<in id="name">.*</in>
+									<in> ist .*</in>
+									
+									<out id="name"/>
+                                    <out> zugeordnet.</out>
+								</rho>
+							</subject>
+                        </infer>
+                    </rule>
+					
+					<expert>Roberto Blanco ist ein Sänger, der mir bekannt ist.</expert>
+					<expert>Neil Armstrong ist ein Astronaut, der mir bekannt ist.</expert>
+					<expert>Maryam Mirzakhani ist eine Mathematikerin, die mir bekannt ist.</expert>
+					<expert>Elke Heidenreich ist eine Schriftstellerin, die mir bekannt ist.</expert>
+					<expert>Kevin Costner ist ein Schauspieler, der mir bekannt ist.</expert>
+					<expert>Roberto Blanco ist ein Sänger, der mir gefällt.</expert>
+					<expert>Neil Armstrong ist ein Astronaut, der mir gefällt.</expert>
+					<expert>Maryam Mirzakhani ist eine Mathematikerin, die mir gefällt.</expert>
+					<expert>Elke Heidenreich ist eine Schriftstellerin, die mir gefällt.</expert>
+					<expert>Kevin Costner ist ein Schauspieler, der mir gefällt.</expert>
+					
+					
+					<justified>
+						<subject>.*ist.*</subject>
+					</justified>
+
+                    <quality name="RB"><subject>Roberto*.</subject></quality>
+                    <quality name="NA"><subject>Neil*.</subject></quality>
+                    <quality name="MM"><subject>Maryam*.</subject></quality>
+                    <quality name="EH"><subject>Elke*.</subject></quality>
+                    <quality name="KC"><subject>Kevin*.</subject></quality>
+
+					
+					
+					
+				
+				</inference>
+				
+				</autospan>
+				
+				Verbleibende Lösungsversuche: <counter name="Zaehler" value="2"/>
+			</td>
+		</tr>	
+		<tr>	<td></td>
+			<td>
+				<feedbackdisplay name="Hinweise"/>
+			</td>
+		</tr>		
+	</table>
+	</div>
+	
+	<autospan name="Schritt2">
+		<div class="default loesung" tags="Loesung" atags="Loesung">
+			<h1>Lösung</h1>
+
+            Nachdem Sie Ihre Begründung gegeben haben, werden eine oder mehrere Multiple-Choice-Fragen freigeschaltet. Bitte wählen Sie Ihre Antwort durch einfachen Klick auf die jeweiligen Varianten aus.<br/>
+			
+			<table tags="VGL">
+				<tr>
+					<td>
+					Das Interface ist </td>
+					<td><listselection tags="bedienbarkeit" tdclass="align-center">
+									<option>gut</option>
+									<option>mittelmäßig</option>
+									<option>schlecht</option>
+					</listselection></td>
+					<td> bedienbar.</td>
+				</tr>
+			
+			</table>
+			
+			<table>
+				<tr>
+					<td>
+						<autospan name="Btn2" value="1">
+							<answer atags="VGL" counter="Zaehler2" showautospan="Weiter" hideautospan="Btn2" feedback="feedback2" locktag="VGL">Überprüfen
+								<correct>Danke!</correct>
+								<check type="badgood">field x with "bedienbarkeit": (x = "gut") or (x = "mittelmäßig") or (x = "schlecht")</check>
+							</answer>
+						</autospan> 
+						
+						Verbleibende Lösungsversuche: <counter name="Zaehler2" value = "2"/>
+					</td>
+				</tr>
+				<tr>
+					
+					<td>
+						<feedbackdisplay name="feedback2"/>
+					</td>
+				</tr>
+				
+			</table>
+			
+		
+		</div>
+
+	</autospan>
+	
+	<autospan name="Weiter">
+		<h1>Die Einführung ist hiermit beendet.</h1>
+		<a href="KA1.html">Weiter zur ersten Aufgabe.</a>
+	</autospan>
+
+	
+</efml>
+

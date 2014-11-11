@@ -1,0 +1,637 @@
+/*
+ This file contains all style definitions that are used by efml generated web pages
+ */
+
+/**
+ ***********************************
+ * styles for inference compiler error output
+ ***********************************
+ */
+div.compilererror {
+	font-size: 150%;
+}
+
+h3.compilererror {
+	font-size: 120%;
+}
+
+table.invalidassertions {
+	cellspacing: 2px;
+}
+
+table.inferredassertions {
+	cellspacing: 2px;
+}
+
+td.domainid {
+	float: right;
+	font-weight: bold;
+}
+
+table.stacktrace {
+	border: 3px solid black;
+	cellspacing: 2px;
+}
+
+td.stacktracefile {
+}
+
+td.stacktraceline {
+}
+
+td.stacktraceline {
+}
+
+/**
+ ***********************************
+ * styles for flextext.js
+ ***********************************
+ */
+ 
+ span.flextext {
+ 	display: inline-block;
+ }
+ 
+ span.flextextMarkedGood {
+ 	
+ }
+
+
+/**
+ ***********************************
+ * styles for airport.js
+ ***********************************
+ */
+ 
+ img.airportTrashcan {
+ 	width: 24px;
+ 	height: 24px;
+ }
+
+/**
+ * outer object style
+ */
+span.airport {
+	display: inline-block;
+	padding: 2px;
+	width: 400px;
+	height: 400px;
+	border: solid 1px black;
+}
+
+/**
+ *  main table object
+ */
+table.airport {
+	border-spacing: 0px;
+	width: 100%;
+}
+
+/**
+ * empty airport row
+ */
+tr.airportEmpty {
+	width: 100%;
+}
+
+/**
+ * filled airport row
+ */
+tr.airportNonempty {
+	width: 100%;
+}
+
+/**
+ * good (correct and justified) airport row
+ */
+tr.airportGood {
+	width: 100%;
+}
+/**
+ * incorrect airport row
+ */
+tr.airportBad {
+	width: 100%;
+}
+
+/**
+ * correct yet not fully justified airport row
+ */
+tr.airportOkay {
+	width: 100%;
+}
+
+/**
+ * padding airport gap
+ */
+tr.airportGap {
+	width: 100%;
+	height: 12px;
+}
+
+/**
+ * airport delete button (left part of each filled line)
+ */
+td.airportButtonDel {
+	width: 20px;
+}
+
+/**
+ ***********************************
+ * styles for answer.js
+ ***********************************
+ */
+
+/**
+ * surrounding table in form
+ */
+table.answerHint {
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
+
+/**
+ * cell that will contain the hint
+ */
+td.answerHint {
+	height: 20px;
+	width: 100%;
+}
+
+/**
+ ***********************************
+ * styles for boxspace.js
+ ***********************************
+ */
+
+/**
+ * default float box style
+ */
+div.boxspaceFloatBox {
+	display: inline-block;
+	position: absolute;
+	border-style: solid;
+	padding: 6px;
+	zIndex: 50;
+	cursor: default;
+	/** disable text selection **/
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/**
+ * default style for the workspace, i.e. the floating area
+ */
+div.boxspaceWorkspace {
+	display: inline-block;
+	width: 500px;
+	height: 350px;
+	/** be the reference for children absolute positions **/
+	position: relative;
+	overflow: auto;
+	/** disable text selection **/
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/**
+ ***********************************
+ * styles for checkbox.js
+ ***********************************
+ */
+
+/**
+  * style for the form tag that contains the checkbox element (bounding box)
+  */
+form.checkbox {
+	display: inline-block;
+}
+
+/**
+  * style change for checkboxes marked as good
+  */
+form.checkboxMarkedGood {
+}
+
+/**
+  * style of the checkbox element that is clickable
+  */
+input.checkbox {
+	display: inline-block;
+}
+
+/**
+ ***********************************
+ * styles for dropdown.js
+ ***********************************
+ */
+
+/**
+  * style for the form tag that contains the dropdown element (bounding box)
+  */
+form.dropdown {
+	display: inline-block;
+}
+
+/**
+  * style of the dropdown without a selection done yet
+  */
+select.dropdown {
+	display: inline-block;
+}
+
+/**
+  * style change for dropdowns with a selection
+  */
+select.dropdownNonempty {
+}
+
+/**
+  * style change for dropdowns marked as good
+  */
+select.dropdownMarkedGood {
+}
+
+/**
+ ***********************************
+ * styles for freetext.js
+ ***********************************
+ */
+
+/**
+  * style for the form tag that contains the free text element (bounding box)
+  */
+form.freetext {
+	display: inline-block;
+}
+
+/**
+  * style of the free text without a selection done yet
+  */
+input.freetext {
+	display: inline-block;
+}
+
+/**
+  * style change for free texts with content
+  */
+input.freetextNonempty {
+}
+
+/**
+  * style change for free texts marked as good
+  */
+input.freetextMarkedGood {
+}
+
+/**
+ ***********************************
+ * styles for multiline.js
+ ***********************************
+ */
+
+/**
+  * style for the form tag that contains the multiline element (bounding box)
+  */
+form.multiline {
+	display: inline-block;
+}
+
+/**
+  * style of the free text without a selection done yet
+  */
+textarea.multiline {
+	display: inline-block;
+}
+
+/**
+  * style change for free texts with content
+  */
+textarea.multilineNonempty {
+}
+
+/**
+  * style change for free texts marked as good
+  */
+textarea.multilineMarkedGood {
+}
+
+/**
+ ***********************************
+ * styles for popupbutton.js
+ ***********************************
+ */
+
+/**
+  * style for the form tag that contains the popup button (bounding box)
+  */
+form.popupbutton {
+	display: inline-block;
+}
+
+/**
+  * style of the button
+  */
+input.popupbutton {
+	display: inline-block;
+}
+
+/**
+ ***********************************
+ * styles for radiobutton.js
+ ***********************************
+ */
+
+/*
+ * style for bounding table (use manually in efml!)
+ */
+/* manually */
+table.radiobutton { /* stick with defaults */
+	
+}
+
+/**
+  * style for the form tag that contains the radio element (bounding box)
+  * out-most (this is the default)
+  */
+/* default */
+form.radiobutton {
+	display: inline-block;
+}
+
+/**
+  * style for the form tag that contains the radio element (bounding box)
+  * out-most level is <tr> (optional)
+  */
+/* manually */
+tr.radiobutton {
+	display: inline-block;
+}
+
+/* manually */
+td.radiobutton {
+	width: 100%;
+}
+
+/*
+ * mid-level form style
+ */
+/* manually */
+form.radiobuttonNested {
+	display: inline-block;
+}
+
+/**
+  * style for the form tag that contains the radio element (bounding box)
+  */
+/* default/manually */
+span.radiobutton {
+	display: inline-block;
+}
+
+/* default/manually */
+input.radiobutton { /* stick to defaults here */
+	
+}
+
+/**
+  * style change for radios with selection
+  */
+/* default */
+form.radiobuttonNonempty {
+}
+
+/* manually */
+tr.radiobuttonNonempty {
+}
+
+/**
+  * style change for radios marked as good
+  */
+/* default */
+form.radiobuttonMarkedGood {
+}
+
+/* manually */
+tr.radiobuttonMarkedGood {
+}
+
+/**
+ ***********************************
+ * styles for runway.js
+ ***********************************
+ */
+
+/**
+  * style for the form tag that contains the radio element (bounding box)
+  * out-most (this is the default)
+  */
+span.runway {
+	display: inline-block;
+	width: 200px;
+	height: 20px;
+	cursor: default;
+	border: solid 1px black;
+}
+
+/**
+ * style change for empty run ways
+ */
+span.runwayEmpty {
+	
+}
+
+/**
+  * style change for filled run ways
+  */
+span.runwayNonempty {
+}
+
+/**
+  * style change for good run ways
+  */
+span.runwayMarkedGood {
+}
+
+/**
+ ***********************************
+ * styles for sentencepattern.js
+ ***********************************
+ */
+
+/*
+  * style for the surrounding box (that contains the parts which make up 
+  * the pattern and the UP button)
+  */
+span.sentencepatternBox {
+	display: inline-block;
+	padding: 2px;
+	border: solid 1px black;
+}
+
+span.sentencePatternMayTakeoff {
+}
+
+img.sentencepatterntakeoff {
+	width: 32px;
+	height: 32px;
+}
+
+/*
+ * style for the UP box
+ */
+span.sentencepattern {
+	display: inline-block;
+	
+}
+
+/**
+ ***********************************
+ * styles for trashcan.js
+ ***********************************
+ */
+img.trashcan {
+	display: inline-block;
+	width: 128px;
+	height: 128px;
+}
+
+/**
+ ***********************************
+ * styles for inference.js
+ ***********************************
+ */
+
+/**
+  * style for the form tag that contains the popup button (bounding box)
+  */
+form.inference {
+	display: inline-block;
+}
+
+/**
+  * style of the button
+  */
+input.inference {
+	display: inline-block;
+}
+
+/**
+  * style used to display listbox elements without the unnecessary 
+  * right-hand scrollbar... well its not working as expected...
+  */
+  
+.norightscroll {
+	display:inline-block; 
+	border:solid grey 0px; 
+	overflow:hidden;
+	vertical-align: top;
+}
+
+.norightscroll select {
+	 padding:40px; 
+	 margin:-40px -40px -40px -40px; 
+}
+
+/**
+ ***********************************
+ * styles for listselection.js
+ ***********************************
+ */
+
+/**
+  * styles for list box selection
+  */
+
+table.listselection {
+	display:inline-block;
+	vertical-align: middle;
+	
+	cursor: default;
+	border: solid 1px gray;
+}
+
+tr.listselectionSelected {
+	font-weight:bold;
+}
+
+table.listselectionNonEmpty {
+}
+
+td.align-center {
+	text-align: center;	
+}
+
+td.align-left {
+	text-align: left;	
+}
+
+td.align-right {
+	text-align: right;	
+}
+
+/**
+ ***********************************
+ * styles for debug.js
+ ***********************************
+ */
+ 
+ 
+ 
+table.debug {
+    border-collapse: collapse;
+}
+table.debug td, table.debug th {
+    border: 1px solid black;
+}
+table.debug tr:first-child th {
+    border-top: 0;
+}
+table.debug tr:last-child td {
+    border-bottom: 0;
+}
+
+table.debug tr td:first-child,
+table.debug tr th:first-child {
+    border-left: 0;
+}
+table.debug tr td:last-child,
+table.debug tr th:last-child {
+    border-right: 0;
+}
+
+table.debug2, table.debug2 tr, table.debug2 td {
+	border: none;	
+}
+ 
+ td.debugNbr {
+ 	width: 60px;
+ 	text-align: right;
+ }
+ 
+  td.debugNbr2 {
+ 	width: 60px;
+ 	text-align: right;
+ }
+ 
+ td.debugNbr3 {
+ 	width: 60px;
+ 	text-align: right;
+ }
+ 
+ td.debugTxt {
+ }
+ 
+ td.debugFlag {
+ 	width: 15px;
+ 	text-align: center;
+ }
+ 

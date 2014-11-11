@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="inference/jar/inferenceLib.jar"/>
+    <jar path="inference/jar/example.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/inference/jarexport.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
-    <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+    <manifest generateManifest="true" mainClassHandleIdentifier="=inference/src&lt;de.tu_dresden.psy.inference.example{Main.java[Main" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
         <sealing sealJar="true">
             <packagesToSeal/>
             <packagesToUnSeal/>
@@ -13,10 +13,6 @@
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <file path="/inference/.classpath"/>
         <javaElement handleIdentifier="=inference/src"/>
-        <file path="/inference/inference.jarexport.jardesc"/>
-        <file path="/inference/jarexport.jardesc"/>
-        <file path="/inference/inferenceApplet.jardesc"/>
         <file path="/inference/.project"/>
-        <file path="/inference/example.jarexport.jardesc"/>
     </selectedElements>
 </jardesc>

@@ -60,7 +60,7 @@ public class StringIds {
 		this.toId = new HashMap<String, Integer>();
 		this.toCaseCorrectString = new HashMap<Integer, String>();
 
-		this.currentId = 0;
+		this.currentId = 1; /* Starting with 0 is a bad idea :) */
 	}
 
 	/**

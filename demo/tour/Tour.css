@@ -1,0 +1,147 @@
+/*
+ * Komplexe Aufgaben style sheet
+ */
+
+body {
+   background: white;
+   font-family: 'Times New Roman';
+   font-size: 16px;
+   width: 1000px;
+}
+
+.default {
+	background: white;
+   font-family: 'Times New Roman';
+   font-size: 16px;
+   width: 1000px;
+}
+
+.default option {
+	font-family: 'Times New Roman';
+   font-size: 16px;
+}
+
+.default select {
+	font-family: 'Times New Roman';
+   font-size: 16px;
+}
+
+
+.default form {
+	font-family: 'Times New Roman';
+   font-size: 16px;
+}
+
+
+div.aufgabe {
+    background: #ffffee;
+    width: 980px;
+    margin: 0 auto; /* center the div horizontally*/
+    
+}
+
+img.schaltplan {
+	width: 200px;
+	float: left;
+	border: 10px solid transparent;
+}
+
+div.begruendung {
+	clear: both;
+	
+	width: 980px;
+   margin: 0 auto; /* center the div horizontally*/
+}
+
+div.loesung {
+	clear: both;
+	
+	   width: 980px;
+    margin: 0 auto; /* center the div horizontally*/
+}
+
+span.subjektVoll {
+   background: #66ff88;
+   width: 150px;
+}
+
+span.subjektLeer {
+   background: #96ffae;  
+   width: 150px;
+}
+
+span.parameterVoll {
+   background: #66fff6;
+   width: 120px;
+}
+
+span.parameterLeer {
+   background: #98fff9;  
+   width: 120px;
+}
+
+span.qualitaetVoll {
+   background: #ff66e4;
+}
+
+span.qualitaetLeer {
+   background: #ff98ed;  
+}
+
+span.schaltungVoll {
+   background: #ffe859;
+   width: 70px;
+}
+
+span.schaltungLeer {
+   background: #fff4ad;  
+   width: 70px;
+}
+
+span.sentencepatternBox {
+	vertical-align: middle;
+	width: 850px;
+}
+
+table.airport {
+	width:880px;
+	height:auto;
+}
+
+span.airport {
+	width:920px;
+	height:auto;
+}
+
+table.teile {
+	width:auto;
+	vertical-align: top;
+}
+
+table.argumente {
+    width: 660px;
+    vertical-align: top;
+}
+
+td.argumente {
+    vertical-align: top;
+}
+
+tr.argumente {
+	vertical-align: top;
+}
+
+td.split {
+   width: 335px;
+}
+
+table.layout1 {
+	vertical-align: bottom;
+}
+td.layout1 {
+	vertical-align: bottom;
+}
+/*
+span.runway {
+	width: 160px;
+}*/

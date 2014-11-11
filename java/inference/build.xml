@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="inference">
+    <property environment="env"/>
+    <property name="efml.location" value="../efml"/>
+    <property name="ECLIPSE_HOME" value="../../../../../../usr/lib/eclipse"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="inference.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="${efml.location}/jar/stringescape.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="inference.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="KRegExp">
+        <java classname="de.tu_dresden.psy.regexp.KRegExp" failonerror="true" fork="yes">
+            <classpath refid="inference.classpath"/>
+        </java>
+    </target>
+    <target name="SplittedStringRelation">
+        <java classname="de.tu_dresden.psy.regexp.SplittedStringRelation" failonerror="true" fork="yes">
+            <classpath refid="inference.classpath"/>
+        </java>
+    </target>
+    <target name="Main">
+        <java classname="de.tu_dresden.psy.inference.example.Main" failonerror="true" fork="yes">
+            <classpath refid="inference.classpath"/>
+        </java>
+    </target>
+    <target name="Phi1to2">
+        <java classname="de.tu_dresden.psy.inference.example.Phi1to2" failonerror="true" fork="yes">
+            <classpath refid="inference.classpath"/>
+        </java>
+    </target>
+    <target name="Phi2Combine">
+        <java classname="de.tu_dresden.psy.inference.example.Phi2Combine" failonerror="true" fork="yes">
+            <classpath refid="inference.classpath"/>
+        </java>
+    </target>
+    <target name="XmlHandler">
+        <java classname="de.tu_dresden.psy.inference.regexp.xml.XmlHandler" failonerror="true" fork="yes">
+            <classpath refid="inference.classpath"/>
+        </java>
+    </target>
+    <target name="Phi2_3to2">
+        <java classname="de.tu_dresden.psy.inference.example.Phi2_3to2" failonerror="true" fork="yes">
+            <classpath refid="inference.classpath"/>
+        </java>
+    </target>
+    <target name="Phi2Neg">
+        <java classname="de.tu_dresden.psy.inference.example.Phi2Neg" failonerror="true" fork="yes">
+            <classpath refid="inference.classpath"/>
+        </java>
+    </target>
+    <target name="StringIds">
+        <java classname="de.tu_dresden.psy.inference.compiler.StringIds" failonerror="true" fork="yes">
+            <classpath refid="inference.classpath"/>
+        </java>
+    </target>
+    <target name="SubjectPredicateObjectMatcher">
+        <java classname="de.tu_dresden.psy.regexp.SubjectPredicateObjectMatcher" failonerror="true" fork="yes">
+            <classpath refid="inference.classpath"/>
+        </java>
+    </target>
+</project>
