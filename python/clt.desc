@@ -1,0 +1,390 @@
+# This file contains the interface information for the complex learning
+# tasks python module.
+#
+#
+#
+
+PYTHON complexlearningtasks.py
+
+INTERFACE edit_sentence_templates
+   DIALOG dlg 
+      + TITLE "Edit Sentence Template..." 
+      + SIZE 800 500
+      + CANCEL
+   GRID g0
+      + COLSPACING 5
+      + ROWSPACING 5
+   FRAME % LABEL "Building Blocks" ETCHEDIN
+   + GRID 0 0 1 1
+       GRID g1 
+          + COLSPACING 2 
+          + ROWSPACING 2
+       LABEL l0 "Please enter example sentences of the template below, use a new line for each instance and divide the sentence into parts using slashes (/):" 
+          + LINEWRAP 
+          + GRID 1 1 1 1
+          + MAXWIDTH 65
+       BUTTON p1 LABEL "Preview..."
+          + GRID 2 1 1 1
+         CONNECT % clicked preview_template1 REFLECT
+       SCROLLED s0 SIZEREQUEST 550 110
+          + GRID 1 2 2 5 VEXPAND HEXPAND
+          TEXT exs
+        TOPLEVEL
+       TOPLEVEL
+   TOPLEVEL g0
+   
+   FRAME % LABEL "Collocation Constraints" ETCHEDIN
+     + GRID 0 1 1 1
+       GRID g2
+       LABEL l1 "Please enter the constraints for the individual block choices below, use a new line for each constraint, divide parts using slashes (/), and use a single star (*) as a single part wildcard, and a double star (**) as a multiple parts wildcard:" 
+          + LINEWRAP 
+          + GRID 1 7 1 1
+          + MAXWIDTH 65
+       BUTTON p2 LABEL "Preview..." 
+          + GRID 2 7 1 1 NOVEXPAND
+         CONNECT % clicked preview_template2 REFLECT
+       SCROLLED s1 SIZEREQUEST 550 110
+          + GRID 1 8 2 5 VEXPAND HEXPAND
+          TEXT cons
+        TOPLEVEL
+       TOPLEVEL
+
+    TOPLEVEL g0
+
+    FRAME % LABEL "Non-interactive Blocks" ETCHEDIN
+     + GRID 0 2 1 1
+       GRID g3
+       LABEL % "The following list contains the indexes of blocks which are not to be selected by the student, counted from the left starting at 1 and separated by commas (,)."
+        + LINEWRAP
+        + GRID 1 1 7 1
+       BUTTON p3 LABEL "Preview..." 
+          + GRID 8 1 1 1 NOVEXPAND
+         CONNECT % clicked preview_template3 REFLECT
+
+     ENTRY noninter "" GRID 1 2 8 1
+     CHECK nouser LABEL "Exclude this template from user input." GRID 1 3 8 1
+
+END edit_sentence_templates
+
+INTERFACE template_preview_dlg
+   DIALOG dlg TITLE "Preview..."
+   HBOX h
+
+END template_preview_dlg
+
+INTERFACE templates_preview_dlg
+   DIALOG dlg TITLE "Preview..."
+   FRAME % LABEL "Sentence Template User Interface" ETCHEDIN
+   VBOX h
+
+END templates_preview_dlg
+
+INTERFACE ignored_exs_dlg
+  DIALOG dlg TITLE "Error List -- Preview..."
+  VBOX v
+  LABEL % "The following sentence template examples have been ignored:" NOVEXPAND
+  SCROLLED s0 SIZEREQUEST 850 400 VEXPAND HEXPAND
+    LIST l0 str str
+    TREE t0 % SHOWHEADERS TITLES Example "Ignored because..."
+END ignored_exs_dlg 
+
+
+
+INTERFACE ignored_exs_dlg2
+  DIALOG dlg TITLE "Error List -- Preview..."
+  VBOX v
+  LABEL % "The following constraint patterns have been ignored:" NOVEXPAND
+  SCROLLED s0 SIZEREQUEST 850 400 VEXPAND HEXPAND
+    LIST l0 str str
+    TREE t0 % SHOWHEADERS TITLES "Constraint Pattern" "Ignored because..."
+END ignored_exs_dlg2
+
+INTERFACE list_preview_dlg
+   DIALOG dlg TITLE "Preview..."
+   VBOX v
+   LABEL % "The following sentences are valid picks:" NOVEXPAND
+   
+  SCROLLED s0 SIZEREQUEST 850 400 VEXPAND HEXPAND
+    LIST l0 str
+    TREE t0 % 
+
+END list_preview_dlg
+
+INTERFACE ui_demo_dlg
+  DIALOG dlg TITLE "User Interaction - Preview..."
+  VBOX v
+  LABEL % "You specified the following user interface:"
+END ui_demo_dlg
+
+
+INTERFACE pattern_dlg
+  DIALOG dlg TITLE "Sentence Pattern Editor" CANCEL
+
+  GRID g0 VEXPAND HEXPAND
+  LABEL % "Description:" NOHEXPAND NOVEXPAND GRID 0 0 2 1
+  ENTRY desc "" NOVEXPAND HEXPAND GRID 2 0 9 1
+  CHECK slash LABEL "slash-mode" GRID 2 1 2 1 NOHEXPAND NOVEXPAND
+  CHECK case LABEL "case-sensitive mode" GRID 5 1 3 1 NOHEXPAND NOVEXPAND
+  LABEL % "Regular Expression:" GRID 0 2 3 1 NOVEXPAND NOHEXPAND
+  ENTRY regexp  "" GRID 3 2 7 1 NOVEXPAND HEXPAND
+  BUTTON % LABEL "Match" GRID 10 2 1 1 NOVEXPAND NOHEXPAND
+   CONNECT % clicked match_pattern_preview REFLECT
+  FRAME % LABEL "Matches:" GRID 0 3 11 8 VEXPAND HEXPAND
+
+      SCROLLED % VEXPAND HEXPAND SIZEREQUEST 600 250
+       LIST lp str
+       TREE tp %
+       TOPLEVEL
+
+END pattern_dlg
+
+INTERFACE fns_dlg
+  DIALOG dlg TITLE "Token Maps...."
+
+END fns_dlg
+
+INTERFACE rule_dlg
+  DIALOG dlg TITLE "Inference Step Rule Editor" CANCEL
+
+  GRID g0 VEXPAND HEXPAND
+  LABEL % "Description:" NOHEXPAND NOVEXPAND GRID 0 0 2 1
+  ENTRY desc "" NOVEXPAND HEXPAND GRID 2 0 9 1
+  CHECK justified LABEL "All premises of this rule that meet the conditions shall be considered justified." GRID 2 1 10 1 NOHEXPAND NOVEXPAND
+  CHECK trivial LABEL "All premises of this rule that meet the conditions shall be considered trivial." GRID 2 2 10 1 NOHEXPAND NOVEXPAND
+  CHECK trivialrule LABEL "The application of this rule shall be considered trivial." GRID 2 3 10 1 NOHEXPAND NOVEXPAND
+  FRAME % LABEL "Premises:" GRID 0 4 11 8 VEXPAND HEXPAND
+     GRID %
+      SCROLLED % VEXPAND HEXPAND SIZEREQUEST 600 150 GRID 0 0 6 5
+       LIST lp int str str str str
+       TREE tp % SHOWHEADERS TITLES "#" "Pattern Description" "./." "case" "Regular Expression"
+       TOPLEVEL
+      BUTTON % LABEL "New" GRID 7 0 1 1
+      CONNECT % clicked rd_new REFLECT
+      BUTTON % LABEL "Edit" GRID 7 1 1 1
+      CONNECT % clicked rd_edit REFLECT
+      BUTTON % LABEL "Copy" GRID 7 2 1 1
+      CONNECT % clicked rd_copy REFLECT
+      BUTTON % LABEL "Paste" GRID 7 3 1 1
+      CONNECT % clicked rd_paste REFLECT
+      BUTTON % LABEL "Cut" GRID 7 4 1 1
+      CONNECT % clicked rd_cut REFLECT
+     TOPLEVEL
+   TOPLEVEL
+
+  FRAME % LABEL "Conditions:" GRID 0 12 11 8 VEXPAND HEXPAND
+    GRID %
+      SCROLLED % VEXPAND HEXPAND SIZEREQUEST 600 150 GRID 0 0 6 5
+       LIST lcd int str str
+       TREE tcd % SHOWHEADERS TITLES "#" "Good?" "Expression"
+       TOPLEVEL
+      BUTTON % LABEL "New" GRID 7 0 1 1
+      CONNECT % clicked rdc_new REFLECT
+      BUTTON % LABEL "Edit" GRID 7 1 1 1
+      CONNECT % clicked rdc_edit REFLECT
+      BUTTON % LABEL "Copy" GRID 7 2 1 1
+      CONNECT % clicked rdc_copy REFLECT
+      BUTTON % LABEL "Paste" GRID 7 3 1 1
+      CONNECT % clicked rdc_paste REFLECT
+      BUTTON % LABEL "Cut" GRID 7 4 1 1
+      CONNECT % clicked rdc_cut REFLECT
+     TOPLEVEL
+   TOPLEVEL
+
+  FRAME % LABEL "Conclusions:" GRID 0 20 11 8 VEXPAND HEXPAND
+    GRID %
+      SCROLLED % VEXPAND HEXPAND SIZEREQUEST 600 150 GRID 0 0 6 5
+
+       LIST lcc int str
+       TREE tcc % SHOWHEADERS TITLES "#" "Inferred Pattern"
+       TOPLEVEL
+      BUTTON % LABEL "New" GRID 7 0 1 1
+      BUTTON % LABEL "Edit" GRID 7 1 1 1
+      BUTTON % LABEL "Copy" GRID 7 2 1 1
+      BUTTON % LABEL "Paste" GRID 7 3 1 1
+      BUTTON % LABEL "Cut" GRID 7 4 1 1
+     TOPLEVEL
+   TOPLEVEL
+
+END rule_dlg
+
+INTERFACE condition_editor_dlg
+  DIALOG dlg TITLE "Condition Editor" CANCEL
+  GRID g0 VEXPAND HEXPAND
+    LABEL % "Description:" GRID 0 0 1 1 NOHEXPAND NOVEXPAND
+    ENTRY desc "" GRID 1 0 10 1 HEXPAND NOVEXPAND
+    
+  CHECK slash LABEL "slash-mode" GRID 1 3 2 1 NOHEXPAND NOVEXPAND
+  CHECK case LABEL "case-sensitive mode" GRID 3 3 3 1 NOHEXPAND NOVEXPAND
+
+    LABEL % "Expression:" GRID 0 3 1 1 NOHEXPAND NOVEXPAND
+    ENTRY cond "" GRID 0 4 11 1 HEXPAND NOVEXPAND
+END condition_editor_dlg
+
+INTERFACE map_dlg
+  DIALOG dlg TITLE "Token Map Editor" CANCEL
+  GRID g0 VEXPAND HEXPAND
+    LABEL % "Map Description:" GRID 0 -1 1 1 NOVEXPAND NOHEXPAND
+    ENTRY name "" GRID 1 -1 7 1 NOVEXPAND HEXPAND
+
+
+
+      SCROLLED % VEXPAND HEXPAND SIZEREQUEST 600 350 GRID 0 0 6 7
+       LIST l int str str str 
+       TREE t % SHOWHEADERS TITLES "#" "RegExp?" "Input Pattern/Token" "Output Pattern/Token"
+       TOPLEVEL
+
+    BUTTON % LABEL "New" GRID 7 0 1 1
+       CONNECT % clicked map_dlg_new REFLECT
+    BUTTON % LABEL "Edit" GRID 7 1 1 1
+       CONNECT % clicked map_dlg_edit REFLECT
+    BUTTON % LABEL "Copy" GRID 7 2 1 1
+       CONNECT % clicked map_dlg_copy REFLECT
+    BUTTON % LABEL "Paste" GRID 7 3 1 1
+       CONNECT % clicked map_dlg_paste REFLECT
+    BUTTON % LABEL "Cut" GRID 7 4 1 1
+       CONNECT % clicked map_dlg_cut REFLECT
+    BUTTON % LABEL "Move Up" GRID 7 5 1 1
+       CONNECT % clicked map_dlg_moveup REFLECT
+    BUTTON % LABEL "Move Down" GRID 7 6 1 1
+       CONNECT % clicked map_dlg_movedown REFLECT
+
+  FRAME % LABEL "Preview..." GRID 0 8 8 3 NOVEXPAND HEXPAND
+    GRID %
+      LABEL % "Input:" GRID 0 0 1 1 NOHEXPAND NOVEXPAND
+      ENTRY input "" GRID 1 0 4 1 NOVEXPAND HEXPAND
+      BUTTON % LABEL "Maps to:" GRID 0 1 1 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked map_dlg_preview REFLECT
+      ENTRY output "" GRID 1 1 4 1 NOVEXPAND HEXPAND
+
+END map_dlg
+
+INTERFACE map_line_dlg
+
+ DIALOG dlg TITLE "Edit Token Map Pattern..." CANCEL
+  GRID g0 VEXPAND HEXPAND
+     CHECK regexp LABEL "Use Regular-Expressions-Pattern" GRID 0 -1 5 1
+      LABEL % "Input Pattern/Token:" GRID 0 0 1 1 NOHEXPAND NOVEXPAND
+      ENTRY input "" GRID 1 0 4 1 NOVEXPAND HEXPAND
+      LABEL % "Output Pattern/Token:" GRID 0 1 1 1 NOHEXPAND NOVEXPAND
+      ENTRY output "" GRID 1 1 4 1 NOVEXPAND HEXPAND
+
+END map_line_dlg
+
+
+INTERFACE map_edit_dialog
+   DIALOG dlg TITLE "Edit Token Maps..." CANCEL
+    GRID g0 VEXPAND HEXPAND
+
+    BUTTON % LABEL "New" GRID 7 0 1 1
+       CONNECT % clicked map_edit_dialog_new REFLECT
+    BUTTON % LABEL "Edit" GRID 7 1 1 1
+       CONNECT % clicked map_edit_dialog_edit REFLECT
+    BUTTON % LABEL "Copy" GRID 7 2 1 1
+       CONNECT % clicked map_edit_dialog_copy REFLECT
+    BUTTON % LABEL "Paste" GRID 7 3 1 1
+       CONNECT % clicked map_edit_dialog_paste REFLECT
+    BUTTON % LABEL "Cut" GRID 7 4 1 1
+       CONNECT % clicked map_edit_dialog_cut REFLECT
+
+      SCROLLED % VEXPAND HEXPAND SIZEREQUEST 600 350 GRID 0 -1 6 7
+       LIST l int str
+       TREE t % SHOWHEADERS TITLES "#" "Map Description"
+       TOPLEVEL
+END map_edit_dialog
+
+
+INTERFACE map_selection_dialog
+   DIALOG dlg TITLE "Select Token Map..." CANCEL
+    GRID g0 VEXPAND HEXPAND
+      BUTTON % LABEL "Edit..." NOVEXPAND NOHEXPAND GRID 5 -1 1 1
+
+
+      SCROLLED % VEXPAND HEXPAND SIZEREQUEST 600 350 GRID 0 0 6 7
+       LIST l int str
+       TREE t % SHOWHEADERS TITLES "#" "Map Description"
+       TOPLEVEL
+END map_selection_dialog
+
+
+
+INTERFACE clt_dlg
+  DIALOG dlg TITLE "Complex Learning Task Editor" CANCEL
+
+    VBOX v
+    FRAME % LABEL "Point Templates" ETCHEDIN
+    GRID %
+      SCROLLED sp SIZEREQUEST 500 100 VEXPAND HEXPAND
+        + GRID 0 0 6 3 
+        LIST lp int str str
+        TREE tp % SHOWHEADERS TITLES "#" "User?" "Sample"
+        TOPLEVEL
+
+      BUTTON % LABEL "New..."
+       + GRID 6 0 1 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_new_template REFLECT
+      BUTTON % LABEL "Edit.."
+       + GRID 6 2 1 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_edit_template REFLECT
+      BUTTON % LABEL "Copy"
+       + GRID 7 0 1 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_copy_template REFLECT
+      BUTTON % LABEL "Paste"
+       + GRID 7 1 1 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_paste_template REFLECT
+      BUTTON % LABEL "Cut"
+       + GRID 7 2 1 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_cut_template REFLECT
+
+     BUTTON % LABEL "List all..."
+       + GRID 1 4 2 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_list_all_templates REFLECT
+     BUTTON % LABEL "Preview..."
+       + GRID 4 4 2 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_preview_all_templates REFLECT
+
+
+    TOPLEVEL v
+    FRAME % LABEL "Inference Step Rules" ETCHEDIN
+    GRID %
+      SCROLLED % SIZEREQUEST 500 100 VEXPAND HEXPAND
+        + GRID 0 0 6 3 
+        LIST lr int str str str str
+        TREE tr % SHOWHEADERS TITLES "#" "Jp?" "Tp?" "Tr?" "Rule Description"
+        TOPLEVEL
+
+      BUTTON % LABEL "New..."
+       + GRID 6 0 1 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_ir_new REFLECT
+      BUTTON % LABEL "Edit.."
+       + GRID 6 2 1 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_ir_edit REFLECT
+      BUTTON % LABEL "Copy"
+       + GRID 7 0 1 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_ir_copy REFLECT
+      BUTTON % LABEL "Paste"
+       + GRID 7 1 1 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_ir_paste REFLECT
+      BUTTON % LABEL "Cut"
+       + GRID 7 2 1 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_ir_cut REFLECT
+
+     BUTTON % LABEL "List justified..."
+       + GRID 0 4 2 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_ir_list_justified REFLECT
+     BUTTON % LABEL "List trivial..."
+       + GRID 2 4 2 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_ir_list_trivial REFLECT
+     BUTTON % LABEL "Examine..."
+       + GRID 4 4 2 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_ir_examine REFLECT
+     BUTTON % LABEL "f(x)..."
+       + GRID 7 4 1 1 NOHEXPAND NOVEXPAND
+       CONNECT % clicked clt_ir_fns REFLECT
+
+    TOPLEVEL v
+    FRAME % LABEL "Expert Points" ETCHEDIN
+
+    TOPLEVEL v
+    FRAME % LABEL "Feedback" ETCHEDIN
+
+END clt_dlg
