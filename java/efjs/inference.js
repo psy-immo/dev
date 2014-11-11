@@ -707,8 +707,16 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 		 * close justified points and need_justification points
 		 */
 
-		var additional_points = this.hypergraph.GetAdditionalAssertions(
+        var additional_points = 0;
+
+        if (this.solutions.length) {
+            additional_points = this.hypergraph.GetAdditionalAssertions2(
+				closed_points.justified, need_justification, this.solutions);
+
+        } else {
+    		additional_points = this.hypergraph.GetAdditionalAssertions(
 				closed_points.justified, need_justification);
+        }
 
 		var hints_for_parts = [];
 

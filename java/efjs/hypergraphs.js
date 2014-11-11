@@ -889,7 +889,6 @@ function InferenceGraph() {
 
 		return best_candidate;
 	};
-
 	/**
 	 * Note that this function may in some cases not return the optimal set of
 	 * assertions that make the rationale all justified w.r.t. to its
@@ -906,6 +905,7 @@ function InferenceGraph() {
 	 * @param given_unjustified_points
 	 *            array of ids of points that have been given and that are
 	 *            considered to be unjustified
+     *
 	 * 
 	 * @returns an array of additional assertions that would justify all points
 	 */
@@ -983,6 +983,135 @@ function InferenceGraph() {
 
 		return additional_assertions;
 	};
+	/**
+     * This variant of GetAdditionalAssertions tries to make use of the sample solution
+     * that is closest to the solution that is to be corrected by additional assertions.
+	 * 
+	 * @param given_justified_points
+	 *            array of ids of points that have been given and that are
+	 *            considered to be justified
+	 * 
+	 * @param given_unjustified_points
+	 *            array of ids of points that have been given and that are
+	 *            considered to be unjustified
+     *
+     * @param task_sample_solutions
+     *            array of sample solutions, which are arrays of assertion ids that
+     *            are considered to be exemplary.
+     *
+	 * 
+	 * @returns an array of additional assertions that would justify all points
+	 */
+	this.GetAdditionalAssertions2 = function(given_justified_points,
+			given_unjustified_points,
+            task_sample_solutions) {
+
+        /**
+         * first, we need to determine which sample solution is closest to the user input
+         */
+        var sample_solution = 0;
+
+        if (task_sample_solutions.length == 0) {
+            return this.GetAdditionalAssertions(given_justified_points, given_unjustified_points);
+        } else if (task_sample_solutions.length == 1) {
+            /* no need to calculate scores here */
+            sample_solution = task_sample_solutions[0];
+        } else {
+            var best_score = -1000;
+            for (var int9 = 0; int9 < task_sample_solutions.length; int9++) {
+                var score = 0;
+                var candidate_solution = task_sample_solutions[int9];
+                for (var int8 = 0; int8 < candidate_solution.length; int8++) {
+                    var id = candidate_solution[int8];
+                    if (id in given_justified_points) {
+                        score += 5;
+                    } else if (id in given_unjustified_points) {
+                        score += 1;
+                    }
+                }
+                if (score > best_score) {
+                    best_score = score;
+                    sample_solution = candidate_solution;
+                }
+            }
+        }
+        console.log(sample_solution);
+
+		var additional_assertions = [];
+		var considered_justified = [];
+		var need_justification = [];
+
+		for ( var int = 0; int < given_justified_points.length; int++) {
+			var id = given_justified_points[int];
+			considered_justified.push(id);
+		}
+
+		for ( var int2 = 0; int2 < given_unjustified_points.length; int2++) {
+			var id = given_unjustified_points[int2];
+			need_justification.push(id);
+		}
+
+		while (need_justification.length > 0) {
+			/**
+			 * determine candidates and scores
+			 */
+			var minimum_score = 9007199254740992;
+			var minimum_candidate = [];
+			var minimum_index = 0;
+
+            /* TODO: USE sample_solution to guide this process */
+
+			for ( var int3 = 0; int3 < need_justification.length; int3++) {
+				var to_be_justified = need_justification[int3];
+				var result = this.GetBestJustificationCandidate(
+						considered_justified, to_be_justified);
+				var score = result["s"];
+				var candidate = result["c"];
+
+				if ((score < minimum_score)
+						|| ((score == minimum_score) && (candidate.length < minimum_candidate.length))) {
+					minimum_score = score;
+					minimum_candidate = candidate;
+					minimum_index = int3;
+				}
+			}
+
+			/**
+			 * choose minimum_index to be considered justified and add the
+			 * required premises
+			 */
+
+			if (minimum_candidate.length == 0) {
+				var newly_justified_id = need_justification[minimum_index];
+				need_justification.splice(minimum_index, 1);
+				considered_justified.push(newly_justified_id);
+
+				// console.log("Added: " + newly_justified_id);
+			} else {
+
+				for ( var int4 = 0; int4 < minimum_candidate.length; int4++) {
+					var new_point_id = minimum_candidate[int4];
+
+					additional_assertions.push(new_point_id);
+
+					/**
+					 * if new_point_id may be justified by the points given in
+					 * considered_justified, then the best candidate will be
+					 * empty and its score will be 1, resulting in new_point_id
+					 * to be removed from need_justification and added to
+					 * considered_justified in the next iteration of the while
+					 * loop
+					 */
+
+					need_justification.push(new_point_id);
+				}
+			}
+			// console.log("Left: " + need_justification);
+		}
+
+		return additional_assertions;
+	};
+
 
 	/**
 	 * returns a subset of the assertions, that are necessary in order to
