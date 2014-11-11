@@ -64,6 +64,11 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 	 * ids that should be justified
 	 */
 	this.justify = [];
+
+    /**
+     * sample solutions, arrays of ids
+     */
+    this.solutions = [];
 	
 	/**
 	 * done?
@@ -177,6 +182,13 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 	 */
 
 	this.rectifyCounter = false;
+
+    this.SampleSolutions = function(lists) {
+
+        this.solutions = lists;
+
+        return this;
+    };
 
 	/**
 	 * write all needed html elements to the document

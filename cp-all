@@ -18,6 +18,14 @@ cp ../../java/efjs/*.png .
 cp ../../php/loglet/*.php .
 
 cd ..
+cd tour
+cp ../../java/efjs/*.js .
+cp ../../java/efjs/*.css .
+cp ../../java/efjs/*.jar .
+cp ../../java/efjs/*.png .
+cp ../../php/loglet/*.php .
+
+cd ..
 cd ..
 
 cd editor

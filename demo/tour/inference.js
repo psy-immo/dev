@@ -64,6 +64,11 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 	 * ids that should be justified
 	 */
 	this.justify = [];
+
+    /**
+     * sample solutions, arrays of ids
+     */
+    this.solutions = [];
 	
 	/**
 	 * done?
@@ -177,6 +182,13 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 	 */
 
 	this.rectifyCounter = false;
+
+    this.SampleSolutions = function(lists) {
+
+        this.solutions = lists;
+
+        return this;
+    };
 
 	/**
 	 * write all needed html elements to the document
@@ -928,6 +940,11 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 			}
 		}
 
+        /**
+         * add general feedback info
+         */
+        feedback_info += getRes("inferenceFeedbackInfo");
+
 		/**
 		 * probably
 		 */
@@ -1032,7 +1049,7 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 
 			display.SetValue(feedback_info);
 
-			log_data += "\nFeedback Display:\n" + feedback_info;
+			log_data += "\nFeedback Display:\n" + escapeSome(feedback_info);
 		} else
 			log_data += "\nNo feedback displayed.\n";
 

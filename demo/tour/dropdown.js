@@ -67,6 +67,9 @@ function Dropdown(name, tags, label, token) {
 
 	this.contentLabels = [];
 	this.contentValues = [];
+
+    this.locked = false;
+    this.last_index = -1;
 	
 	/**
 	 * store subscription functions
@@ -250,6 +253,38 @@ function Dropdown(name, tags, label, token) {
 		}
 	};
 
+
+    /** hide the drop down and replace it with a span */
+    this.LockInput2 = function() {
+		var html_element = $("dropdown" + this.id);
+        this.last_index = html_element.selectedIndex;
+        var classes = "";
+        var as_span = "<span name=\"dropdown"+ this.id+"\" id=\"dropdown"+this.id+"\">"+this.token+"</span>";
+
+        html_element.replace(as_span);
+
+		var new_element = $("dropdown" + this.id);
+
+        for (var int = 0; int < html_element.classList.length; ++int)
+            new_element.addClassName(html_element.classList[int]);
+        
+    };
+
+    /** lock this input */
+    this.LockInput = function() {
+        this.locked = true;
+        this.LockInput2()
+
+		/**
+		 * notify subscribers about the update
+		 */
+		
+		for ( var int = 0; int < this.subscribers.length; int++) {
+			var notificator = this.subscribers[int];
+			notificator();
+		}
+    };
+
 	/**
 	 * this function marks the current drop down green
 	 */
@@ -271,7 +306,10 @@ function Dropdown(name, tags, label, token) {
 	 */
 	this.GetValue = function() {
 		var element = document.getElementById("dropdown" + this.id);
-		return element.selectedIndex;
+        if (this.locked) 
+            return "L"+this.last_index;
+        else
+    		return "U"+element.selectedIndex;
 	};
 
 	/**
@@ -280,6 +318,14 @@ function Dropdown(name, tags, label, token) {
 
 	this.SetValue = function(contents) {
 		var html_element = $("dropdown" + this.id);
+
+        var is_locked = contents[0] == "L";
+
+        contents = contents.substr(1);
+
+        this.locked = false;
+        this.last_index = contents;
+
 		html_element.selectedIndex = contents;
 
 		if (html_element.selectedIndex > 0) {
@@ -306,6 +352,15 @@ function Dropdown(name, tags, label, token) {
 			var notificator = this.subscribers[int];
 			notificator();
 		}
+
+        if (!this.islistbox) {
+
+            /** lock again */
+            if (is_locked) {
+                this.locked = true;
+                this.LockInput2();
+            }
+        }
 	};
 
 	dropdownArray[this.id] = this;

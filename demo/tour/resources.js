@@ -30,8 +30,8 @@ res["DE"] = res_DE;
 res_US["inferenceMissingArguments"] = "Your solution is still incomplete.";
 res_DE["inferenceMissingArguments"] = "Deine Lösung ist noch nicht vollständig.";
 
-res_US["answerErrors"] = "Your solution still contains an error. Correct parts of your solution are lit green.";
-res_DE["answerErrors"] = "Deine Lösung enthält noch Fehler. Richtige Lösungsfragmente wurden grün gekennzeichnet.";
+res_US["answerErrors"] = "Your solution still contains an error. Correct parts of your solution are lit <span class=\"hilightGood\">green</span>.";
+res_DE["answerErrors"] = "Deine Lösung enthält noch Fehler. Richtige Lösungsfragmente wurden <span class=\"hilightGood\">grün</span> gekennzeichnet.";
 
 res_US["answerCorrect"] =  "Correct!";
 res_DE["answerCorrect"] = "Richtig!";
@@ -47,7 +47,7 @@ res_DE["inferenceRectifiedAfterSolved"] = "Richtig! Gegebenenfalls wurden unnöt
 
 
 res_US["inferenceRectified"] = "Your solution has been corrected. Both incorrect and unnecessary points have been removed and missing points are lit orange.";
-res_DE["inferenceRectified"] = "Deine Lösung wurde korrigiert. Sowohl unrichtige als auch unnötige Aussagen wurden entfernt. Fehlende Aussagen wurden ergänzt und orange gekennzeichnet. Richtige und vollständig begründete Aussagen wurden grün gekennzeichnet. Richtige Aussagen ohne Begründung wurden gelb gekennzeichnet.";
+res_DE["inferenceRectified"] = "Deine Lösung wurde korrigiert:<br/><span class=\"airportGood airportFeedback\">Richtige und vollständig begründete Aussagen wurden grün gekennzeichnet.</span><br/><span class=\"airportOkay airportFeedback\">Richtige Aussagen mit fehlender Begründung wurden gelb gekennzeichnet.</span><br/><span class=\"airportHint airportFeedback\">Fehlende Aussagen wurden ergänzt und orange gekennzeichnet.</span><br/><span class=\"airportFeedback\">Sowohl unrichtige als auch unnötige Aussagen wurden entfernt.</span>";
 
 res_US["inferenceCorrect"] = "Congratulations! Your solution is correct and complete!";
 res_DE["inferenceCorrect"] = "Sehr gut! Deine Lösung ist vollständig und richtig!";
@@ -61,6 +61,8 @@ res_DE["inferenceJustify"] = "Einige Argumente benötigen noch weitere Begründu
 res_US["inferenceIncomplete"] = "Some parts of the solution are still missing.";
 res_DE["inferenceIncomplete"] = "Es fehlt noch ein Teil der Lösung.";
 
+res_US["inferenceFeedbackInfo"] = "";
+res_DE["inferenceFeedbackInfo"] = "<br/><span class=\"airportGood airportFeedback\">Richtige und vollständig begründete Aussagen wurden grün gekennzeichnet.</span><br/><span class=\"airportOkay airportFeedback\">Richtige Aussagen mit fehlender Begründung wurden gelb gekennzeichnet.</span><br/><span class=\"airportBad airportFeedback\">Falsche Aussagen wurden rot gekennzeichnet.</span><br/><span class=\"airportTrivial airportFeedback\">Inhaltsleere Aussagen wurden grau gekennzeichnet.</span>";
 
 /**
  * default to US English as resource language
