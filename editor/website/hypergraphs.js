@@ -854,6 +854,101 @@ function InferenceGraph() {
 
 		return candidate_list;
 	};
+	/**
+	 * 
+	 * @param given_justified_points
+	 *            array of ids of points that have been given and that are
+	 *            considered to be justified
+	 * 
+	 * @param to_be_justified
+	 *            id of the assertion that needs further justification
+     *
+     * @param sample_solution
+     *            array of ids of the sample solution
+	 * 
+	 * 
+	 * 
+	 * @returns an array consisting of arrays of further assertions, that would
+	 *          have to be added to justify a given assertion interleaved with
+	 *          relative depth scores
+	 * 
+	 * 
+	 */
+
+	this.GetJustificationCandidates2 = function(given_justified_points,
+			to_be_justified, sample_solution) {
+		/**
+		 * if this assertion is not justifiable or justified itself, we state
+		 * that no assertions would have to be added
+		 */
+		var to_be_justified_depth = this.GetJustificationDepth(to_be_justified);
+		if (to_be_justified_depth <= 0) {
+			return [ [], 0 ];
+		}
+
+		var candidate_list = [];
+
+		var justifying_inferences = this
+				.GetJustifyingInferences([ to_be_justified ]);
+
+		/**
+		 * check every possible way to infer to_be_justified
+		 */
+
+		for ( var int_ji = 0; int_ji < justifying_inferences.length; int_ji++) {
+			var inference_id = justifying_inferences[int_ji];
+			var premises = this.inferences[inference_id].p;
+
+			/**
+			 * check which assertions have been given so far
+			 */
+
+			var additional_assertions = [];
+			for ( var int_p = 0; int_p < premises.length; int_p++) {
+				var premise_id = premises[int_p];
+				if (given_justified_points.indexOf(premise_id) < 0) {
+					additional_assertions.push(premise_id);
+				}
+			}
+
+			/**
+			 * check the maximum depth of assertions that haven't been given
+			 */
+
+			var max_depth_score = 0;
+
+			for ( var int_a = 0; int_a < additional_assertions.length; int_a++) {
+				var assertion_id = additional_assertions[int_a];
+				var assertion_depth = this.GetJustificationDepth(assertion_id);
+
+
+                /**
+                 * force worse score for assertions that aren't in the sample solution
+                 */
+                if (sample_solution.indexOf(assertion_id) < 0) {
+                    assertion_depth += 3; /* penalty for solution that isn't in sample */
+
+                    //console.log("Penalty for "+assertion_id);
+                    //console.log("See: "+sample_solution);
+                }
+
+				if (assertion_depth > max_depth_score) {
+					max_depth_score = assertion_depth;
+				}
+			}
+
+
+			/**
+			 * save the results
+			 */
+
+			candidate_list.push(additional_assertions);
+			candidate_list.push(max_depth_score + 1);
+		}
+
+		return candidate_list;
+	};
+
 
 	/**
 	 * 
@@ -871,6 +966,43 @@ function InferenceGraph() {
 			to_be_justified) {
 		var candidate_list = this.GetJustificationCandidates(
 				given_justified_points, to_be_justified);
+		var best_candidate = {
+			"c" : candidate_list[0],
+			"s" : candidate_list[1]
+		};
+
+		for ( var int = 1; int < candidate_list.length; int += 2) {
+			var candidate = candidate_list[int - 1];
+			var score = candidate_list[int];
+
+			if ((score < best_candidate["s"])
+					|| ((score == best_candidate["s"]) && (candidate.length < best_candidate["c"].length))) {
+				best_candidate["s"] = score;
+				best_candidate["c"] = candidate;
+			}
+		}
+
+		return best_candidate;
+	};
+	/**
+	 * 
+	 * @param given_justified_points
+	 *            array of ids of points that have been given and that are
+	 *            considered to be justified
+	 * 
+	 * @param to_be_justified
+	 *            id of the assertion that needs further justification
+     *
+     * @param sample_solution
+     *            array of ids of a sample solution
+	 * 
+	 * @returns the best justification candidate (["c"]) and its score (["s"])
+	 */
+
+	this.GetBestJustificationCandidate2 = function(given_justified_points,
+			to_be_justified, sample_solution) {
+		var candidate_list = this.GetJustificationCandidates2(
+				given_justified_points, to_be_justified, sample_solution);
 		var best_candidate = {
 			"c" : candidate_list[0],
 			"s" : candidate_list[1]
@@ -1035,7 +1167,6 @@ function InferenceGraph() {
                 }
             }
         }
-        console.log(sample_solution);
 
 		var additional_assertions = [];
 		var considered_justified = [];
@@ -1059,12 +1190,10 @@ function InferenceGraph() {
 			var minimum_candidate = [];
 			var minimum_index = 0;
 
-            /* TODO: USE sample_solution to guide this process */
-
 			for ( var int3 = 0; int3 < need_justification.length; int3++) {
 				var to_be_justified = need_justification[int3];
-				var result = this.GetBestJustificationCandidate(
-						considered_justified, to_be_justified);
+				var result = this.GetBestJustificationCandidate2(
+						considered_justified, to_be_justified, sample_solution);
 				var score = result["s"];
 				var candidate = result["c"];
 
