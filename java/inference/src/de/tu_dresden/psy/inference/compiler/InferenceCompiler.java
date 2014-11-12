@@ -447,6 +447,12 @@ public class InferenceCompiler {
 		writer.write("])");
 
 		/**
+		 * 
+		 * TODO: Add code with corrected justification depths guided by the
+		 * given sample solutions
+		 */
+
+		/**
 		 * write the rest of the stuff
 		 */
 
