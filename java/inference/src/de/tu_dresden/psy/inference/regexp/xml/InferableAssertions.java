@@ -18,6 +18,7 @@
 
 package de.tu_dresden.psy.inference.regexp.xml;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import de.tu_dresden.psy.inference.EquivalentAssertions;
 import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.InferenceMaps;
+import de.tu_dresden.psy.inference.compiler.StringIds;
 import de.tu_dresden.psy.inference.forms.AnnotableDisjunctiveNormalForm;
 import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
 
@@ -80,6 +82,9 @@ public class InferableAssertions {
 	 */
 	private Set<AssertionInterface> trivialInferred;
 
+	private Set<ArrayList<Integer>> sampleSolutions;
+	private StringIds assertionDomain;
+
 	/**
 	 * 
 	 * @param implicit
@@ -92,8 +97,12 @@ public class InferableAssertions {
 	public InferableAssertions(Set<AssertionInterface> implicit,
 			Set<AssertionInterface> given, Collection<InferenceMap> rules,
 			Set<ConstrainedAssertionFilter> invalid,
-			Set<ConstrainedAssertionFilter> trivial) {
-		this.givenAssertions = new AssertionEquivalenceClasses();
+			Set<ConstrainedAssertionFilter> trivial,
+			Set<ArrayList<Integer>> sampleSolutions, StringIds assertionDomain) {
+		this.sampleSolutions = sampleSolutions;
+		this.assertionDomain = assertionDomain;
+		this.givenAssertions = new AssertionEquivalenceClasses(
+				this.sampleSolutions, this.assertionDomain);
 
 		this.givenAssertions.addNewAssertions(implicit);
 
@@ -684,7 +693,9 @@ public class InferableAssertions {
 		Set<EquivalentAssertions> disregard = new HashSet<EquivalentAssertions>();
 		Set<EquivalentAssertions> forbidden = new HashSet<EquivalentAssertions>();
 
-		forbidden.add(new EquivalentAssertions(assertion));
+		forbidden
+		.add(new EquivalentAssertions(assertion, this.sampleSolutions,
+				this.assertionDomain));
 
 		return this.countJustificationDelta(assertion, disregard, forbidden, 0, 5);
 	}
@@ -746,7 +757,8 @@ public class InferableAssertions {
 		Set<String> qualities_lacking = new TreeSet<String>();
 
 		for (AssertionInterface a : needJustification) {
-			EquivalentAssertions ea = new EquivalentAssertions(a);
+			EquivalentAssertions ea = new EquivalentAssertions(a,
+					this.sampleSolutions, this.assertionDomain);
 
 			justified_by.put(ea,
 					this.getMinimalDepthPrecursorSets(ea, otherGivenAssertions));

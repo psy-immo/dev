@@ -19,11 +19,13 @@
 
 package de.tu_dresden.psy.inference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import de.tu_dresden.psy.inference.compiler.StringIds;
 import de.tu_dresden.psy.inference.forms.AnnotableDisjunctiveNormalForm;
 
 /**
@@ -39,13 +41,22 @@ public class AssertionEquivalenceClasses {
 	private Set<AssertionInterface> equivalenceClasses;
 	private Map<EquivalentAssertions, EquivalentAssertions> representants;
 
+	/** set of sample solutions */
+	private Set<ArrayList<Integer>> sampleSolutions;
+
+	private StringIds assertionDomain;
+
 	/**
 	 * default constructor
 	 */
 
-	public AssertionEquivalenceClasses() {
+	public AssertionEquivalenceClasses(Set<ArrayList<Integer>> sampleSolutions,
+			StringIds assertionDomain) {
 		this.equivalenceClasses = new HashSet<AssertionInterface>();
 		this.representants = new HashMap<EquivalentAssertions, EquivalentAssertions>();
+
+		this.assertionDomain = assertionDomain;
+		this.sampleSolutions = sampleSolutions;
 	}
 
 	/**
@@ -59,6 +70,9 @@ public class AssertionEquivalenceClasses {
 				copyContents.representants.size());
 		this.representants = new HashMap<EquivalentAssertions, EquivalentAssertions>(
 				copyContents.representants.size());
+
+		this.sampleSolutions = copyContents.sampleSolutions;
+		this.assertionDomain = copyContents.assertionDomain;
 
 		for (EquivalentAssertions ea : copyContents.representants.keySet()) {
 			EquivalentAssertions copy = new EquivalentAssertions(ea);
@@ -84,7 +98,8 @@ public class AssertionEquivalenceClasses {
 	 */
 
 	public boolean contains(AssertionInterface ass) {
-		EquivalentAssertions ec = new EquivalentAssertions(ass);
+		EquivalentAssertions ec = new EquivalentAssertions(ass,
+				this.sampleSolutions, this.assertionDomain);
 		return this.representants.get(ec) != null;
 	}
 
@@ -122,7 +137,8 @@ public class AssertionEquivalenceClasses {
 			System.err.print("\r ~~~~ done: " + ((count * 100) / size) + "% ("
 					+ count + ")  new classes: " + new_classes);
 
-			EquivalentAssertions e_class = new EquivalentAssertions(assertion);
+			EquivalentAssertions e_class = new EquivalentAssertions(assertion,
+					this.sampleSolutions, this.assertionDomain);
 
 			EquivalentAssertions previous_class = this.representants
 					.get(e_class);
@@ -146,7 +162,8 @@ public class AssertionEquivalenceClasses {
 	 */
 
 	public int justification(AssertionInterface assertion) {
-		EquivalentAssertions ec = new EquivalentAssertions(assertion);
+		EquivalentAssertions ec = new EquivalentAssertions(assertion,
+				this.sampleSolutions, this.assertionDomain);
 
 		EquivalentAssertions r = this.representants.get(ec);
 		if (r == null) {
@@ -154,6 +171,23 @@ public class AssertionEquivalenceClasses {
 		}
 
 		return r.getJustificationDepth();
+	}
+
+	/**
+	 * 
+	 * @param assertion
+	 * @param modifiedDepths
+	 *            *output* this structure is filled accordingly
+	 */
+	public void modifiedJustification(AssertionInterface assertion,
+			Map<ArrayList<Integer>, Map<Integer, Integer>> modifiedDepths) {
+		EquivalentAssertions ec = new EquivalentAssertions(assertion,
+				this.sampleSolutions, this.assertionDomain);
+
+		EquivalentAssertions r = this.representants.get(ec);
+		if (r != null) {
+			r.putModifiedJustificationDepths(modifiedDepths);
+		}
 	}
 
 	/**
@@ -204,7 +238,8 @@ public class AssertionEquivalenceClasses {
 
 	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> ancestors(
 			AssertionInterface assertion) {
-		EquivalentAssertions ec = new EquivalentAssertions(assertion);
+		EquivalentAssertions ec = new EquivalentAssertions(assertion,
+				this.sampleSolutions, this.assertionDomain);
 
 		EquivalentAssertions r = this.representants.get(ec);
 		if (r == null) {
@@ -221,7 +256,8 @@ public class AssertionEquivalenceClasses {
 	 */
 	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> precursors(
 			AssertionInterface assertion) {
-		EquivalentAssertions ec = new EquivalentAssertions(assertion);
+		EquivalentAssertions ec = new EquivalentAssertions(assertion,
+				this.sampleSolutions, this.assertionDomain);
 
 		EquivalentAssertions r = this.representants.get(ec);
 		if (r == null) {
@@ -239,7 +275,8 @@ public class AssertionEquivalenceClasses {
 	 */
 	public AnnotableDisjunctiveNormalForm<EquivalentAssertions> preimages(
 			AssertionInterface assertion) {
-		EquivalentAssertions ec = new EquivalentAssertions(assertion);
+		EquivalentAssertions ec = new EquivalentAssertions(assertion,
+				this.sampleSolutions, this.assertionDomain);
 
 		EquivalentAssertions r = this.representants.get(ec);
 		if (r == null) {

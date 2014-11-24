@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -39,6 +40,7 @@ import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
 import de.tu_dresden.psy.inference.InferenceMaps;
 import de.tu_dresden.psy.inference.InferredAssertion;
+import de.tu_dresden.psy.inference.compiler.StringIds;
 import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
 import de.tu_dresden.psy.inference.regexp.RegExpInferenceMap;
 import de.tu_dresden.psy.inference.regexp.xml.XmlHandler;
@@ -72,15 +74,16 @@ public class Main {
 		"the current through bulb A·is bigger than·the current through bulbchain BC" };
 
 		Set<AssertionInterface> valid = new HashSet<AssertionInterface>();
-		for (int i = 0; i < premises.length; ++i) {
-			valid.add(new Assertion(premises[i]));
+		for (String premise : premises) {
+			valid.add(new Assertion(premise));
 		}
 
 		/**
 		 * use equivalence classes to speed up the process
 		 */
 
-		AssertionEquivalenceClasses eq_classes = new AssertionEquivalenceClasses();
+		AssertionEquivalenceClasses eq_classes = new AssertionEquivalenceClasses(
+				new HashSet<ArrayList<Integer>>(), new StringIds());
 
 		eq_classes.addNewAssertions(valid);
 
@@ -364,8 +367,8 @@ public class Main {
 				);
 
 		Set<AssertionInterface> valid = new HashSet<AssertionInterface>();
-		for (int i = 0; i < premises.length; ++i) {
-			valid.addAll(matchStrings.match((premises[i])));
+		for (String premise : premises) {
+			valid.addAll(matchStrings.match((premise)));
 		}
 
 		InferenceMaps maps = new InferenceMaps(mapset);
@@ -374,7 +377,8 @@ public class Main {
 		 * use equivalence classes to speed up the process
 		 */
 
-		AssertionEquivalenceClasses eq_classes = new AssertionEquivalenceClasses();
+		AssertionEquivalenceClasses eq_classes = new AssertionEquivalenceClasses(
+				new HashSet<ArrayList<Integer>>(), new StringIds());
 
 		eq_classes.addNewAssertions(valid);
 
@@ -447,7 +451,8 @@ public class Main {
 		 * use equivalence classes to speed up the process
 		 */
 
-		AssertionEquivalenceClasses eq_classes = new AssertionEquivalenceClasses();
+		AssertionEquivalenceClasses eq_classes = new AssertionEquivalenceClasses(
+				new HashSet<ArrayList<Integer>>(), new StringIds());
 
 		eq_classes.addNewAssertions(valid);
 

@@ -70,6 +70,12 @@ public class InferenceCompiler {
 	private Set<ArrayList<Integer>> sampleSolutionIds;
 
 	/**
+	 * keep track of the modified justification depths for each sample solution
+	 */
+
+	private Map<ArrayList<Integer>, Map<Integer, Integer>> modifiedJustificationDepths;
+
+	/**
 	 * keep track of the assertion domain
 	 */
 
@@ -234,12 +240,14 @@ public class InferenceCompiler {
 		this.solutionPartIds = new HashMap<String, Set<Integer>>();
 		this.justificationDepths = new HashMap<Integer, Integer>();
 
+
 		this.lackingQualityIds = new HashMap<String, Set<Integer>>();
 
 		this.todoJustifyIds = new HashSet<Integer>();
 		this.implicitIds = new HashSet<Integer>();
 
 		this.sampleSolutionIds = new HashSet<ArrayList<Integer>>();
+		this.modifiedJustificationDepths = new HashMap<ArrayList<Integer>, Map<Integer, Integer>>();
 	}
 
 	/**
@@ -446,11 +454,24 @@ public class InferenceCompiler {
 
 		writer.write("])");
 
-		/**
-		 * 
-		 * TODO: Add code with corrected justification depths guided by the
-		 * given sample solutions
-		 */
+		for (ArrayList<Integer> solution : this.sampleSolutionIds) {
+			/**
+			 * we want to keep the order of the sample solutions, so we do not
+			 * iterate over this.modifiedJustificationsDepths.values() here.
+			 */
+			Map<Integer, Integer> modifiedDepths = this.modifiedJustificationDepths
+					.get(solution);
+
+			writer.write(".AddModifiedJustificationDepths([");
+
+			for (Integer assertion_id : modifiedDepths.keySet()) {
+				writer.write(StringEscape.obfuscateInt(assertion_id) + ", "
+						+ modifiedDepths.get(assertion_id) + ", ");
+			}
+
+			writer.write("])");
+
+		}
 
 		/**
 		 * write the rest of the stuff
@@ -643,6 +664,7 @@ public class InferenceCompiler {
 		 * transfer data to intermediate structures
 		 */
 
+
 		this.implicitAssertions.addAll(this.inferenceRoot
 				.getImplicitAssertions());
 		this.correctAssertionBase.addAll(this.inferenceRoot
@@ -668,6 +690,38 @@ public class InferenceCompiler {
 		this.concludingAssertionFilters.addAll(this.inferenceRoot
 				.getConclusionFilters());
 
+		/**
+		 * add the sample solutions, as we need them to modify the justification
+		 * depths
+		 */
+
+		for (ArrayList<String> solution : this.inferenceRoot
+				.getSampleSolutions()) {
+			ArrayList<Integer> solutionIds = new ArrayList<Integer>();
+
+			for (String part : solution) {
+				int id = this.assertionDomain.fromString(part);
+				if (id < 0) {
+					System.err
+					.println("ERROR!! Sample Solution Point not in assertion domain: "
+							+ part);
+				} else {
+					solutionIds.add(id);
+				}
+			}
+
+			this.sampleSolutionIds.add(solutionIds);
+
+			/**
+			 * furthermore, we create a new structure that will hold the
+			 * rectified justification depth scores needed to direct a given
+			 * solution towards the sample solution.
+			 */
+
+			this.modifiedJustificationDepths.put(solutionIds,
+					new HashMap<Integer, Integer>());
+		}
+
 		/***
 		 * Second, we need to build the inference hyper graph, the correct
 		 * assertion set and the trivial assertion set
@@ -687,16 +741,19 @@ public class InferenceCompiler {
 		 * .getClasses()
 		 * 
 		 */
-		AssertionEquivalenceClasses implicitClasses = new AssertionEquivalenceClasses();
+		AssertionEquivalenceClasses implicitClasses = new AssertionEquivalenceClasses(
+				this.sampleSolutionIds, this.assertionDomain);
 		implicitClasses.addNewAssertions(this.implicitAssertions);
 
-		AssertionEquivalenceClasses correctBaseClasses = new AssertionEquivalenceClasses();
+		AssertionEquivalenceClasses correctBaseClasses = new AssertionEquivalenceClasses(
+				this.sampleSolutionIds, this.assertionDomain);
 		correctBaseClasses.addNewAssertions(this.correctAssertionBase);
 
 		InferableAssertions inferCorrectAssertions = new InferableAssertions(
 				implicitClasses.getClasses(), correctBaseClasses.getClasses(),
 				this.inferenceRules.values(), this.invalidAssertionFilters,
-				this.trivialAssertionFilters);
+				this.trivialAssertionFilters, this.sampleSolutionIds,
+				this.assertionDomain);
 
 		InferableAssertions.State success = inferCorrectAssertions
 				.closeValid(new ExcessLimit(this.excessTimeLimit));
@@ -955,6 +1012,10 @@ public class InferenceCompiler {
 
 		for (AssertionInterface a : inferCorrectAssertions.getValid()
 				.getClasses()) {
+
+			inferCorrectAssertions.getValid().modifiedJustification(a,
+					this.modifiedJustificationDepths);
+
 			int justification_level = inferCorrectAssertions.getValid()
 					.justification(a);
 			if (justification_level == EquivalentAssertions.notJustified) {
@@ -1084,27 +1145,6 @@ public class InferenceCompiler {
 			}
 		}
 
-		/**
-		 * add the sample solutions
-		 */
-
-		for (ArrayList<String> solution : this.inferenceRoot
-				.getSampleSolutions()) {
-			ArrayList<Integer> solutionIds = new ArrayList<Integer>();
-
-			for (String part : solution) {
-				int id = this.assertionDomain.fromString(part);
-				if (id < 0) {
-					System.err
-					.println("ERROR!! Sample Solution Point not in assertion domain: "
-							+ part);
-				} else {
-					solutionIds.add(id);
-				}
-			}
-
-			this.sampleSolutionIds.add(solutionIds);
-		}
 
 		/**
 		 * keep track of the implicit assertions

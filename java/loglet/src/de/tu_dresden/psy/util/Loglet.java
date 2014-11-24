@@ -25,7 +25,7 @@ import javax.swing.JFileChooser;
 public class Loglet extends Applet {
 
 	private static final class GetFileContents implements
-			PrivilegedAction<String> {
+	PrivilegedAction<String> {
 
 		public GetFileContents() {
 		}
@@ -53,6 +53,8 @@ public class Loglet extends Applet {
 					}
 
 					result = stringBuilder.toString();
+
+					reader.close();
 				}
 
 			} catch (Exception e) {
@@ -65,7 +67,7 @@ public class Loglet extends Applet {
 	}
 
 	private static final class GetWebPageData implements
-			PrivilegedAction<String> {
+	PrivilegedAction<String> {
 		private String id, varname, value, url;
 
 		public GetWebPageData(String id, String varname, String value,
@@ -84,14 +86,14 @@ public class Loglet extends Applet {
 			try {
 				// Construct data
 				data = URLEncoder.encode("id", "UTF-8") + "="
-						+ URLEncoder.encode(id, "UTF-8");
+						+ URLEncoder.encode(this.id, "UTF-8");
 				data += "&" + URLEncoder.encode("varname", "UTF-8") + "="
-						+ URLEncoder.encode(varname, "UTF-8");
+						+ URLEncoder.encode(this.varname, "UTF-8");
 				data += "&" + URLEncoder.encode("value", "UTF-8") + "="
-						+ URLEncoder.encode(value, "UTF-8");
+						+ URLEncoder.encode(this.value, "UTF-8");
 
 				// Send data
-				URL url_obj = new URL(url);
+				URL url_obj = new URL(this.url);
 				URLConnection conn = url_obj.openConnection();
 				conn.setDoOutput(true);
 				OutputStreamWriter wr = new OutputStreamWriter(
@@ -106,14 +108,15 @@ public class Loglet extends Applet {
 				String line;
 
 				while ((line = rd.readLine()) != null) {
-					if (result.isEmpty() == false)
+					if (result.isEmpty() == false) {
 						result += "\n";
+					}
 					result += line;
 				}
 				wr.close();
 				rd.close();
 			} catch (Exception e) {
-				result = "!!" + e.getMessage() + "\n\n" + data + "\n" + url;
+				result = "!!" + e.getMessage() + "\n\n" + data + "\n" + this.url;
 			}
 
 			return result;
@@ -121,7 +124,7 @@ public class Loglet extends Applet {
 	}
 
 	private static final class CopyToClipboard implements
-			PrivilegedAction<String>, ClipboardOwner {
+	PrivilegedAction<String>, ClipboardOwner {
 		private String data;
 
 		public CopyToClipboard(String data) {
@@ -150,7 +153,7 @@ public class Loglet extends Applet {
 	}
 
 	private static final class PasteFromClipboard implements
-			PrivilegedAction<String>, ClipboardOwner {
+	PrivilegedAction<String>, ClipboardOwner {
 
 		public PasteFromClipboard() {
 		}
@@ -167,11 +170,11 @@ public class Loglet extends Applet {
 				Transferable contents = clipboard.getContents(null);
 				boolean hasTransferableText = (contents != null)
 						&& contents
-								.isDataFlavorSupported(DataFlavor.stringFlavor);
-				if (hasTransferableText)
-
+						.isDataFlavorSupported(DataFlavor.stringFlavor);
+				if (hasTransferableText) {
 					result = (String) contents
 							.getTransferData(DataFlavor.stringFlavor);
+				}
 
 			} catch (Exception e) {
 				result = "!!" + e.getMessage() + "\n";
@@ -186,13 +189,13 @@ public class Loglet extends Applet {
 	}
 
 	private static final class SetLocalFileContents implements
-			PrivilegedAction<String> {
+	PrivilegedAction<String> {
 		private String data;
-	
+
 		public SetLocalFileContents(String data) {
 			this.data = data;
 		}
-	
+
 		@Override
 		public String run() {
 			String result = "";
@@ -209,18 +212,19 @@ public class Loglet extends Applet {
 						out = new PrintStream(new FileOutputStream(file));
 						out.print(this.data);
 					} finally {
-						if (out != null)
+						if (out != null) {
 							out.close();
+						}
 					}
 				}
 
 			} catch (Exception e) {
 				result = "!!" + e.getMessage() + "\n";
 			}
-	
+
 			return result;
 		}
-	
+
 	}
 
 	/**
@@ -259,7 +263,7 @@ public class Loglet extends Applet {
 		 */
 		return AccessController.doPrivileged(new GetFileContents());
 	}
-	
+
 	/**
 	 * 
 	 * opens a file open dialog, opens the file and saves the data

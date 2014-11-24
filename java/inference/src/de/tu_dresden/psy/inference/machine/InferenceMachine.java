@@ -21,6 +21,7 @@ package de.tu_dresden.psy.inference.machine;
 import java.applet.Applet;
 import java.io.FileInputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import de.tu_dresden.psy.inference.AssertionInterface;
 import de.tu_dresden.psy.inference.EquivalentAssertions;
 import de.tu_dresden.psy.inference.ExcessLimit;
 import de.tu_dresden.psy.inference.InferenceMap;
+import de.tu_dresden.psy.inference.compiler.StringIds;
 import de.tu_dresden.psy.inference.regexp.ConstrainedAssertionFilter;
 import de.tu_dresden.psy.inference.regexp.xml.InferableAssertions;
 import de.tu_dresden.psy.inference.regexp.xml.XmlHandler;
@@ -92,10 +94,14 @@ public class InferenceMachine extends Applet {
 	 */
 
 	public void resetState() {
-		this.implicit = new AssertionEquivalenceClasses();
-		this.expert = new AssertionEquivalenceClasses();
-		this.studentArguments = new AssertionEquivalenceClasses();
-		this.studentConclusions = new AssertionEquivalenceClasses();
+		this.implicit = new AssertionEquivalenceClasses(
+				new HashSet<ArrayList<Integer>>(), new StringIds());
+		this.expert = new AssertionEquivalenceClasses(
+				new HashSet<ArrayList<Integer>>(), new StringIds());
+		this.studentArguments = new AssertionEquivalenceClasses(
+				new HashSet<ArrayList<Integer>>(), new StringIds());
+		this.studentConclusions = new AssertionEquivalenceClasses(
+				new HashSet<ArrayList<Integer>>(), new StringIds());
 		this.inferenceMaps = new HashMap<String, InferenceMap>();
 		this.trivialInferenceMaps = new HashMap<String, InferenceMap>();
 		this.trivial = new HashSet<ConstrainedAssertionFilter>();
@@ -106,12 +112,14 @@ public class InferenceMachine extends Applet {
 				new HashSet<AssertionInterface>(),
 				new HashSet<AssertionInterface>(), new HashSet<InferenceMap>(),
 				new HashSet<ConstrainedAssertionFilter>(),
-				new HashSet<ConstrainedAssertionFilter>());
+				new HashSet<ConstrainedAssertionFilter>(),
+				new HashSet<ArrayList<Integer>>(), new StringIds());
 		this.studentValid = new InferableAssertions(
 				new HashSet<AssertionInterface>(),
 				new HashSet<AssertionInterface>(), new HashSet<InferenceMap>(),
 				new HashSet<ConstrainedAssertionFilter>(),
-				new HashSet<ConstrainedAssertionFilter>());
+				new HashSet<ConstrainedAssertionFilter>(),
+				new HashSet<ArrayList<Integer>>(), new StringIds());
 		this.lackQualities = new HashMap<String, ConstrainedAssertionFilter>();
 		this.solutionParts = new HashMap<ConstrainedAssertionFilter, String>();
 		this.lastGivenSetOfParsers = new SubjectPredicateObjectMatchers(
@@ -124,13 +132,16 @@ public class InferenceMachine extends Applet {
 
 	public void resetStudentsState() {
 
-		this.studentArguments = new AssertionEquivalenceClasses();
-		this.studentConclusions = new AssertionEquivalenceClasses();
+		this.studentArguments = new AssertionEquivalenceClasses(
+				new HashSet<ArrayList<Integer>>(), new StringIds());
+		this.studentConclusions = new AssertionEquivalenceClasses(
+				new HashSet<ArrayList<Integer>>(), new StringIds());
 		this.studentValid = new InferableAssertions(
 				new HashSet<AssertionInterface>(),
 				new HashSet<AssertionInterface>(), new HashSet<InferenceMap>(),
 				new HashSet<ConstrainedAssertionFilter>(),
-				new HashSet<ConstrainedAssertionFilter>());
+				new HashSet<ConstrainedAssertionFilter>(),
+				new HashSet<ArrayList<Integer>>(), new StringIds());
 	}
 
 	public InferenceMachine() {
@@ -579,7 +590,9 @@ public class InferenceMachine extends Applet {
 
 	public String closeExpertAssertions() {
 		this.expertValid = new InferableAssertions(this.implicit.getClasses(),
-				this.expert.getClasses(), this.inferenceMaps.values(), this.invalid, this.trivial);
+				this.expert.getClasses(), this.inferenceMaps.values(),
+				this.invalid, this.trivial, new HashSet<ArrayList<Integer>>(),
+				new StringIds());
 		return this.expertValid.closeValid(new ExcessLimit(this.excessTimeLimit)).name();
 	}
 
@@ -598,10 +611,15 @@ public class InferenceMachine extends Applet {
 
 		if (allowNonTrivial) {
 			this.studentValid = new InferableAssertions(this.implicit.getClasses(),
-					given, this.inferenceMaps.values(), this.invalid, this.trivial);
+					given,
+					this.inferenceMaps.values(), this.invalid, this.trivial,
+					new HashSet<ArrayList<Integer>>(), new StringIds());
 		} else {
 			this.studentValid = new InferableAssertions(this.implicit.getClasses(),
-					given, this.trivialInferenceMaps.values(), this.invalid, this.trivial);
+					given,
+					this.trivialInferenceMaps.values(), this.invalid,
+					this.trivial, new HashSet<ArrayList<Integer>>(),
+					new StringIds());
 		}
 
 	}

@@ -18,9 +18,13 @@
 
 package de.tu_dresden.psy.inference;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import de.tu_dresden.psy.inference.compiler.StringIds;
 import de.tu_dresden.psy.inference.forms.AnnotableDisjunctiveNormalForm;
 import de.tu_dresden.psy.inference.forms.Annotated;
 
@@ -39,6 +43,9 @@ public class EquivalentAssertions implements AssertionInterface {
 	private int hashSubject, hashPredicate, hashObject;
 
 	private Set<AssertionInterface> assertions;
+
+	private Set<ArrayList<Integer>> sampleSolutions;
+	private Integer assertion_id;
 
 	private boolean old;
 
@@ -59,6 +66,8 @@ public class EquivalentAssertions implements AssertionInterface {
 
 	private int justificationDepth;
 
+	private Map<ArrayList<Integer>, Integer> modifiedJustificationDepth;
+
 	@Override
 	public boolean isOld() {
 		return this.old;
@@ -75,7 +84,10 @@ public class EquivalentAssertions implements AssertionInterface {
 	 * 
 	 * @param representant
 	 */
-	public EquivalentAssertions(AssertionInterface representant) {
+	public EquivalentAssertions(AssertionInterface representant,
+			Set<ArrayList<Integer>> sampleSolutions, StringIds assertionDomain) {
+		this.assertion_id = assertionDomain.fromAssertion(representant);
+		this.sampleSolutions = sampleSolutions;
 		this.assertions = new HashSet<AssertionInterface>();
 		this.assertions.add(representant);
 		this.subject = representant.getSubject();
@@ -89,6 +101,11 @@ public class EquivalentAssertions implements AssertionInterface {
 		this.directAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
 		this.ruleAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
 		this.allAncestors = new AnnotableDisjunctiveNormalForm<EquivalentAssertions>();
+
+		this.modifiedJustificationDepth = new HashMap<ArrayList<Integer>, Integer>();
+		for (ArrayList<Integer> m : this.sampleSolutions) {
+			this.modifiedJustificationDepth.put(m, notJustified);
+		}
 	}
 
 	/**
@@ -261,21 +278,113 @@ public class EquivalentAssertions implements AssertionInterface {
 		return this.justificationDepth;
 	}
 
+	/** update the modified justification depth structure used for output */
+
+	public void putModifiedJustificationDepths(
+			Map<ArrayList<Integer>, Map<Integer, Integer>> modifiedDepths) {
+		for (ArrayList<Integer> m : this.modifiedJustificationDepth.keySet()) {
+			modifiedDepths.get(m).put(this.assertion_id,
+					this.modifiedJustificationDepth.get(m));
+		}
+	}
+
 	/**
 	 * makes this assertion class to be considered justified
 	 */
 
 	public void considerJustified() {
 		this.justificationDepth = 0;
+		for (ArrayList<Integer> m : this.modifiedJustificationDepth.keySet()) {
+			if (m.contains(this.assertion_id)) {
+				this.modifiedJustificationDepth.put(m, 0);
+			} else {
+				/**
+				 * at this point, we penalize points that are not part of the
+				 * sample solution in a way that the complete sample solution is
+				 * always preferred over non-sample solution points.
+				 */
+				this.modifiedJustificationDepth.put(m, m.size() + 1);
+			}
+
+		}
 	}
 
 	/**
-	 * checks whether the justification depth can be reduced due to inferrence
+	 * checks whether the justification depth can be reduced due to inference
 	 * 
 	 * @return true, if justification depth has improved
 	 */
 
 	public boolean updateJustificationDepth() {
+		boolean any_better = this.updateJustificationDepthOld();
+
+		for (ArrayList<Integer> m : this.modifiedJustificationDepth.keySet())
+		{
+			any_better = any_better || this.updateJustificationDepthSolution(m);
+		}
+
+		return any_better;
+	}
+
+	private boolean updateJustificationDepthSolution(ArrayList<Integer> m) {
+
+		if ((this.modifiedJustificationDepth.get(m) >= 0)
+				&& (this.modifiedJustificationDepth.get(m) <= 1)) {
+			return false;
+		}
+
+		boolean better = false;
+
+		int add_one = m.size() + 1;
+
+		if (m.contains(this.assertion_id)) {
+			add_one = 1;
+		}
+
+		for (AssertionInterface assertion : this.assertions) {
+			if (assertion instanceof InferredAssertion) {
+
+				InferredAssertion inferred = (InferredAssertion) assertion;
+
+				boolean all_justified = true;
+				int max_level = 0;
+
+				for (AssertionInterface premise : inferred.getPremises()) {
+					if (premise instanceof EquivalentAssertions) {
+						EquivalentAssertions ea = (EquivalentAssertions) premise;
+
+						if (ea.modifiedJustificationDepth.get(m) == notJustified) {
+							all_justified = false;
+							break;
+						}
+
+						if (max_level < ea.modifiedJustificationDepth.get(m)) {
+							max_level = ea.modifiedJustificationDepth.get(m);
+						}
+					} else {
+						all_justified = false;
+						break;
+					}
+				}
+
+				if (all_justified == true) {
+					if (((max_level + add_one) < this.modifiedJustificationDepth
+							.get(m))
+							|| (this.modifiedJustificationDepth.get(m) == notJustified)) {
+
+						this.modifiedJustificationDepth.put(m, max_level
+								+ add_one);
+						better = true;
+					}
+				}
+			}
+		}
+
+		return better;
+	}
+
+	private boolean updateJustificationDepthOld() {
+
 		if ((this.justificationDepth >= 0) && (this.justificationDepth <= 1)) {
 			return false;
 		}
@@ -347,6 +456,11 @@ public class EquivalentAssertions implements AssertionInterface {
 		this.directAncestors.join(copyContents.directAncestors);
 		this.allAncestors.join(copyContents.allAncestors);
 		this.ruleAncestors.join(copyContents.ruleAncestors);
+
+		this.assertion_id = copyContents.assertion_id;
+		this.modifiedJustificationDepth = new HashMap<ArrayList<Integer>, Integer>();
+		this.modifiedJustificationDepth
+		.putAll(copyContents.modifiedJustificationDepth);
 	}
 
 	/**
