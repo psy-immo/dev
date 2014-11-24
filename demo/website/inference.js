@@ -710,8 +710,74 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
         var additional_points = 0;
 
         if (this.solutions.length) {
+            /**
+             * determine, which solution is closest
+             */
+
+            var best_score = 9007199254740992;
+            var best_id = -1;
+
+            for (var snr=0;snr < this.solutions.length; ++snr) {
+                var score = 0;
+
+                for ( var int2 = 0; int2 < closed_points.unjustified.length; int2++) {
+                    var point_id = closed_points.unjustified[int2];
+                    if (this.hypergraph.IsCorrect(point_id)) {
+                        score += this.hypergraph.GetJustificationDepth2(point_id, snr);
+                    }
+                }
+
+                for ( var int2 = 0; int2 < closed_points.justified.length; int2++) {
+                    var point_id = closed_points.justified[int2];
+
+                    if (this.hypergraph.IsCorrect(point_id)) {
+                        score += this.hypergraph.GetJustificationDepth2(point_id, snr);
+                    }
+
+                }
+
+                if (score < best_score) {
+                    best_score = score;
+                    best_id = snr;
+                }
+            }
+
+            log_data +="\nBest fit: Sample Solution " + best_id+":\n";
+            for ( var int2 = 0; int2 < this.solutions[best_id].length; int2++) {
+                var point_id = this.solutions[best_id][int2];
+                var s = this.stringids.FromId(point_id);
+
+                log_data += s + " [" + point_id + "] ";
+
+                if (this.hypergraph.IsCorrect(point_id)) {
+                    log_data += "[correct] ";
+
+                    var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
+                    for ( var ints2 = 0; ints2 < solves_parts.length; ints2++) {
+                        var part = solves_parts[ints2];
+
+                        log_data += "[[" + part + "]] ";
+                    }
+                }
+
+                if (this.hypergraph.IsTrivial(point_id)) {
+                    log_data += "[trivial] ";
+                }
+
+                if (this.hypergraph.IsConcluding(point_id)) {
+                    log_data += "[concluding] ";
+                }
+
+                if (this.hypergraph.IsJustified(point_id)) {
+                    log_data += "[justified] ";
+                }
+
+                log_data += "\n";
+
+            }
+
             additional_points = this.hypergraph.GetAdditionalAssertions2(
-				closed_points.justified, need_justification, this.solutions);
+				closed_points.justified, need_justification, best_id);
 
         } else {
     		additional_points = this.hypergraph.GetAdditionalAssertions(

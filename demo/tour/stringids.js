@@ -215,7 +215,7 @@ function StringIds() {
 			if (id < 0)
 				add += product.GetCount();
 			else
-				return id + add;
+				return id + add + 1;
 		}
 		
 		return -1;
@@ -242,7 +242,8 @@ function StringIds() {
 	 * @returns the string that corresponds to the given id
 	 */
 
-	this.FromId = function(id) {
+	this.FromId = function(cid) {
+        var id = cid-1;
 		if ((id < 0)||(id >= this.count))
 			return "!!UNKNOWN STRING!!";
 		for (var int=0;int<this.products.length;++int){
