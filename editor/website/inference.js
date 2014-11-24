@@ -742,7 +742,7 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
                 }
             }
 
-            log_data +="\nBest fit: Sample Solution " + best_id+":\n";
+            log_data +="\nBest fit: Sample Solution " + best_id+" (Score: "+best_score+"):\n";
             for ( var int2 = 0; int2 < this.solutions[best_id].length; int2++) {
                 var point_id = this.solutions[best_id][int2];
                 var s = this.stringids.FromId(point_id);
