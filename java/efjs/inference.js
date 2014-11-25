@@ -407,6 +407,8 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 		this.tryNumber += 1;
 
 		var incorrect_point_count = 0;
+
+        var user_points = [];
 		
 
 		/**
@@ -421,6 +423,8 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 			var point = points[int].token;
 			var point_id = this.stringids.ToId(point);
 			log_data += point + " [" + point_id + "] ";
+
+            user_points.push(point_id);
 
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
@@ -465,6 +469,8 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 			var point_id = this.stringids.ToId(point);
 			log_data += point + " [" + point_id + "] ";
 
+            user_points.push(point_id);
+
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
 				var solves_parts = this.hypergraph.SolvesWhichParts(point_id);
@@ -505,6 +511,8 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 			var point_id = this.implicit[int];
 			var point = this.stringids.FromId(point_id);
 			log_data += point + " [" + point_id + "] ";
+
+            user_points.push(point_id);
 
 			if (this.hypergraph.IsCorrect(point_id)) {
 				log_data += "[correct] ";
@@ -715,26 +723,21 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
              */
 
             var best_score = 9007199254740992;
-            var best_id = -1;
+            var best_id = 0;
+
+            var user_points_C = this.hypergraph.CloseUnderTrivial(user_points);
 
             for (var snr=0;snr < this.solutions.length; ++snr) {
                 var score = 0;
 
-                for ( var int2 = 0; int2 < closed_points.unjustified.length; int2++) {
-                    var point_id = closed_points.unjustified[int2];
+                for ( var int2 = 0; int2 < user_points_C.length; int2++) {
+                    var point_id = user_points_C[int2];
                     if (this.hypergraph.IsCorrect(point_id)) {
                         score += this.hypergraph.GetJustificationDepth2(point_id, snr);
                     }
                 }
 
-                for ( var int2 = 0; int2 < closed_points.justified.length; int2++) {
-                    var point_id = closed_points.justified[int2];
-
-                    if (this.hypergraph.IsCorrect(point_id)) {
-                        score += this.hypergraph.GetJustificationDepth2(point_id, snr);
-                    }
-
-                }
+                log_data += "\n Fit #"+snr+" = "+score;
 
                 if (score < best_score) {
                     best_score = score;
