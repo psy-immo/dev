@@ -335,7 +335,7 @@ public class EquivalentAssertions implements AssertionInterface {
 
 		boolean better = false;
 
-		int add_one = m.size() + 1;
+		int add_one = 2;
 
 		if (m.contains(this.assertion_id)) {
 			add_one = 1;
@@ -347,7 +347,7 @@ public class EquivalentAssertions implements AssertionInterface {
 				InferredAssertion inferred = (InferredAssertion) assertion;
 
 				boolean all_justified = true;
-				int max_level = 0;
+				int sum_level = 0;
 
 				for (AssertionInterface premise : inferred.getPremises()) {
 					if (premise instanceof EquivalentAssertions) {
@@ -358,9 +358,9 @@ public class EquivalentAssertions implements AssertionInterface {
 							break;
 						}
 
-						if (max_level < ea.modifiedJustificationDepth.get(m)) {
-							max_level = ea.modifiedJustificationDepth.get(m);
-						}
+						sum_level += ea.modifiedJustificationDepth.get(m);
+
+
 					} else {
 						all_justified = false;
 						break;
@@ -368,11 +368,11 @@ public class EquivalentAssertions implements AssertionInterface {
 				}
 
 				if (all_justified == true) {
-					if (((max_level + add_one) < this.modifiedJustificationDepth
+					if (((sum_level + add_one) < this.modifiedJustificationDepth
 							.get(m))
 							|| (this.modifiedJustificationDepth.get(m) == notJustified)) {
 
-						this.modifiedJustificationDepth.put(m, max_level
+						this.modifiedJustificationDepth.put(m, sum_level
 								+ add_one);
 						better = true;
 					}
