@@ -1038,7 +1038,7 @@ function InferenceGraph() {
 	this.GetBestJustificationCandidate2 = function(given_justified_points,
 			to_be_justified, samplenr) {
 
-        console.log("GetBestJustificationCandidate2("+given_justified_points+";"+to_be_justified+";"+samplenr+")");
+        //console.log("GetBestJustificationCandidate2("+given_justified_points+";"+to_be_justified+";"+samplenr+")");
 
 		var candidate_list = this.GetJustificationCandidates2(
 				given_justified_points, to_be_justified, samplenr);
@@ -1058,7 +1058,7 @@ function InferenceGraph() {
 			}
 		}
 
-        console.log("= {Score: "+ best_candidate["s"]+" Candidate:"+best_candidate["c"]+"}");
+        //console.log("= {Score: "+ best_candidate["s"]+" Candidate:"+best_candidate["c"]+"}");
 
 		return best_candidate;
 	};
