@@ -785,13 +785,12 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 
             /** superimpose the sample solution !! */
 
-            augmented_additional_points = this.solutions[best_id].concat(additional_points);
+            augmented_additional_points = this.solutions[best_id];
 
         } else {
     		additional_points = this.hypergraph.GetAdditionalAssertions(
 				closed_points.justified, need_justification);
 
-            augmented_additional_points = additional_points;
         }
 
 		var hints_for_parts = [];
@@ -846,8 +845,9 @@ function InferenceMachine(name,atags, rtags, stringids, hypergraph, points,
 		if (this.justify)
 			check_for = this.justify;
 
-		var necessary = this.hypergraph.GetNecessarySubset(Object
-				.keys(assertions), this.implicit, augmented_additional_points, check_for);
+		var necessary = this.hypergraph.GetNecessarySubset2(Object
+				.keys(assertions), this.implicit, additional_points, check_for,
+                augmented_additional_points);
 
 		var hint_points = [];
 
