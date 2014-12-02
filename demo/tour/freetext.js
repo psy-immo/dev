@@ -135,7 +135,7 @@ function Freetext(name, tags, label, embeddedMode) {
 		this.token = element.value;
 
 		if (old != this.token) {
-			myLogger.Log(this.name + " <- " + this.token);
+			myLogger.Log(this.name + " RECEIVES " + this.token);
 
 			/**
 			 * also update the coloring

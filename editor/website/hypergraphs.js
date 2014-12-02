@@ -923,11 +923,14 @@ function InferenceGraph() {
 
 	this.GetJustificationCandidates2 = function(given_justified_points,
 			to_be_justified, samplenr) {
+
+        console.log("GetJustificationCandidates2("+given_justified_points+";"+to_be_justified+";"+samplenr+")");
+
 		/**
 		 * if this assertion is not justifiable or justified itself, we state
 		 * that no assertions would have to be added
 		 */
-		var to_be_justified_depth = this.GetJustificationDepth(to_be_justified);
+		var to_be_justified_depth = this.GetJustificationDepth2(to_be_justified, samplenr);
 		if (to_be_justified_depth <= 0) {
 			return [ [], 0 ];
 		}
@@ -976,7 +979,7 @@ function InferenceGraph() {
 			 */
 
 			candidate_list.push(additional_assertions);
-			candidate_list.push(max_depth_score + 1);
+			candidate_list.push(max_depth_score + 1); /* TODO: fix: use the correct penalty for parts not in the solution. */
 		}
 
 		return candidate_list;
@@ -1034,6 +1037,9 @@ function InferenceGraph() {
 
 	this.GetBestJustificationCandidate2 = function(given_justified_points,
 			to_be_justified, samplenr) {
+
+        //console.log("GetBestJustificationCandidate2("+given_justified_points+";"+to_be_justified+";"+samplenr+")");
+
 		var candidate_list = this.GetJustificationCandidates2(
 				given_justified_points, to_be_justified, samplenr);
 		var best_candidate = {
@@ -1051,6 +1057,8 @@ function InferenceGraph() {
 				best_candidate["c"] = candidate;
 			}
 		}
+
+        //console.log("= {Score: "+ best_candidate["s"]+" Candidate:"+best_candidate["c"]+"}");
 
 		return best_candidate;
 	};
@@ -1082,6 +1090,7 @@ function InferenceGraph() {
 		var additional_assertions = [];
 		var considered_justified = [];
 		var need_justification = [];
+        var processed_assertions = [];
 
 		for ( var int = 0; int < given_justified_points.length; int++) {
 			var id = given_justified_points[int];
@@ -1103,6 +1112,10 @@ function InferenceGraph() {
 
 			for ( var int3 = 0; int3 < need_justification.length; int3++) {
 				var to_be_justified = need_justification[int3];
+
+                if (processed_assertions.indexOf(to_be_justified) >= 0)
+                    continue;
+
 				var result = this.GetBestJustificationCandidate2(
 						considered_justified, to_be_justified, samplenr);
 				var score = result["s"];
@@ -1128,6 +1141,8 @@ function InferenceGraph() {
 
 				// console.log("Added: " + newly_justified_id);
 			} else {
+
+                processed_assertions.push( need_justification[minimum_index] );
 
 				for ( var int4 = 0; int4 < minimum_candidate.length; int4++) {
 					var new_point_id = minimum_candidate[int4];
@@ -1297,6 +1312,142 @@ function InferenceGraph() {
 		/**
 		 * put the generated assertions ahead of the other assertions
 		 */
+
+		for ( var int3 = 0; int3 < left_assertions.length; int3++) {
+			var id = left_assertions[int3];
+			gen_assertions.push(id);
+		}
+
+		left_assertions = gen_assertions;
+
+		/**
+		 * try to eliminate some assertions
+		 */
+
+		var checked = {};
+		var continue_testing = true;
+
+		while (continue_testing) {
+			var test_id = -1;
+			continue_testing = false;
+			/**
+			 * try to find an assertion we might test
+			 */
+			for ( var int3 = 0; int3 < left_assertions.length; int3++) {
+				var id = left_assertions[int3];
+				if (checked[id])
+					continue;
+
+				checked[id] = true;
+				if ((measuring_assertions.indexOf(id) < 0)
+						&& (implicit.indexOf(id) < 0)) {
+					/**
+					 * do not try to remove the assertion if it is either an assertion
+					 * that is checked for justification or an assertion, that has
+					 * 
+					 */
+					continue_testing = true;
+					test_id = id;
+					break;
+				}
+			}
+
+			if (continue_testing) {
+				var smaller_set = [];
+				for ( var int4 = 0; int4 < left_assertions.length; int4++) {
+					var id = left_assertions[int4];
+					if (id != test_id)
+						smaller_set.push(id);
+				}
+
+				var result = this.CloseJustification(smaller_set,
+						measuring_assertions);
+				var good = true;
+
+				for ( var int5 = 0; int5 < measuring_assertions.length; int5++) {
+					var id = measuring_assertions[int5];
+					if (result.justified.indexOf(id) < 0) {
+						good = false;
+						break;
+					}
+				}
+				if (good) {
+					left_assertions = smaller_set;
+				}
+			}
+		}
+
+		return left_assertions;
+
+	};
+	/**
+	 * returns a subset of the assertions, that are necessary in order to
+	 * justify the relative_assertions;
+     * consider a sample solution :)
+	 */
+
+	this.GetNecessarySubset2 = function(assertions, implicit_assertions,
+			generated_assertions, relative_assertions, sample_solution) {
+		var left_assertions = [];
+		var gen_assertions = [];
+        var sample_assertions = [];
+		var measuring_assertions = [];
+		var implicit = [];
+
+		/**
+		 * initial copy & integer conversion
+		 */
+
+		for ( var int = 0; int < implicit_assertions.length; int++) {
+			var id = implicit_assertions[int];
+			implicit.push(id);
+		}
+
+		for ( var int = 0; int < assertions.length; int++) {
+			var id = parseInt(assertions[int]);
+			if (left_assertions.indexOf(id) < 0)
+				left_assertions.push(id);
+		}
+
+		for ( var int = 0; int < sample_solution.length; int++) {
+			var id = parseInt(sample_solution[int]);
+			if ((sample_assertions.indexOf(id) < 0)
+                    && (left_assertions.indexOf(id) < 0))
+				sample_assertions.push(id);
+		}
+
+		for ( var int = 0; int < generated_assertions.length; int++) {
+			var id = parseInt(generated_assertions[int]);
+			if ((gen_assertions.indexOf(id) < 0)
+					&& (left_assertions.indexOf(id) < 0)
+                    && (sample_assertions.indexOf(id) < 0))
+				gen_assertions.push(id);
+		}
+
+		for ( var int2 = 0; int2 < relative_assertions.length; int2++) {
+			var id = parseInt(relative_assertions[int2]);
+			if (measuring_assertions.indexOf(id) < 0)
+				measuring_assertions.push(id);
+		}
+
+
+		/**
+		 * determinize processing order
+		 */
+
+		left_assertions.sort();
+		gen_assertions.sort();
+		measuring_assertions.sort();
+        sample_assertions.sort();
+
+		/**
+		 * put the generated assertions ahead of the other assertions
+		 */
+
+		for ( var int3 = 0; int3 < sample_assertions.length; int3++) {
+			var id = sample_assertions[int3];
+			gen_assertions.push(id);
+		}
 
 		for ( var int3 = 0; int3 < left_assertions.length; int3++) {
 			var id = left_assertions[int3];

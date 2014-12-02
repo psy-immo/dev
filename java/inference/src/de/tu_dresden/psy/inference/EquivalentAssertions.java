@@ -348,6 +348,7 @@ public class EquivalentAssertions implements AssertionInterface {
 
 				boolean all_justified = true;
 				int sum_level = 0;
+				int max_level = 0;
 
 				for (AssertionInterface premise : inferred.getPremises()) {
 					if (premise instanceof EquivalentAssertions) {
@@ -356,6 +357,10 @@ public class EquivalentAssertions implements AssertionInterface {
 						if (ea.modifiedJustificationDepth.get(m) == notJustified) {
 							all_justified = false;
 							break;
+						}
+
+						if (max_level < ea.modifiedJustificationDepth.get(m)) {
+							max_level = ea.modifiedJustificationDepth.get(m);
 						}
 
 						sum_level += ea.modifiedJustificationDepth.get(m);
@@ -368,15 +373,28 @@ public class EquivalentAssertions implements AssertionInterface {
 				}
 
 				if (all_justified == true) {
-					if (((sum_level + add_one) < this.modifiedJustificationDepth
-							.get(m))
-							|| (this.modifiedJustificationDepth.get(m) == notJustified)) {
 
-						this.modifiedJustificationDepth.put(m, sum_level
-								+ add_one);
-						better = true;
+					if (inferred.isInferredByTrivialRule()) {
+						/**
+						 * trivial rules help uncover different ways to say the
+						 * same thing, thus do not get punished.
+						 */
+
+						if (max_level < this.modifiedJustificationDepth.get(m)) {
+							this.modifiedJustificationDepth.put(m, max_level);
+						}
+					} else {
+						if (((sum_level + add_one) < this.modifiedJustificationDepth
+								.get(m))
+								|| (this.modifiedJustificationDepth.get(m) == notJustified)) {
+
+							this.modifiedJustificationDepth.put(m, sum_level
+									+ add_one);
+							better = true;
+						}
 					}
 				}
+
 			}
 		}
 

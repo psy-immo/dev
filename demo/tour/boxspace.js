@@ -298,7 +298,7 @@ function FloatBox(style, content) {
 
 		log_data += " [" + boxspaceArray[this.parent].BoxIndex(this) + "]";
 
-		log_data += " <- token returns: " + myHover.token;
+		log_data += "  token returns: " + myHover.token;
 
 		var parent = document.getElementById("boxspace" + this.parent);
 

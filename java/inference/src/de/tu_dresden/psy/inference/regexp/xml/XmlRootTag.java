@@ -217,7 +217,26 @@ public class XmlRootTag extends XmlTag {
 	 * @return the set of given sample solutions
 	 */
 	public Set<ArrayList<String>> getSampleSolutions() {
-		return this.sampleSolutions;
+
+		Set<ArrayList<String>> add_implicit = new HashSet<ArrayList<String>>();
+
+		for (ArrayList<String> sample_solution : this.sampleSolutions) {
+
+			ArrayList<String> solution = new ArrayList<String>();
+
+			solution.addAll(sample_solution);
+			solution.addAll(this.implicit);
+
+			add_implicit.add(solution);
+
+			System.err.println("SAMPLE SOLUTION:");
+			for (String ass : solution) {
+				System.err.println("   -+  " + ass);
+			}
+
+		}
+
+		return add_implicit;
 	}
 
 	/**
